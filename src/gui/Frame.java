@@ -57,6 +57,6 @@ public class Frame extends JFrame {
 	    		else t[i][j] = Terrain.GRASS;
 	    	}
 	    }
-	    f.setBoard(new BoardPanel(new Board(t), 20, 20));
+	    f.setBoard(new BoardPanel(new Board(t), 10, 20));
 	}
 }
