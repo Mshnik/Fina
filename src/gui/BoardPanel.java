@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import board.*;
 
 /** Drawable wrapper for a board object */
-public class BoardPanel extends JPanel{
+public class BoardPanel extends JPanel implements Paintable{
 
 	/***/
 	private static final long serialVersionUID = 1L;

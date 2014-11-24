@@ -8,7 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /** An instance represents the cursor on the GUI */
-public class BoardCursor implements KeyListener, Paintable{
+public class BoardCursor implements KeyListener, Animatable{
 	
 	/** Color for Cursor Drawing */
 	protected static final Color COLOR = Color.red;
@@ -25,6 +25,9 @@ public class BoardCursor implements KeyListener, Paintable{
 	/** The board this cursor is used for */
 	public final BoardPanel boardPanel;
 	
+	/** The current animation state this BoardCursor is on */
+	private int animationState;
+	
 	/** Constructs a new BoardCursor
 	 * @param b - the Board this cursor is used for
 	 */
@@ -32,6 +35,7 @@ public class BoardCursor implements KeyListener, Paintable{
 		boardPanel = bp;
 		row = 0;
 		col = 0;
+		animationState = 0;
 	}
 	
 	/** Returns the row in the board this BoardCursor is currently on */
@@ -132,33 +136,61 @@ public class BoardCursor implements KeyListener, Paintable{
 		int y = (getRow() - boardPanel.scrollY) * BoardPanel.CELL_SIZE + BoardCursor.THICKNESS/2;
 		int s = BoardPanel.CELL_SIZE - BoardCursor.THICKNESS;
 		
+		//delta - depends on animation state. when non 0, makes cursor smaller.
+		int d = animationState * 2;
+		
 		//(x,y) coordinates for polylines. Each is 3 points, clockwise.
 		int[][][] coords = {
 				{
 					//Top left corner
-					{x, x, x + s/4},
-					{y + s/4, y, y}
+					{x + d, x + d, x + d + s/4},
+					{y + d + s/4, y + d, y + d}
 				},
 				{
 					//Top Right corner
-					{x + 3*s/4, x + s, x + s},
-					{y, y, y + s/4}
+					{x + 3*s/4 - d, x + s - d, x + s - d},
+					{y + d, y + d, y + d + s/4}
 				},
 				{
 					//Bottom Right corner
-					{x + s, x + s, x + 3*s/4},
-					{y + 3*s/4, y + s, y + s}
+					{x + s - d, x + s - d, x + 3*s/4 - d},
+					{y + 3*s/4 - d, y + s - d, y + s - d}
 				},
 				{
 					//Bottom left corner
-					{x + s/4, x, x},
-					{y + s, y + s, y + 3*s/4}
+					{x + s/4 + d, x + d, x + d},
+					{y + s - d, y + s - d, y + 3*s/4 - d}
 				}
 		};
 		
 		for(int i = 0; i < coords.length; i++){
 			g2d.drawPolyline(coords[i][0], coords[i][1], coords[i][0].length);
 		}
+	}
+
+	/** Cursors have a cycle length of some fraction of a second. */
+	@Override
+	public int getCycleLength() {
+		return 350;
+	}
+
+	/** Cursors have 2 states */
+	@Override
+	public int getStateCount() {
+		return 2;
+	}
+
+	/** Returns the animation state this cursor is on */
+	@Override
+	public int getState() {
+		return animationState;
+	}
+
+	/** Increases the animation state by 1, and causes a repaint */
+	@Override
+	public void advanceState() {
+		animationState = (animationState + 1) % getStateCount();
+		boardPanel.repaint();
 	}
 	
 }

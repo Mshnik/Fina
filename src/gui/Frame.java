@@ -15,6 +15,9 @@ public class Frame extends JFrame {
 	/** The boardPanel this Frame is drawing, if any */
 	private BoardPanel boardPanel;
 	
+	/** The animator for this Frame */
+	private Animator animator;
+	
 	public Frame(){
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -26,6 +29,8 @@ public class Frame extends JFrame {
 		pack();
 		this.setLocation(100, 100);
 		
+		animator = new Animator();
+		
 		validate();
 		setVisible(true);
 	}
@@ -36,10 +41,12 @@ public class Frame extends JFrame {
 		if(boardPanel != null){
 			removeKeyListener(boardPanel.boardCursor);
 			remove(boardPanel);
+			animator.removeAnimatable(boardPanel.boardCursor);
 		}
 		add(bp, BorderLayout.CENTER);
 		boardPanel = bp;
 		addKeyListener(boardPanel.boardCursor);
+		animator.addAnimatable(boardPanel.boardCursor);
 
 		pack();
 		repaint();
