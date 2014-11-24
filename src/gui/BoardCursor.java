@@ -1,11 +1,14 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /** An instance represents the cursor on the GUI */
-public class BoardCursor implements KeyListener{
+public class BoardCursor implements KeyListener, Paintable{
 	
 	/** Color for Cursor Drawing */
 	protected static final Color COLOR = Color.red;
@@ -116,5 +119,46 @@ public class BoardCursor implements KeyListener{
 	/** Required for KeyListener. Unused - see keyPressed */
 	@Override
 	public void keyReleased(KeyEvent e) {}
+
+	/** Draw this Cursor as a red set of 4 corner lines */
+	@Override
+	public void paintComponent(Graphics g) {
+		Graphics2D g2d = (Graphics2D)g;
+		g2d.setColor(BoardCursor.COLOR);
+		g2d.setStroke(new BasicStroke(BoardCursor.THICKNESS));
+		
+		//x min, y min, side length
+		int x = (getCol() - boardPanel.scrollX) * BoardPanel.CELL_SIZE + BoardCursor.THICKNESS/2;
+		int y = (getRow() - boardPanel.scrollY) * BoardPanel.CELL_SIZE + BoardCursor.THICKNESS/2;
+		int s = BoardPanel.CELL_SIZE - BoardCursor.THICKNESS;
+		
+		//(x,y) coordinates for polylines. Each is 3 points, clockwise.
+		int[][][] coords = {
+				{
+					//Top left corner
+					{x, x, x + s/4},
+					{y + s/4, y, y}
+				},
+				{
+					//Top Right corner
+					{x + 3*s/4, x + s, x + s},
+					{y, y, y + s/4}
+				},
+				{
+					//Bottom Right corner
+					{x + s, x + s, x + 3*s/4},
+					{y + 3*s/4, y + s, y + s}
+				},
+				{
+					//Bottom left corner
+					{x + s/4, x, x},
+					{y + s, y + s, y + 3*s/4}
+				}
+		};
+		
+		for(int i = 0; i < coords.length; i++){
+			g2d.drawPolyline(coords[i][0], coords[i][1], coords[i][0].length);
+		}
+	}
 	
 }

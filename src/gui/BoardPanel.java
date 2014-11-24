@@ -73,15 +73,7 @@ public class BoardPanel extends JPanel{
 		}
 		
 		//Draw the cursor
-		Graphics2D g2d = (Graphics2D)g;
-		g2d.setColor(BoardCursor.COLOR);
-		g2d.setStroke(new BasicStroke(BoardCursor.THICKNESS));
-		g2d.draw(new Rectangle2D.Double(
-				(boardCursor.getCol() - scrollX) * BoardPanel.CELL_SIZE + BoardCursor.THICKNESS/2, 
-				(boardCursor.getRow() - scrollY) * BoardPanel.CELL_SIZE + BoardCursor.THICKNESS/2, 
-				BoardPanel.CELL_SIZE - BoardCursor.THICKNESS, 
-				BoardPanel.CELL_SIZE - BoardCursor.THICKNESS)
-		);
+		boardCursor.paintComponent(g);
 	}
 
 }
