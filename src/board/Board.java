@@ -14,10 +14,16 @@ public class Board implements Iterable<Tile>{
 	/** The tiles that make up this board. Must be rectangular (non-jagged) */
 	private Tile[][] tiles;
 	
-	/** Construct a simple board of just terrain */
-	public Board(Terrain[][] terrain){
+	/** Construct a simple board of just terrain
+	 * Throws IllegalArgumentException if input array is jagged. */
+	public Board(Terrain[][] terrain) throws IllegalArgumentException{
 		tiles = new Tile[terrain.length][terrain[0].length];
 		for(int i = 0; i < terrain.length; i++){
+			
+			if(terrain[i].length != terrain[0].length)
+				throw new IllegalArgumentException("Jagged Array passed into board constructor " 
+													+ terrain);
+			
 			for(int j = 0; j < terrain[i].length; j++){
 				tiles[i][j] = new Tile(i,j,terrain[i][j]);
 			}

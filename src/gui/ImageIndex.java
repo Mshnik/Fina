@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import board.Terrain;
+import board.Tile;
 
 /** Library for lookup of different image resources */
 public class ImageIndex {
@@ -35,8 +35,8 @@ public class ImageIndex {
 	}
 	
 	/** Returns the image file corresponding to the given terrain type */
-	public static BufferedImage imageForTerrain(Terrain t){
-		switch(t){
+	public static BufferedImage imageForTile(Tile t){
+		switch(t.terrain){
 			case GRASS: 	return GRASS_IMG;
 			case MOUNTAIN: 	return MOUNTAIN_IMG;
 			case WOODS:		return WOODS_IMG;
