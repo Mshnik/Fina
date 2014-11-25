@@ -7,8 +7,10 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import board.Tile;
+
 /** An instance represents the cursor on the GUI */
-public class BoardCursor implements KeyListener, Animatable{
+public class BoardCursor implements Animatable{
 	
 	/** Color for Cursor Drawing */
 	protected static final Color COLOR = Color.red;
@@ -23,16 +25,17 @@ public class BoardCursor implements KeyListener, Animatable{
 	private int col;
 	
 	/** The board this cursor is used for */
-	public final BoardPanel boardPanel;
+	public final GamePanel gamePanel;
 	
-	/** The current animation state this BoardCursor is on */
+	/** The current animation state this BoardCursor is on.
+	 * An interger in the range [0 ... getStateCount() - 1] */
 	private int animationState;
 	
 	/** Constructs a new BoardCursor
 	 * @param b - the Board this cursor is used for
 	 */
-	public BoardCursor(BoardPanel bp){
-		boardPanel = bp;
+	public BoardCursor(GamePanel bp){
+		gamePanel = bp;
 		row = 0;
 		col = 0;
 		animationState = 0;
@@ -48,28 +51,36 @@ public class BoardCursor implements KeyListener, Animatable{
 		return col;
 	}
 	
+	/** Returns the tile this cursor is currently on */
+	public Tile getTile(){
+		return gamePanel.boardState.getTileAt(row, col);
+	}
+	
 	/** Called internally whenever the cursor is moved
 	 * Cause the cursor to be updated graphically. */
 	private void moved(){
-		boardPanel.repaint();
+		if(gamePanel.getPathSelector() != null)
+			gamePanel.getPathSelector().addToPath(getTile());
+		
+		gamePanel.repaint();
 	}
 	
 	/** Moves the cursor left one square, if possible */
 	public void moveLeft(){
 		if(col > 0){
 			col--;
-			if(col < boardPanel.scrollX)
-				boardPanel.scrollX--;
+			if(col < gamePanel.scrollX)
+				gamePanel.scrollX--;
 			moved();
 		}
 	}
 	
 	/** Moves the cursor right one square, if possible */
 	public void moveRight(){
-		if(col < boardPanel.boardState.getWidth() - 1){
+		if(col < gamePanel.boardState.getWidth() - 1){
 			col++;
-			if(col > boardPanel.scrollX + boardPanel.maxX - 1)
-				boardPanel.scrollX++;
+			if(col > gamePanel.scrollX + gamePanel.maxX - 1)
+				gamePanel.scrollX++;
 			moved();
 		}
 	}
@@ -78,51 +89,21 @@ public class BoardCursor implements KeyListener, Animatable{
 	public void moveUp(){
 		if(row > 0){
 			row--;
-			if(row < boardPanel.scrollY)
-				boardPanel.scrollY--;
+			if(row < gamePanel.scrollY)
+				gamePanel.scrollY--;
 			moved();
 		}
 	}
 	
 	/** Moves the cursor down one square, if possible */
 	public void moveDown(){
-		if(row < boardPanel.boardState.getHeight() - 1){
+		if(row < gamePanel.boardState.getHeight() - 1){
 			row++;
-			if(row > boardPanel.scrollY + boardPanel.maxY - 1)
-				boardPanel.scrollY++;
+			if(row > gamePanel.scrollY + gamePanel.maxY - 1)
+				gamePanel.scrollY++;
 			moved();
 		}
 	}
-
-	/** Required for KeyListener. Unused - see keyPressed */
-	@Override
-	public void keyTyped(KeyEvent e) {}
-
-	/** Handle a keyPress. If one of the arrow keys, do the corresponding movement.
-	 * Otherwise, do nothing.
-	 */
-	@Override
-	public void keyPressed(KeyEvent e) {
-		int keyCode = e.getKeyCode();
-	    switch(keyCode) { 
-	        case KeyEvent.VK_UP:
-	        	moveUp();
-	            break;
-	        case KeyEvent.VK_DOWN:
-	            moveDown();
-	            break;
-	        case KeyEvent.VK_LEFT:
-	            moveLeft();
-	            break;
-	        case KeyEvent.VK_RIGHT :
-	            moveRight();
-	            break;
-	     }
-	}
-
-	/** Required for KeyListener. Unused - see keyPressed */
-	@Override
-	public void keyReleased(KeyEvent e) {}
 
 	/** Draw this Cursor as a red set of 4 corner lines */
 	@Override
@@ -132,9 +113,9 @@ public class BoardCursor implements KeyListener, Animatable{
 		g2d.setStroke(new BasicStroke(BoardCursor.THICKNESS));
 		
 		//x min, y min, side length
-		int x = (getCol() - boardPanel.scrollX) * BoardPanel.CELL_SIZE + BoardCursor.THICKNESS/2;
-		int y = (getRow() - boardPanel.scrollY) * BoardPanel.CELL_SIZE + BoardCursor.THICKNESS/2;
-		int s = BoardPanel.CELL_SIZE - BoardCursor.THICKNESS;
+		int x = gamePanel.getXPosition(getTile()) + BoardCursor.THICKNESS/2;
+		int y = gamePanel.getYPosition(getTile()) + BoardCursor.THICKNESS/2;
+		int s = GamePanel.CELL_SIZE - BoardCursor.THICKNESS;
 		
 		//delta - depends on animation state. when non 0, makes cursor smaller.
 		int d = animationState * 2;
@@ -190,7 +171,7 @@ public class BoardCursor implements KeyListener, Animatable{
 	@Override
 	public void advanceState() {
 		animationState = (animationState + 1) % getStateCount();
-		boardPanel.repaint();
+		gamePanel.repaint();
 	}
 	
 }

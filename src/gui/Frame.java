@@ -12,11 +12,17 @@ public class Frame extends JFrame {
 	/***/
 	private static final long serialVersionUID = 1L;
 
-	/** The boardPanel this Frame is drawing, if any */
-	private BoardPanel boardPanel;
+	/** The gamePanel this Frame is drawing, if any */
+	protected GamePanel gamePanel;
 	
 	/** The animator for this Frame */
-	private Animator animator;
+	protected Animator animator;
+	
+	/** True iff the board cursor is active and should respond to keyboard input */
+	protected boolean boardCursorActive;
+	
+	/** True iff pressing the A or B buttons can change path selection */
+	protected boolean canTogglePathSelection;
 	
 	public Frame(){
 		
@@ -24,29 +30,30 @@ public class Frame extends JFrame {
 		setLayout(new BorderLayout());
 		setResizable(false);
 		
-		setMinimumSize(new Dimension(750, 500));
-		setMaximumSize(new Dimension(750, 500));
 		pack();
 		this.setLocation(100, 100);
 		
 		animator = new Animator();
 		
+		boardCursorActive = true;
+		canTogglePathSelection = true;
+		
+		KeyboardListener.setFrame(this);
+		
 		validate();
 		setVisible(true);
 	}
 	
-	/** Sets this Frame to show BoardPanel bp. Removes previous boardPanel if any.
+	/** Sets this Frame to show GamePanel bp. Removes previous gamePanel if any.
 	 * Also triggers a packing and repainting. */
-	public void setBoard(BoardPanel bp){
-		if(boardPanel != null){
-			removeKeyListener(boardPanel.boardCursor);
-			remove(boardPanel);
-			animator.removeAnimatable(boardPanel.boardCursor);
+	public void setBoard(GamePanel bp){
+		if(gamePanel != null){
+			remove(gamePanel);
+			animator.removeAnimatable(gamePanel.boardCursor);
 		}
 		add(bp, BorderLayout.CENTER);
-		boardPanel = bp;
-		addKeyListener(boardPanel.boardCursor);
-		animator.addAnimatable(boardPanel.boardCursor);
+		gamePanel = bp;
+		animator.addAnimatable(gamePanel.boardCursor);
 
 		pack();
 		repaint();
@@ -64,6 +71,6 @@ public class Frame extends JFrame {
 	    		else t[i][j] = Terrain.GRASS;
 	    	}
 	    }
-	    f.setBoard(new BoardPanel(new Board(t), 10, 20));
+	    f.setBoard(new GamePanel(new Board(t), 10, 20));
 	}
 }
