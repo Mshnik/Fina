@@ -32,10 +32,16 @@ public class Tile {
 		return "(" + row + "," + col + "):" + terrain; 
 	}
 	
+	/** Return the Manhattan (only udlr) distance from this to other *
+	 */
+	public int manhattanDistance(Tile other){
+		return Math.abs(row - other.row) + Math.abs(col - other.col);
+	}
+	
 	/** Returns the Direction to go from this to other,
 	 * if they are bordering each other. Otherwise returns null
 	 */
-	public Direction getDirectionTo(Tile other){
+	public Direction directionTo(Tile other){
 		if(row == other.row && col == other.col + 1) return Direction.LEFT;
 		if(row == other.row && col == other.col - 1) return Direction.RIGHT;
 		if(col == other.col && row == other.row + 1) return Direction.UP;
