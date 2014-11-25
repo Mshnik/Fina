@@ -195,12 +195,24 @@ public abstract class AbstractUnit {
 	/** Processes a pre-fight action that may be caused by modifiers.
 	 * Still only called when the fight is valid. */
 	public abstract void preFight(AbstractUnit other);
+	
+	/** Processes a pre-counter-fight action that may be caused by modifiers.
+	 * Still only called when the fight is valid, called after other.preFight().
+	 * Only called if this will be able to counterAttack. */
+	public abstract void preCounterFight(AbstractUnit other);
 
 	/** Processes a post-fight action that may be caused by modifiers.
 	 * Only called when the fight is valid.
 	 * Notably, other or this may be dead when this is called.
 	 */
 	public abstract void postFight(AbstractUnit other);
+	
+	/** Processes a post-fight action that may be caused by modifiers.
+	 * Only called when the fight is valid, called after other.postFight()
+	 * Notably, other or this may be dead when this is called.
+	 * Only called if this was able to counterAttack.
+	 */
+	public abstract void postCounterFight(AbstractUnit other);
 
 	/** Causes this unit to fight the given unit.
 	 * With this as the attacker and other as the defender.
@@ -231,21 +243,27 @@ public abstract class AbstractUnit {
 		if(room > getRange())
 			throw new IllegalArgumentException(this + " can't fight " + other + ", it is too far away.");
 
+		//True if a counterAttack is happening, false otherwise.
+		boolean counterAttack = other.isAlive() && other.owner.canSee(this) && room <= other.getRange();
+		
 		preFight(other);
+		if(counterAttack) other.preCounterFight(this);
 
 		//This attacks other
 		other.health -= getAttack() - other.getDefense(getAttackType());
 		
 		//If other is still alive, can see the first unit, 
 		//and this is within range, other counterattacks
-		if(other.isAlive() && other.owner.canSee(this) && room <= other.getRange()){
+		if(counterAttack){
 			health -= other.getCounterAttack() - getDefense(other.getAttackType());
+			counterAttack = true;
 		}
 
 		//This can't attack this turn again
 		canFight = false;
 		
 		postFight(other);
+		if(counterAttack) other.postCounterFight(this);
 		return ! other.isAlive();
 	}
 
