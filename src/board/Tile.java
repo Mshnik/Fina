@@ -1,5 +1,7 @@
 package board;
 
+import unit.AbstractUnit;
+
 /** A Tile is a single square in the board.
  * Maintains information about its location, what kind of tile it is, and what units are on it.
  * @author MPatashnik
@@ -15,6 +17,9 @@ public class Tile {
 	
 	/** The terrain type of this tile. */
 	public final Terrain terrain;
+	
+	/** The unit on this tile, if any */
+	private AbstractUnit occupyingUnit;
 	
 	/** Constructor for Tile Class
 	 * @param r - the row of this tile in the board matrix it belongs to
@@ -47,6 +52,44 @@ public class Tile {
 		if(col == other.col && row == other.row + 1) return Direction.UP;
 		if(col == other.col && row == other.row - 1) return Direction.DOWN;
 		return null;
+	}
+	
+	/** Returns the occupyingUnit, if there is one */
+	public AbstractUnit getOccupyingUnit(){
+		return occupyingUnit;
+	}
+	
+	/** Adds the given unit to this tile
+	 * @throws RuntimeException if this is already occupied
+	 * @throws IllegalArgumentException if u is null */
+	public void addOccupyingUnit(AbstractUnit u) throws RuntimeException {
+		if(occupyingUnit != null)
+			throw new RuntimeException ("Can't add unit to " + this + 
+					", already occupied by " + occupyingUnit);
+		if(u == null)
+			throw new IllegalArgumentException("Can't add a null unit to " + this);
+		occupyingUnit = u;
+	}
+	
+	/** Removes the current unit
+	 * @throws IllegalArgumentException if this isn't already occupied */
+	public void removeOccupyingUnit() throws RuntimeException{
+		if(occupyingUnit != null)
+			throw new RuntimeException ("Can't remove unit from " + this +  
+					", it isn't already occupied by");
+		occupyingUnit = null;
+	}
+	
+	/** Moves the given unit to the Tile other 
+	 * @throws IllegalArgumentException if other is already occupied*/
+	public void moveUnitTo(Tile other) throws IllegalArgumentException {
+		other.addOccupyingUnit(occupyingUnit);
+		removeOccupyingUnit();
+	}
+	
+	/** Returns true iff there is an occupyingUnit */
+	public boolean isOccupied(){
+		return occupyingUnit != null;
 	}
 	
 }

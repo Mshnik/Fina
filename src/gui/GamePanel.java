@@ -89,11 +89,17 @@ public class GamePanel extends JPanel implements Paintable{
 		for(int row = scrollY; row < scrollY + maxY; row ++){
 			for(int col = scrollX; col < scrollX + maxX; col ++){
 				Tile t = boardState.getTileAt(row, col);
-				g.drawImage(ImageIndex.imageForTile(t), 
-					getXPosition(t), 
-					getYPosition(t),
-					CELL_SIZE, CELL_SIZE, 
-					null);
+				int x = getXPosition(t);
+				int y = getYPosition(t);
+				//Draw terrain
+				g.drawImage(ImageIndex.imageForTile(t), x, y,
+					CELL_SIZE, CELL_SIZE, null);
+				
+				//Draw a unit if necessary
+				if(t.isOccupied()){
+					g.drawImage(ImageIndex.imageForUnit(t.getOccupyingUnit()), x, y, 
+						CELL_SIZE, CELL_SIZE, null);
+				}
 			}
 		}
 		
