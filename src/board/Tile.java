@@ -27,4 +27,20 @@ public class Tile {
 		terrain = t;
 	}
 	
+	/** ToString implementation - shows basic info of Tile. Remains brief to be useful in debugging */
+	public String toString(){
+		return "(" + row + "," + col + "):" + terrain; 
+	}
+	
+	/** Returns the Direction to go from this to other,
+	 * if they are bordering each other. Otherwise returns null
+	 */
+	public Direction getDirectionTo(Tile other){
+		if(row == other.row && col == other.col + 1) return Direction.LEFT;
+		if(row == other.row && col == other.col - 1) return Direction.RIGHT;
+		if(col == other.col && row == other.row + 1) return Direction.UP;
+		if(col == other.col && row == other.row - 1) return Direction.DOWN;
+		return null;
+	}
+	
 }
