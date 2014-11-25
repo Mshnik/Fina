@@ -85,12 +85,11 @@ public class Board implements Iterable<Tile>{
 	}
 
 	
-	/** Returns the set of tiles the given unit could move to from its
+	/** Returns the set of tiles the given path selector could move to from its
 	 * current location with its movement cap.
-	 * 
 	 */
-	public HashSet<Tile> getMovementCloud(AbstractUnit unit, PathSelector ps){
-		
+	public HashSet<Tile> getMovementCloud( PathSelector ps){
+		AbstractUnit unit = ps.unit;
 		//Initialize
 		for(Tile t : this){
 			t.dist = Integer.MIN_VALUE;
@@ -121,7 +120,9 @@ public class Board implements Iterable<Tile>{
 			for(Tile neighbor : getTileNeighbors(current)){
 				if(neighbor != null){
 					int nDist = current.dist - unit.getMovementCost(neighbor.terrain);
-					if(nDist >= 0){
+					if(nDist >= 0 && 
+							(! neighbor.isOccupied() || neighbor.getOccupyingUnit().owner == unit.owner)
+					){
 						neighbor.dist = nDist;
 						frontier.remove(neighbor);
 						frontier.add(neighbor);

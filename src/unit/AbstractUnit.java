@@ -212,6 +212,7 @@ public abstract class AbstractUnit {
 	 * 		- other is dead
 	 * 		- both units belong to the same player
 	 * 		- other is out of the range of this 
+	 * 		- this' owner can't see other
 	 * @return true iff other is killed because of this action
 	 **/
 	public final boolean fight(AbstractUnit other) throws IllegalArgumentException, RuntimeException{
@@ -223,6 +224,8 @@ public abstract class AbstractUnit {
 			throw new IllegalArgumentException(this + " can't fight " + other + ", they both belong to " + owner);
 		if(! canFight)
 			throw new RuntimeException(this + " can't fight again this turn");
+		if(! owner.canSee(other))
+			throw new IllegalArgumentException(owner + " can't see " + other);
 		
 		int room = occupiedTile.manhattanDistance(other.getOccupiedTile()) - 1; //Account for melee = 0 range
 		if(room > getRange())
@@ -233,8 +236,9 @@ public abstract class AbstractUnit {
 		//This attacks other
 		other.health -= getAttack() - other.getDefense(getAttackType());
 		
-		//If other is still alive, other counterattacks
-		if(other.isAlive()){
+		//If other is still alive, can see the first unit, 
+		//and this is within range, other counterattacks
+		if(other.isAlive() && other.owner.canSee(this) && room <= other.getRange()){
 			health -= other.getCounterAttack() - getDefense(other.getAttackType());
 		}
 

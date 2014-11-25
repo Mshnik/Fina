@@ -14,7 +14,7 @@ public class GamePanel extends JPanel implements Paintable{
 	private static final long serialVersionUID = 1L;
 
 	/** Pixels (size) for each square tile. */
-	protected static final int CELL_SIZE = 32; 
+	protected static final int CELL_SIZE = 64; 
 
 	/** The BoardState this GamePanel is responsible for drawing */
 	public final Board boardState;

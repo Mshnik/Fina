@@ -75,6 +75,8 @@ public class Frame extends JFrame {
 	    
 	    GamePanel g = new GamePanel(new Board(t), 10, 20);
 	    new DummyUnit(null, g.boardState, g.boardState.getTileAt(0, 0));
+	    new DummyUnit(null, g.boardState, g.boardState.getTileAt(2, 2));
+
 	    f.setBoard(g);
 	}
 }
