@@ -89,19 +89,28 @@ public class PathSelector implements Paintable, Iterable<Tile>{
 		//Create two iterators, with i2 always one ahead of i1
 		Iterator<Tile> i1 = iterator();
 		Iterator<Tile> i2 = iterator();
+		i2.next(); //Advance i2 to be in front of i1
 		
-		i2.next();
+		final int s = GamePanel.CELL_SIZE/2;
 
 		while(i2.hasNext()){		
 			Tile current = i1.next();
 			Tile next = i2.next();
 			
 			//Draw this part of the line from this center to the next center
-			g2d.drawLine(gamePanel.getXPosition(current) + GamePanel.CELL_SIZE/2, 
-						 gamePanel.getYPosition(current) + GamePanel.CELL_SIZE/2, 
-						 gamePanel.getXPosition(next)    + GamePanel.CELL_SIZE/2, 
-						 gamePanel.getYPosition(next)    + GamePanel.CELL_SIZE/2);
-			
+			g2d.drawLine(gamePanel.getXPosition(current) + s, 
+						 gamePanel.getYPosition(current) + s, 
+						 gamePanel.getXPosition(next)    + s, 
+						 gamePanel.getYPosition(next)    + s);
 		}
+		Tile current = i1.next();
+		int x = gamePanel.getXPosition(current);
+		int y = gamePanel.getYPosition(current);
+		
+		final int scaledS = (int)(0.5 * s);
+		
+		g2d.fillPolygon(new int[]{x + scaledS, x + s, x + 3 * scaledS, x + s},
+						new int[]{y + s, y + scaledS, y + s, y + 3 * scaledS},
+						4);
 	}
 }
