@@ -3,6 +3,8 @@ package gui;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import board.Direction;
+
 /** Manager for all keyboard input. Only singleton instance is allowed. */
 public class KeyboardListener implements KeyListener{
 
@@ -49,21 +51,8 @@ public class KeyboardListener implements KeyListener{
 		int keyCode = e.getKeyCode();
 		//BoardCursor - respond to arrow keys
 		if(frame.boardCursorActive){
-			BoardCursor bc = gp.boardCursor;
-		    switch(keyCode) { 
-		        case UP:
-		        	bc.moveUp();
-		            break;
-		        case DOWN:
-		            bc.moveDown();
-		            break;
-		        case LEFT:
-		            bc.moveLeft();
-		            break;
-		        case RIGHT:
-		            bc.moveRight();
-		            break;
-		     }
+			Direction d = Direction.fromKeyCode(keyCode);
+			if(d != null) gp.boardCursor.move(d);
 		}
 		
 		//Check for toggling pathfinding
@@ -71,7 +60,7 @@ public class KeyboardListener implements KeyListener{
 			if(keyCode == A && gp.getPathSelector() == null){
 				gp.startPathSelection();
 			} else if(keyCode == A) {
-				gp.cancelPathSelection();
+				gp.processPathSelection();
 			}
 			if(keyCode == B){
 				gp.cancelPathSelection();

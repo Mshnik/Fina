@@ -2,6 +2,8 @@ package gui;
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
+
+import unit.DummyUnit;
 import board.*;
 
 
@@ -70,6 +72,9 @@ public class Frame extends JFrame {
 	    		else t[i][j] = Terrain.GRASS;
 	    	}
 	    }
-	    f.setBoard(new GamePanel(new Board(t), 10, 20));
+	    
+	    GamePanel g = new GamePanel(new Board(t), 10, 20);
+	    new DummyUnit(null, g.boardState, g.boardState.getTileAt(0, 0));
+	    f.setBoard(g);
 	}
 }

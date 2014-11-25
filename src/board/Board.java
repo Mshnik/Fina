@@ -1,6 +1,13 @@
 package board;
 
+import gui.PathSelector;
+
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.PriorityQueue;
+
+import unit.AbstractUnit;
 
 /** A Board represents the whole board state for the game as a matrix of tiles and other
  * information. <br><br>
@@ -47,6 +54,84 @@ public class Board implements Iterable<Tile>{
 					" at index (" + r + "," + c + ")" );
 		
 		return tiles[r][c];
+	}
+	
+	/** Return the tile in the given direction from this tile.
+	 * If oob, returns null or if direction invalid.
+	 */
+	public Tile getTileInDirection(Tile t, Direction d){
+		try{
+			switch(d){
+			case DOWN: return getTileAt(t.row + 1, t.col);
+			case LEFT: return getTileAt(t.row, t.col - 1);
+			case RIGHT:return getTileAt(t.row, t.col + 1);
+			case UP:   return getTileAt(t.row - 1, t.col);
+			default:   return null;
+			}
+		}catch(IllegalArgumentException e){
+			return null;
+		}
+	}
+	/** Returns an array of neighbors of the given tile, null for oob spaces.
+	 * Returns in order [left, up, right, down] */
+	public Tile[] getTileNeighbors(Tile t){
+		Tile[] neighbors = {
+				getTileInDirection(t, Direction.LEFT),
+				getTileInDirection(t, Direction.UP),
+				getTileInDirection(t, Direction.RIGHT),
+				getTileInDirection(t, Direction.DOWN)
+		};
+		return neighbors;
+	}
+
+	
+	/** Returns the set of tiles the given unit could move to from its
+	 * current location with its movement cap.
+	 * 
+	 */
+	public HashSet<Tile> getMovementCloud(AbstractUnit unit, PathSelector ps){
+		
+		//Initialize
+		for(Tile t : this){
+			t.dist = Integer.MIN_VALUE;
+			t.prev = null;
+		}
+		
+		Tile start = ps.getPath().getLast();
+		
+			//Uses dist to hold remainingDistance as possible.
+		start.dist = unit.getConvertedMovement() - ps.getTotalCost(); 
+		
+		// frontier sorts with higher distance earlier
+		PriorityQueue<Tile> frontier = new PriorityQueue<Tile>(1, 
+				new Comparator<Tile>(){
+					@Override
+					/** Use inverse of regular comparison (higher distance first) */
+					public int compare(Tile o1, Tile o2) {
+						return - o1.compareTo(o2);
+					}
+		});
+		frontier.add(start);
+		HashSet<Tile> settled = new HashSet<Tile>();
+		
+		//Iteration
+		while(! frontier.isEmpty()){
+			Tile current = frontier.poll();
+			settled.add(current);
+			for(Tile neighbor : getTileNeighbors(current)){
+				if(neighbor != null){
+					int nDist = current.dist - unit.getMovementCost(neighbor.terrain);
+					if(nDist >= 0){
+						neighbor.dist = nDist;
+						frontier.remove(neighbor);
+						frontier.add(neighbor);
+					}
+				}
+			}
+		}
+		
+		//Just return settled tiles as possible movement.
+		return settled;
 	}
 
 	@Override

@@ -99,6 +99,15 @@ public abstract class AbstractUnit {
 	 */
 	public abstract int getMovementCost(Terrain t);
 
+	/** Processes a pre-move action that may be caused by modifiers.
+	 * Still only called when the move is valid. */
+	public abstract void preMove(LinkedList<Tile> path);
+
+	/** Processes a post-move action that may be caused by modifiers.
+	 * Only called when the move is valid.
+	 */
+	public abstract void postMove(LinkedList<Tile> path);
+	
 	/** Attempts to move this unit along the given path.
 	 * @param path - the path to travel, where the first of path is occupiedTile, 
 	 * 	last is the desired destination, and whole path is manhattan contiguous.
@@ -124,11 +133,15 @@ public abstract class AbstractUnit {
 		if(cost > getConvertedMovement())
 			throw new IllegalArgumentException(this + " can't travel path " + path + ", total cost of " + cost + " is too high");
 	
+		preMove(path);
+		
 		//movement probably ok. If end is occupied, tile move call will throw
 		occupiedTile.moveUnitTo(path.getLast());
 		occupiedTile = path.getLast();
 		
 		canMove = false;
+		
+		postMove(path);
 		
 		return true;
 	}

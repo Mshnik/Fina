@@ -1,5 +1,7 @@
 package unit;
 
+import java.util.LinkedList;
+
 import game.AbstractPlayer;
 import board.Board;
 import board.Terrain;
@@ -10,6 +12,7 @@ public class DummyUnit extends AbstractUnit {
 
 	public DummyUnit(AbstractPlayer owner, Board b, Tile startingTile) {
 		super(owner, b, startingTile);
+		refreshMoveAndAttack();
 	}
 
 	@Override
@@ -19,6 +22,7 @@ public class DummyUnit extends AbstractUnit {
 
 	@Override
 	public int getMovementCost(Terrain t) {
+		if(t.equals(Terrain.MOUNTAIN)) return Integer.MAX_VALUE;
 		return 1;
 	}
 
@@ -79,6 +83,16 @@ public class DummyUnit extends AbstractUnit {
 	
 	public String getImgFilename(){
 		return "chrono.gif";
+	}
+
+	@Override
+	public void preMove(LinkedList<Tile> path) {		
+	}
+
+	@Override
+	/** Dummy unit can move forever! */
+	public void postMove(LinkedList<Tile> path) {		
+		refreshMoveAndAttack();
 	}
 
 }

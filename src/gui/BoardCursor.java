@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import board.Direction;
 import board.Tile;
 
 /** An instance represents the cursor on the GUI */
@@ -16,11 +17,8 @@ public class BoardCursor implements Animatable{
 	/** Thickness of lines in Cursor Drawing */
 	protected static final int THICKNESS = 3;
 	
-	/** The row in the Board the cursor is currently on */
-	private int row;
-	
-	/** The column in the Board the cursor is currently on */
-	private int col;
+	/** The tile the boardCursor is currently on */
+	private Tile tile;
 	
 	/** The board this cursor is used for */
 	public final GamePanel gamePanel;
@@ -34,24 +32,56 @@ public class BoardCursor implements Animatable{
 	 */
 	public BoardCursor(GamePanel bp){
 		gamePanel = bp;
-		row = 0;
-		col = 0;
+		tile = gamePanel.boardState.getTileAt(0, 0);
 		animationState = 0;
 	}
 	
 	/** Returns the row in the board this BoardCursor is currently on */
 	public int getRow(){
-		return row;
+		return tile.row;
 	}
 	
 	/** Returns the col in the board this BoardCursor is currently on */
 	public int getCol(){
-		return col;
+		return tile.col;
 	}
 	
 	/** Returns the tile this cursor is currently on */
 	public Tile getTile(){
-		return gamePanel.boardState.getTileAt(row, col);
+		return tile;
+	}
+	
+	/** Sets the tile this cursor is on */
+	public void setTile(Tile t){
+		tile = t;
+		gamePanel.repaint();
+	}
+	
+	/** Called internally whenever the cursor will be moved
+	 * Validate if there is a path selector 
+	 * @return true iff the move is ok.
+	 */
+	private boolean willMoveTo(Tile destination){
+		if(gamePanel.getPathSelector() == null) return true;
+		PathSelector ps = gamePanel.getPathSelector();
+		return ps.getPath().contains(destination) || ps.getPossibleMovementsCloud().contains(destination);
+	}
+	
+	/** Call to move in the given direction, if possible */
+	public void move(Direction d){
+		Tile dest = gamePanel.boardState.getTileInDirection(tile, d);
+		if(dest != null && willMoveTo(dest)){
+			tile  = dest;
+			if(getCol() < gamePanel.scrollX)
+				gamePanel.scrollX--;
+			if(getCol() > gamePanel.scrollX + gamePanel.maxX - 1)
+				gamePanel.scrollX++;
+			if(getRow() < gamePanel.scrollY)
+				gamePanel.scrollY--;
+			if(getRow() > gamePanel.scrollY + gamePanel.maxY - 1)
+				gamePanel.scrollY++;
+			moved();
+		}
 	}
 	
 	/** Called internally whenever the cursor is moved
@@ -61,46 +91,6 @@ public class BoardCursor implements Animatable{
 			gamePanel.getPathSelector().addToPath(getTile());
 		
 		gamePanel.repaint();
-	}
-	
-	/** Moves the cursor left one square, if possible */
-	public void moveLeft(){
-		if(col > 0){
-			col--;
-			if(col < gamePanel.scrollX)
-				gamePanel.scrollX--;
-			moved();
-		}
-	}
-	
-	/** Moves the cursor right one square, if possible */
-	public void moveRight(){
-		if(col < gamePanel.boardState.getWidth() - 1){
-			col++;
-			if(col > gamePanel.scrollX + gamePanel.maxX - 1)
-				gamePanel.scrollX++;
-			moved();
-		}
-	}
-	
-	/** Moves the cursor up one square, if possible */
-	public void moveUp(){
-		if(row > 0){
-			row--;
-			if(row < gamePanel.scrollY)
-				gamePanel.scrollY--;
-			moved();
-		}
-	}
-	
-	/** Moves the cursor down one square, if possible */
-	public void moveDown(){
-		if(row < gamePanel.boardState.getHeight() - 1){
-			row++;
-			if(row > gamePanel.scrollY + gamePanel.maxY - 1)
-				gamePanel.scrollY++;
-			moved();
-		}
 	}
 
 	/** Draw this Cursor as a red set of 4 corner lines */

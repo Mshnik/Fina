@@ -6,8 +6,11 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import unit.AbstractUnit;
 
 /** An instance represents and draws the path on the board when
  * the player is moving a unit
@@ -16,14 +19,17 @@ import java.util.LinkedList;
  */
 public class PathSelector implements Paintable, Iterable<Tile>{
 
-	/** Color for Path Drawing */
-	protected static final Color COLOR = Color.red;
+	/** Color for Path Drawing - red */
+	protected static final Color PATH_COLOR = Color.red;
+	
+	/** Color for Cloud Drawing - translucent white */
+	protected static final Color CLOUD_COLOR = new Color(1, 1, 1, 0.5f);
 	
 	/** Thickness of lines in Path Drawing */
 	protected static final int THICKNESS = 8;
 	
-	/** The tile this path starts on */
-	public final Tile start;
+	/** The unit this path is moving */
+	public final AbstractUnit unit;
 	
 	/** The gamePanel this is drawing for */
 	public final GamePanel gamePanel;
@@ -31,15 +37,26 @@ public class PathSelector implements Paintable, Iterable<Tile>{
 	/** The path this pathSelector currently represents and is drawing.
 	 * First element is always the start tile */
 	private LinkedList<Tile> path;
+	
+	/** The possible tiles the path could go to from here - possibilities cloud */
+	private HashSet<Tile> cloud;
 
 	/** Constructor for PathSelector
 	 * @param s - start of path.
 	 */
-	public PathSelector(GamePanel gp, Tile s){
+	public PathSelector(GamePanel gp, AbstractUnit unit){
 		gamePanel = gp;
-		start = s;
+		this.unit = unit;
 		path = new LinkedList<Tile>();
-		path.add(s);
+		path.add(unit.getOccupiedTile());
+		cloud = new HashSet<Tile>();
+		refreshPossibilitiesCloud();
+	}
+	
+	/** Empties and recalculated the possibilities cloud using the current path as set */
+	private void refreshPossibilitiesCloud(){
+		cloud = gamePanel.boardState.getMovementCloud(unit, this);
+		gamePanel.repaint();
 	}
 
 	/** Return the path this PathSelector currently represents and is drawing.
@@ -48,15 +65,31 @@ public class PathSelector implements Paintable, Iterable<Tile>{
 		return new LinkedList<Tile>(path);
 	}
 	
+	/** Returns the possible movements cloud.
+	 * This is pass-by-value, so editing the returned set won't change the PathSelector.
+	 **/
+	public HashSet<Tile> getPossibleMovementsCloud(){
+		return new HashSet<Tile>(cloud);
+	}
+	
 	/** Returns a toString for this PathSelector as the toString of its list of tiles */
 	@Override
 	public String toString(){
 		return path.toString();
 	}
 
-	/** Return the length of the path */
+	/** Return the length of the path in tiles */
 	public int getLength(){
 		return path.size();
+	}
+	
+	/** Return the total cost of traveling the given path for unit */
+	public int getTotalCost(){
+		int c = 0;
+		for(Tile t : path){
+			c += unit.getMovementCost(t.terrain);
+		}
+		return c;
 	}
 
 	/** Adds the given Tile to the path, then removes cycle as necessary */
@@ -69,6 +102,8 @@ public class PathSelector implements Paintable, Iterable<Tile>{
 		for(int r = 0; r < diff; r++){
 			path.remove(i);		//Remove ith position r times to delete cycle.
 		}
+		
+		refreshPossibilitiesCloud();
 	}
 
 	/** Returns an iterator over the tiles in this path */
@@ -80,10 +115,22 @@ public class PathSelector implements Paintable, Iterable<Tile>{
 	/** Draws this path */
 	@Override
 	public void paintComponent(Graphics g){
-		if(getLength() < 2) return;	//Do nothing for drawing path of length 1.
-
+		//Draw the possible movement cloud
 		Graphics2D g2d = (Graphics2D)g;
-		g2d.setColor(COLOR);
+		g2d.setColor(CLOUD_COLOR);
+		
+		for(Tile t : cloud){
+			if(t != unit.getOccupiedTile()){
+				int x = gamePanel.getXPosition(t);
+				int y = gamePanel.getYPosition(t);
+				g2d.fillRect(x, y, GamePanel.CELL_SIZE, GamePanel.CELL_SIZE);
+			}
+		}
+		
+		//Draw the path itself
+		if(getLength() < 2) return;	//Do nothing for drawing path of length 1 (or 0, but that's impossible).
+		
+		g2d.setColor(PATH_COLOR);
 		g2d.setStroke(new BasicStroke(THICKNESS));
 		
 		//Create two iterators, with i2 always one ahead of i1

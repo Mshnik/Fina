@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 import board.*;
@@ -54,14 +55,31 @@ public class GamePanel extends JPanel implements Paintable{
 		setPreferredSize(new Dimension(maxX * CELL_SIZE, maxY * CELL_SIZE));
 	}
 	
-	/** Creates a new pathSelector at the current boardCursor position */
+	/** Creates a new pathSelector at the current boardCursor position.
+	 * Does nothing if the current tile is unoccupied or the unit has already moved. */
 	public void startPathSelection(){
-		pathSelector = new PathSelector(this, boardCursor.getTile());
+		Tile t = boardCursor.getTile();
+		if(! t.isOccupied() || ! t.getOccupyingUnit().canMove()) return;
+		
+		pathSelector = new PathSelector(this, t.getOccupyingUnit());
 	}
 	
 	/** Cancels the path selection - deletes it but does nothing */
 	public void cancelPathSelection(){
+		if(pathSelector != null) boardCursor.setTile(pathSelector.getPath().getFirst());
 		pathSelector = null;
+	}
+	
+	/** Processes the path selection - if ok, deletes it.
+	 * Otherwise makes err noise or something. */
+	public void processPathSelection(){
+		try{
+			pathSelector.unit.move(pathSelector.getPath());
+			pathSelector = null;
+		}catch(Exception e){
+			//TODO - sound err
+			Toolkit.getDefaultToolkit().beep();
+		}
 	}
 	
 	/** Returns the current pathSelector, if any */
@@ -103,8 +121,8 @@ public class GamePanel extends JPanel implements Paintable{
 			}
 		}
 		
-		//Draw the path
-		if(pathSelector != null){
+		//Draw the movement and cloud path
+		if(pathSelector != null){			
 			pathSelector.paintComponent(g);
 		}
 		
