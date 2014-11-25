@@ -7,8 +7,8 @@ package gui;
  */
 public interface Animatable extends Paintable{
 
-	/** Return the length (in ms) of a cycle of this Animatable */
-	public int getCycleLength();
+	/** Return the length (in ms) of a step of this Animatable */
+	public int getStateLength();
 	
 	/** Return the total number of states of this Animatable (at least 2) */
 	public int getStateCount();

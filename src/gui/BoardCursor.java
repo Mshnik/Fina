@@ -149,7 +149,7 @@ public class BoardCursor implements Animatable{
 
 	/** Cursors have a cycle length of some fraction of a second. */
 	@Override
-	public int getCycleLength() {
+	public int getStateLength() {
 		return 350;
 	}
 

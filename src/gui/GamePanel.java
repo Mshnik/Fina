@@ -24,10 +24,10 @@ public class GamePanel extends JPanel implements Paintable{
 	/** The PathSelector that is currently active. Null if none */
 	private PathSelector pathSelector;
 	
-	/** Maximum number of columns of tiles to show */
+	/** Maximum number of columns of tiles to visually show */
 	public final int maxX;
 	
-	/** Maximum number of rows of tiles to show */
+	/** Maximum number of rows of tiles to visually show */
 	public final int maxY;
 	
 	/** Scroll in the x direction, in terms of # of cols to skip. Used as a scroll delta */

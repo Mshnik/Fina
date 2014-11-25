@@ -25,7 +25,7 @@ public class Animator {
 	
 	/** Adds the given Animatable to this Animator, and starts it animating. */
 	public void addAnimatable(final Animatable a){
-		final Timer t = new Timer(a.getCycleLength(), null);
+		final Timer t = new Timer(a.getStateLength(), null);
 		t.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
