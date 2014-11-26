@@ -16,4 +16,7 @@ public abstract class Commander extends MovingUnit {
 			throw new IllegalArgumentException("Commander " + this + " must have attackType NO_ATTACK");
 	}
 
+	
+	/** Called by Player class when this levels up */
+	public abstract void levelUp();
 }

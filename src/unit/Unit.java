@@ -154,7 +154,22 @@ public abstract class Unit{
 	public int getRange(){
 		return stats.range;
 	}
+	
+	/** Returns the mana per turn this unit costs/generates */
+	public int getManaPerTurn(){
+		return stats.manaPerTurn;
+	}
 
+	/** Returns true if this is a generator (manaPerTurn > 0) */
+	public boolean isGenerator(){
+		return stats.manaPerTurn > 0;
+	}
+	
+	/** Returns true if this is a burden (manaPerTurn < 0) */
+	public boolean isBurden(){
+		return stats.manaPerTurn < 0;
+	}
+	
 	//MODIFIERS
 	/** Returns the modifiers currently affecting this unit
 	 * Pass-by-value, so editing the returned set doesn't do anything
