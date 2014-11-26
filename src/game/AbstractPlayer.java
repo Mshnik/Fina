@@ -1,6 +1,6 @@
 package game;
 
-import unit.Combatant;
+import unit.MovingUnit;
 
 /** An instance is a player (not the commander piece).
  * Extended to be either human controlled or AI.
@@ -11,7 +11,7 @@ public abstract class AbstractPlayer {
 
 	
 	/** Return true iff the tile u occupies is in this Player's vision */
-	public boolean canSee(Combatant u){
+	public boolean canSee(MovingUnit u){
 		return false;
 	}
 }

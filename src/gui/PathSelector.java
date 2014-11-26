@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import unit.Combatant;
+import unit.MovingUnit;
 
 /** An instance represents and draws the path on the board when
  * the player is moving a unit
@@ -29,7 +29,7 @@ public class PathSelector implements Paintable, Iterable<Tile>{
 	protected static final int THICKNESS = 8;
 	
 	/** The unit this path is moving */
-	public final Combatant unit;
+	public final MovingUnit unit;
 	
 	/** The gamePanel this is drawing for */
 	public final GamePanel gamePanel;
@@ -44,18 +44,18 @@ public class PathSelector implements Paintable, Iterable<Tile>{
 	/** Constructor for PathSelector
 	 * @param s - start of path.
 	 */
-	public PathSelector(GamePanel gp, Combatant unit){
+	public PathSelector(GamePanel gp, MovingUnit unit){
 		gamePanel = gp;
 		this.unit = unit;
 		path = new LinkedList<Tile>();
-		path.add(unit.getOccupiedTile());
+		path.add(unit.getLocation());
 		cloud = new HashSet<Tile>();
 		refreshPossibilitiesCloud();
 	}
 	
 	/** Empties and recalculated the possibilities cloud using the current path as set */
 	private void refreshPossibilitiesCloud(){
-		cloud = gamePanel.boardState.getMovementCloud(unit, this);
+		cloud = gamePanel.boardState.getMovementCloud(this);
 		gamePanel.repaint();
 	}
 
@@ -120,7 +120,7 @@ public class PathSelector implements Paintable, Iterable<Tile>{
 		g2d.setColor(CLOUD_COLOR);
 		
 		for(Tile t : cloud){
-			if(t != unit.getOccupiedTile()){
+			if(t != unit.getLocation()){
 				int x = gamePanel.getXPosition(t);
 				int y = gamePanel.getYPosition(t);
 				g2d.fillRect(x, y, GamePanel.CELL_SIZE, GamePanel.CELL_SIZE);

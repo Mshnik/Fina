@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 import board.*;
+import unit.*;
 
 /** Drawable wrapper for a board object */
 public class GamePanel extends JPanel implements Paintable{
@@ -61,7 +62,7 @@ public class GamePanel extends JPanel implements Paintable{
 		Tile t = boardCursor.getTile();
 		if(! t.isOccupied() || ! t.getOccupyingUnit().canMove()) return;
 		
-		pathSelector = new PathSelector(this, t.getOccupyingUnit());
+		pathSelector = new PathSelector(this, (MovingUnit) t.getOccupyingUnit());
 	}
 	
 	/** Cancels the path selection - deletes it but does nothing */

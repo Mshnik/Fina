@@ -5,8 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-
-import unit.Combatant;
+import unit.Unit;
 
 import board.Tile;
 
@@ -54,8 +53,8 @@ public class ImageIndex {
 	}
 	
 	/** Returns the image file corresponding to the given unit */
-	public static BufferedImage imageForUnit(Combatant u){
-		switch(u.getImgFilename()){
+	public static BufferedImage imageForUnit(Unit unit){
+		switch(unit.getImgFilename()){
 			case "chrono.gif": return DUMMY_UNIT;
 			
 			

@@ -5,42 +5,35 @@ import java.util.LinkedList;
 import board.*;
 import game.AbstractPlayer;
 
-/** Represents a unit that is able to fight and move on the board.
- * Should be extended to fill in stats, abilities.
+/** Represents a unit that is able to move around the board.
  * 
- * A Unit is responsible for keeping track of its location,
- * its stats, and other things..
  * @author MPatashnik
  *
  */
-public abstract class Combatant extends Unit{
+public abstract class MovingUnit extends Unit{
 
 	/** true iff this can still move this turn. Has an impact on how to draw this */
 	private boolean canMove;
 
-	/** true iff this can still fight this turn. Has an impact on how to draw this */
-	private boolean canFight;
-
-	/** Constructor for Combatant
+	/** Constructor for MovingUnit
 	 * @param owner - the player owner of this unit
 	 * @param b - the board this unit exists within
 	 * @param startingTile - the tile this unit begins the game on. Also notifies the tile of this.
 	 */
-	public Combatant(AbstractPlayer owner, Board b, Tile startingTile, UnitStats stats){
-		super(owner, b, startingTile, stats);	
+	public MovingUnit(AbstractPlayer owner, Tile startingTile, UnitStats stats){
+		super(owner, startingTile, stats);	
 	}
 	
 	/** Call at the beginning of every turn.
 	 *  Can be overridden in subclasses, but those classes should call the super
 	 *  version before doing their own additions.
 	 * 		- ticks down modifiers and re-calculates stats, if necessary.
-	 * 		- refreshes canMove and canFight
+	 * 		- refreshes canMove
 	 */
 	@Override
 	public void refreshForTurn(){
 		super.refreshForTurn();
 		canMove = true;
-		canFight = true;
 	}
 	
 	//MOVEMENT
@@ -102,85 +95,6 @@ public abstract class Combatant extends Unit{
 		postMove(path);
 		
 		return true;
-	}
-	
-	//FIGHTING
-	/** Returns iff this can fight this turn */
-	public boolean canFight(){
-		return canFight;
-	}
-	
-	/** Processes a pre-fight action that may be caused by modifiers.
-	 * Still only called when the fight is valid. */
-	public abstract void preFight(Unit other);
-	
-	/** Processes a pre-counter-fight action that may be caused by modifiers.
-	 * Still only called when the fight is valid, called after other.preFight().
-	 * Only called if this will be able to counterAttack. */
-	public abstract void preCounterFight(Combatant other);
-
-	/** Processes a post-fight action that may be caused by modifiers.
-	 * Only called when the fight is valid and this is still alive.
-	 */
-	public abstract void postFight(Unit other);
-	
-	/** Processes a post-fight action that may be caused by modifiers.
-	 * Only called when the fight is valid, called after other.postFight()
-	 * Only called if this was able to counterAttack and is still alive.
-	 */
-	public abstract void postCounterFight(Combatant other);
-
-	/** Causes this unit to fight the given unit.
-	 * With this as the attacker and other as the defender.
-	 * This will cause the health of the other to change
-	 * @throws RuntimeException if...
-	 * 		- this is dead
-	 * 		- this can't attack currently
-	 * @throws IllegalArgumentException for invalid fight when...
-	 * 		- other is dead
-	 * 		- both units belong to the same player
-	 * 		- other is out of the range of this 
-	 * 		- this' owner can't see other
-	 * @return true iff other is killed because of this action
-	 **/
-	public final boolean fight(Combatant other) throws IllegalArgumentException, RuntimeException{
-		if(! isAlive()) 
-			throw new RuntimeException (this + " can't fight, it is dead.");
-		if(! other.isAlive()) 
-			throw new IllegalArgumentException(other + " can't fight, it is dead.");
-		if(owner == other.owner) 
-			throw new IllegalArgumentException(this + " can't fight " + other + ", they both belong to " + owner);
-		if(! canFight)
-			throw new RuntimeException(this + " can't fight again this turn");
-		if(! owner.canSee(other))
-			throw new IllegalArgumentException(owner + " can't see " + other);
-		
-		int room = location.manhattanDistance(other.getLocation()) - 1; //Account for melee = 0 range
-		if(room > getRange())
-			throw new IllegalArgumentException(this + " can't fight " + other + ", it is too far away.");
-
-		//True if a counterAttack is happening, false otherwise.
-		boolean counterAttack = other.isAlive() && other.owner.canSee(this) && room <= other.getRange();
-		
-		preFight(other);
-		if(counterAttack) other.preCounterFight(this);
-
-		//This attacks other
-		other.changeHealth(- (getAttack() - other.getDefense(getAttackType())));
-		
-		//If other is still alive, can see the first unit, 
-		//and this is within range, other counterattacks
-		if(counterAttack){
-			changeHealth(- (other.getCounterattack() - getDefense(other.getAttackType())));
-			counterAttack = true;
-		}
-
-		//This can't attack this turn again
-		canFight = false;
-		
-		if(isAlive()) postFight(other);
-		if(other.isAlive() && counterAttack) other.postCounterFight(this);
-		return ! other.isAlive();
 	}
 
 }

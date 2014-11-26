@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 
-import unit.Combatant;
+import unit.MovingUnit;
 
 /** A Board represents the whole board state for the game as a matrix of tiles and other
  * information. <br><br>
@@ -88,8 +88,8 @@ public class Board implements Iterable<Tile>{
 	/** Returns the set of tiles the given path selector could move to from its
 	 * current location with its movement cap.
 	 */
-	public HashSet<Tile> getMovementCloud( PathSelector ps){
-		Combatant unit = ps.unit;
+	public HashSet<Tile> getMovementCloud(PathSelector ps){
+		MovingUnit unit = ps.unit;
 		//Initialize
 		for(Tile t : this){
 			t.dist = Integer.MIN_VALUE;
@@ -99,7 +99,7 @@ public class Board implements Iterable<Tile>{
 		Tile start = ps.getPath().getLast();
 		
 			//Uses dist to hold remainingDistance as possible.
-		start.dist = unit.getConvertedMovement() - ps.getTotalCost(); 
+		start.dist = unit.getMovementCap() - ps.getTotalCost(); 
 		
 		// frontier sorts with higher distance earlier
 		PriorityQueue<Tile> frontier = new PriorityQueue<Tile>(1, 

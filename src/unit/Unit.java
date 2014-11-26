@@ -3,7 +3,6 @@ package unit;
 import java.util.LinkedList;
 
 import game.AbstractPlayer;
-import board.Board;
 import board.Tile;
 
 /** Represents any thing that can be owned by a player.
@@ -22,9 +21,6 @@ public abstract class Unit{
 	 */
 	protected Tile location;
 
-	/** The board this unit is on. */
-	public final Board board;
-
 	/** The current health of this Unit. If 0 or negative, this is dead. Can't be above maxHealth */
 	private int health;
 
@@ -40,9 +36,8 @@ public abstract class Unit{
 	 * @param b - the board this unit exists within
 	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
 	 */
-	public Unit(AbstractPlayer owner, Board b, Tile tile, UnitStats stats){
+	public Unit(AbstractPlayer owner, Tile tile, UnitStats stats){
 		this.owner = owner;
-		board = b;
 		location = tile;
 		location.addOccupyingUnit(this);
 		this.stats = new UnitStats(stats, null);
@@ -70,6 +65,14 @@ public abstract class Unit{
 	public Tile getLocation(){
 		return location;
 	}	
+	
+	/** Returns whether this can move this turn. Non-movable things should always return false *
+	 */
+	public abstract boolean canMove();
+	
+	/** Returns whether this can fight this turn. Non-fighting things should always return false *
+	 */
+	public abstract boolean canFight();
 
 	//STATS
 	/** Returns the max health of this unit */
@@ -173,6 +176,20 @@ public abstract class Unit{
 		modifiers.remove(m);
 		stats = new UnitStats(stats.base, modifiers);
 	}
+	
+	//FIGHTING
+	/** Processes a pre-counter-fight action (this was attacked) 
+	 * that may be caused by modifiers.
+	 * Still only called when the fight is valid, called after other.preFight().
+	 * Only called if this will be able to counterAttack. */
+	public abstract void preCounterFight(Combatant other);
+	
+	/** Processes a post-counter-fight (this was attacked) 
+	 * action that may be caused by modifiers.
+	 * Only called when the fight is valid, called after other.postFight()
+	 * Only called if this was able to counterAttack and is still alive.
+	 */
+	public abstract void postCounterFight(Combatant other);
 	
 	//DRAWING
 	/** Returns the name of the file that represents this unit as an image */
