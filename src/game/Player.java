@@ -59,13 +59,25 @@ public abstract class Player {
 	
 	/** Adds the given amount of experience to this player, then calls levelUp on
 	 * commander if this leveled up. Will call levelUp multiple times if this leveled up
-	 * multiple times
+	 * multiple times.
+	 * 
+	 * Scales the input by dividing by the current level. If gaining experience would
+	 * cause multiple level-ups, adds one level at a time so scaling happens correctly
 	 */
 	public void addExp(double exp){
-		int oldLevel = getLevel();
-		level += exp;
-		for(int i = 0; i < getLevel() - oldLevel; i++){
+		//If enough to cause a levelup, move to the next rounded level before doing more.
+		double toNextLevel = (getLevel() + 1 - level) * getLevel();
+		if(exp >= toNextLevel){
+			//Deduct just enough exp to get to next level
+			exp -= toNextLevel;
+			//Increase level to exactly next level and call levelup
+			level = getLevel()+1;
 			commander.levelUp();
+			//Recurse to process rest of exp
+			addExp(exp);	
+		} else{
+			//Otherwise, just scale exp and add it.
+			level += exp / getLevel();
 		}
 	}
 

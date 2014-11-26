@@ -104,6 +104,13 @@ public abstract class Unit{
 	/** Called when a change in health causes this to die */
 	protected abstract void died();
 
+	/** Returns the (base) experience this is worth when killed. *
+	 */
+	public double experienceWorth(){
+		//TODO
+		return 0;
+	}
+	
 	/** Returns the attack strength of this unit. 0 if this is not a combatant. */
 	public int getAttack(){
 		return stats.attack;

@@ -97,8 +97,18 @@ public abstract class Combatant extends MovingUnit {
 		//This can't attack this turn again
 		canFight = false;
 
-		if(isAlive()) postFight(other);
-		if(other.isAlive() && counterAttack) other.postCounterFight(this);
+		//Awards experience to either player if they killed the 
+		
+		if(isAlive()){
+			postFight(other);
+		}else{
+			other.owner.addExp(experienceWorth());
+		}
+		if(other.isAlive()) {
+			if(counterAttack) other.postCounterFight(this);
+		}else{
+			owner.addExp(other.experienceWorth());
+		}
 		return ! other.isAlive();
 	}
 
