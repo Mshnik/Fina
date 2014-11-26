@@ -70,16 +70,23 @@ public class BoardCursor implements Animatable{
 	/** Call to move in the given direction, if possible */
 	public void move(Direction d){
 		Tile dest = gamePanel.boardState.getTileInDirection(tile, d);
+		
+		int extraRoom = 0;
+		if(gamePanel.getPathSelector() != null) extraRoom = 1;
+		
 		if(dest != null && willMoveTo(dest)){
 			tile  = dest;
-			if(getCol() < gamePanel.scrollX)
-				gamePanel.scrollX--;
-			if(getCol() > gamePanel.scrollX + gamePanel.maxX - 1)
-				gamePanel.scrollX++;
-			if(getRow() < gamePanel.scrollY)
-				gamePanel.scrollY--;
-			if(getRow() > gamePanel.scrollY + gamePanel.maxY - 1)
-				gamePanel.scrollY++;
+			if(getCol() - extraRoom < gamePanel.scrollX)
+				gamePanel.scrollX = Math.max(gamePanel.scrollX - 1, 0);
+			if(getCol() + extraRoom > gamePanel.scrollX + gamePanel.maxX - 1)
+				gamePanel.scrollX = 
+				Math.min(gamePanel.scrollX + 1, 
+						 gamePanel.boardState.getWidth() - gamePanel.maxX);
+			if(getRow() - extraRoom < gamePanel.scrollY)
+				gamePanel.scrollY = Math.max(gamePanel.scrollY - 1, 0);
+			if(getRow() + extraRoom > gamePanel.scrollY + gamePanel.maxY - 1)
+				gamePanel.scrollY= Math.min(gamePanel.scrollY + 1, 
+						 gamePanel.boardState.getHeight() - gamePanel.maxY );
 			moved();
 		}
 	}

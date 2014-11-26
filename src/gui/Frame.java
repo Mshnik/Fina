@@ -63,7 +63,7 @@ public class Frame extends JFrame {
 	/** Simple main method to test out Frame features */
 	public static void main(String[] args){
 	    Frame f = new Frame();
-	    Terrain[][] t = new Terrain[100][150];
+	    Terrain[][] t = new Terrain[20][20];
 	    for(int i = 0; i < t.length; i++){
 	    	for(int j = 0; j < t[i].length; j++){
 	    		double d = Math.random();
