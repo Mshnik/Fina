@@ -2,15 +2,15 @@ package unit;
 
 import java.util.LinkedList;
 
-import game.AbstractPlayer;
+import game.Player;
 import board.Terrain;
 import board.Tile;
 
 /** A dummy unit class to test the functionality of abstract unit */
 public class DummyUnit extends MovingUnit {
 
-	public DummyUnit(AbstractPlayer owner, Tile startingTile) {
-		super(owner, startingTile, new UnitStats(0, 0, AttackType.NO_ATTACK, 0, 0, 0, 0, 0));
+	public DummyUnit(Player owner, Tile startingTile) {
+		super(owner, startingTile, new UnitStats(0, 0, 0, AttackType.NO_ATTACK, 0, 0, 0, 0, 0));
 		this.refreshForTurn();
 	}
 

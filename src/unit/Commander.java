@@ -1,6 +1,6 @@
 package unit;
 
-import game.AbstractPlayer;
+import game.Player;
 import board.Tile;
 
 /** Represents a commander for a player. Each player should have one.
@@ -9,7 +9,7 @@ import board.Tile;
  */
 public abstract class Commander extends MovingUnit {
 
-	public Commander(AbstractPlayer owner, Tile startingTile, UnitStats stats) {
+	public Commander(Player owner, Tile startingTile, UnitStats stats) {
 		super(owner, startingTile, stats);
 		
 		if(! stats.attackType.equals(AttackType.NO_ATTACK))

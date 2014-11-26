@@ -3,7 +3,7 @@ package unit;
 import java.util.LinkedList;
 
 import board.*;
-import game.AbstractPlayer;
+import game.Player;
 
 /** Represents a unit that is able to move around the board.
  * 
@@ -20,7 +20,7 @@ public abstract class MovingUnit extends Unit{
 	 * @param b - the board this unit exists within
 	 * @param startingTile - the tile this unit begins the game on. Also notifies the tile of this.
 	 */
-	public MovingUnit(AbstractPlayer owner, Tile startingTile, UnitStats stats){
+	public MovingUnit(Player owner, Tile startingTile, UnitStats stats){
 		super(owner, startingTile, stats);	
 	}
 	

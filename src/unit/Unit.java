@@ -2,7 +2,7 @@ package unit;
 
 import java.util.LinkedList;
 
-import game.AbstractPlayer;
+import game.Player;
 import board.Tile;
 
 /** Represents any thing that can be owned by a player.
@@ -14,7 +14,7 @@ import board.Tile;
 public abstract class Unit{
 
 	/** The player that owns this unit */
-	public final AbstractPlayer owner;
+	public final Player owner;
 
 	/** The tile this unit is on. Should not ever share a tile with
 	 * another unit
@@ -36,7 +36,7 @@ public abstract class Unit{
 	 * @param b - the board this unit exists within
 	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
 	 */
-	public Unit(AbstractPlayer owner, Tile tile, UnitStats stats){
+	public Unit(Player owner, Tile tile, UnitStats stats){
 		this.owner = owner;
 		location = tile;
 		location.addOccupyingUnit(this);

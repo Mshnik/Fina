@@ -1,6 +1,6 @@
 package unit;
 
-import game.AbstractPlayer;
+import game.Player;
 import board.Tile;
 
 /** Represents a moving and fighting unit
@@ -14,8 +14,8 @@ public abstract class Combatant extends MovingUnit {
 	private boolean canFight;
 
 	/** Precondition : stats.attackType is AttackType.NO_ATTACK
-	 * @see Unit(AbstractPlayer owner, Board b, Tile tile, UnitStats stats) */
-	public Combatant(AbstractPlayer owner,Tile startingTile, UnitStats stats) {
+	 * @see Unit(Player owner, Board b, Tile tile, UnitStats stats) */
+	public Combatant(Player owner,Tile startingTile, UnitStats stats) {
 		super(owner, startingTile, stats);
 
 		if(stats.attackType.equals(AttackType.NO_ATTACK))

@@ -13,6 +13,9 @@ public class UnitStats {
 	 * maxHealth >= 0. */
 	public final int maxHealth;
 	
+	/** The mana generation/cost of this unit. Positive is generation, negative is cost */
+	public final int manaPerTurn;
+	
 	/** Damage dealt when attacking (Before applying defenses). attack >= 0 */
 	public final int attack;
 	
@@ -41,6 +44,8 @@ public class UnitStats {
 	public final int range;
 	
 	/** Constructor for UnitStats
+	 * @param maxHealth 		- the Maximum health (life points, etc) of this unit
+	 * @param manaPerTurn		- the mana this generates (or cost, if < 0) per turn
 	 * @param attack			- attack of this unit
 	 * @param attackType		- type of attack of this unit
 	 * @param counterattack 	- counter attack strength of this unit
@@ -48,10 +53,11 @@ public class UnitStats {
 	 * @param rangeDefense		- ranged defense of this unit	- defense applied to ranged attacks
 	 * @param magicDefense		- magic defense of this tuni	- defense applied to magic attacks
 	 */
-	public UnitStats(int maxHealth, int attack, AttackType attackType, int counterattack, 
+	public UnitStats(int maxHealth, int manaPerTurn, int attack, AttackType attackType, int counterattack, 
 					 int physicalDefense, int rangeDefense, int magicDefense, int range) 
 			throws IllegalArgumentException{
 		this.maxHealth = maxHealth;
+		this.manaPerTurn = manaPerTurn;
 		this.attack = attack;
 		this.attackType = attackType;
 		this.counterattack = counterattack;
@@ -66,6 +72,7 @@ public class UnitStats {
 	 */
 	public UnitStats(UnitStats base, Collection<UnitModifier> modifiers) throws IllegalArgumentException{
 		int maxHealth = base.maxHealth;
+		int manaPerTurn = base.manaPerTurn;
 		int attack = base.attack;
 		AttackType attackType = base.attackType;
 		int counterattack = base.counterattack;
@@ -83,6 +90,7 @@ public class UnitStats {
 		
 		this.base = base;
 		this.maxHealth = maxHealth;
+		this.manaPerTurn = manaPerTurn;
 		this.attack = attack;
 		this.attackType = attackType;
 		this.counterattack = counterattack;

@@ -1,6 +1,6 @@
 package unit;
 
-import game.AbstractPlayer;
+import game.Player;
 
 import board.Tile;
 
@@ -12,8 +12,8 @@ import board.Tile;
 public abstract class Pawn extends MovingUnit {
 
 	/** Precondition : stats.attackType is AttackType.NO_ATTACK
-	 * @see Unit(AbstractPlayer owner, Tile tile, UnitStats stats) */
-	public Pawn(AbstractPlayer owner, Tile startingTile, UnitStats stats) {
+	 * @see Unit(Player owner, Tile tile, UnitStats stats) */
+	public Pawn(Player owner, Tile startingTile, UnitStats stats) {
 		super(owner, startingTile, stats);
 		
 		if(! stats.attackType.equals(AttackType.NO_ATTACK))
