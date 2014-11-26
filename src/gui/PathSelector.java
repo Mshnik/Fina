@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import unit.AbstractUnit;
+import unit.Combatant;
 
 /** An instance represents and draws the path on the board when
  * the player is moving a unit
@@ -29,7 +29,7 @@ public class PathSelector implements Paintable, Iterable<Tile>{
 	protected static final int THICKNESS = 8;
 	
 	/** The unit this path is moving */
-	public final AbstractUnit unit;
+	public final Combatant unit;
 	
 	/** The gamePanel this is drawing for */
 	public final GamePanel gamePanel;
@@ -44,7 +44,7 @@ public class PathSelector implements Paintable, Iterable<Tile>{
 	/** Constructor for PathSelector
 	 * @param s - start of path.
 	 */
-	public PathSelector(GamePanel gp, AbstractUnit unit){
+	public PathSelector(GamePanel gp, Combatant unit){
 		gamePanel = gp;
 		this.unit = unit;
 		path = new LinkedList<Tile>();

@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 
-import unit.AbstractUnit;
+import unit.Combatant;
 
 /** A Board represents the whole board state for the game as a matrix of tiles and other
  * information. <br><br>
@@ -89,7 +89,7 @@ public class Board implements Iterable<Tile>{
 	 * current location with its movement cap.
 	 */
 	public HashSet<Tile> getMovementCloud( PathSelector ps){
-		AbstractUnit unit = ps.unit;
+		Combatant unit = ps.unit;
 		//Initialize
 		for(Tile t : this){
 			t.dist = Integer.MIN_VALUE;

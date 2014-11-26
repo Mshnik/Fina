@@ -8,7 +8,7 @@ import board.Terrain;
 import board.Tile;
 
 /** A dummy unit class to test the functionality of abstract unit */
-public class DummyUnit extends AbstractUnit {
+public class DummyUnit extends Combatant {
 
 	public DummyUnit(AbstractPlayer owner, Board b, Tile startingTile) {
 		super(owner, b, startingTile);
@@ -72,12 +72,12 @@ public class DummyUnit extends AbstractUnit {
 	}
 
 	@Override
-	public void preFight(AbstractUnit other) {
+	public void preFight(Combatant other) {
 
 	}
 
 	@Override
-	public void postFight(AbstractUnit other) {
+	public void postFight(Combatant other) {
 
 	}
 	

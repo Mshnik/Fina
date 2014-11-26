@@ -4,7 +4,7 @@ package unit;
 public class UnitModifier {
 
 	/** The unit this is modifying */
-	public final AbstractUnit unit;
+	public final Combatant unit;
 	
 	/** The remaining turns for this Modifier.
 	 * If 0, on its last turn.
@@ -15,7 +15,7 @@ public class UnitModifier {
 	 * @param u - The unit this is modifying
 	 * @param turns - the total duration of this modifier (turns after this one)
 	 */
-	public UnitModifier(AbstractUnit u, int turns){
+	public UnitModifier(Combatant u, int turns){
 		unit = u;
 		remainingTurns = turns;
 	}

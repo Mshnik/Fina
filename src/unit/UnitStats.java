@@ -49,7 +49,8 @@ public class UnitStats {
 	 * @param magicDefense		- magic defense of this tuni	- defense applied to magic attacks
 	 */
 	public UnitStats(int maxHealth, int attack, AttackType attackType, int counterattack, 
-					 int physicalDefense, int rangeDefense, int magicDefense, int range){
+					 int physicalDefense, int rangeDefense, int magicDefense, int range) 
+			throws IllegalArgumentException{
 		this.maxHealth = maxHealth;
 		this.attack = attack;
 		this.attackType = attackType;
@@ -63,7 +64,7 @@ public class UnitStats {
 	
 	/** Constructor for UnitStats from a base stats and a collection of modifiers.
 	 */
-	public UnitStats(UnitStats base, Collection<UnitModifier> modifiers){
+	public UnitStats(UnitStats base, Collection<UnitModifier> modifiers) throws IllegalArgumentException{
 		int maxHealth = base.maxHealth;
 		int attack = base.attack;
 		AttackType attackType = base.attackType;

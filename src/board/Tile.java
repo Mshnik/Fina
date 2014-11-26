@@ -1,6 +1,6 @@
 package board;
 
-import unit.AbstractUnit;
+import unit.Unit;
 
 /** A Tile is a single square in the board.
  * Maintains information about its location, what kind of tile it is, and what units are on it.
@@ -21,7 +21,7 @@ public class Tile implements Comparable<Tile>{
 	public final Terrain terrain;
 
 	/** The unit on this tile, if any */
-	private AbstractUnit occupyingUnit;
+	private Unit occupyingUnit;
 
 	/** A convienence field for pathfinding implementations */
 	public int dist;
@@ -69,14 +69,14 @@ public class Tile implements Comparable<Tile>{
 	}
 
 	/** Returns the occupyingUnit, if there is one */
-	public AbstractUnit getOccupyingUnit(){
+	public Unit getOccupyingUnit(){
 		return occupyingUnit;
 	}
 
 	/** Adds the given unit to this tile
 	 * @throws RuntimeException if this is already occupied
 	 * @throws IllegalArgumentException if u is null */
-	public void addOccupyingUnit(AbstractUnit u) throws RuntimeException {
+	public void addOccupyingUnit(Unit u) throws RuntimeException {
 		if(occupyingUnit != null)
 			throw new RuntimeException ("Can't add unit to " + this + 
 					", already occupied by " + occupyingUnit);
