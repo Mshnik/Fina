@@ -1,5 +1,6 @@
 package unit;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -22,16 +23,19 @@ public abstract class AbstractUnit {
 	/** The tile this unit is on. Should not ever share a tile with
 	 * another unit
 	 */
-	private Tile occupiedTile;
+	private Tile location;
 	
 	/** The board this unit is on. */
 	public final Board board;
 
 	/** The current health of this unit. If 0 or negative, this is dead */
 	private int health;
-
+	
+	/** The current stats of this unit. These are updated whenever unitModifiers are added or removed */
+	private UnitStats stats;
+	
 	/** A set of modifiers that are currently affecting this unit */
-	private HashSet<UnitModifier> modifiers;
+	private Collection<UnitModifier> modifiers;
 
 	/** true iff this can still move this turn. Has an impact on how to draw this */
 	private boolean canMove;
@@ -44,20 +48,22 @@ public abstract class AbstractUnit {
 	 * @param b - the board this unit exists within
 	 * @param startingTile - the tile this unit begins the game on. Also notifies the tile of this.
 	 */
-	public AbstractUnit(AbstractPlayer owner, Board b, Tile startingTile){
+	public AbstractUnit(AbstractPlayer owner, Board b, Tile startingTile, UnitStats stats){
 		this.owner = owner;
+		stats = new UnitStats(stats, null);
 		board = b;
-		occupiedTile = startingTile;
-		occupiedTile.addOccupyingUnit(this);
-		health = getMaxHealth();
-		modifiers = new HashSet<UnitModifier>();
+		location = startingTile;
+		location.addOccupyingUnit(this);
+		health = stats.maxHealth;
+		modifiers = new LinkedList<UnitModifier>();
 	}
 
 	/** Returns the tile this Unit is on */
-	public Tile getOccupiedTile(){
-		return occupiedTile;
+	public Tile getLocation(){
+		return location;
 	}
-
+	
+	//STATS
 	/** Returns the current health of this unit */
 	public int getHealth(){
 		return health;
@@ -67,32 +73,84 @@ public abstract class AbstractUnit {
 	public boolean isAlive(){
 		return health > 0;
 	}
+	
+	/** Returns the attack strength of this unit */
+	public int getAttack(){
+		return stats.attack;
+	}
+	
+	/** Returns the counterattack strength of this unit */
+	public int getCounterattack(){
+		return stats.counterattack;
+	}
+	
+	/** Returns the attack type of this unit */
+	public AttackType getAttackType(){
+		return stats.attackType;
+	}
+	
+	/** Returns the physical defense of this unit */
+	public int getPhysicalDefense(){
+		return stats.physicalDefense;
+	}
+	
+	/** Returns the ranged defense of this unit */
+	public int getRangeDefense(){
+		return stats.rangeDefense;
+	}
+	
+	/** Returns the magic defense of this unit */
+	public int getMagicDefense(){
+		return stats.magicDefense;
+	}
+	
+	
+	/** Returns the Defense of this stats for the given attack type */
+	public int getDefense(AttackType type){
+		switch(type){
+		case PHYSICAL: return getPhysicalDefense();
+		case RANGE: return getRangeDefense();
+		case MAGIC: return getMagicDefense();
+		default: return 0;
+		}
+	}
+	
+	/** Returns the range of this unit */
+	public int getRange(){
+		return stats.range;
+	}
+	
 
+	//MODIFIERS
 	/** Returns the modifiers currently affecting this unit
 	 * Pass-by-value, so editing the returned set doesn't do anything
 	 */
-	public HashSet<UnitModifier> getModifiers(){
-		return new HashSet<UnitModifier>(modifiers);
+	public Collection<UnitModifier> getModifiers(){
+		return new LinkedList<UnitModifier>(modifiers);
 	}
-
+	
+	/** Adds a new modifier to this unit. Also updates stats with the new modifiers,
+	 * from its original base stats. */
+	public void addModifier(UnitModifier m){
+		modifiers.add(m);
+		stats = new UnitStats(stats.base, modifiers);
+	}
+	
+	/** Removes the given modifier from this unit. Also updates stats with new modifier
+	 * from its original base stats. */
+	public void removeModifier(UnitModifier m){
+		modifiers.remove(m);
+		stats = new UnitStats(stats.base, modifiers);
+	}
+	
+	//MOVEMENT
 	/** Returns iff this can move */
 	public boolean canMove(){
 		return canMove;
 	}
 
-	/** Returns iff this can attack */
-	public boolean canAttack(){
-		return canFight;
-	}
-
-	/** Sets the value of canMove and canFight to true */
-	public void refreshMoveAndAttack(){
-		canMove = true;
-		canFight = true;
-	}
-
 	/** Returns the total converted movement this unit can take in a turn */
-	public abstract int getConvertedMovement();
+	public abstract int getMovementCap();
 
 	/** Returns the movement cost of traveling terrain t, infinity if this unit
 	 * can't travel the given terrain
@@ -109,35 +167,35 @@ public abstract class AbstractUnit {
 	public abstract void postMove(LinkedList<Tile> path);
 	
 	/** Attempts to move this unit along the given path.
-	 * @param path - the path to travel, where the first of path is occupiedTile, 
+	 * @param path - the path to travel, where the first of path is location, 
 	 * 	last is the desired destination, and whole path is manhattan contiguous.
 	 * @return true iff the movement happens.
 	 * @throws RuntimeException if...
 	 * 		- this can't move this turn (already moved)
 	 * @throws IllegalArgumentException if...
-	 * 		- the first tile isn't occupiedTile
+	 * 		- the first tile isn't location
 	 * 		- The ending tile is occupied
 	 * 		- the total cost of movement exceeds this' movement total
 	 */
 	public final boolean move(LinkedList<Tile> path) throws IllegalArgumentException, RuntimeException{
 		if(! canMove)
 			throw new RuntimeException(this + " can't move again this turn");
-		if(path.get(0) != occupiedTile)
-			throw new IllegalArgumentException(this + " can't travel path " + path + ", it is on " + occupiedTile);
+		if(path.get(0) != location)
+			throw new IllegalArgumentException(this + " can't travel path " + path + ", it is on " + location);
 		
 		int cost = 0;
 		for(Tile t : path){
 			cost += getMovementCost(t.terrain);
 		}
 		
-		if(cost > getConvertedMovement())
+		if(cost > getMovementCap())
 			throw new IllegalArgumentException(this + " can't travel path " + path + ", total cost of " + cost + " is too high");
 	
 		preMove(path);
 		
 		//movement probably ok. If end is occupied, tile move call will throw
-		occupiedTile.moveUnitTo(path.getLast());
-		occupiedTile = path.getLast();
+		location.moveUnitTo(path.getLast());
+		location = path.getLast();
 		
 		canMove = false;
 		
@@ -148,50 +206,14 @@ public abstract class AbstractUnit {
 	
 	/** Returns the mana cost of conjuring a new instance of this unit */
 	public abstract int getManaCost();
+
 	
-	/** Returns the MaxHealth of this unit.
-	 * Should process modifiers in calculation. */
-	public abstract int getMaxHealth();
-
-	/** Returns the Attack power of this unit.
-	 * Should process modifiers in calculation. */
-	public abstract int getAttack();
-
-	/** Returns the CounterAttack power of this unit. */
-	public abstract int getCounterAttack();
-
-	/** Returns the attack type of this unit.
-	 * Should process modifiers in calculation. */
-	public abstract AttackType getAttackType();
-
-	/** Returns the Defense of this unit for the given attack type */
-	public int getDefense(AttackType type){
-		switch(type){
-		case PHYSICAL: return getPhysicalDefense();
-		case RANGE: return getRangeDefense();
-		case MAGIC: return getMagicDefense();
-		default: return 0;
-		}
+	//FIGHTING
+	/** Returns iff this can fight this turn */
+	public boolean canFight(){
+		return canFight;
 	}
-
-	/** Returns the Physical Defense of this unit.
-	 * Should process modifiers in calculation. */
-	public abstract int getPhysicalDefense();
-
-	/** Returns the Ranged Defense of this unit.
-	 * Should process modifiers in calculation. */
-	public abstract int getRangeDefense();
-
-	/** Returns the Magic Defense of this unit.
-	 * Should process modifiers in calculation. */
-	public abstract int getMagicDefense();
-
-	/** Returns the attack range (number of squares between this and other unit
-	 * to attack, melee = 0) of this unit.
-	 * Should process modifiers in calculation.
-	 */
-	public abstract int getRange();
-
+	
 	/** Processes a pre-fight action that may be caused by modifiers.
 	 * Still only called when the fight is valid. */
 	public abstract void preFight(AbstractUnit other);
@@ -239,7 +261,7 @@ public abstract class AbstractUnit {
 		if(! owner.canSee(other))
 			throw new IllegalArgumentException(owner + " can't see " + other);
 		
-		int room = occupiedTile.manhattanDistance(other.getOccupiedTile()) - 1; //Account for melee = 0 range
+		int room = location.manhattanDistance(other.getLocation()) - 1; //Account for melee = 0 range
 		if(room > getRange())
 			throw new IllegalArgumentException(this + " can't fight " + other + ", it is too far away.");
 
@@ -255,7 +277,7 @@ public abstract class AbstractUnit {
 		//If other is still alive, can see the first unit, 
 		//and this is within range, other counterattacks
 		if(counterAttack){
-			health -= other.getCounterAttack() - getDefense(other.getAttackType());
+			health -= other.getCounterattack() - getDefense(other.getAttackType());
 			counterAttack = true;
 		}
 
@@ -267,6 +289,7 @@ public abstract class AbstractUnit {
 		return ! other.isAlive();
 	}
 
+	//DRAWING
 	/** Returns the name of the file that represents this unit as an image */
 	public abstract String getImgFilename();
 
