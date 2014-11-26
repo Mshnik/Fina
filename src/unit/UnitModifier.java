@@ -4,7 +4,7 @@ package unit;
 public class UnitModifier {
 
 	/** The unit this is modifying */
-	public final Combatant unit;
+	public final Unit unit;
 	
 	/** The remaining turns for this Modifier.
 	 * If 0, on its last turn.
@@ -15,7 +15,7 @@ public class UnitModifier {
 	 * @param u - The unit this is modifying
 	 * @param turns - the total duration of this modifier (turns after this one)
 	 */
-	public UnitModifier(Combatant u, int turns){
+	public UnitModifier(Unit u, int turns){
 		unit = u;
 		remainingTurns = turns;
 	}
@@ -28,10 +28,10 @@ public class UnitModifier {
 	/** Decrements the remaining turns.
 	 * Method calling this method should use the return of the method to maybe
 	 * remove this modifier.
-	 * @return true iff this is still valid (remainingTurns >= 0)
+	 * @return true iff this is is now dead (remainingTurns < 0)
 	 */
 	public boolean decRemainingTurns(){
 		remainingTurns--;
-		return remainingTurns >= 0;
+		return remainingTurns < 0;
 	}
 }

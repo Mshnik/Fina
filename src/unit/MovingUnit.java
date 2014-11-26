@@ -1,7 +1,5 @@
 package unit;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 
 import board.*;
@@ -29,8 +27,20 @@ public abstract class Combatant extends Unit{
 	 * @param startingTile - the tile this unit begins the game on. Also notifies the tile of this.
 	 */
 	public Combatant(AbstractPlayer owner, Board b, Tile startingTile, UnitStats stats){
-		super(owner, b, startingTile, stats);
-		
+		super(owner, b, startingTile, stats);	
+	}
+	
+	/** Call at the beginning of every turn.
+	 *  Can be overridden in subclasses, but those classes should call the super
+	 *  version before doing their own additions.
+	 * 		- ticks down modifiers and re-calculates stats, if necessary.
+	 * 		- refreshes canMove and canFight
+	 */
+	@Override
+	public void refreshForTurn(){
+		super.refreshForTurn();
+		canMove = true;
+		canFight = true;
 	}
 	
 	//MOVEMENT
@@ -94,10 +104,6 @@ public abstract class Combatant extends Unit{
 		return true;
 	}
 	
-	/** Returns the mana cost of conjuring a new instance of this unit */
-	public abstract int getManaCost();
-
-	
 	//FIGHTING
 	/** Returns iff this can fight this turn */
 	public boolean canFight(){
@@ -106,7 +112,7 @@ public abstract class Combatant extends Unit{
 	
 	/** Processes a pre-fight action that may be caused by modifiers.
 	 * Still only called when the fight is valid. */
-	public abstract void preFight(Combatant other);
+	public abstract void preFight(Unit other);
 	
 	/** Processes a pre-counter-fight action that may be caused by modifiers.
 	 * Still only called when the fight is valid, called after other.preFight().
@@ -116,7 +122,7 @@ public abstract class Combatant extends Unit{
 	/** Processes a post-fight action that may be caused by modifiers.
 	 * Only called when the fight is valid and this is still alive.
 	 */
-	public abstract void postFight(Combatant other);
+	public abstract void postFight(Unit other);
 	
 	/** Processes a post-fight action that may be caused by modifiers.
 	 * Only called when the fight is valid, called after other.postFight()
@@ -176,9 +182,5 @@ public abstract class Combatant extends Unit{
 		if(other.isAlive() && counterAttack) other.postCounterFight(this);
 		return ! other.isAlive();
 	}
-
-	//DRAWING
-	/** Returns the name of the file that represents this unit as an image */
-	public abstract String getImgFilename();
 
 }

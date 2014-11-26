@@ -12,7 +12,7 @@ import board.Tile;
  * @author MPatashnik
  *
  */
-public abstract class Unit {
+public abstract class Unit{
 
 	/** The player that owns this unit */
 	public final AbstractPlayer owner;
@@ -28,7 +28,8 @@ public abstract class Unit {
 	/** The current health of this Unit. If 0 or negative, this is dead. Can't be above maxHealth */
 	private int health;
 
-	/** The current stats of this unit. These are updated whenever unitModifiers are added or removed */
+	/** The current stats of this unit. These are updated whenever unitModifiers are added or removed.
+	 * Should never be null, but may be empty */
 	private UnitStats stats;
 	
 	/** A set of modifiers that are currently affecting this unit */
@@ -46,6 +47,23 @@ public abstract class Unit {
 		location.addOccupyingUnit(this);
 		this.stats = new UnitStats(stats, null);
 		modifiers = new LinkedList<UnitModifier>();
+	}
+	
+	/** Call at the beginning of every turn.
+	 *  Can be overridden in subclasses, but those classes should call the super
+	 *  version before doing their own additions.
+	 * 		- ticks down modifiers and re-calculates stats, if necessary.
+	 */
+	public void refreshForTurn(){
+		LinkedList<UnitModifier> deadModifiers = new LinkedList<UnitModifier>();
+		for(UnitModifier m : modifiers){
+			if(m.decRemainingTurns())
+				deadModifiers.add(m);
+		}
+		if(! deadModifiers.isEmpty()){
+			modifiers.removeAll(deadModifiers);
+			stats = new UnitStats(stats.base, modifiers);
+		}
 	}
 	
 	/** Returns the tile this Unit is on */
@@ -156,4 +174,7 @@ public abstract class Unit {
 		stats = new UnitStats(stats.base, modifiers);
 	}
 	
+	//DRAWING
+	/** Returns the name of the file that represents this unit as an image */
+	public abstract String getImgFilename();
 }
