@@ -24,17 +24,6 @@ public abstract class Player {
 	/** The Tiles in the board this player has vision of */
 	private HashSet<Tile> visionCloud;
 	
-	/** The mana cap for this player */
-	private int maxMana;
-	
-	/** The current mana level of this player */
-	private int mana;
-	
-	/** The current level of this player.
-	 * Integer part is the actual level, fraction portion is the exp towards next level.
-	 */
-	private double level;
-	
 	/** Returns true if it is this player's turn, false if some other player */
 	public boolean isMyTurn(){
 		return game.getCurrentPlayer() == this;
@@ -45,40 +34,19 @@ public abstract class Player {
 		return visionCloud.contains(u.getLocation());
 	}
 	
-	/** Returns the current level of this player
-	 * Integer part is the actual level, fraction portion is the exp towards next level.
-	 */
-	public double getLevelAndExp(){
-		return level;
+	/** Returns the current mana for this player */
+	public int getMana(){
+		return commander.getMana();
 	}
 	
-	/** Returns the actual level of this player (rounded down to nearest int) */
+	/** Returns the maximum mana for this player */
+	public int getMaxMana(){
+		return commander.getMaxMana();
+	}
+	
+	/** Returns the current level (not exp) of this player */
 	public int getLevel(){
-		return (int)level;
-	}
-	
-	/** Adds the given amount of experience to this player, then calls levelUp on
-	 * commander if this leveled up. Will call levelUp multiple times if this leveled up
-	 * multiple times.
-	 * 
-	 * Scales the input by dividing by the current level. If gaining experience would
-	 * cause multiple level-ups, adds one level at a time so scaling happens correctly
-	 */
-	public void addExp(double exp){
-		//If enough to cause a levelup, move to the next rounded level before doing more.
-		double toNextLevel = (getLevel() + 1 - level) * getLevel();
-		if(exp >= toNextLevel){
-			//Deduct just enough exp to get to next level
-			exp -= toNextLevel;
-			//Increase level to exactly next level and call levelup
-			level = getLevel()+1;
-			commander.levelUp();
-			//Recurse to process rest of exp
-			addExp(exp);	
-		} else{
-			//Otherwise, just scale exp and add it.
-			level += exp / getLevel();
-		}
+		return commander.getLevel();
 	}
 
 	//TURN
@@ -88,13 +56,12 @@ public abstract class Player {
 		//Refresh for turn and add manaPerTurn
 		for(Unit u : units){
 			u.refreshForTurn();
-			mana += u.getManaPerTurn();
+			commander.addMana(u.getManaPerTurn());
 		}
 		
-		//Check for mana > max, or mana < 0
-		mana = Math.min(mana, maxMana);
+		
 		//If mana < 0, force player to choose units to sacrifice instead.
-		if(mana < 0){
+		if(commander.getMana() < 0){
 			//TODO
 		}
 	}
