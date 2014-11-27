@@ -17,45 +17,45 @@ import unit.MovingUnit;
  *
  */
 public class Board implements Iterable<Tile>{
-	
+
 	/** The tiles that make up this board. Must be rectangular (non-jagged) */
 	private Tile[][] tiles;
-	
+
 	/** Construct a simple board of just terrain
 	 * Throws IllegalArgumentException if input array is jagged. */
 	public Board(Terrain[][] terrain) throws IllegalArgumentException{
 		tiles = new Tile[terrain.length][terrain[0].length];
 		for(int i = 0; i < terrain.length; i++){
-			
+
 			if(terrain[i].length != terrain[0].length)
 				throw new IllegalArgumentException("Jagged Array passed into board constructor " 
-													+ terrain);
-			
+						+ terrain);
+
 			for(int j = 0; j < terrain[i].length; j++){
 				tiles[i][j] = new Tile(i,j,terrain[i][j]);
 			}
 		}
 	}
-	
+
 	/** Returns the height (# rows) of this Board */
 	public int getHeight(){
 		return tiles.length;
 	}
-	
+
 	/** Returns the width (# columns) of this Board */
 	public int getWidth(){
 		return tiles[0].length;
 	}
-	
+
 	/** Returns the tile at the given index, throws IllegalArgumentException */
 	public Tile getTileAt(int r, int c) throws IllegalArgumentException{
 		if(r < 0 || r >= tiles.length || c < 0 || c >= tiles[r].length)
 			throw new IllegalArgumentException("Can't get tile from " + this + 
 					" at index (" + r + "," + c + ")" );
-		
+
 		return tiles[r][c];
 	}
-	
+
 	/** Return the tile in the given direction from this tile.
 	 * If oob, returns null or if direction invalid.
 	 */
@@ -84,7 +84,35 @@ public class Board implements Iterable<Tile>{
 		return neighbors;
 	}
 
-	
+	/** Return a set of tiles of radius radius centered at the given tile center.
+	 * A radius of 0 will return a set containing only center.
+	 * Doesn't check terrain or current occupants at all.
+	 */
+	public HashSet<Tile> getRadialCloud(Tile center, int radius){
+		HashSet<Tile> tiles = new HashSet<Tile>();
+		tiles.add(center);
+		int col = center.col;
+		int row = center.row; 
+		for(int r = radius; r >= 0; r--){
+			for(int i = 0; i < r; i++){
+				try{
+					tiles.add(getTileAt(row - r + i, col + i));
+				}catch(IllegalArgumentException e){}
+				try{
+					tiles.add(getTileAt(row + i, col + r - i));
+				}catch(IllegalArgumentException e){}
+				try{
+					tiles.add(getTileAt(row + r - i, col + i));
+				}catch(IllegalArgumentException e){}
+				try{
+					tiles.add(getTileAt(row - i, col -r + i));
+				}catch(IllegalArgumentException e){}
+			}
+		}
+		return tiles;
+	}
+
+
 	/** Returns the set of tiles the given path selector could move to from its
 	 * current location with its movement cap.
 	 */
@@ -95,24 +123,24 @@ public class Board implements Iterable<Tile>{
 			t.dist = Integer.MIN_VALUE;
 			t.prev = null;
 		}
-		
+
 		Tile start = ps.getPath().getLast();
-		
-			//Uses dist to hold remainingDistance as possible.
+
+		//Uses dist to hold remainingDistance as possible.
 		start.dist = unit.getMovementCap() - ps.getTotalCost(); 
-		
+
 		// frontier sorts with higher distance earlier
 		PriorityQueue<Tile> frontier = new PriorityQueue<Tile>(1, 
 				new Comparator<Tile>(){
-					@Override
-					/** Use inverse of regular comparison (higher distance first) */
-					public int compare(Tile o1, Tile o2) {
-						return - o1.compareTo(o2);
-					}
+			@Override
+			/** Use inverse of regular comparison (higher distance first) */
+			public int compare(Tile o1, Tile o2) {
+				return - o1.compareTo(o2);
+			}
 		});
 		frontier.add(start);
 		HashSet<Tile> settled = new HashSet<Tile>();
-		
+
 		//Iteration
 		while(! frontier.isEmpty()){
 			Tile current = frontier.poll();
@@ -122,7 +150,7 @@ public class Board implements Iterable<Tile>{
 					int nDist = current.dist - unit.getMovementCost(neighbor.terrain);
 					if(nDist >= 0 && 
 							(! neighbor.isOccupied() || neighbor.getOccupyingUnit().owner == unit.owner)
-					){
+							){
 						neighbor.dist = nDist;
 						frontier.remove(neighbor);
 						frontier.add(neighbor);
@@ -130,7 +158,7 @@ public class Board implements Iterable<Tile>{
 				}
 			}
 		}
-		
+
 		//Just return settled tiles as possible movement.
 		return settled;
 	}
@@ -140,19 +168,19 @@ public class Board implements Iterable<Tile>{
 	public Iterator<Tile> iterator() {
 		return new BoardIterator();
 	}
-	
+
 	/** An iterator over boards - goes along rows for its iteration */
 	private class BoardIterator implements Iterator<Tile>{
 
 		private int r;
 		private int c;
-		
+
 		/** Constructs a new board iterator, with row and column set to 0 */
 		private BoardIterator(){
 			r = 0;
 			c = 0;
 		}
-		
+
 		@Override
 		/** Return true iff r < tiles.length && c < tiles[r].length */
 		public boolean hasNext() {
@@ -178,10 +206,10 @@ public class Board implements Iterable<Tile>{
 		public void remove() {
 			throw new RuntimeException("Remove Operation Not Supported in Board Iterators");
 		}
-		
+
 	}
 
-	
-	
+
+
 }
 

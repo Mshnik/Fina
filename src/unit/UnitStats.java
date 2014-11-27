@@ -43,6 +43,9 @@ public class UnitStats{
 	 * range >= 0.
 	 */
 	private int range;
+	
+	/** Base vision radius of this unit */
+	private int visionRange;
 
 	/** Constructor for UnitStats
 	 * @param maxHealth 		- the Maximum health (life points, etc) of this unit
@@ -52,10 +55,12 @@ public class UnitStats{
 	 * @param counterattack 	- counter attack strength of this unit
 	 * @param physicalDefense	- physical defense of this unit - defense applied to physical attacks
 	 * @param rangeDefense		- ranged defense of this unit	- defense applied to ranged attacks
-	 * @param magicDefense		- magic defense of this tuni	- defense applied to magic attacks
+	 * @param magicDefense		- magic defense of this unit	- defense applied to magic attacks
+	 * @param range				- range of this unit - 0 represents melee (adjacent units)
+	 * @param visionRange		- visionRange of this unit - 0 represents no extra vision beyond its own tile
 	 */
 	public UnitStats(int maxHealth, int manaPerTurn, int attack, AttackType attackType, int counterattack, 
-					 int physicalDefense, int rangeDefense, int magicDefense, int range) 
+					 int physicalDefense, int rangeDefense, int magicDefense, int range, int visionRange) 
 			throws IllegalArgumentException{
 		this.maxHealth = maxHealth;
 		this.manaPerTurn = manaPerTurn;
@@ -66,6 +71,7 @@ public class UnitStats{
 		this.rangeDefense = rangeDefense;
 		this.magicDefense = magicDefense;
 		this.range = range;
+		this.visionRange = visionRange;
 		base = null;
 	}
 	
@@ -81,6 +87,7 @@ public class UnitStats{
 		int rangeDefense = base.rangeDefense;
 		int magicDefense = base.magicDefense;
 		int range = base.range;
+		int visionRange = base.visionRange;
 		
 		//Process modifiers
 		if(modifiers != null){
@@ -99,6 +106,7 @@ public class UnitStats{
 		this.rangeDefense = rangeDefense;
 		this.magicDefense = magicDefense;
 		this.range = range;
+		this.visionRange = visionRange;
 	}
 	
 	/** Returns true if this is a base stats (unmodified), false otherwise */
@@ -180,6 +188,14 @@ public class UnitStats{
 	 */
 	public int getRange() {
 		return range;
+	}
+	
+	/** @return Distance this unit can see and contributes to its owner's sight.
+	 * Distance is measured using manhattan distance.
+	 * visionRange >= 0.
+	 */
+	public int getVisionRange(){
+		return visionRange;
 	}
 
 	/** Returns a new UnitStats with this (if this is a base) as the base

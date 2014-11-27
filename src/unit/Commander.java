@@ -59,9 +59,15 @@ public abstract class Commander extends MovingUnit {
 	public Commander(Player owner, Tile startingTile, UnitStats stats) {
 		super(owner, startingTile, stats);
 		level = 1;
-		recalculateMaxHealthMana();
+		recalculateScalingStats();
 		setMana(getMaxMana());
 		setHealth(getMaxHealth());
+	}
+	//RESTRICTIONS
+	/** Restricted attack - has val 0. */
+	@Override
+	public int getAttack(){
+		return 0;
 	}
 
 	//HEALTH and MANA
@@ -103,12 +109,16 @@ public abstract class Commander extends MovingUnit {
 		return mana < 0;
 	}
 	
-	/** Re-calculates maxHealth and maxMana off of level and other factors.
+	/** A basic scalingStats implementation.
+	 * Consider using this, then making alterations.
+	 */
+	
+	/** Re-calculates maxHealth, maxMana, and manaPerTurn off of level and other factors.
 	 * Should start with base formulae based off of static constants
 	 * 	stat = BASE_STAT + SCALE_STAT * (lvl - 1)
 	 * If max health or mana increase this way, increase health and mana by
 	 * same amount */
-	public abstract void recalculateMaxHealthMana();
+	public abstract void recalculateScalingStats();
 	
 	//LEVEL
 	/** Returns the current level of this player
@@ -151,6 +161,6 @@ public abstract class Commander extends MovingUnit {
 	 * Can be overriden by subclass to cause affect when leveled up, 
 	 * but this super method should be called first */
 	public void levelUp(){
-		recalculateMaxHealthMana();
+		recalculateScalingStats();
 	}
 }

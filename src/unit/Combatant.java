@@ -102,12 +102,14 @@ public abstract class Combatant extends MovingUnit {
 		if(isAlive()){
 			postFight(other);
 		}else{
-			other.owner.commander.addExp(experienceWorth());
+			if(other.isAlive()) 
+				other.owner.getCommander().addExp(experienceWorth());
 		}
 		if(other.isAlive()) {
 			if(counterAttack) other.postCounterFight(this);
 		}else{
-			owner.commander.addExp(other.experienceWorth());
+			if(isAlive()) 
+				owner.getCommander().addExp(other.experienceWorth());
 		}
 		return ! other.isAlive();
 	}

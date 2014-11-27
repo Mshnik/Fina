@@ -32,7 +32,9 @@ public abstract class Unit{
 	/** A set of modifiers that are currently affecting this unit */
 	private LinkedList<UnitModifier> modifiers;
 
-	/** Constructor for Unit
+	/** Constructor for Unit.
+	 * Also adds this unit to the tile it is on as an occupant, and
+	 * its owner as a unit that player owns
 	 * @param owner - the player owner of this unit
 	 * @param b - the board this unit exists within
 	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
@@ -43,6 +45,8 @@ public abstract class Unit{
 		location.addOccupyingUnit(this);
 		this.stats = new UnitStats(stats, null);
 		modifiers = new LinkedList<UnitModifier>();
+		
+		owner.addUnit(this);
 	}
 	
 	/** Call at the beginning of every turn.
@@ -109,8 +113,12 @@ public abstract class Unit{
 		return health > 0;
 	}
 	
-	/** Called when a change in health causes this to die */
-	protected abstract void died();
+	/** Called when a change in health causes this to die.
+	 * Can be overriden in subclasses to add additional behavior,
+	 * but this method should be called somewhere in that overriden method */
+	protected void died(){
+		owner.removeUnit(this);
+	}
 
 	/** Returns the (base) experience this is worth when killed. *
 	 */
@@ -168,6 +176,11 @@ public abstract class Unit{
 	 * If this is a summoner, this is its summon range.  */
 	public int getRange(){
 		return stats.getRange();
+	}
+	
+	/** Returns the vision range of this unit. */
+	public int getVisionRange(){
+		return stats.getVisionRange();
 	}
 	
 	/** Returns the mana per turn this unit costs/generates */
