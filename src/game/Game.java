@@ -21,14 +21,18 @@ public class Game implements Runnable{
 	/** The board that represents this game */
 	public final Board board;
 	
+	/** True if this game currently has fog of war, false otherwise */
+	private boolean fogOfWar;
+	
 	/** The panel that is drawing this Game */
 	private GamePanel panel;
 	
 	/** True if this game is currently running, false otherwise */
 	private boolean running;
 	
-	public Game(Board b){
+	public Game(Board b, boolean fog){
 		board = b;
+		fogOfWar = fog;
 		players = new LinkedList<Player>();
 		running = false;
 	}
@@ -70,6 +74,22 @@ public class Game implements Runnable{
 		return players.getFirst();
 	}
 	
+	/** @return if there is fogOfWar in this game
+	 */
+	public boolean isFogOfWar() {
+		return fogOfWar;
+	}
+
+	/** @param fogOfWar the fogOfWar to set.
+	 * Also repaints if this causes a change.
+	 */
+	public void setFogOfWar(boolean fOG) {
+		boolean oldFog = fogOfWar; 
+		fogOfWar = fOG;
+		if(oldFog != fOG)
+			panel.repaint();
+	}
+
 	/** Returns true if this game is ended (one of the termination conditions
 	 * is true), false otherwise
 	 */

@@ -128,12 +128,13 @@ public class GamePanel extends JPanel implements Paintable{
 					CELL_SIZE, CELL_SIZE, null);
 				
 				//If the player can't see this tile, shade darkly.
-				if(game.getCurrentPlayer() != null && ! game.getCurrentPlayer().canSee(t)){
+				if(game.isFogOfWar() && game.getCurrentPlayer() != null 
+						&& ! game.getCurrentPlayer().canSee(t)){
 					g2d.fillRect(x, y, CELL_SIZE, CELL_SIZE);
 				}
 				
 				//Draw a unit if necessary - only if player can see it.
-				if(t.isOccupied() && (vision == null || vision.contains(t))){
+				if(t.isOccupied() && (! game.isFogOfWar() || vision == null || vision.contains(t))){
 					g.drawImage(ImageIndex.imageForUnit(t.getOccupyingUnit()), x, y, 
 						CELL_SIZE, CELL_SIZE, null);
 				}
