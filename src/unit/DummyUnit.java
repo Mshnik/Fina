@@ -2,6 +2,8 @@ package unit;
 
 import java.util.LinkedList;
 
+import stats.UnitStats;
+
 import game.Player;
 import board.Terrain;
 import board.Tile;

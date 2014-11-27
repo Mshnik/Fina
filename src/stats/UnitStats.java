@@ -1,6 +1,9 @@
-package unit;
+package stats;
 
 import java.util.Collection;
+
+import unit.AttackType;
+import unit.UnitModifier;
 
 /** Holder for the stats for a unit.
  * Unless otherwise noted, all stats are non-negative. */

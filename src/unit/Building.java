@@ -1,5 +1,6 @@
 package unit;
 
+import stats.UnitStats;
 import game.Player;
 import board.Tile;
 
