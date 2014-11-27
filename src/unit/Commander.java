@@ -1,6 +1,5 @@
 package unit;
 
-import stats.UnitStats;
 import game.Player;
 import board.Tile;
 
@@ -12,6 +11,24 @@ import board.Tile;
  */
 public abstract class Commander extends MovingUnit {
 
+	/** Base level of health for lvl1 commanders */
+	public static final int BASE_HEALTH = 10;
+	
+	/** Base amount of max health gained per level */
+	public static final int SCALE_HEALTH = 2;
+	
+	/** Base level of max mana for lvl1 commanders */
+	public static final int BASE_MANA = 15;
+	
+	/** Base amount of max mana gained per level */
+	public static final int SCALE_MANA = 5;
+	
+	/** Base level of mana per turn for lvl1 commanders */
+	public static final int BASE_MANA_PT = 5;
+	
+	/** Base amount of mana per turn gained per level */
+	public static final int SCALE_MANA_PT = 1;
+	
 	/** The max health for this commander. Increases with level.
 	 * Specifically, this means the maxHealth stat attribute is unused. */
 	private int maxHealth;
@@ -19,19 +36,28 @@ public abstract class Commander extends MovingUnit {
 	/** The mana cap for this commander. Increases with level */
 	private int maxMana;
 	
-	/** The current mana level of this player */
+	/** The current mana level of this commander. Varies over the course of the game. */
 	private int mana;
+	
+	/** The current mana per turn generation of this commander. Increases with level. */
+	private int manaPerTurn;
 	
 	/** The current level of this player.
 	 * Integer part is the actual level, fraction portion is the exp towards next level.
 	 */
 	private double level;
 	
+	/** Constructor for Commanders
+	 * @param owner			- player who owns this commander
+	 * @param startingTile	- the tile in the board this commander occupies
+	 * @param stats			- the stats of this commander.
+	 * 							Notably, because of restrictions on commander,
+	 * 							the maxHealth, attack, manaPerTurn, counterattack, and attackType
+	 * 							Attributes are unused, because they are either unnecessary 
+	 * 							or calculated elsewhere.
+	 */
 	public Commander(Player owner, Tile startingTile, UnitStats stats) {
 		super(owner, startingTile, stats);
-		
-		if(! stats.attackType.equals(AttackType.NO_ATTACK))
-			throw new IllegalArgumentException("Commander " + this + " must have attackType NO_ATTACK");
 		level = 1;
 		recalculateMaxHealthMana();
 		setMana(getMaxMana());
@@ -56,6 +82,14 @@ public abstract class Commander extends MovingUnit {
 	public int getMaxMana(){
 		return maxMana;
 	}
+	
+	/** Returns the mana per turn this commander generates
+	 * Overrides Unit.getMaxHealth so level can affect maxHealth.
+	 * This does mean the stats.maxHealth attribute is unused for commanders */
+	@Override
+	public int getManaPerTurn(){
+		return manaPerTurn;
+	}
 		
 	protected boolean setMana(int newMana){
 		return addMana(newMana - mana);
@@ -70,9 +104,8 @@ public abstract class Commander extends MovingUnit {
 	}
 	
 	/** Re-calculates maxHealth and maxMana off of level and other factors.
-	 * Should start with base formulae:
-	 * 		- health = 8 + 2 * lvl
-	 * 		- mana 	 = 15 + 5 * lvl
+	 * Should start with base formulae based off of static constants
+	 * 	stat = BASE_STAT + SCALE_STAT * (lvl - 1)
 	 * If max health or mana increase this way, increase health and mana by
 	 * same amount */
 	public abstract void recalculateMaxHealthMana();

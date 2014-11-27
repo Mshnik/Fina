@@ -1,6 +1,5 @@
 package unit;
 
-import stats.UnitStats;
 import game.Player;
 import board.Tile;
 
@@ -12,7 +11,7 @@ public abstract class Building extends Unit {
 	public Building(Player owner, Tile tile, UnitStats stats) throws IllegalArgumentException {
 		super(owner,tile, stats);
 		
-		if(! stats.attackType.equals(AttackType.NO_ATTACK))
+		if(! stats.getAttackType().equals(AttackType.NO_ATTACK))
 			throw new IllegalArgumentException("Building " + this + " must have attackType NO_ATTACK");
 	}
 

@@ -2,8 +2,6 @@ package unit;
 
 import java.util.LinkedList;
 
-import stats.Stats;
-import stats.UnitStats;
 
 import game.Player;
 import board.Tile;
@@ -29,7 +27,7 @@ public abstract class Unit{
 
 	/** The current stats of this unit. These are updated whenever unitModifiers are added or removed.
 	 * Should never be null, but may be empty */
-	private Stats stats;
+	private UnitStats stats;
 	
 	/** A set of modifiers that are currently affecting this unit */
 	private LinkedList<UnitModifier> modifiers;

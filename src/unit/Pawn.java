@@ -1,6 +1,5 @@
 package unit;
 
-import stats.UnitStats;
 import game.Player;
 
 import board.Tile;
@@ -17,7 +16,7 @@ public abstract class Pawn extends MovingUnit {
 	public Pawn(Player owner, Tile startingTile, UnitStats stats) {
 		super(owner, startingTile, stats);
 		
-		if(! stats.attackType.equals(AttackType.NO_ATTACK))
+		if(! stats.getAttackType().equals(AttackType.NO_ATTACK))
 			throw new IllegalArgumentException("Pawn " + this + " must have attackType NO_ATTACK");
 	}
 

@@ -1,6 +1,5 @@
 package unit;
 
-import stats.UnitStats;
 import game.Player;
 import board.Tile;
 
@@ -19,7 +18,7 @@ public abstract class Combatant extends MovingUnit {
 	public Combatant(Player owner,Tile startingTile, UnitStats stats) {
 		super(owner, startingTile, stats);
 
-		if(stats.attackType.equals(AttackType.NO_ATTACK))
+		if(stats.getAttackType().equals(AttackType.NO_ATTACK))
 			throw new IllegalArgumentException("Combatant " + this + " can't have attackType NO_ATTACK");
 	}
 
@@ -103,12 +102,12 @@ public abstract class Combatant extends MovingUnit {
 		if(isAlive()){
 			postFight(other);
 		}else{
-			other.owner.addExp(experienceWorth());
+			other.owner.commander.addExp(experienceWorth());
 		}
 		if(other.isAlive()) {
 			if(counterAttack) other.postCounterFight(this);
 		}else{
-			owner.addExp(other.experienceWorth());
+			owner.commander.addExp(other.experienceWorth());
 		}
 		return ! other.isAlive();
 	}

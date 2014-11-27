@@ -1,13 +1,11 @@
-package stats;
+package unit;
 
 import java.util.Collection;
 
-import unit.AttackType;
-import unit.UnitModifier;
 
 /** Holder for the stats for a unit.
  * Unless otherwise noted, all stats are non-negative. */
-public class UnitStats implements Stats{
+public class UnitStats{
 
 	/** The base (pre-modification) stats this was calculated from, if any */
 	private UnitStats base; 		
@@ -186,8 +184,7 @@ public class UnitStats implements Stats{
 
 	/** Returns a new UnitStats with this (if this is a base) as the base
 	 * or this' base if this is non-base, and the given modifiers */
-	@Override
-	public Stats modifiedWith(Collection<UnitModifier> modifiers) {
+	public UnitStats modifiedWith(Collection<UnitModifier> modifiers) {
 		if(isBase())
 			return new UnitStats(this, modifiers);
 		else
