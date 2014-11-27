@@ -1,5 +1,7 @@
 package gui;
 
+import game.Game;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
@@ -17,8 +19,8 @@ public class GamePanel extends JPanel implements Paintable{
 	/** Pixels (size) for each square tile. */
 	protected static final int CELL_SIZE = 64; 
 
-	/** The BoardState this GamePanel is responsible for drawing */
-	public final Board boardState;
+	/** The Game this GamePanel is responsible for drawing */
+	public final Game game;
 
 	/** The BoardCursor for this GamePanel */
 	public final BoardCursor boardCursor;
@@ -39,12 +41,12 @@ public class GamePanel extends JPanel implements Paintable{
 	protected int scrollY;
 
 	/** Constructor for GamePanel
-	 * @param bs - the board to display using this panel
+	 * @param g - the game to display using this panel
 	 * @param maxRows - the maximum number of rows of tiles to show at a time
 	 * @param maxCols - the maximum number of cols of tiles to show at a time
 	 */
-	public GamePanel(Board bs, int maxRows, int maxCols){
-		boardState = bs;
+	public GamePanel(Game g, int maxRows, int maxCols){
+		game = g;
 		boardCursor = new BoardCursor(this);
 		
 		this.maxX = maxCols;
@@ -107,7 +109,7 @@ public class GamePanel extends JPanel implements Paintable{
 		//[scrollX ... scrollX + maxX - 1]
 		for(int row = scrollY; row < scrollY + maxY; row ++){
 			for(int col = scrollX; col < scrollX + maxX; col ++){
-				Tile t = boardState.getTileAt(row, col);
+				Tile t = game.board.getTileAt(row, col);
 				int x = getXPosition(t);
 				int y = getYPosition(t);
 				//Draw terrain

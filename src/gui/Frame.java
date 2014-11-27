@@ -1,9 +1,11 @@
 package gui;
-import java.awt.BorderLayout;
 
+import java.awt.BorderLayout;
 import javax.swing.JFrame;
 
-import unit.DummyUnit;
+import unit.dummy.DummyCommander;
+import unit.dummy.DummyPawn;
+import game.*;
 import board.*;
 
 
@@ -73,10 +75,14 @@ public class Frame extends JFrame {
 	    	}
 	    }
 	    
-	    GamePanel g = new GamePanel(new Board(t), 10, 20);
-	    new DummyUnit(null, g.boardState.getTileAt(0, 0));
-	    new DummyUnit(null, g.boardState.getTileAt(2, 2));
+	    GamePanel gp = new GamePanel(new Game(new Board(t)), 10, 20);
+	    Player p1 = new HumanPlayer(gp.game);
+	    new DummyCommander(p1, gp.game.board.getTileAt(0, 0));
+	    new DummyPawn(p1, gp.game.board.getTileAt(0, 1));
 
-	    f.setBoard(g);
+	    f.setBoard(gp);
+	    
+	    Thread th = new Thread(gp.game);
+	    th.start();
 	}
 }

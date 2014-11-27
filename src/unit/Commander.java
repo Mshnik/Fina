@@ -31,16 +31,16 @@ public abstract class Commander extends MovingUnit {
 	
 	/** The max health for this commander. Increases with level.
 	 * Specifically, this means the maxHealth stat attribute is unused. */
-	private int maxHealth;
+	protected int maxHealth;
 	
 	/** The mana cap for this commander. Increases with level */
-	private int maxMana;
+	protected int maxMana;
 	
 	/** The current mana level of this commander. Varies over the course of the game. */
 	private int mana;
 	
 	/** The current mana per turn generation of this commander. Increases with level. */
-	private int manaPerTurn;
+	protected int manaPerTurn;
 	
 	/** The current level of this player.
 	 * Integer part is the actual level, fraction portion is the exp towards next level.
@@ -68,6 +68,23 @@ public abstract class Commander extends MovingUnit {
 	@Override
 	public int getAttack(){
 		return 0;
+	}
+	
+	/** Restricted counterattack - has val 0. */
+	@Override
+	public int getCounterattack(){
+		return 0;
+	}
+	
+	/** Commanders can't fight */
+	public boolean canFight(){
+		return false;
+	}
+	
+	/** Restricted attackType - has val NO_ATTACK. */
+	@Override
+	public AttackType getAttackType(){
+		return AttackType.NO_ATTACK;
 	}
 
 	//HEALTH and MANA

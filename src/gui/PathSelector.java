@@ -55,7 +55,7 @@ public class PathSelector implements Paintable, Iterable<Tile>{
 	
 	/** Empties and recalculated the possibilities cloud using the current path as set */
 	private void refreshPossibilitiesCloud(){
-		cloud = gamePanel.boardState.getMovementCloud(this);
+		cloud = gamePanel.game.board.getMovementCloud(this);
 		gamePanel.repaint();
 	}
 

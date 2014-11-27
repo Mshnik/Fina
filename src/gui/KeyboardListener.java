@@ -65,6 +65,7 @@ public class KeyboardListener implements KeyListener{
 			if(keyCode == B){
 				gp.cancelPathSelection();
 			}
+			
 		}
 	}
 

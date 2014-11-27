@@ -25,8 +25,10 @@ public class ImageIndex {
 	/** The image for woods terrain */
 	private static BufferedImage WOODS;
 	
-	/** The image for dummy unit */
-	private static BufferedImage DUMMY_UNIT;
+	/** The image for dummy commander */
+	private static BufferedImage DUMMY_COMMANDER;
+	/** The image for dummy pawn */
+	private static BufferedImage DUMMY_PAWN;
 	
 	/** Static initializer for the Image Class - do all image reading here */
 	static{
@@ -34,7 +36,8 @@ public class ImageIndex {
 			GRASS = ImageIO.read(new File(IMAGE_ROOT + "grass.png"));
 			MOUNTAINS = ImageIO.read(new File(IMAGE_ROOT + "mountain.png"));
 			WOODS = ImageIO.read(new File(IMAGE_ROOT + "woods.png"));
-			DUMMY_UNIT = ImageIO.read(new File(IMAGE_ROOT + "chrono.gif"));
+			DUMMY_COMMANDER = ImageIO.read(new File(IMAGE_ROOT + "chrono.gif"));
+			DUMMY_PAWN = ImageIO.read(new File(IMAGE_ROOT + "link.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -55,8 +58,8 @@ public class ImageIndex {
 	/** Returns the image file corresponding to the given unit */
 	public static BufferedImage imageForUnit(Unit unit){
 		switch(unit.getImgFilename()){
-			case "chrono.gif": return DUMMY_UNIT;
-			
+			case "chrono.gif": return DUMMY_COMMANDER;
+			case "link.png":   return DUMMY_PAWN;
 			
 			//Image not found
 			default: 		   return null;

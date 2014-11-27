@@ -40,6 +40,11 @@ public abstract class Player {
 		return game.getCurrentPlayer() == this;
 	}
 	
+	/** Returns true if this is a human player, false otherwise */
+	public boolean isHumanPlayer(){
+		return this instanceof HumanPlayer;
+	}
+	
 	/** Returns the current mana for this player */
 	public int getMana(){
 		return commander.getMana();
