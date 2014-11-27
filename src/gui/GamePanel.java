@@ -2,9 +2,12 @@ package gui;
 
 import game.Game;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.util.HashSet;
 
 import javax.swing.JPanel;
 import board.*;
@@ -18,6 +21,9 @@ public class GamePanel extends JPanel implements Paintable{
 
 	/** Pixels (size) for each square tile. */
 	protected static final int CELL_SIZE = 64; 
+	
+	/** Shading for fog of war - translucent black */
+	protected static final Color FOG_OF_WAR = new Color(0,0,0,0.75f);
 
 	/** The Game this GamePanel is responsible for drawing */
 	public final Game game;
@@ -103,7 +109,12 @@ public class GamePanel extends JPanel implements Paintable{
 	@Override
 	/** Paints this boardpanel, for use in the frame it is in. */
 	public void paintComponent(Graphics g){
-
+		Graphics2D g2d = (Graphics2D)g;
+		
+		HashSet<Tile> vision = null;
+		if(game.getCurrentPlayer() != null){
+			g2d.setColor(FOG_OF_WAR);
+		}
 		//Paint the board itself, painting the portion within
 		//[scrollY ... scrollY + maxY - 1], 
 		//[scrollX ... scrollX + maxX - 1]
@@ -116,8 +127,13 @@ public class GamePanel extends JPanel implements Paintable{
 				g.drawImage(ImageIndex.imageForTile(t), x, y,
 					CELL_SIZE, CELL_SIZE, null);
 				
-				//Draw a unit if necessary
-				if(t.isOccupied()){
+				//If the player can't see this tile, shade darkly.
+				if(game.getCurrentPlayer() != null && ! game.getCurrentPlayer().canSee(t)){
+					g2d.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+				}
+				
+				//Draw a unit if necessary - only if player can see it.
+				if(t.isOccupied() && (vision == null || vision.contains(t))){
 					g.drawImage(ImageIndex.imageForUnit(t.getOccupyingUnit()), x, y, 
 						CELL_SIZE, CELL_SIZE, null);
 				}

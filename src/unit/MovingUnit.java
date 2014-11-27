@@ -92,6 +92,7 @@ public abstract class MovingUnit extends Unit{
 		location = path.getLast();
 		
 		canMove = false;
+		owner.refreshVisionCloud();
 		
 		postMove(path);
 		

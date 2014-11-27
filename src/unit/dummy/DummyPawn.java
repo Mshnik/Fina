@@ -39,8 +39,7 @@ public class DummyPawn extends Pawn {
 
 	@Override
 	public void postMove(LinkedList<Tile> path) {
-		// TODO Auto-generated method stub
-
+		this.refreshForTurn();
 	}
 
 	@Override

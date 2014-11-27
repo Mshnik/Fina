@@ -102,7 +102,7 @@ public class Board implements Iterable<Tile>{
 					tiles.add(getTileAt(row + i, col + r - i));
 				}catch(IllegalArgumentException e){}
 				try{
-					tiles.add(getTileAt(row + r - i, col + i));
+					tiles.add(getTileAt(row + r - i, col - i));
 				}catch(IllegalArgumentException e){}
 				try{
 					tiles.add(getTileAt(row - i, col -r + i));

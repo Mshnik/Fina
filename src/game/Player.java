@@ -84,6 +84,7 @@ public abstract class Player {
 			if(commander == null) commander = (Commander)u;
 			else throw new IllegalArgumentException("Can't set " + u + " to commander for " + this);
 		}
+		refreshVisionCloud();
 	}
 	
 	/** Removes the given unit from this player's units.
@@ -91,6 +92,7 @@ public abstract class Player {
 	 */
 	public void removeUnit(Unit u){
 		units.remove(u);
+		refreshVisionCloud();
 		if(u instanceof Commander && (Commander)u == commander) commander = null;
 	}
 	
