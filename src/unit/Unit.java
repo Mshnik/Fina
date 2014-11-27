@@ -84,6 +84,13 @@ public abstract class Unit{
 	public int getHealth(){
 		return health;
 	}
+	
+	/** Sets the current health of this unit (alters it by difference)
+	 * @see changeHealth(desired - current)
+	 */
+	protected void setHealth(int newHealth){
+		changeHealth(newHealth - health);
+	}
 
 	/** Alters the current health of this unit. Maxes health at maxHealth.
 	 * if health <= 0 because of this call, calls died().
