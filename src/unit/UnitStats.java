@@ -4,45 +4,45 @@ import java.util.Collection;
 
 /** Holder for the stats for a unit.
  * Unless otherwise noted, all stats are non-negative. */
-public class UnitStats {
+public class UnitStats implements Stats{
 
 	/** The base (pre-modification) stats this was calculated from, if any */
-	public final UnitStats base; 		
+	private UnitStats base; 		
 	
 	/** The health cap for this unit. Actual health level is kept track of by unit.
 	 * maxHealth >= 0. */
-	public final int maxHealth;
+	private int maxHealth;
 	
 	/** The mana generation/cost of this unit. Positive is generation, negative is cost */
-	public final int manaPerTurn;
+	private int manaPerTurn;
 	
 	/** Damage dealt when attacking (Before applying defenses). attack >= 0 */
-	public final int attack;
+	private int attack;
 	
 	/** Type of damage dealt when attacking. */
-	public final AttackType attackType;
+	private AttackType attackType;
 	
 	/** Damage dealt when counterattacking (before applying defenses). counterattack >= 0 */
-	public final int counterattack;
+	private int counterattack;
 	
 	/** Defense against physical damage - subtracted from all physical attacks before taking damage.
 	 * physicalDefense >= 0 */
-	public final int physicalDefense;
+	private int physicalDefense;
 	
 	/** Defense against ranged damage - subtracted from all ranged attacks before taking damage
 	 * rangeDefense >= 0 */
-	public final int rangeDefense;
+	private int rangeDefense;
 	
 	/** Defense against magic damage - subtracted from all magic attacks before taking damage
 	 * magicDefense >= 0 */
-	public final int magicDefense;
+	private int magicDefense;
 	
-	/** Distance at which another unit can be attacked. 
+	/** Distance at which another unit can be attacked, or at which units can be summoned. 
 	 * Distance is measured using manhattan distance - 1.
 	 * range >= 0.
 	 */
-	public final int range;
-	
+	private int range;
+
 	/** Constructor for UnitStats
 	 * @param maxHealth 		- the Maximum health (life points, etc) of this unit
 	 * @param manaPerTurn		- the mana this generates (or cost, if < 0) per turn
@@ -105,4 +105,89 @@ public class UnitStats {
 		return base == null;
 	}
 	
+	/**
+	 * @return The base (pre-modification) stats this was calculated from, if any 
+	 */
+	public UnitStats getBase() {
+		return base;
+	}
+
+	/**
+	 * @return  The health cap for this unit. Actual health level is kept track of by unit.
+	 * maxHealth >= 0.
+	 */
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+
+	/**
+	 * @return The mana generation/cost of this unit. Positive is generation, negative is cost
+	 */
+	public int getManaPerTurn() {
+		return manaPerTurn;
+	}
+
+	/**
+	 * @return Damage dealt when attacking (Before applying defenses). attack >= 0
+	 */
+	public int getAttack() {
+		return attack;
+	}
+
+	/**
+	 * @return Type of damage dealt when attacking.
+	 */
+	public AttackType getAttackType() {
+		return attackType;
+	}
+
+	/**
+	 * @return Damage dealt when counterattacking (before applying defenses). counterattack >= 0
+	 */
+	public int getCounterattack() {
+		return counterattack;
+	}
+
+	/**
+	 * @return Defense against physical damage - subtracted from all physical attacks before taking damage.
+	 * physicalDefense >= 0
+	 */
+	public int getPhysicalDefense() {
+		return physicalDefense;
+	}
+
+	/**
+	 * @return Defense against ranged damage - subtracted from all ranged attacks before taking damage
+	 * rangeDefense >= 0
+	 */
+	public int getRangeDefense() {
+		return rangeDefense;
+	}
+
+	/**
+	 * @return Defense against magic damage - subtracted from all magic attacks before taking damage
+	 * magicDefense >= 0 
+	 */
+	public int getMagicDefense() {
+		return magicDefense;
+	}
+
+	/**
+	 * @return Distance at which another unit can be attacked, or at which units can be summoned. 
+	 * Distance is measured using manhattan distance - 1.
+	 * range >= 0.
+	 */
+	public int getRange() {
+		return range;
+	}
+
+	/** Returns a new UnitStats with this (if this is a base) as the base
+	 * or this' base if this is non-base, and the given modifiers */
+	@Override
+	public Stats modifiedWith(Collection<UnitModifier> modifiers) {
+		if(isBase())
+			return new UnitStats(this, modifiers);
+		else
+			return new UnitStats(this.base, modifiers);
+	}
 }

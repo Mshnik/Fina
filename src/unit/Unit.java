@@ -26,7 +26,7 @@ public abstract class Unit{
 
 	/** The current stats of this unit. These are updated whenever unitModifiers are added or removed.
 	 * Should never be null, but may be empty */
-	private UnitStats stats;
+	private Stats stats;
 	
 	/** A set of modifiers that are currently affecting this unit */
 	private LinkedList<UnitModifier> modifiers;
@@ -57,7 +57,7 @@ public abstract class Unit{
 		}
 		if(! deadModifiers.isEmpty()){
 			modifiers.removeAll(deadModifiers);
-			stats = new UnitStats(stats.base, modifiers);
+			stats = stats.modifiedWith(modifiers);
 		}
 	}
 	
@@ -77,7 +77,7 @@ public abstract class Unit{
 	//STATS
 	/** Returns the max health of this unit */
 	public int getMaxHealth(){
-		return stats.maxHealth;
+		return stats.getMaxHealth();
 	}
 	
 	/** Returns the current health of this Unit */
@@ -120,32 +120,32 @@ public abstract class Unit{
 	
 	/** Returns the attack strength of this unit. 0 if this is not a combatant. */
 	public int getAttack(){
-		return stats.attack;
+		return stats.getAttack();
 	}
 
 	/** Returns the counterattack strength of this unit. 0 if this is not a combatant. */
 	public int getCounterattack(){
-		return stats.counterattack;
+		return stats.getCounterattack();
 	}
 
 	/** Returns the attack type of this unit. NO_ATTACK if this is not a combatant. */
 	public AttackType getAttackType(){
-		return stats.attackType;
+		return stats.getAttackType();
 	}
 
 	/** Returns the physical defense of this unit */
 	public int getPhysicalDefense(){
-		return stats.physicalDefense;
+		return stats.getPhysicalDefense();
 	}
 
 	/** Returns the ranged defense of this unit */
 	public int getRangeDefense(){
-		return stats.rangeDefense;
+		return stats.getRangeDefense();
 	}
 
 	/** Returns the magic defense of this unit */
 	public int getMagicDefense(){
-		return stats.magicDefense;
+		return stats.getMagicDefense();
 	}
 
 
@@ -166,22 +166,22 @@ public abstract class Unit{
 	 * If this is a combatant, this is its attack range.
 	 * If this is a summoner, this is its summon range.  */
 	public int getRange(){
-		return stats.range;
+		return stats.getRange();
 	}
 	
 	/** Returns the mana per turn this unit costs/generates */
 	public int getManaPerTurn(){
-		return stats.manaPerTurn;
+		return stats.getManaPerTurn();
 	}
 
 	/** Returns true if this is a generator (manaPerTurn > 0) */
 	public boolean isGenerator(){
-		return stats.manaPerTurn > 0;
+		return getManaPerTurn() > 0;
 	}
 	
 	/** Returns true if this is a burden (manaPerTurn < 0) */
 	public boolean isBurden(){
-		return stats.manaPerTurn < 0;
+		return getManaPerTurn() < 0;
 	}
 	
 	//MODIFIERS
@@ -196,14 +196,14 @@ public abstract class Unit{
 	 * from its original base stats. */
 	public void addModifier(UnitModifier m){
 		modifiers.add(m);
-		stats = new UnitStats(stats.base, modifiers);
+		stats = stats.modifiedWith(modifiers);
 	}
 	
 	/** Removes the given modifier from this unit. Also updates stats with new modifier
 	 * from its original base stats. */
 	public void removeModifier(UnitModifier m){
 		modifiers.remove(m);
-		stats = new UnitStats(stats.base, modifiers);
+		stats = stats.modifiedWith(modifiers);
 	}
 	
 	//FIGHTING
