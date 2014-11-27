@@ -17,9 +17,9 @@ public class Game implements Runnable{
 	/** The board that represents this game */
 	public final Board board;
 	
-	public Game(Board b, LinkedList<Player> players){
+	public Game(Board b){
 		board = b;
-		this.players = new LinkedList<Player>(players);
+		players = new LinkedList<Player>();
 	}
 	
 	/** Runs this game - has the players take turns until the game is over */
@@ -28,6 +28,11 @@ public class Game implements Runnable{
 		while(! isGameOver()){
 			nextTurn();
 		}
+	}
+	
+	/** Adds this player to the game at the end of the player list */
+	protected void addPlayer(Player p){
+		players.add(p);
 	}
 	
 	/** Returns the player who's currently taking his turn */

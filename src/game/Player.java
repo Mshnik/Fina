@@ -30,6 +30,7 @@ public abstract class Player {
 	 */
 	public Player(Game g){
 		game = g;
+		g.addPlayer(this);
 		units = new HashSet<Unit>();
 		visionCloud = new HashSet<Tile>();
 	}
