@@ -29,6 +29,9 @@ public abstract class Commander extends MovingUnit {
 	/** Base amount of mana per turn gained per level */
 	public static final int SCALE_MANA_PT = 1;
 	
+	/** The name of this commander */
+	public final String name;
+	
 	/** The max health for this commander. Increases with level.
 	 * Specifically, this means the maxHealth stat attribute is unused. */
 	protected int maxHealth;
@@ -56,8 +59,9 @@ public abstract class Commander extends MovingUnit {
 	 * 							Attributes are unused, because they are either unnecessary 
 	 * 							or calculated elsewhere.
 	 */
-	public Commander(Player owner, Tile startingTile, UnitStats stats) {
+	public Commander(String name, Player owner, Tile startingTile, UnitStats stats) {
 		super(owner, startingTile, stats);
+		this.name = name;
 		level = 1;
 		recalculateScalingStats();
 		setMana(getMaxMana());

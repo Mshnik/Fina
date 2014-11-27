@@ -18,7 +18,7 @@ public class DummyCommander extends Commander {
 
 	
 	public DummyCommander(Player owner, Tile startingTile) {
-		super(owner, startingTile, BASE_STATS);
+		super("Dummy", owner, startingTile, BASE_STATS);
 	}
 
 	@Override
