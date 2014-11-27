@@ -1,6 +1,6 @@
 package game;
 
-import gui.GamePanel;
+import gui.Frame;
 
 import java.util.LinkedList;
 
@@ -24,8 +24,8 @@ public class Game implements Runnable{
 	/** True if this game currently has fog of war, false otherwise */
 	private boolean fogOfWar;
 	
-	/** The panel that is drawing this Game */
-	private GamePanel panel;
+	/** The Frame that is drawing this Game */
+	private Frame frame;
 	
 	/** True if this game is currently running, false otherwise */
 	private boolean running;
@@ -38,8 +38,8 @@ public class Game implements Runnable{
 	}
 	
 	/** Sets the GamePanel of this game */
-	public void setGamePanel(GamePanel gp){
-		panel = gp;
+	public void setFrame(Frame f){
+		frame = f;
 	}
 	
 	/** Runs this game - has the players take turns until the game is over */
@@ -48,7 +48,7 @@ public class Game implements Runnable{
 		running = true;
 		try{
 			while(! isGameOver()){
-				panel.repaint();
+				frame.repaint();
 				nextTurn();
 			}
 		}
@@ -87,7 +87,7 @@ public class Game implements Runnable{
 		boolean oldFog = fogOfWar; 
 		fogOfWar = fOG;
 		if(oldFog != fOG)
-			panel.repaint();
+			frame.repaint();
 	}
 
 	/** Returns true if this game is ended (one of the termination conditions
