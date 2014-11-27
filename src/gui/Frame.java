@@ -1,6 +1,10 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import unit.dummy.DummyCommander;
@@ -15,6 +19,22 @@ public class Frame extends JFrame {
 	/***/
 	private static final long serialVersionUID = 1L;
 
+	
+	//Some nice fonts to consider:
+	//Apple Chancery
+	//Ayuthaya
+	//Damascus
+	//Herculanum
+	//Kokonar
+	//Libian Sc
+	//Monotype corsiva
+	//Papyrus
+	/** The font to use for all text */
+	protected static final String FONTNAME = "Herculanum";
+	
+	/** The headerPanel this Frame is drawing, if any */
+	protected HeaderPanel headerPanel;
+	
 	/** The gamePanel this Frame is drawing, if any */
 	protected GamePanel gamePanel;
 	
@@ -32,34 +52,40 @@ public class Frame extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
 		setResizable(false);
-		
-		pack();
-		this.setLocation(100, 100);
-		
+		setLocation(100, 100);
 		animator = new Animator();
-		
 		boardCursorActive = true;
 		canTogglePathSelection = true;
-		
 		KeyboardListener.setFrame(this);
-		
-		validate();
-		setVisible(true);
 	}
 	
 	/** Sets this Frame to show GamePanel bp. Removes previous gamePanel if any.
-	 * Also triggers a packing and repainting. */
-	public void setBoard(GamePanel bp){
+	 * Also triggers a packing and repainting.
+	 * @param g - the game to show.
+	 * @param rows - the number of rows to draw of g (height of window).
+	 * @param cols - the number of cols to draw of g (width of window).
+	 */
+	public void setGame(Game g, int rows, int cols){
+		
+		//Removal
 		if(gamePanel != null){
 			remove(gamePanel);
+			remove(headerPanel);
 			animator.removeAnimatable(gamePanel.boardCursor);
 		}
-		add(bp, BorderLayout.CENTER);
-		gamePanel = bp;
+		
+		//New Adding
+		g.setFrame(this);
+	    GamePanel gp = new GamePanel(g, rows, cols);
+		add(gp, BorderLayout.CENTER);
+		gamePanel = gp;
 		animator.addAnimatable(gamePanel.boardCursor);
-
+		HeaderPanel hp = new HeaderPanel(g, gp);
+		add(hp, BorderLayout.NORTH);
+		headerPanel = hp;
 		pack();
 		repaint();
+		setVisible(true);
 	}
 	
 	/** Simple main method to test out Frame features */
@@ -74,16 +100,14 @@ public class Frame extends JFrame {
 	    		else t[i][j] = Terrain.GRASS;
 	    	}
 	    }
-	    
-	    GamePanel gp = new GamePanel(new Game(new Board(t), true), 10, 20);
-	    gp.game.setGamePanel(gp);
-	    Player p1 = new HumanPlayer(gp.game);
-	    new DummyCommander(p1, gp.game.board.getTileAt(0, 0));
-	    new DummyPawn(p1, gp.game.board.getTileAt(0, 1));
+	    Game g = new Game(new Board(t), true);
+	    Player p1 = new HumanPlayer(g);
+	    new DummyCommander(p1, g.board.getTileAt(0, 0));
+	    new DummyPawn(p1,g.board.getTileAt(0, 1));
 
-	    f.setBoard(gp);
+	    f.setGame(g, 8, 15);
 	    
-	    Thread th = new Thread(gp.game);
+	    Thread th = new Thread(g);
 	    th.start();
 	}
 }

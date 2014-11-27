@@ -18,6 +18,10 @@ public class Game implements Runnable{
 	/** The players currently playing this game */
 	private LinkedList<Player> players;
 	
+	/** The index of the current player.
+	 * -1 before the game has started, in range [0 ... players.size() - 1] afterwards */
+	private int index;
+	
 	/** The board that represents this game */
 	public final Board board;
 	
@@ -35,6 +39,7 @@ public class Game implements Runnable{
 		fogOfWar = fog;
 		players = new LinkedList<Player>();
 		running = false;
+		index = -1;
 	}
 	
 	/** Sets the GamePanel of this game */
@@ -46,6 +51,7 @@ public class Game implements Runnable{
 	@Override
 	public void run() {
 		running = true;
+		index = 0;
 		try{
 			while(! isGameOver()){
 				frame.repaint();
@@ -72,6 +78,12 @@ public class Game implements Runnable{
 		if(! running)
 			return null;
 		return players.getFirst();
+	}
+	
+	/** Returns the index of the current player,
+	 * which rotates through as the players rotate. */
+	public int getPlayerIndex(){
+		return index;
 	}
 	
 	/** @return if there is fogOfWar in this game
@@ -108,8 +120,9 @@ public class Game implements Runnable{
 		p.turn();
 		p.turnEnd();
 		
-		//Move this player to the end
+		//Move this player to the end, inc players index
 		players.remove(0);
 		players.add(p);
+		index = (index + 1) % players.size();
 	}
 }
