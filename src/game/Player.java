@@ -64,11 +64,6 @@ public abstract class Player {
 		return commander.getMana();
 	}
 	
-	/** Returns the maximum mana for this player */
-	public int getMaxMana(){
-		return commander.getMaxMana();
-	}
-	
 	/** Returns the manaPerTurn this player generates */
 	public int getManaPerTurn(){
 		return manaPerTurn;
@@ -89,9 +84,26 @@ public abstract class Player {
 		return commander.getLevel();
 	}
 	
-	/** Returns the experience towards the next level (out of 1) */
-	public double getExp(){
-		return commander.getLevelAndExp() - commander.getLevel();
+	/** Returns the current amount of research this commander has accrewed */
+	public int getResearch(){
+		return commander.getResearch();
+	}
+
+	/** Returns the amount of research necessary to get to the next level */
+	public int getResearchRequirement(){
+		return commander.getResearchRequirement();
+	}
+
+	/** Returns the amount of research still necessary to get to the next level */
+	public int getResearchRemaining(){
+		return commander.getResearchRequirement();
+	}
+
+	/** Adds the given amount of research to resarch, capping at the requirement.
+	 * Input must be positive (you can only gain research)
+	 */
+	public void addResearch(int deltaResearch) throws IllegalArgumentException{
+		commander.addResearch(deltaResearch);
 	}
 	
 	//UNITS

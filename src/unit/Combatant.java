@@ -1,5 +1,6 @@
 package unit;
 
+import game.Const;
 import game.Player;
 import board.Tile;
 
@@ -13,10 +14,19 @@ public abstract class Combatant extends MovingUnit {
 	/** true iff this can still fight this turn. Has an impact on how to draw this */
 	private boolean canFight;
 
-	/** Precondition : stats.attackType is AttackType.NO_ATTACK
-	 * @see Unit(Player owner, Board b, Tile tile, UnitStats stats) */
-	public Combatant(Player owner,Tile startingTile, UnitStats stats) {
-		super(owner, startingTile, stats);
+	/** Constructor for Combatant.
+	 * Also adds this unit to the tile it is on as an occupant, and
+	 * its owner as a unit that player owns,
+	 * Subtracts manaCost from the owner, but throws a runtimeException if 
+	 * the owner doesn't have enough mana.
+	 * @param owner - the player owner of this unit
+	 * @param manaCost - the cost of summoning this unit. Should be a positive number.
+	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
+	 * @param stats - the base unmodified stats of this unit.
+	 */
+	public Combatant(Player owner, int manaCost, Tile startingTile, UnitStats stats) 
+			throws RuntimeException, IllegalArgumentException {
+		super(owner, manaCost, startingTile, stats);
 
 		if(stats.getAttackType().equals(AttackType.NO_ATTACK))
 			throw new IllegalArgumentException("Combatant " + this + " can't have attackType NO_ATTACK");
@@ -85,12 +95,12 @@ public abstract class Combatant extends MovingUnit {
 		if(counterAttack) other.preCounterFight(this);
 
 		//This attacks other
-		other.changeHealth(- (getAttack() - other.getDefense(getAttackType())));
+		other.changeHealth(- (getAttack() - other.getDefense(getAttackType())), this);
 
 		//If other is still alive, can see the first unit, 
 		//and this is within range, other counterattacks
 		if(counterAttack){
-			changeHealth(- (other.getAttack() - getDefense(other.getAttackType())));
+			changeHealth(- (other.getAttack() - getDefense(other.getAttackType())), other);
 			counterAttack = true;
 		}
 
@@ -101,15 +111,11 @@ public abstract class Combatant extends MovingUnit {
 		
 		if(isAlive()){
 			postFight(other);
-		}else{
-			if(other.isAlive()) 
-				other.owner.getCommander().addExp(experienceWorth());
 		}
 		if(other.isAlive()) {
 			if(counterAttack) other.postCounterFight(this);
 		}else{
-			if(isAlive()) 
-				owner.getCommander().addExp(other.experienceWorth());
+			owner.getCommander().addResearch((int)(other.manaCost * Const.MANA_COST_TO_RESEARCH_RATIO));
 		}
 		return ! other.isAlive();
 	}

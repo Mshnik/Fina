@@ -3,6 +3,7 @@ package unit;
 import java.util.LinkedList;
 
 
+import game.Const;
 import game.Player;
 import board.Tile;
 
@@ -14,6 +15,9 @@ import board.Tile;
  */
 public abstract class Unit{
 
+	/** The mana spent to summon this unit */
+	public final int manaCost;
+	
 	/** The player that owns this unit */
 	public final Player owner;
 
@@ -34,13 +38,23 @@ public abstract class Unit{
 
 	/** Constructor for Unit.
 	 * Also adds this unit to the tile it is on as an occupant, and
-	 * its owner as a unit that player owns
+	 * its owner as a unit that player owns,
+	 * Subtracts manaCost from the owner, but throws a runtimeException if 
+	 * the owner doesn't have enough mana.
 	 * @param owner - the player owner of this unit
-	 * @param b - the board this unit exists within
+	 * @param manaCost - the cost of summoning this unit. Should be a positive number.
 	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
+	 * @param stats - the base unmodified stats of this unit.
 	 */
-	public Unit(Player owner, Tile tile, UnitStats stats){
+	public Unit(Player owner, int manaCost, Tile tile, UnitStats stats) 
+			throws IllegalArgumentException, RuntimeException{
+		if(manaCost < 0)
+			throw new IllegalArgumentException("manaCosts should be provided as positive ints");
+		if(owner.getMana() < manaCost)
+			throw new RuntimeException(owner + " can't afford to summon unit with cost " + manaCost);
 		this.owner = owner;
+		this.manaCost = manaCost;
+		owner.getCommander().addMana(-manaCost);
 		location = tile;
 		location.addOccupyingUnit(this);
 		this.stats = new UnitStats(stats, null);
@@ -91,20 +105,21 @@ public abstract class Unit{
 	}
 	
 	/** Sets the current health of this unit (alters it by difference)
-	 * @see changeHealth(desired - current)
+	 * @see changeHealth(desired - current, source)
 	 */
-	protected void setHealth(int newHealth){
-		changeHealth(newHealth - health);
+	protected void setHealth(int newHealth, Unit source){
+		changeHealth(newHealth - health, source);
 	}
 
 	/** Alters the current health of this unit. Maxes health at maxHealth.
 	 * if health <= 0 because of this call, calls died().
 	 * @param deltaHealth - amount to change health by.
+	 * @param source - the unit causing this change in health
 	 */
-	protected void changeHealth(int deltaHealth){
+	protected void changeHealth(int deltaHealth, Unit source){
 		health += deltaHealth;
 		health = Math.min(health, getMaxHealth());
-		if(health <= 0) died();
+		if(health <= 0) died(source);
 	}
 	
 	
@@ -114,10 +129,13 @@ public abstract class Unit{
 	}
 	
 	/** Called when a change in health causes this to die.
+	 * Removes it from its owner and tile, and gives its killer research
 	 * Can be overriden in subclasses to add additional behavior,
 	 * but this method should be called somewhere in that overriden method */
-	protected void died(){
+	protected void died(Unit killer){
 		owner.removeUnit(this);
+		location.removeOccupyingUnit();
+		killer.owner.getCommander().addResearch((int)(manaCost * Const.MANA_COST_TO_RESEARCH_RATIO));
 	}
 	
 	/** Returns the attack strength of this unit. 0 if this is not a combatant. */

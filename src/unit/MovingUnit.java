@@ -16,13 +16,19 @@ public abstract class MovingUnit extends Unit{
 	/** true iff this can still move this turn. Has an impact on how to draw this */
 	private boolean canMove;
 
-	/** Constructor for MovingUnit
+	/** Constructor for MovingUnit.
+	 * Also adds this unit to the tile it is on as an occupant, and
+	 * its owner as a unit that player owns,
+	 * Subtracts manaCost from the owner, but throws a runtimeException if 
+	 * the owner doesn't have enough mana.
 	 * @param owner - the player owner of this unit
-	 * @param b - the board this unit exists within
-	 * @param startingTile - the tile this unit begins the game on. Also notifies the tile of this.
+	 * @param manaCost - the cost of summoning this unit. Should be a positive number.
+	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
+	 * @param stats - the base unmodified stats of this unit.
 	 */
-	public MovingUnit(Player owner, Tile startingTile, UnitStats stats){
-		super(owner, startingTile, stats);	
+	public MovingUnit(Player owner, int manaCost, Tile startingTile, UnitStats stats)
+			throws RuntimeException, IllegalArgumentException {
+		super(owner, manaCost, startingTile, stats);	
 	}
 	
 	/** Call at the beginning of every turn.
