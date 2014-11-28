@@ -9,12 +9,11 @@ import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.util.HashSet;
 
-import javax.swing.JPanel;
 import board.*;
 import unit.*;
 
 /** Drawable wrapper for a board object */
-public class GamePanel extends JPanel implements Paintable{
+public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 
 	/***/
 	private static final long serialVersionUID = 1L;
@@ -33,18 +32,6 @@ public class GamePanel extends JPanel implements Paintable{
 	
 	/** The PathSelector that is currently active. Null if none */
 	private PathSelector pathSelector;
-	
-	/** Maximum number of columns of tiles to visually show */
-	public final int maxX;
-	
-	/** Maximum number of rows of tiles to visually show */
-	public final int maxY;
-	
-	/** Scroll in the x direction, in terms of # of cols to skip. Used as a scroll delta */
-	protected int scrollX;
-	
-	/** Scroll in the y direction, in terms of # of rows to skip. Used as a scroll delta */
-	protected int scrollY;
 
 	/** Constructor for GamePanel
 	 * @param g - the game to display using this panel
@@ -52,14 +39,9 @@ public class GamePanel extends JPanel implements Paintable{
 	 * @param maxCols - the maximum number of cols of tiles to show at a time
 	 */
 	public GamePanel(Game g, int maxRows, int maxCols){
+		super(maxCols, maxRows, 0, 0);
 		game = g;
 		boardCursor = new BoardCursor(this);
-		
-		this.maxX = maxCols;
-		this.maxY = maxRows;
-		
-		scrollX = 0;
-		scrollY = 0;
 		
 		setPreferredSize(new Dimension(maxX * CELL_SIZE, maxY * CELL_SIZE));
 	}
@@ -67,7 +49,7 @@ public class GamePanel extends JPanel implements Paintable{
 	/** Creates a new pathSelector at the current boardCursor position.
 	 * Does nothing if the current tile is unoccupied or the unit has already moved. */
 	public void startPathSelection(){
-		Tile t = boardCursor.getTile();
+		Tile t = boardCursor.getElm();
 		if(! t.isOccupied() || ! t.getOccupyingUnit().canMove()) return;
 		
 		pathSelector = new PathSelector(this, (MovingUnit) t.getOccupyingUnit());
@@ -75,7 +57,7 @@ public class GamePanel extends JPanel implements Paintable{
 	
 	/** Cancels the path selection - deletes it but does nothing */
 	public void cancelPathSelection(){
-		if(pathSelector != null) boardCursor.setTile(pathSelector.getPath().getFirst());
+		if(pathSelector != null) boardCursor.setElm(pathSelector.getPath().getFirst());
 		pathSelector = null;
 	}
 	
@@ -94,16 +76,6 @@ public class GamePanel extends JPanel implements Paintable{
 	/** Returns the current pathSelector, if any */
 	public PathSelector getPathSelector(){
 		return pathSelector;
-	}
-	
-	/** Returns the xPosition (graphically) of the top left corner of the given tile */
-	public int getXPosition(Tile t){
-		return (t.col - scrollX) * CELL_SIZE;
-	}
-	
-	/** Returns the yPosition (graphically) of the top left corner of the given tile */
-	public int getYPosition(Tile t){
-		return (t.row - scrollY) * CELL_SIZE;
 	}
 
 	@Override
@@ -148,6 +120,36 @@ public class GamePanel extends JPanel implements Paintable{
 		
 		//Draw the cursor
 		boardCursor.paintComponent(g);
+	}
+
+	/** Returns the tile at the given row and col. Ignores scrolling for this. */
+	@Override
+	public Tile getElmAt(int row, int col) throws IllegalArgumentException {
+		return game.board.getTileAt(row, col);
+	}
+
+	/** Returns the width of the board's matrix */
+	@Override
+	public int getMatrixWidth() {
+		return game.board.getWidth();
+	}
+
+	/** Returns the height of the board's matrix */
+	@Override
+	public int getMatrixHeight() {
+		return game.board.getHeight();
+	}
+
+	/** Returns GamePanel.CELL_SIZE */
+	@Override
+	public int getElementHeight() {
+		return GamePanel.CELL_SIZE;
+	}
+
+	/** Returns GamePanel.CELL_SIZE */
+	@Override
+	public int getElementWidth() {
+		return GamePanel.CELL_SIZE;
 	}
 
 }

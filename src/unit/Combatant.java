@@ -44,6 +44,12 @@ public abstract class Combatant extends MovingUnit {
 		canFight = true;
 	}
 	
+	/** Combatants can only move if they haven't fought already */
+	@Override
+	public boolean canMove(){
+		return super.canMove() && canFight();
+	}
+	
 	//FIGHTING
 	/** Returns iff this can fight this turn */
 	public boolean canFight(){

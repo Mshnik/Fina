@@ -1,5 +1,6 @@
 package board;
 
+import game.MatrixElement;
 import unit.Unit;
 
 /** A Tile is a single square in the board.
@@ -9,7 +10,7 @@ import unit.Unit;
  * @author MPatashnik
  *
  */
-public class Tile implements Comparable<Tile>{
+public class Tile implements Comparable<Tile>, MatrixElement{
 
 	/** The row of this tile in its board */
 	public final int row;
@@ -103,6 +104,18 @@ public class Tile implements Comparable<Tile>{
 	/** Returns true iff there is an occupyingUnit */
 	public boolean isOccupied(){
 		return occupyingUnit != null;
+	}
+
+	/** Returns this.row */
+	@Override
+	public int getRow() {
+		return row;
+	}
+
+	/** Returns this.col */
+	@Override
+	public int getCol() {
+		return col;
 	}
 
 }
