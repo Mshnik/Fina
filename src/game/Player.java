@@ -24,6 +24,9 @@ public abstract class Player {
 	/** The Tiles in the board this player has vision of */
 	private HashSet<Tile> visionCloud;
 	
+	/** The sum of all the mana per turn generation/costs this player owns */
+	private int manaPerTurn;
+	
 	/** Constructor for Player class with just game.
 	 * @param g
 	 * @param c
@@ -45,6 +48,17 @@ public abstract class Player {
 		return this instanceof HumanPlayer;
 	}
 	
+	//HEALTH AND MANA
+	/** Returns the current health for this player (the health of the commander) */
+	public int getHealth(){
+		return commander.getHealth();
+	}
+	
+	/** Returns the max health for this player (the max health of the commander */
+	public int getMaxHealth(){
+		return commander.getMaxHealth();
+	}
+	
 	/** Returns the current mana for this player */
 	public int getMana(){
 		return commander.getMana();
@@ -55,9 +69,29 @@ public abstract class Player {
 		return commander.getMaxMana();
 	}
 	
+	/** Returns the manaPerTurn this player generates */
+	public int getManaPerTurn(){
+		return manaPerTurn;
+	}
+	
+	/** Updates the manaPerTurn this player generates. Should be called at least at the start
+	 * of every turn
+	 */
+	public void updateManaPerTurn(){
+		manaPerTurn = 0;
+		for(Unit u : units){
+			manaPerTurn += u.getManaPerTurn();
+		}
+	}
+	
 	/** Returns the current level (not exp) of this player */
 	public int getLevel(){
 		return commander.getLevel();
+	}
+	
+	/** Returns the experience towards the next level (out of 1) */
+	public double getExp(){
+		return commander.getLevelAndExp() - commander.getLevel();
 	}
 	
 	//UNITS
@@ -85,6 +119,7 @@ public abstract class Player {
 			else throw new IllegalArgumentException("Can't set " + u + " to commander for " + this);
 		}
 		refreshVisionCloud();
+		updateManaPerTurn();
 	}
 	
 	/** Removes the given unit from this player's units.
@@ -92,8 +127,9 @@ public abstract class Player {
 	 */
 	public void removeUnit(Unit u){
 		units.remove(u);
-		refreshVisionCloud();
 		if(u instanceof Commander && (Commander)u == commander) commander = null;
+		refreshVisionCloud();
+		updateManaPerTurn();
 	}
 	
 	//VISION
@@ -126,12 +162,13 @@ public abstract class Player {
 	/** Called when it becomes this player's turn. Does start of turn processing. 
 	 * 		- calls refresh on each unit (no particular order) */
 	protected final void turnStart(){
-		//Refresh for turn and add manaPerTurn
+		//Refresh for turn
 		for(Unit u : units){
 			u.refreshForTurn();
-			commander.addMana(u.getManaPerTurn());
 		}
-		
+		//Add mana Perturn
+		updateManaPerTurn();
+		commander.addMana(manaPerTurn);
 		
 		//If mana < 0, force player to choose units to sacrifice instead.
 		if(commander.getMana() < 0){

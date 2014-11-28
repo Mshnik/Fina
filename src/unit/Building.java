@@ -10,9 +10,30 @@ public abstract class Building extends Unit {
 	 * @see Unit(Player owner, Tile tile, UnitStats stats) */
 	public Building(Player owner, Tile tile, UnitStats stats) throws IllegalArgumentException {
 		super(owner,tile, stats);
-		
-		if(! stats.getAttackType().equals(AttackType.NO_ATTACK))
-			throw new IllegalArgumentException("Building " + this + " must have attackType NO_ATTACK");
+	}
+	
+	//RESTRICTIONS
+	/** Restricted attack - has val 0. */
+	@Override
+	public int getAttack(){
+		return 0;
+	}
+
+	/** Restricted counterattack - has val 0. */
+	@Override
+	public int getCounterattack(){
+		return 0;
+	}
+
+	/** Commanders can't fight */
+	public boolean canFight(){
+		return false;
+	}
+
+	/** Restricted attackType - has val NO_ATTACK. */
+	@Override
+	public AttackType getAttackType(){
+		return AttackType.NO_ATTACK;
 	}
 
 }

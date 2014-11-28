@@ -39,6 +39,8 @@ public class DummyPawn extends Pawn {
 
 	@Override
 	public void postMove(LinkedList<Tile> path) {
+		owner.getCommander().addMana(-1);
+		owner.game.repaint();
 		this.refreshForTurn();
 	}
 

@@ -47,6 +47,11 @@ public class Game implements Runnable{
 		frame = f;
 	}
 	
+	/** Instructs this game to repaint its frame */
+	public void repaint(){
+		frame.repaint();
+	}
+	
 	/** Runs this game - has the players take turns until the game is over */
 	@Override
 	public void run() {

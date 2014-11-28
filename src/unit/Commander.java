@@ -117,17 +117,24 @@ public abstract class Commander extends MovingUnit {
 	public int getManaPerTurn(){
 		return manaPerTurn;
 	}
-		
-	protected boolean setMana(int newMana){
-		return addMana(newMana - mana);
+	
+	/** Sets to the given amount of mana. Input must be in range 0 .. maxMana */
+	protected void setMana(int newMana) throws IllegalArgumentException{
+		if(newMana < 0 || newMana > getMaxMana())
+			throw new IllegalArgumentException("Can't set mana to " + newMana + " - OOB");
+		addMana(newMana - mana);
 	}
 	
 	/** adds the given amount of mana, capping at maxMana.
-	 * @returns true if this drains mana (mana < 0), false otherwise
+	 * If this would make mana negative, instead sets mana to 0,
+	 * but returns the amount of mana below 0 this change would put.
+	 * If the mana is still positive, returns the new value of mana.
 	 */
-	public boolean addMana(int deltaMana){
+	public int addMana(int deltaMana){
 		mana = Math.min(mana + deltaMana, maxMana);
-		return mana < 0;
+		int nMana = mana;
+		if(mana < 0) mana = 0;
+		return nMana;
 	}
 	
 	/** A basic scalingStats implementation.

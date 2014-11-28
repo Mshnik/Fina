@@ -1,14 +1,9 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
 import javax.swing.JFrame;
 
-import unit.dummy.DummyCommander;
-import unit.dummy.DummyPawn;
+import unit.dummy.*;
 import game.*;
 import board.*;
 
@@ -30,7 +25,7 @@ public class Frame extends JFrame {
 	//Monotype corsiva
 	//Papyrus
 	/** The font to use for all text */
-	protected static final String FONTNAME = "Herculanum";
+	protected static final String FONTNAME = "Damascus";
 	
 	/** The headerPanel this Frame is drawing, if any */
 	protected HeaderPanel headerPanel;
