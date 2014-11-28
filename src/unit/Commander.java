@@ -1,5 +1,6 @@
 package unit;
 
+import game.Const;
 import game.Player;
 import board.Tile;
 
@@ -10,24 +11,6 @@ import board.Tile;
  *
  */
 public abstract class Commander extends MovingUnit {
-
-	/** Base level of health for lvl1 commanders */
-	public static final int BASE_HEALTH = 10;
-	
-	/** Base amount of max health gained per level */
-	public static final int SCALE_HEALTH = 2;
-	
-	/** Base level of max mana for lvl1 commanders */
-	public static final int BASE_MANA = 15;
-	
-	/** Base amount of max mana gained per level */
-	public static final int SCALE_MANA = 5;
-	
-	/** Base level of mana per turn for lvl1 commanders */
-	public static final int BASE_MANA_PT = 5;
-	
-	/** Base amount of mana per turn gained per level */
-	public static final int SCALE_MANA_PT = 1;
 	
 	/** The name of this commander */
 	public final String name;
@@ -36,19 +19,30 @@ public abstract class Commander extends MovingUnit {
 	 * Specifically, this means the maxHealth stat attribute is unused. */
 	protected int maxHealth;
 	
-	/** The mana cap for this commander. Increases with level */
-	protected int maxMana;
-	
 	/** The current mana level of this commander. Varies over the course of the game. */
 	private int mana;
 	
 	/** The current mana per turn generation of this commander. Increases with level. */
 	protected int manaPerTurn;
 	
+	/** The highest level commanders can achieve */
+	public static final int MAX_LEVEL = 5;
+	
 	/** The current level of this player.
-	 * Integer part is the actual level, fraction portion is the exp towards next level.
+	 * Starts at 1, increases by 1 every time the player performs a levelup action.
+	 * Capped at 5
 	 */
-	private double level;
+	private int level;
+	
+	/** The amount of research required to get to the next level for free.
+	 * Index i = cost to get from level i+1 to i+2 (because levels are 1 indexed). */
+	public static final int[] RESEARCH_REQS = {
+		100, 250, 600, 1500
+	};
+	
+	/** The amount of research towards the next level this commander has accrewed.
+	 * Alwasy in the range [0, RESEARCH_REQS[level-1]] */
+	private int research;
 	
 	/** Constructor for Commanders
 	 * @param owner			- player who owns this commander
@@ -63,20 +57,15 @@ public abstract class Commander extends MovingUnit {
 		super(owner, startingTile, stats);
 		this.name = name;
 		level = 1;
+		research = 0;
 		recalculateScalingStats();
-		setMana(getMaxMana());
+		setMana(Const.START_MANA);
 		setHealth(getMaxHealth());
 	}
 	//RESTRICTIONS
 	/** Restricted attack - has val 0. */
 	@Override
 	public int getAttack(){
-		return 0;
-	}
-	
-	/** Restricted counterattack - has val 0. */
-	@Override
-	public int getCounterattack(){
 		return 0;
 	}
 	
@@ -105,11 +94,6 @@ public abstract class Commander extends MovingUnit {
 		return mana;
 	}
 	
-	/** Returns the max mana of this commander. */
-	public int getMaxMana(){
-		return maxMana;
-	}
-	
 	/** Returns the mana per turn this commander generates
 	 * Overrides Unit.getMaxHealth so level can affect maxHealth.
 	 * This does mean the stats.maxHealth attribute is unused for commanders */
@@ -118,28 +102,24 @@ public abstract class Commander extends MovingUnit {
 		return manaPerTurn;
 	}
 	
-	/** Sets to the given amount of mana. Input must be in range 0 .. maxMana */
+	/** Sets to the given amount of mana. Input must be non-negative */
 	protected void setMana(int newMana) throws IllegalArgumentException{
-		if(newMana < 0 || newMana > getMaxMana())
+		if(newMana < 0)
 			throw new IllegalArgumentException("Can't set mana to " + newMana + " - OOB");
 		addMana(newMana - mana);
 	}
 	
-	/** adds the given amount of mana, capping at maxMana.
+	/** adds the given amount of mana
 	 * If this would make mana negative, instead sets mana to 0,
 	 * but returns the amount of mana below 0 this change would put.
 	 * If the mana is still positive, returns the new value of mana.
 	 */
 	public int addMana(int deltaMana){
-		mana = Math.min(mana + deltaMana, maxMana);
+		mana = mana + deltaMana;
 		int nMana = mana;
 		if(mana < 0) mana = 0;
 		return nMana;
 	}
-	
-	/** A basic scalingStats implementation.
-	 * Consider using this, then making alterations.
-	 */
 	
 	/** Re-calculates maxHealth, maxMana, and manaPerTurn off of level and other factors.
 	 * Should start with base formulae based off of static constants
@@ -148,47 +128,45 @@ public abstract class Commander extends MovingUnit {
 	 * same amount */
 	public abstract void recalculateScalingStats();
 	
-	//LEVEL
-	/** Returns the current level of this player
-	 * Integer part is the actual level, fraction portion is the exp towards next level.
-	 */
-	public double getLevelAndExp(){
+	//LEVEL AND RESEARCH
+	/** Returns the level of this player */
+	public int getLevel(){
 		return level;
 	}
 	
-	/** Returns the actual level of this player (rounded down to nearest int) */
-	public int getLevel(){
-		return (int)level;
+	/** Returns the current amount of research this commander has accrewed */
+	public int getResearch(){
+		return research;
 	}
 	
-	/** Adds the given amount of experience to this player, then calls levelUp on
-	 * commander if this leveled up. Will call levelUp multiple times if this leveled up
-	 * multiple times.
-	 * 
-	 * Scales the input by dividing by the current level. If gaining experience would
-	 * cause multiple level-ups, adds one level at a time so scaling happens correctly
+	/** Returns the amount of research necessary to get to the next level */
+	public int getResearchRequirement(){
+		if(level == MAX_LEVEL)
+			return Integer.MAX_VALUE;
+		return RESEARCH_REQS[level - 1];
+	}
+	
+	/** Returns the amount of research still necessary to get to the next level */
+	public int getResearchRemaining(){
+		return research - getResearchRequirement();
+	}
+	
+	/** Adds the given amount of research to resarch, capping at the requirement.
+	 * Input must be positive (you can only gain research)
 	 */
-	public void addExp(double exp){
-		//If enough to cause a levelup, move to the next rounded level before doing more.
-		double toNextLevel = (getLevel() + 1 - level) * getLevel();
-		if(exp >= toNextLevel){
-			//Deduct just enough exp to get to next level
-			exp -= toNextLevel;
-			//Increase level to exactly next level and call levelup
-			level = getLevel()+1;
-			levelUp();
-			//Recurse to process rest of exp
-			addExp(exp);	
-		} else{
-			//Otherwise, just scale exp and add it.
-			level += exp / getLevel();
-		}
+	public void addResearch(int deltaResearch) throws IllegalArgumentException{
+		if(deltaResearch < 0)
+			throw new IllegalArgumentException("Can't add negative amount of research to " + this);
+		
+		research = Math.min(research + deltaResearch, getResearchRequirement());
 	}
 	
 	/** Called by Player class when this levels up.
 	 * Can be overriden by subclass to cause affect when leveled up, 
-	 * but this super method should be called first */
+	 * but this super method should be called first.
+	 * resets research, recalculates manaPerTurn and health of commander */
 	public void levelUp(){
+		research = 0;
 		recalculateScalingStats();
 	}
 }
