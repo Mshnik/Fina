@@ -38,10 +38,8 @@ public abstract class Commander extends MovingUnit {
 	/** Constructor for Commander.
 	 * Also adds this unit to the tile it is on as an occupant, and
 	 * its owner as a unit that player owns,
-	 * Subtracts manaCost from the owner, but throws a runtimeException if 
-	 * the owner doesn't have enough mana.
+	 * Commanders have a manaCost of 0.
 	 * @param owner - the player owner of this unit
-	 * @param manaCost - the cost of summoning this unit. Should be a positive number.
 	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
 	 * @param stats			- the stats of this commander.
 	 * 							Notably, because of restrictions on commander,
@@ -49,15 +47,15 @@ public abstract class Commander extends MovingUnit {
 	 * 							Attributes are unused, because they are either unnecessary 
 	 * 							or calculated elsewhere.
 	 */
-	public Commander(String name, int manaCost, Player owner, Tile startingTile, UnitStats stats)
+	public Commander(String name, Player owner, Tile startingTile, UnitStats stats)
 			throws RuntimeException, IllegalArgumentException {
-		super(owner, manaCost, startingTile, stats);
+		super(owner, 0, startingTile, stats);
 		this.name = name;
 		level = 1;
 		research = 0;
 		recalculateScalingStats();
 		setMana(Const.START_MANA);
-		setHealth(getMaxHealth());
+		setHealth(getMaxHealth(), this);
 	}
 	//RESTRICTIONS
 	/** Restricted attack - has val 0. */
@@ -138,9 +136,9 @@ public abstract class Commander extends MovingUnit {
 
 	/** Returns the amount of research necessary to get to the next level */
 	public int getResearchRequirement(){
-		if(level == MAX_LEVEL)
+		if(level == Const.MAX_LEVEL)
 			return Integer.MAX_VALUE;
-		return RESEARCH_REQS[level - 1];
+		return Const.RESEARCH_REQS[level - 1];
 	}
 
 	/** Returns the amount of research still necessary to get to the next level */

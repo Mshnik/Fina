@@ -50,11 +50,14 @@ public abstract class Unit{
 			throws IllegalArgumentException, RuntimeException{
 		if(manaCost < 0)
 			throw new IllegalArgumentException("manaCosts should be provided as positive ints");
-		if(owner.getMana() < manaCost)
+		if(manaCost > 0 && owner.getMana() < manaCost)
 			throw new RuntimeException(owner + " can't afford to summon unit with cost " + manaCost);
 		this.owner = owner;
 		this.manaCost = manaCost;
-		owner.getCommander().addMana(-manaCost);
+		
+		if(manaCost > 0 ) 
+			owner.getCommander().addMana(-manaCost);
+		
 		location = tile;
 		location.addOccupyingUnit(this);
 		this.stats = new UnitStats(stats, null);

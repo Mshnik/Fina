@@ -98,7 +98,6 @@ public class Frame extends JFrame {
 	    Game g = new Game(new Board(t), true);
 	    Player p1 = new HumanPlayer(g);
 	    new DummyCommander(p1, g.board.getTileAt(0, 0));
-	    new DummyPawn(p1,g.board.getTileAt(0, 1));
 
 	    f.setGame(g, 8, 15);
 	    
