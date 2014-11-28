@@ -40,10 +40,13 @@ public class Tile implements Comparable<Tile>{
 		terrain = t;
 	}
 
-	/** Compares this to other using the dist field - lower dist comes first. */
+	/** Compares this to other using the row and col fields. 
+	 * Sort so that selection goes top to bottom, left to right. */
 	@Override
 	public int compareTo(Tile other){
-		return dist - other.dist;
+		if(row < other.row) return -1;
+		else if(row > other.row) return 1;
+		else return col - other.col;
 	}
 
 	/** ToString implementation - shows basic info of Tile. Remains brief to be useful in debugging */

@@ -135,7 +135,7 @@ public class Board implements Iterable<Tile>{
 			@Override
 			/** Use inverse of regular comparison (higher distance first) */
 			public int compare(Tile o1, Tile o2) {
-				return - o1.compareTo(o2);
+				return - (o1.dist - o2.dist);
 			}
 		});
 		frontier.add(start);
