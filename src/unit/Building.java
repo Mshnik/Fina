@@ -19,12 +19,6 @@ public abstract class Building extends Unit {
 		return 0;
 	}
 
-	/** Restricted counterattack - has val 0. */
-	@Override
-	public int getCounterattack(){
-		return 0;
-	}
-
 	/** Commanders can't fight */
 	public boolean canFight(){
 		return false;

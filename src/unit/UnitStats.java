@@ -14,7 +14,7 @@ public class UnitStats{
 	 * maxHealth >= 0. */
 	private int maxHealth;
 	
-	/** The mana generation/cost of this unit. Positive is generation, negative is cost */
+	/** The mana generation/cost of this unit, if any. Positive is generation */
 	private int manaPerTurn;
 	
 	/** Damage dealt when attacking (Before applying defenses). attack >= 0 */
@@ -23,16 +23,9 @@ public class UnitStats{
 	/** Type of damage dealt when attacking. */
 	private AttackType attackType;
 	
-	/** Damage dealt when counterattacking (before applying defenses). counterattack >= 0 */
-	private int counterattack;
-	
 	/** Defense against physical damage - subtracted from all physical attacks before taking damage.
 	 * physicalDefense >= 0 */
 	private int physicalDefense;
-	
-	/** Defense against ranged damage - subtracted from all ranged attacks before taking damage
-	 * rangeDefense >= 0 */
-	private int rangeDefense;
 	
 	/** Defense against magic damage - subtracted from all magic attacks before taking damage
 	 * magicDefense >= 0 */
@@ -40,6 +33,7 @@ public class UnitStats{
 	
 	/** Distance at which another unit can be attacked, or at which units can be summoned. 
 	 * Distance is measured using manhattan distance - 1.
+	 * Units with range 0 are melee, others are ranged
 	 * range >= 0.
 	 */
 	private int range;
@@ -52,24 +46,19 @@ public class UnitStats{
 	 * @param manaPerTurn		- the mana this generates (or cost, if < 0) per turn
 	 * @param attack			- attack of this unit
 	 * @param attackType		- type of attack of this unit
-	 * @param counterattack 	- counter attack strength of this unit
 	 * @param physicalDefense	- physical defense of this unit - defense applied to physical attacks
-	 * @param rangeDefense		- ranged defense of this unit	- defense applied to ranged attacks
 	 * @param magicDefense		- magic defense of this unit	- defense applied to magic attacks
 	 * @param range				- range of this unit - 0 represents melee (adjacent units)
 	 * @param visionRange		- visionRange of this unit - 0 represents no extra vision beyond its own tile
 	 */
-	public UnitStats(int maxHealth, int manaPerTurn, int attack, AttackType attackType, int counterattack, 
-					 int physicalDefense, int rangeDefense, int magicDefense, int range, int visionRange) 
+	public UnitStats(int maxHealth, int manaPerTurn, int attack, AttackType attackType,
+					 int physicalDefense, int rangeDefense, int range, int visionRange) 
 			throws IllegalArgumentException{
 		this.maxHealth = maxHealth;
 		this.manaPerTurn = manaPerTurn;
 		this.attack = attack;
 		this.attackType = attackType;
-		this.counterattack = counterattack;
 		this.physicalDefense = physicalDefense;
-		this.rangeDefense = rangeDefense;
-		this.magicDefense = magicDefense;
 		this.range = range;
 		this.visionRange = visionRange;
 		base = null;
@@ -82,9 +71,7 @@ public class UnitStats{
 		int manaPerTurn = base.manaPerTurn;
 		int attack = base.attack;
 		AttackType attackType = base.attackType;
-		int counterattack = base.counterattack;
 		int physicalDefense = base.physicalDefense;
-		int rangeDefense = base.rangeDefense;
 		int magicDefense = base.magicDefense;
 		int range = base.range;
 		int visionRange = base.visionRange;
@@ -101,9 +88,7 @@ public class UnitStats{
 		this.manaPerTurn = manaPerTurn;
 		this.attack = attack;
 		this.attackType = attackType;
-		this.counterattack = counterattack;
 		this.physicalDefense = physicalDefense;
-		this.rangeDefense = rangeDefense;
 		this.magicDefense = magicDefense;
 		this.range = range;
 		this.visionRange = visionRange;
@@ -151,26 +136,11 @@ public class UnitStats{
 	}
 
 	/**
-	 * @return Damage dealt when counterattacking (before applying defenses). counterattack >= 0
-	 */
-	public int getCounterattack() {
-		return counterattack;
-	}
-
-	/**
 	 * @return Defense against physical damage - subtracted from all physical attacks before taking damage.
 	 * physicalDefense >= 0
 	 */
 	public int getPhysicalDefense() {
 		return physicalDefense;
-	}
-
-	/**
-	 * @return Defense against ranged damage - subtracted from all ranged attacks before taking damage
-	 * rangeDefense >= 0
-	 */
-	public int getRangeDefense() {
-		return rangeDefense;
 	}
 
 	/**

@@ -119,22 +119,10 @@ public abstract class Unit{
 	protected void died(){
 		owner.removeUnit(this);
 	}
-
-	/** Returns the (base) experience this is worth when killed. *
-	 */
-	public double experienceWorth(){
-		//TODO
-		return 0;
-	}
 	
 	/** Returns the attack strength of this unit. 0 if this is not a combatant. */
 	public int getAttack(){
 		return stats.getAttack();
-	}
-
-	/** Returns the counterattack strength of this unit. 0 if this is not a combatant. */
-	public int getCounterattack(){
-		return stats.getCounterattack();
 	}
 
 	/** Returns the attack type of this unit. NO_ATTACK if this is not a combatant. */
@@ -145,11 +133,6 @@ public abstract class Unit{
 	/** Returns the physical defense of this unit */
 	public int getPhysicalDefense(){
 		return stats.getPhysicalDefense();
-	}
-
-	/** Returns the ranged defense of this unit */
-	public int getRangeDefense(){
-		return stats.getRangeDefense();
 	}
 
 	/** Returns the magic defense of this unit */
@@ -164,11 +147,17 @@ public abstract class Unit{
 		switch(type){
 		case NO_ATTACK: return Integer.MAX_VALUE;
 		case PHYSICAL: return getPhysicalDefense();
-		case RANGE: return getRangeDefense();
 		case MAGIC: return getMagicDefense();
 		case TRUE: return 0;
 		default: return 0;
 		}
+	}
+	
+	/** Returns true if this is a ranged unit (range > 0)
+	 * false if this is melee (range == 0)
+	 */
+	public boolean isRanged(){
+		return getRange() > 0;
 	}
 
 	/** Returns the range of this unit.

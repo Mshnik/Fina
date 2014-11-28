@@ -4,7 +4,6 @@ package unit;
 public enum AttackType {
 	NO_ATTACK,
 	PHYSICAL,
-	RANGE,
 	MAGIC,
 	TRUE
 }

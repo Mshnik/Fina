@@ -90,7 +90,7 @@ public abstract class Combatant extends MovingUnit {
 		//If other is still alive, can see the first unit, 
 		//and this is within range, other counterattacks
 		if(counterAttack){
-			changeHealth(- (other.getCounterattack() - getDefense(other.getAttackType())));
+			changeHealth(- (other.getAttack() - getDefense(other.getAttackType())));
 			counterAttack = true;
 		}
 
