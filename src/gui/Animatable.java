@@ -18,4 +18,7 @@ public interface Animatable extends Paintable{
 	
 	/** Advance the state of this animatable by 1, rolling over to 0 as necessary */
 	public void advanceState();
+	
+	/** Sets the animation state. Will mod by the number of possible states */
+	public void setState(int state);
 }

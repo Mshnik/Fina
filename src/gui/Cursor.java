@@ -108,7 +108,7 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 		int w = getPanel().getElementWidth();
 		
 		//delta - depends on animation state. when non 0, makes cursor smaller.
-		int d = animationState * 2;
+		int d = Math.abs(animationState - 3);
 		
 		//(x,y) coordinates for polylines. Each is 3 points, clockwise.
 		int[][][] coords = {
@@ -119,18 +119,18 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 				},
 				{
 					//Top Right corner
-					{x + 3*w/4 - d, x + w - d, x + w - d},
+					{x + 3*w/4 - d - THICKNESS, x + w - d - THICKNESS, x + w - d - THICKNESS},
 					{y + d, y + d, y + d + h/4}
 				},
 				{
 					//Bottom Right corner
-					{x + w - d, x + w - d, x + 3*w/4 - d},
-					{y + 3*h/4 - d, y + h - d, y + h - d}
+					{x + w - d - THICKNESS, x + w - d - THICKNESS, x + 3*w/4 - d - THICKNESS},
+					{y + 3*h/4 - d - THICKNESS, y + h - d - THICKNESS, y + h - d -THICKNESS}
 				},
 				{
 					//Bottom left corner
 					{x + w/4 + d, x + d, x + d},
-					{y + h - d, y + h - d, y + 3*h/4 - d}
+					{y + h - d - THICKNESS, y + h - d - THICKNESS, y + 3*h/4 - d - THICKNESS}
 				}
 		};
 		
@@ -142,15 +142,21 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 	/** Cursors have a cycle length of some fraction of a second. */
 	@Override
 	public int getStateLength() {
-		return 350;
+		return 100;
 	}
 
 	/** Cursors have 2 states */
 	@Override
 	public int getStateCount() {
-		return 2;
+		return 5;
 	}
 
+	/** Sets the animation state */
+	@Override
+	public void setState(int state){
+		animationState = state % getStateCount();
+	}
+	
 	/** Returns the animation state this cursor is on */
 	@Override
 	public int getState() {
