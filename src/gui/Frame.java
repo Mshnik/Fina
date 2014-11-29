@@ -142,7 +142,8 @@ public class Frame extends JFrame {
 	    for(int i = 0; i < t.length; i++){
 	    	for(int j = 0; j < t[i].length; j++){
 	    		double d = Math.random();
-	    		if(d <= 0.15) t[i][j] = Terrain.MOUNTAIN;
+	    		if(d < 0.05) t[i][j] = Terrain.ANCIENT_GROUND;
+	    		else if(d <= 0.15) t[i][j] = Terrain.MOUNTAIN;
 	    		else if (d <= 0.55) t[i][j] = Terrain.WOODS;
 	    		else t[i][j] = Terrain.GRASS;
 	    	}

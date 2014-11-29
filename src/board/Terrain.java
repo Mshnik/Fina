@@ -5,5 +5,7 @@ public enum Terrain {
 	GRASS,
 	WOODS,
 	MOUNTAIN,
-	ANCIENT_GROUND
+	ANCIENT_GROUND;
+	
+	public static final String IMAGE_ROOT = "terrain/";
 }

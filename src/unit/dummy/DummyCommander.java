@@ -1,6 +1,5 @@
 package unit.dummy;
 
-import game.Const;
 import game.Player;
 
 import java.util.LinkedList;
@@ -24,8 +23,8 @@ public class DummyCommander extends Commander {
 
 	@Override
 	public void recalculateScalingStats() {
-		maxHealth = Const.BASE_HEALTH + Const.SCALE_HEALTH * getLevel();
-		manaPerTurn = Const.BASE_MANA_PT + Const.SCALE_MANA_PT * getLevel();
+		maxHealth = Commander.BASE_HEALTH + Commander.SCALE_HEALTH * getLevel();
+		manaPerTurn = Commander.BASE_MANA_PT + Commander.SCALE_MANA_PT * getLevel();
 	}
 
 	@Override

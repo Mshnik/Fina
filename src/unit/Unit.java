@@ -154,7 +154,7 @@ public abstract class Unit{
 	protected void died(Unit killer){
 		owner.removeUnit(this);
 		location.removeOccupyingUnit();
-		killer.owner.getCommander().addResearch((int)(manaCost * Const.MANA_COST_TO_RESEARCH_RATIO));
+		killer.owner.getCommander().addResearch((int)(manaCost * Commander.MANA_COST_TO_RESEARCH_RATIO));
 	}
 	
 	/** Returns the attack strength of this unit. 0 if this is not a combatant. */
@@ -168,25 +168,25 @@ public abstract class Unit{
 	}
 
 	/** Returns the physical defense of this unit */
-	public int getPhysicalDefense(){
+	public double getPhysicalDefense(){
 		return stats.getPhysicalDefense();
 	}
 
 	/** Returns the magic defense of this unit */
-	public int getMagicDefense(){
+	public double getMagicDefense(){
 		return stats.getMagicDefense();
 	}
 
 
 	/** Returns the Defense of this stats for the given attack type.
-	 * Infinite defense for NO_ATTACK type damage, no defense for TRUE damage */
-	public int getDefense(AttackType type){
+	 * Infinite defense (prevent all of it) for NO_ATTACK type damage, no defense for TRUE damage */
+	public double getDefense(AttackType type){
 		switch(type){
-		case NO_ATTACK: return Integer.MAX_VALUE;
+		case NO_ATTACK: return 1.0;
 		case PHYSICAL: return getPhysicalDefense();
 		case MAGIC: return getMagicDefense();
-		case TRUE: return 0;
-		default: return 0;
+		case TRUE: return 0.0;
+		default: return 0.0;
 		}
 	}
 	

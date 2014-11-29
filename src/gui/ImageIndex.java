@@ -5,8 +5,11 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+
+import unit.MovingUnit;
 import unit.Unit;
 
+import board.Terrain;
 import board.Tile;
 
 /** Library for lookup of different image resources */
@@ -24,6 +27,8 @@ public class ImageIndex {
 	public static BufferedImage MOUNTAINS;
 	/** The image for woods terrain */
 	public static BufferedImage WOODS;
+	/** The image for ancient ground terrain */
+	public static BufferedImage ANCIENT_GROUND;
 	
 	/** The image for sandstone texture */
 	public static BufferedImage SANDSTONE;
@@ -34,11 +39,17 @@ public class ImageIndex {
 	/** Static initializer for the Image Class - do all image reading here */
 	static{
 		try {
-			GRASS = ImageIO.read(new File(IMAGE_ROOT + "grass.png"));
-			MOUNTAINS = ImageIO.read(new File(IMAGE_ROOT + "mountain.png"));
-			WOODS = ImageIO.read(new File(IMAGE_ROOT + "woods.png"));
+			//Assorted other 
 			SANDSTONE = ImageIO.read(new File(IMAGE_ROOT + "sandstone.jpg"));
-			DUMMY_COMMANDER = ImageIO.read(new File(IMAGE_ROOT + "chrono.gif"));
+			
+			//Terrain
+			GRASS = ImageIO.read(new File(IMAGE_ROOT + Terrain.IMAGE_ROOT + "grass.png"));
+			MOUNTAINS = ImageIO.read(new File(IMAGE_ROOT + Terrain.IMAGE_ROOT + "mountain.png"));
+			WOODS = ImageIO.read(new File(IMAGE_ROOT + Terrain.IMAGE_ROOT + "woods.png"));
+			ANCIENT_GROUND = ImageIO.read(new File(IMAGE_ROOT + Terrain.IMAGE_ROOT + "gold.jpg"));	
+			
+			//Units
+			DUMMY_COMMANDER = ImageIO.read(new File(IMAGE_ROOT + MovingUnit.IMAGE_ROOT + "link.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -50,6 +61,7 @@ public class ImageIndex {
 			case GRASS: 	return GRASS;
 			case MOUNTAIN: 	return MOUNTAINS;
 			case WOODS:		return WOODS;
+			case ANCIENT_GROUND: return ANCIENT_GROUND;
 			
 			//Image not found
 			default:		return null;

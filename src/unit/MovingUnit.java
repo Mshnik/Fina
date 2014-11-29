@@ -13,6 +13,9 @@ import game.Player;
  */
 public abstract class MovingUnit extends Unit{
 
+	/** Image root for moving unit (people) files */
+	public static final String IMAGE_ROOT = "unit/";
+	
 	/** true iff this can still move this turn. Has an impact on how to draw this */
 	private boolean canMove;
 
