@@ -42,7 +42,12 @@ public class Game implements Runnable{
 		index = -1;
 	}
 	
-	/** Sets the GamePanel of this game */
+	/** Returns the Frame this game is drawn in */
+	public Frame getFrame(){
+		return frame;
+	}
+	
+	/** Sets the Frame of this game */
 	public void setFrame(Frame f){
 		frame = f;
 	}

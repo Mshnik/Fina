@@ -50,22 +50,47 @@ public class KeyboardListener implements KeyListener{
 	public void keyPressed(KeyEvent e) {
 		GamePanel gp = frame.gamePanel;
 		int keyCode = e.getKeyCode();
-		//BoardCursor - respond to arrow keys
-		if(frame.boardCursorActive){
-			Direction d = Direction.fromKeyCode(keyCode);
-			if(d != null) gp.boardCursor.move(d);
+
+		//Cursors - respond to arrow keys
+		Direction d = Direction.fromKeyCode(keyCode);
+		if(frame.getActiveCursor() != null && d != null){
+			frame.getActiveCursor().move(d);
 		}
 
-		//Check for toggling pathfinding
-		if(frame.canTogglePathSelection){
-			if(keyCode == A && gp.getPathSelector() == null){
-				gp.startPathSelection();
-			} else if(keyCode == A) {
-				gp.processPathSelection();
+		//Check different toggles - if non-none, handle
+		if((keyCode == A || keyCode == B)){
+			switch(frame.getToggle()){
+				//No toggle currently open. Maybe open one.
+			case NONE:
+				if(keyCode == A){
+					gp.startActionDecision();
+				}
+				break;
+				// Process the decision.
+			case DECISION:
+				if(keyCode == A){
+					gp.processDecision();
+				} else{
+					gp.cancelDecision();
+				}
+				break;
+
+				//Path selection - should only be the case after pathSelection already started
+			case PATH_SELECTION:
+				if(keyCode == A) {
+					gp.processPathSelection();
+				}
+				else{
+					gp.cancelPathSelection();
+				}
+				break;
+			default:
+				break;
+
 			}
-			if(keyCode == B){
-				gp.cancelPathSelection();
-			}
+
+
+
 
 		}
 	}

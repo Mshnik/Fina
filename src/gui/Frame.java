@@ -1,6 +1,9 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.util.EmptyStackException;
+import java.util.Stack;
+
 import javax.swing.JFrame;
 
 import unit.dummy.*;
@@ -36,11 +39,19 @@ public class Frame extends JFrame {
 	/** The animator for this Frame */
 	protected Animator animator;
 	
-	/** True iff the board cursor is active and should respond to keyboard input */
-	protected boolean boardCursorActive;
+	/** The current active cursor */
+	@SuppressWarnings("rawtypes")
+	private Cursor activeCursor;
 	
-	/** True iff pressing the A or B buttons can change path selection */
-	protected boolean canTogglePathSelection;
+	/** Different possiblities for toggle options */
+	protected enum Toggle{
+		NONE,
+		PATH_SELECTION,
+		DECISION
+	}
+	
+	/** The layers of active toggles. Topmost is the current toggle */
+	private Stack<Toggle> toggle;
 	
 	public Frame(){
 		
@@ -49,8 +60,7 @@ public class Frame extends JFrame {
 		setResizable(false);
 		setLocation(100, 100);
 		animator = new Animator();
-		boardCursorActive = true;
-		canTogglePathSelection = true;
+		toggle = new Stack<Toggle>();
 		KeyboardListener.setFrame(this);
 	}
 	
@@ -74,6 +84,7 @@ public class Frame extends JFrame {
 	    GamePanel gp = new GamePanel(g, rows, cols);
 		add(gp, BorderLayout.CENTER);
 		gamePanel = gp;
+		activeCursor = gamePanel.boardCursor;
 		animator.addAnimatable(gamePanel.boardCursor);
 		HeaderPanel hp = new HeaderPanel(g, gp);
 		add(hp, BorderLayout.NORTH);
@@ -82,6 +93,42 @@ public class Frame extends JFrame {
 		repaint();
 		setVisible(true);
 	}
+	
+	/** Returns the current active cursor that is moved by arrow keys.
+	 * Because cursor has many different implementations, casting is needed */
+	@SuppressWarnings("rawtypes")
+	public Cursor getActiveCursor(){
+		return activeCursor;
+	}
+	
+	/** Returns the current active cursor that is moved by arrow keys.
+	 * Because cursor has many different implementations, casting is needed */
+	@SuppressWarnings("rawtypes")
+	protected void setActiveCursor(Cursor c){
+		activeCursor = c;
+	}
+	
+	/** Returns the current Toggle setting.
+	 * Returns Toggle.NONE if there are no current toggles open */
+	public Toggle getToggle(){
+		try{
+			return toggle.peek();
+		}catch(EmptyStackException e){
+			return Toggle.NONE;
+		}
+	}
+	
+	/** Sets the current Toggle setting by adding it to the top of the stack */
+	protected void addToggle(Toggle t){
+		toggle.push(t);
+	}
+	
+	/** Removes the top-most Toggle setting. 
+	 * Returns the removed setting for checking purposes */
+	protected Toggle removeTopToggle(){
+		return toggle.pop();
+	}
+	
 	
 	/** Simple main method to test out Frame features */
 	public static void main(String[] args){
