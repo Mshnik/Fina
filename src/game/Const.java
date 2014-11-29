@@ -13,6 +13,13 @@ public class Const {
 		
 	}
 	
+	//BUILDINGS
+	/** Mana cost of constructing a well */
+	public static final int WELL_COST = 50;
+	
+	/** ManaPerTurn generated per well */
+	public static final int WELL_MANAPT = 5;
+	
 	//COMMANDERS
 	/** Base level of health for lvl1 commanders */
 	public static final int BASE_HEALTH = 100;

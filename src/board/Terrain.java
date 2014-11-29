@@ -4,5 +4,6 @@ package board;
 public enum Terrain {
 	GRASS,
 	WOODS,
-	MOUNTAIN
+	MOUNTAIN,
+	ANCIENT_GROUND
 }
