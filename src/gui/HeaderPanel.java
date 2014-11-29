@@ -82,7 +82,7 @@ public class HeaderPanel extends JPanel {
 	public HeaderPanel(Game g, GamePanel gp){
 		game = g;
 		maxMana = new HashMap<Player, Integer>();
-		setPreferredSize(new Dimension(gp.maxX * GamePanel.CELL_SIZE, HEIGHT));
+		setPreferredSize(new Dimension(gp.getShowedCols() * GamePanel.CELL_SIZE, HEIGHT));
 	}
 
 	/** Draws the HeaderPanel */
@@ -91,9 +91,10 @@ public class HeaderPanel extends JPanel {
 
 		//Draw background and border
 		Graphics2D g2d = (Graphics2D)g;
-		g2d.setColor(new Color(219, 167, 99));
-		g2d.fillRect(0, 0, getWidth(), getHeight());
-
+		if(getHeight() == 0) return;
+		for(int i = 0; i <= getWidth(); i+= getHeight()){
+			g2d.drawImage(ImageIndex.SANDSTONE, i, 0, getHeight(), getHeight(), null);
+		}
 		g2d.setColor(new Color(74, 47, 12));
 		int width = 6;
 		g2d.setStroke(new BasicStroke(width));

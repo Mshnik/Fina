@@ -43,7 +43,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		game = g;
 		boardCursor = new BoardCursor(this);
 		
-		setPreferredSize(new Dimension(maxX * CELL_SIZE, maxY * CELL_SIZE));
+		setPreferredSize(new Dimension(getShowedCols() * CELL_SIZE, getShowedRows() * CELL_SIZE));
 	}
 	
 	/** Creates a new pathSelector at the current boardCursor position.
@@ -90,8 +90,8 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		//Paint the board itself, painting the portion within
 		//[scrollY ... scrollY + maxY - 1], 
 		//[scrollX ... scrollX + maxX - 1]
-		for(int row = scrollY; row < scrollY + maxY; row ++){
-			for(int col = scrollX; col < scrollX + maxX; col ++){
+		for(int row = scrollY; row < scrollY + getShowedRows(); row ++){
+			for(int col = scrollX; col < scrollX + getShowedCols(); col ++){
 				Tile t = game.board.getTileAt(row, col);
 				int x = getXPosition(t);
 				int y = getYPosition(t);

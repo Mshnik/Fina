@@ -1,10 +1,11 @@
 package gui;
 
+import java.awt.Graphics;
+
 import game.MatrixElement;
 import javax.swing.JPanel;
 
 import board.Direction;
-import board.Tile;
 
 /** Instantiating classes are able to act as a matrix with scroll, max sizes. */
 public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
@@ -13,10 +14,10 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	/** Maximum number of columns of elements to visually show */
-	public final int maxX;
+	private int maxX;
 	
 	/** Maximum number of rows of tiles to visually show */
-	public final int maxY;
+	private int maxY;
 	
 	/** Scroll in the x direction, in terms of # of cols to skip. Used as a scroll delta */
 	protected int scrollX;
@@ -36,6 +37,28 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 		
 		this.scrollX = scrollX;
 		this.scrollY = scrollY;
+	}
+	
+	/** Returns the number of rows this panel is showing currently */
+	public int getShowedRows(){
+		return maxY;
+	}
+	
+	/** Returns the number of cols this panel is showing currently */
+	public int getShowedCols(){
+		return maxX;
+	}
+	
+	/** Sets the number of rows this panel should show. Causes a repaint */
+	public void setShowedRows(int r){
+		maxY = r;
+		repaint();
+	}
+	
+	/** Sets the number of rows this panel should show. Causes a repaint */
+	public void setShowedCols(int c){
+		maxX = c;
+		repaint();
 	}
 	
 	/** Returns the width of the underlying matrix */
@@ -79,5 +102,9 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 			return null;
 		}
 	}
+	
+	/** Subclasses must have custom paint methods */
+	@Override
+	public abstract void paintComponent(Graphics g);
 	
 }
