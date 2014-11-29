@@ -15,6 +15,12 @@ import board.Board;
  */
 public class Game implements Runnable{
 
+	/** Text for canceling a decision */
+	public static final String CANCEL = "Cancel";
+	
+	/** Text for ending a turn */
+	public static final String END_TURN = "End Turn";
+	
 	/** The players currently playing this game */
 	private LinkedList<Player> players;
 	

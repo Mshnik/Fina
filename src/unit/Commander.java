@@ -57,6 +57,12 @@ public abstract class Commander extends MovingUnit {
 		setMana(Const.START_MANA);
 		setHealth(getMaxHealth(), this);
 	}
+	/** Commanders can always summon */
+	@Override
+	public boolean canSummon(){
+		return true;
+	}
+	
 	//RESTRICTIONS
 	/** Restricted attack - has val 0. */
 	@Override

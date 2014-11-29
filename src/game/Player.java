@@ -192,8 +192,6 @@ public abstract class Player {
 	 * Shouldn't be recursive, and should terminate when it finishes doing things. */
 	protected abstract void turn();
 	
-	/** Called when this player's turn ends. Does end of turn processing */
-	protected final void turnEnd(){
-		
-	}
+	/** Called by the someone (the player / the game) when this player's turn should end. */
+	public abstract void turnEnd();
 }

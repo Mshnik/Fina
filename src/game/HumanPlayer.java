@@ -27,5 +27,13 @@ public class HumanPlayer extends Player {
 			}
 		}
 	}
+	
+	/** Called by the gui when the player selects the end of turn action.
+	 * Causes the turn loop to end. 
+	 */
+	@Override
+	public void turnEnd(){
+		takingAction = false;
+	}
 
 }

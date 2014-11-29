@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import board.*;
 import unit.*;
@@ -21,16 +22,16 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 
 	/** Pixels (size) for each square tile. */
 	protected static final int CELL_SIZE = 64; 
-	
+
 	/** Shading for fog of war - translucent black */
 	protected static final Color FOG_OF_WAR = new Color(0,0,0,0.75f);
 
 	/** The BoardCursor for this GamePanel */
 	public final BoardCursor boardCursor;
-	
+
 	/** The DecisionPanel that is currently active. Null if none */
 	private DecisionPanel decisionPanel;
-	
+
 	/** The PathSelector that is currently active. Null if none */
 	private PathSelector pathSelector;
 
@@ -42,18 +43,99 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	public GamePanel(Game g, int maxRows, int maxCols){
 		super(g, maxCols, maxRows, 0, 0);
 		boardCursor = new BoardCursor(this);
-		
+
 		setPreferredSize(new Dimension(getShowedCols() * CELL_SIZE, getShowedRows() * CELL_SIZE));
 	}
 	
-	/** Creates a new Decision Panel, shown to the side of the current tile (side depending
+	/** Cancels the currently selected decision for any decision
+	 * Throws a runtimeException if this was a bad time to cancel because decision wasn't happening. */
+	public void cancelDecision() throws RuntimeException{
+		Toggle t = getFrame().removeTopToggle();
+		if(! t.equals(Toggle.DECISION))
+			throw new RuntimeException("Can't cancel decision, currently toggling " + getFrame().getToggle());
+		getFrame().getAnimator().removeAnimatable(decisionPanel.cursor);
+		decisionPanel = null;
+		getFrame().setActiveCursor(boardCursor);
+		repaint();
+	}
+	
+	/** Processes the currently selected Actiondecision.
+	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
+	public void processActionDecision() throws RuntimeException{
+		String choice = decisionPanel.getSelectedDecisionMessage();
+		cancelDecision();
+		switch(choice){
+		case Unit.MOVE:
+			startPathSelection();
+			break;
+		default:
+			break;
+		}
+	}
+	
+	/** Returns the current active decision panel, if any */
+	public DecisionPanel getDecisionPanel(){
+		return decisionPanel;
+	}
+	
+	/** Starts a decisionPanel for ending the current player's turn */
+	public void startEndTurnDecision(){
+		Decision[] decisionsArr = {new Decision(0, Game.CANCEL), new Decision(1, Game.END_TURN)};
+		fixDecisionPanel(DecisionPanel.Type.END_OF_TURN, decisionsArr);
+	}
+	
+	/** Processes an endOfTurn Decision */
+	public void processEndTurnDecision(){
+		String m = decisionPanel.getSelectedDecisionMessage();
+		cancelDecision();
+		switch(m){
+		case Game.END_TURN:
+			game.getCurrentPlayer().turnEnd();
+			break;
+		}
+	}
+
+	/** Creates a new Decision Panel for doing things with a unit, 
+	 * shown to the side of the current tile (side depending
 	 * on location of current tile)
-	 * Starts decision toggling between moving.... //TODO
+	 * If there is no unit on the given tile or the unit doesn't belong to the current player, does nothing.
+	 * If the unit on the tile, populates decisionPanel with all the possible decisions
 	 */
 	public void startActionDecision(){
 		Tile t = boardCursor.getElm();
-		Decision[] decisions = {new Decision(0, "Move"), new Decision(1, "Attack"), new Decision(2, "Summon")};
-		decisionPanel = new DecisionPanel(game, Math.min(3, decisions.length), 0, decisions);
+		if(t.getOccupyingUnit() == null || t.getOccupyingUnit().owner != game.getCurrentPlayer()){
+			return;
+		} 
+		Unit u = t.getOccupyingUnit();
+		
+		//Add choices based on the unit on this tile
+		LinkedList<Decision> decisions = new LinkedList<Decision>();
+		int i = 0;
+		if(u.canMove()){
+			decisions.add(new Decision(i++, Unit.MOVE));
+		}
+		if(u.canFight()){
+			decisions.add(new Decision(i++, Unit.FIGHT));
+		}
+		if(u.canSummon()){
+			decisions.add(new Decision(i++, Unit.SUMMON));
+		}
+		
+		//If there are no applicable choices, do nothing
+		if(decisions.isEmpty()) return;
+		
+		//Otherwise, convert to array, create panel, set correct location on screen.
+		Decision[] decisionsArr = decisions.toArray(new Decision[decisions.size()]);
+		fixDecisionPanel(DecisionPanel.Type.ACTION, decisionsArr);
+	}
+	
+	/** Creates a decisionPanel with the given decisionArray. 
+	 * Fixes the location of the open decisionPanel for the location of the boardCursor,
+	 * sets active toggle and active cursor, and repaints.
+	 */
+	private void fixDecisionPanel(DecisionPanel.Type type, Decision[] decisionsArr){
+		decisionPanel = new DecisionPanel(game, type, Math.min(3, decisionsArr.length), decisionsArr);
+		Tile t = boardCursor.getElm();
 		int x = getXPosition(t);
 		if(x < getWidth() / 2){
 			x += GamePanel.CELL_SIZE + 5;
@@ -70,39 +152,17 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		getFrame().setActiveCursor(decisionPanel.cursor);
 		repaint();
 	}
-	
-	/** Cancels the currently selected decision
-	 * Throws a runtimeException if this was a bad time to cancel because decision wasn't happening. */
-	public void cancelDecision() throws RuntimeException{
-		Toggle t = getFrame().removeTopToggle();
-		if(! t.equals(Toggle.DECISION))
-			throw new RuntimeException("Can't cancel decision, currently toggling " + getFrame().getToggle());
-		getFrame().getAnimator().removeAnimatable(decisionPanel.cursor);
-		decisionPanel = null;
-		getFrame().setActiveCursor(boardCursor);
-		repaint();
-	}
-	
-	/** Processes the currently selected decision.
-	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
-	public void processDecision() throws RuntimeException{
-//		Toggle t = getFrame().removeTopToggle();
-//		if(! t.equals(Toggle.DECISION))
-//			throw new RuntimeException("Can't cancel path selection, currently toggling " + getFrame().getToggle());
-		//TODO
-		cancelDecision();
-	}
-	
+
 	/** Creates a new pathSelector at the current boardCursor position.
 	 * Does nothing if the current tile is unoccupied or the unit has already moved. */
 	public void startPathSelection(){
 		Tile t = boardCursor.getElm();
 		if(! t.isOccupied() || ! t.getOccupyingUnit().canMove()) return;
-		
+
 		pathSelector = new PathSelector(this, (MovingUnit) t.getOccupyingUnit());
 		getFrame().addToggle(Frame.Toggle.PATH_SELECTION);
 	}
-	
+
 	/** Cancels the path selection - deletes it but does nothing.
 	 * Throws a runtimeException if this was a bad time to cancel because pathSelection wasn't happening. */
 	public void cancelPathSelection() throws RuntimeException{
@@ -112,7 +172,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		if(pathSelector != null) boardCursor.setElm(pathSelector.getPath().getFirst());
 		pathSelector = null;
 	}
-	
+
 	/** Processes the path selection - if ok, deletes it.
 	 * Otherwise makes err noise or something. 
 	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
@@ -123,17 +183,18 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		try{
 			pathSelector.unit.move(pathSelector.getPath());
 			pathSelector = null;
+			startActionDecision();
 		}catch(Exception e){
 			//TODO - sound err
 			Toolkit.getDefaultToolkit().beep();
 		}
 	}
-	
+
 	/** Returns the current pathSelector, if any */
 	public PathSelector getPathSelector(){
 		return pathSelector;
 	}
-	
+
 	/** Returns the frame this is drawn within */
 	public Frame getFrame(){
 		return game.getFrame();
@@ -143,7 +204,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	/** Paints this boardpanel, for use in the frame it is in. */
 	public void paintComponent(Graphics g){
 		Graphics2D g2d = (Graphics2D)g;
-		
+
 		HashSet<Tile> vision = null;
 		if(game.getCurrentPlayer() != null){
 			g2d.setColor(FOG_OF_WAR);
@@ -158,30 +219,30 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 				int y = getYPosition(t);
 				//Draw terrain
 				g.drawImage(ImageIndex.imageForTile(t), x, y,
-					CELL_SIZE, CELL_SIZE, null);
-				
+						CELL_SIZE, CELL_SIZE, null);
+
 				//If the player can't see this tile, shade darkly.
 				if(game.isFogOfWar() && game.getCurrentPlayer() != null 
 						&& ! game.getCurrentPlayer().canSee(t)){
 					g2d.fillRect(x, y, CELL_SIZE, CELL_SIZE);
 				}
-				
+
 				//Draw a unit if necessary - only if player can see it.
 				if(t.isOccupied() && (! game.isFogOfWar() || vision == null || vision.contains(t))){
 					g.drawImage(ImageIndex.imageForUnit(t.getOccupyingUnit()), x, y, 
-						CELL_SIZE, CELL_SIZE, null);
+							CELL_SIZE, CELL_SIZE, null);
 				}
 			}
 		}
-		
+
 		//Draw the movement and cloud path
 		if(pathSelector != null){			
 			pathSelector.paintComponent(g);
 		}
-		
+
 		//Draw the cursor
 		boardCursor.paintComponent(g);
-		
+
 		//Draw the decisionPanel
 		if(decisionPanel != null){
 			decisionPanel.paintComponent(g);

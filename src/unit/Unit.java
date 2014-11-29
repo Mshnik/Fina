@@ -15,6 +15,15 @@ import board.Tile;
  */
 public abstract class Unit{
 
+	/** Text representing moving */
+	public static final String MOVE = "Move";
+	
+	/** Text representing fighting */
+	public static final String FIGHT = "Attack";
+	
+	/** Text representing summoning */
+	public static final String SUMMON = "Summon";
+	
 	/** The mana spent to summon this unit */
 	public final int manaCost;
 	
@@ -95,6 +104,13 @@ public abstract class Unit{
 	/** Returns whether this can fight this turn. Non-fighting things should always return false *
 	 */
 	public abstract boolean canFight();
+	
+	/** Returns true if this unit can summon this turn. Returns false, should be overriden by
+	 * subclasses that can summon
+	 */
+	public boolean canSummon(){
+		return false;
+	}
 
 	//STATS
 	/** Returns the max health of this unit */

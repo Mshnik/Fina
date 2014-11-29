@@ -59,8 +59,18 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** The y coordinate of the top left corner of this panel */
 	private int y;
 	
-	public DecisionPanel(Game g, int maxY, int scrollY, Decision[] choices) {
-		super(g, 1, maxY, 0, scrollY);
+	/** The types of decisions that can be made */
+	public enum Type{
+		ACTION,
+		END_OF_TURN
+	}
+	
+	/** The type of this DecisionPanel - what kind of decision it is making */
+	public final Type type;
+	
+	public DecisionPanel(Game g, Type t, int maxY, Decision[] choices) {
+		super(g, 1, maxY, 0, 0);
+		this.type = t;
 		this.choices = choices;
 		cursor = new DecisionCursor(this);
 	}
@@ -97,6 +107,11 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	@Override
 	public int getYPosition(Decision elm){
 		return super.getYPosition(elm) + y;
+	}
+	
+	/** Returns the decision message of the decision that is currently selected */
+	public String getSelectedDecisionMessage(){
+		return cursor.getElm().getMessage();
 	}
 	
 	/** Draws this DecisionPanel */

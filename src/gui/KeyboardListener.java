@@ -66,12 +66,23 @@ public class KeyboardListener implements KeyListener{
 			case NONE:
 				if(keyCode == A){
 					gp.startActionDecision();
+				} else{
+					gp.startEndTurnDecision();
 				}
 				break;
 				// Process the decision.
 			case DECISION:
 				if(keyCode == A){
-					gp.processDecision();
+					switch(gp.getDecisionPanel().type){
+					case ACTION:
+						gp.processActionDecision();
+						break;
+					case END_OF_TURN:
+						gp.processEndTurnDecision();
+						break;
+					default:
+						break;
+					}
 				} else{
 					gp.cancelDecision();
 				}
