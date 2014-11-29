@@ -12,6 +12,33 @@ import board.Tile;
  */
 public abstract class Commander extends MovingUnit {
 
+	/** Base level of health for lvl1 commanders */
+	public static final int BASE_HEALTH = 100;
+	
+	/** Base amount of max health gained per level */
+	public static final int SCALE_HEALTH = 20;
+	
+	/** Base starting amount of mana for lvl1 commanders */
+	public static final int START_MANA = 20;
+	
+	/** Base starting level of mana per turn for lvl1 commanders */
+	public static final int BASE_MANA_PT = 10;
+	
+	/** Base amount of mana per turn gained per level */
+	public static final int SCALE_MANA_PT = 5;
+	
+	/** The amount of research required to get to the next level for free.
+	 * Index i = cost to get from level i+1 to i+2 (because levels are 1 indexed). */
+	public static final int[] RESEARCH_REQS = {
+		100, 250, 600, 1500
+	};
+	
+	/** The highest level commanders can achieve */
+	public static final int MAX_LEVEL = RESEARCH_REQS.length + 1;
+	
+	/** The ratio of manaCost -> research for the owner of the killing unit */
+	public static final double MANA_COST_TO_RESEARCH_RATIO = 0.3;
+	
 	/** The name of this commander */
 	public final String name;
 
@@ -54,7 +81,7 @@ public abstract class Commander extends MovingUnit {
 		level = 1;
 		research = 0;
 		recalculateScalingStats();
-		setMana(Const.START_MANA);
+		setMana(START_MANA);
 		setHealth(getMaxHealth(), this);
 	}
 	/** Commanders can always summon */
@@ -142,9 +169,9 @@ public abstract class Commander extends MovingUnit {
 
 	/** Returns the amount of research necessary to get to the next level */
 	public int getResearchRequirement(){
-		if(level == Const.MAX_LEVEL)
+		if(level == MAX_LEVEL)
 			return Integer.MAX_VALUE;
-		return Const.RESEARCH_REQS[level - 1];
+		return RESEARCH_REQS[level - 1];
 	}
 
 	/** Returns the amount of research still necessary to get to the next level */

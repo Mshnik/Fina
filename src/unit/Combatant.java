@@ -100,12 +100,12 @@ public abstract class Combatant extends MovingUnit {
 		if(counterAttack) other.preCounterFight(this);
 
 		//This attacks other
-		other.changeHealth(- (getAttack() - other.getDefense(getAttackType())), this);
+		other.changeHealth(- (int)(getAttack() * (1 - other.getDefense(getAttackType()))), this);
 
 		//If other is still alive, can see the first unit, 
 		//and this is within range, other counterattacks
 		if(counterAttack){
-			changeHealth(- (other.getAttack() - getDefense(other.getAttackType())), other);
+			changeHealth(- (int)(other.getAttack() * (1 - getDefense(other.getAttackType()))), other);
 			counterAttack = true;
 		}
 

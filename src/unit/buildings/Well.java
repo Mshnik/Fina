@@ -20,7 +20,7 @@ public class Well extends Building {
 	
 	/** Stats for maxHealth, defenses, range and visionRange of wells */
 	public static final UnitStats STATS = 
-			new UnitStats(800, MANAPT, 0, AttackType.NO_ATTACK, 100, 100, 0, 0);
+			new UnitStats(800, MANAPT, 0, AttackType.NO_ATTACK, 0.05, 0.20, 0, 0);
 
 	/** Constructor for a Well
 	 * @param owner		- owner of this well

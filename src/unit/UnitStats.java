@@ -23,13 +23,13 @@ public class UnitStats{
 	/** Type of damage dealt when attacking. */
 	private AttackType attackType;
 	
-	/** Defense against physical damage - subtracted from all physical attacks before taking damage.
-	 * physicalDefense >= 0 */
-	private int physicalDefense;
+	/** Defense against physical damage - percent of physical damage prevented.
+	 * 1 > physicalDefense >= 0 */
+	private double physicalDefense;
 	
-	/** Defense against magic damage - subtracted from all magic attacks before taking damage
-	 * magicDefense >= 0 */
-	private int magicDefense;
+	/** Defense against magic damage - percent of magic damage prevented
+	 * 1 > magicDefense >= 0 */
+	private double magicDefense;
 	
 	/** Distance at which another unit can be attacked, or at which units can be summoned. 
 	 * Distance is measured using manhattan distance - 1.
@@ -52,13 +52,14 @@ public class UnitStats{
 	 * @param visionRange		- visionRange of this unit - 0 represents no extra vision beyond its own tile
 	 */
 	public UnitStats(int maxHealth, int manaPerTurn, int attack, AttackType attackType,
-					 int physicalDefense, int rangeDefense, int range, int visionRange) 
+					 double physicalDefense, double magicDefense, int range, int visionRange) 
 			throws IllegalArgumentException{
 		this.maxHealth = maxHealth;
 		this.manaPerTurn = manaPerTurn;
 		this.attack = attack;
 		this.attackType = attackType;
 		this.physicalDefense = physicalDefense;
+		this.magicDefense = magicDefense;
 		this.range = range;
 		this.visionRange = visionRange;
 		base = null;
@@ -71,8 +72,8 @@ public class UnitStats{
 		int manaPerTurn = base.manaPerTurn;
 		int attack = base.attack;
 		AttackType attackType = base.attackType;
-		int physicalDefense = base.physicalDefense;
-		int magicDefense = base.magicDefense;
+		double physicalDefense = base.physicalDefense;
+		double magicDefense = base.magicDefense;
 		int range = base.range;
 		int visionRange = base.visionRange;
 		
@@ -136,18 +137,18 @@ public class UnitStats{
 	}
 
 	/**
-	 * @return Defense against physical damage - subtracted from all physical attacks before taking damage.
-	 * physicalDefense >= 0
+	 * @return Defense against physical damage -percent of physical attack damage prevented
+	 * 1 > physicalDefense >= 0
 	 */
-	public int getPhysicalDefense() {
+	public double getPhysicalDefense() {
 		return physicalDefense;
 	}
 
 	/**
-	 * @return Defense against magic damage - subtracted from all magic attacks before taking damage
-	 * magicDefense >= 0 
+	 * @return Defense against magic damage - percent of magic attack damage prevented
+	 * 1 > magicDefense >= 0 
 	 */
-	public int getMagicDefense() {
+	public double getMagicDefense() {
 		return magicDefense;
 	}
 
