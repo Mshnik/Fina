@@ -59,12 +59,32 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** The y coordinate of the top left corner of this panel */
 	private int y;
 	
-	public DecisionPanel(Game g, int posX, int posY, int maxY, int scrollY, Decision[] choices) {
+	public DecisionPanel(Game g, int maxY, int scrollY, Decision[] choices) {
 		super(g, 1, maxY, 0, scrollY);
 		this.choices = choices;
-		x = posX;
-		y = posY;
 		cursor = new DecisionCursor(this);
+	}
+	
+	/** Sets the x position of this DecisionPanel */
+	public void setXPosition(int xPos){
+		x = xPos;
+	}
+	
+	/** Sets the y position of this DecisionPanel */
+	public void setYPosition(int yPos){
+		y = yPos;
+	}
+	
+	/** The width of this Panel is the width of a single decision */
+	@Override
+	public int getWidth(){
+		return DECISION_WIDTH;
+	}
+	
+	/** The height of this Panel is the height of all the decisions */
+	@Override
+	public int getHeight(){
+		return DECISION_HEIGHT * choices.length;
 	}
 	
 	/** Overrides super version by adding the x coordinate of this panel to super's result */

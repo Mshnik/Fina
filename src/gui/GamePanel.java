@@ -52,16 +52,20 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	 */
 	public void startActionDecision(){
 		Tile t = boardCursor.getElm();
-		int x = getXPosition(t) - DecisionPanel.DECISION_WIDTH - 25;
-		if(x < 0){
-			x = getXPosition(t) + GamePanel.CELL_SIZE + 25;
+		Decision[] decisions = {new Decision(0, "Move"), new Decision(1, "Attack"), new Decision(2, "Summon")};
+		decisionPanel = new DecisionPanel(game, Math.min(3, decisions.length), 0, decisions);
+		int x = getXPosition(t);
+		if(x < getWidth() / 2){
+			x += GamePanel.CELL_SIZE + 5;
+		} else{
+			x -= (DecisionPanel.DECISION_WIDTH + 5);
 		}
 		int y = getYPosition(t);
-		if(y + DecisionPanel.DECISION_HEIGHT > getHeight()){
-			y = getYPosition(t) - DecisionPanel.DECISION_HEIGHT;
+		if(y > getHeight() / 2){
+			y = getYPosition(t) - decisionPanel.getHeight() + GamePanel.CELL_SIZE;
 		}
-		Decision[] decisions = {new Decision(0, "Move"), new Decision(1, "Attack"), new Decision(2, "Summon")};
-		decisionPanel = new DecisionPanel(game, x, y, Math.min(3, decisions.length), 0, decisions);
+		decisionPanel.setXPosition(x);
+		decisionPanel.setYPosition(y);
 		getFrame().addToggle(Toggle.DECISION);
 		getFrame().setActiveCursor(decisionPanel.cursor);
 		repaint();
