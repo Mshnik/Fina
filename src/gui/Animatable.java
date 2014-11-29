@@ -21,4 +21,7 @@ public interface Animatable extends Paintable{
 	
 	/** Sets the animation state. Will mod by the number of possible states */
 	public void setState(int state);
+	
+	/** True if this is currently active (do animation), false otherwise */
+	public boolean isActive();
 }

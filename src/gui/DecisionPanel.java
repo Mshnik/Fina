@@ -1,5 +1,7 @@
 package gui;
 
+import game.Game;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -19,10 +21,10 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	private static final long serialVersionUID = 1L;
 	
 	/** Background color for DecisionPanel */
-	protected static final Color BACKGROUND = new Color(255, 213, 43);
+	protected static final Color BACKGROUND = new Color(117, 74, 0);
 	
 	/** Border color for DecisionPanel */
-	protected static final Color BORDER = new Color(145, 116, 0);
+	protected static final Color BORDER = new Color(145, 116, 0); 
 	
 	/** Width of borders for DecisionPanel */
 	protected static final int BORDER_WIDTH = 4;
@@ -31,13 +33,13 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	protected static final Color TEXT_COLOR = Color.white;
 	
 	/** Font for DecisionPanel */
-	protected static final Font TEXT_FONT = new Font(Frame.FONTNAME, Font.BOLD, 25);
+	protected static final Font TEXT_FONT = new Font(Frame.FONTNAME, Font.BOLD, 17);
 	
 	/** Text x margin */
-	protected static final int TEXT_X = 20;
+	protected static final int TEXT_X = 17;
 	
 	/** Text y margin */
-	protected static final int TEXT_Y = 20;
+	protected static final int TEXT_Y = 25;
 	
 	/** The choices to display on this DecisionPanel */
 	private Decision[] choices;
@@ -46,7 +48,7 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	protected static final int DECISION_HEIGHT = 40;
 	
 	/** The drawing width of an Decision */
-	protected static final int DECISION_WIDTH = 80;
+	protected static final int DECISION_WIDTH = 120;
 	
 	/** A Cursor for this DecisionPanel */
 	public final DecisionCursor cursor;
@@ -57,8 +59,8 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** The y coordinate of the top left corner of this panel */
 	private int y;
 	
-	public DecisionPanel(int posX, int posY, int maxY, int scrollY, Decision[] choices) {
-		super(1, maxY, 0, scrollY);
+	public DecisionPanel(Game g, int posX, int posY, int maxY, int scrollY, Decision[] choices) {
+		super(g, 1, maxY, 0, scrollY);
 		this.choices = choices;
 		x = posX;
 		y = posY;
@@ -89,6 +91,7 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 				DECISION_WIDTH - BORDER_WIDTH, DECISION_HEIGHT * getMatrixHeight() - BORDER_WIDTH);
 		
 		g2d.setColor(TEXT_COLOR);
+		g2d.setFont(TEXT_FONT);
 		g2d.setRenderingHint(
 				RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);

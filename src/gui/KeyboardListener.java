@@ -54,7 +54,9 @@ public class KeyboardListener implements KeyListener{
 		//Cursors - respond to arrow keys
 		Direction d = Direction.fromKeyCode(keyCode);
 		if(frame.getActiveCursor() != null && d != null){
-			frame.getActiveCursor().move(d);
+			@SuppressWarnings("rawtypes")
+			Cursor c = frame.getActiveCursor();
+			c.move(d);
 		}
 
 		//Check different toggles - if non-none, handle

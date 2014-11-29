@@ -4,9 +4,6 @@ import game.MatrixElement;
 
 /** Represents an element in a decisionPanel that can be selected */
 public class Decision implements MatrixElement{
-
-	/** The margin left to the top and left of text drawn by ActionDecisions*/
-	protected static final int MARGIN = 5;
 	
 	/** The index of this Decision in its decisionPanel */
 	private int index;
@@ -36,4 +33,10 @@ public class Decision implements MatrixElement{
 		return message;
 	}
 
+	/** Returns a simple toString of the index and the message */
+	@Override
+	public String toString(){
+		return message + " : " + index;
+	}
+	
 }

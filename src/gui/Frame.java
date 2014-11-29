@@ -106,6 +106,7 @@ public class Frame extends JFrame {
 	@SuppressWarnings("rawtypes")
 	protected void setActiveCursor(Cursor c){
 		activeCursor = c;
+		animator.addAnimatable(c);
 	}
 	
 	/** Returns the current Toggle setting.
@@ -129,6 +130,10 @@ public class Frame extends JFrame {
 		return toggle.pop();
 	}
 	
+	/** Returns the object responsible for animating things for this frame */
+	public Animator getAnimator(){
+		return animator;
+	}
 	
 	/** Simple main method to test out Frame features */
 	public static void main(String[] args){

@@ -25,9 +25,6 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	/** Shading for fog of war - translucent black */
 	protected static final Color FOG_OF_WAR = new Color(0,0,0,0.75f);
 
-	/** The Game this GamePanel is responsible for drawing */
-	public final Game game;
-
 	/** The BoardCursor for this GamePanel */
 	public final BoardCursor boardCursor;
 	
@@ -43,8 +40,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	 * @param maxCols - the maximum number of cols of tiles to show at a time
 	 */
 	public GamePanel(Game g, int maxRows, int maxCols){
-		super(maxCols, maxRows, 0, 0);
-		game = g;
+		super(g, maxCols, maxRows, 0, 0);
 		boardCursor = new BoardCursor(this);
 		
 		setPreferredSize(new Dimension(getShowedCols() * CELL_SIZE, getShowedRows() * CELL_SIZE));
@@ -64,10 +60,11 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		if(y + DecisionPanel.DECISION_HEIGHT > getHeight()){
 			y = getYPosition(t) - DecisionPanel.DECISION_HEIGHT;
 		}
-		Decision[] decisions = {new Decision(0, "Move")};
-		decisionPanel = new DecisionPanel(x, y, decisions.length, 0, decisions);
+		Decision[] decisions = {new Decision(0, "Move"), new Decision(1, "Attack"), new Decision(2, "Summon")};
+		decisionPanel = new DecisionPanel(game, x, y, Math.min(3, decisions.length), 0, decisions);
 		getFrame().addToggle(Toggle.DECISION);
 		getFrame().setActiveCursor(decisionPanel.cursor);
+		repaint();
 	}
 	
 	/** Cancels the currently selected decision
@@ -76,6 +73,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		Toggle t = getFrame().removeTopToggle();
 		if(! t.equals(Toggle.DECISION))
 			throw new RuntimeException("Can't cancel decision, currently toggling " + getFrame().getToggle());
+		getFrame().getAnimator().removeAnimatable(decisionPanel.cursor);
 		decisionPanel = null;
 		getFrame().setActiveCursor(boardCursor);
 		repaint();

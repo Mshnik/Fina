@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Graphics;
 
+import game.Game;
 import game.MatrixElement;
 import javax.swing.JPanel;
 
@@ -12,6 +13,9 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 
 	/***/
 	private static final long serialVersionUID = 1L;
+	
+	/** The Game this MatrixPanel is drawing something or other for ... Fuck idk. */
+	public final Game game;
 	
 	/** Maximum number of columns of elements to visually show */
 	private int maxX;
@@ -26,12 +30,14 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 	protected int scrollY;
 	
 	/** Constructor for MatrixPanel
+	 * @param game		- the game this MatrixPanel is doing something for.
 	 * @param maxX		- the number of cols to paint at a time
 	 * @param maxY		- the number of rows to paint at a time
 	 * @param scrollX	- the starting scrolling of cols
 	 * @param scrollY	- the starting scrolling of rows
 	 */
-	public MatrixPanel(int maxX, int maxY, int scrollX, int scrollY){
+	public MatrixPanel(Game game, int maxX, int maxY, int scrollX, int scrollY){
+		this.game = game;
 		this.maxX = maxX;
 		this.maxY = maxY;
 		
@@ -101,6 +107,11 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 		}catch(IllegalArgumentException e){
 			return null;
 		}
+	}
+	
+	/** Returns the frame this is drawn in, using the frame maintained by the game */
+	public Frame getFrame(){
+		return game.getFrame();
 	}
 	
 	/** Subclasses must have custom paint methods */

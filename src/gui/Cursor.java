@@ -28,7 +28,7 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 	private T elm;
 	
 	/** The Panel this cursor is drawn on. Reference kept to call updates to it */
-	private M panel;
+	protected final M panel;
 	
 	public Cursor(M panel, T startingElm){
 		this.panel = panel;
@@ -94,11 +94,18 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 		panel.repaint();
 	}
 	
+	/** Returns the color of the cursor. Can be overriden in subclasses
+	 * to provide color shifting/etc behavior
+	 */
+	public Color getColor(){
+		return COLOR;
+	}
+	
 	/** Draw this Cursor as a red set of 4 corner lines */
 	@Override
 	public void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D)g;
-		g2d.setColor(BoardCursor.COLOR);
+		g2d.setColor(getColor());
 		g2d.setStroke(new BasicStroke(BoardCursor.THICKNESS));
 		
 		//x min, y min, side length
@@ -167,6 +174,12 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 	@Override
 	public void advanceState() {
 		animationState = (animationState + 1) % getStateCount();
-		getPanel().repaint();
+		panel.getFrame().repaint();
+	}
+	
+	/** This is active so long as it's the frame's active cursor */
+	@Override
+	public boolean isActive(){
+		return this == panel.getFrame().getActiveCursor();
 	}
 }
