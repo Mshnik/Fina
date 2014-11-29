@@ -1,6 +1,5 @@
 package unit;
 
-import game.Const;
 import game.Player;
 import board.Tile;
 

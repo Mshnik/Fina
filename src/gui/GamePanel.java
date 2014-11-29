@@ -200,12 +200,18 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		return game.getFrame();
 	}
 
+	/** Returns true if the given unit is visible to the current player, false otherwise.
+	 * Helper for painting fog of war and hiding units */
+	private boolean isVisible(Tile t){
+		 return ! game.isFogOfWar() || 
+				 (game.getCurrentPlayer() != null && game.getCurrentPlayer().canSee(t));
+	}
+	
 	@Override
 	/** Paints this boardpanel, for use in the frame it is in. */
 	public void paintComponent(Graphics g){
 		Graphics2D g2d = (Graphics2D)g;
 
-		HashSet<Tile> vision = null;
 		if(game.getCurrentPlayer() != null){
 			g2d.setColor(FOG_OF_WAR);
 		}
@@ -222,14 +228,13 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 						CELL_SIZE, CELL_SIZE, null);
 
 				//If the player can't see this tile, shade darkly.
-				if(game.isFogOfWar() && game.getCurrentPlayer() != null 
-						&& ! game.getCurrentPlayer().canSee(t)){
+				if(! isVisible(t)){
 					g2d.fillRect(x, y, CELL_SIZE, CELL_SIZE);
 				}
 
 				//Draw a unit if necessary - only if player can see it.
-				if(t.isOccupied() && (! game.isFogOfWar() || vision == null || vision.contains(t))){
-					g.drawImage(ImageIndex.imageForUnit(t.getOccupyingUnit()), x, y, 
+				if(t.isOccupied() && isVisible(t)){
+					g2d.drawImage(ImageIndex.imageForUnit(t.getOccupyingUnit()), x, y, 
 							CELL_SIZE, CELL_SIZE, null);
 				}
 			}
