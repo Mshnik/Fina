@@ -79,9 +79,9 @@ public class UnitStats{
 		
 		//Process modifiers
 		if(modifiers != null){
-			for(UnitModifier m : modifiers){
-				//TODO
-			}
+//			for( UnitModifier m : modifiers){
+//				//TODO
+//			}
 		}
 		
 		this.base = base;
@@ -176,5 +176,14 @@ public class UnitStats{
 			return new UnitStats(this, modifiers);
 		else
 			return new UnitStats(this.base, modifiers);
+	}
+	
+	/** Basic toString impelementation that shows off the stats this represents */
+	@Override
+	public String toString(){
+		return "Max Health : " + maxHealth + "; Mana Per Turn :" + manaPerTurn +
+			"; Attack : " + attack + "; AttackType : " + attackType + "; Physical Defense : " +
+			physicalDefense + "; Magic Defense : " + magicDefense + "; Range : " + range + 
+			"; VisionRange : " + visionRange + " Base : " + isBase();
 	}
 }
