@@ -211,7 +211,7 @@ public abstract class Commander extends MovingUnit {
 	/** Returns the list of units this can summon. Can be overridden to add additional units.
 	 * Base Return is FileUnits for this' level */
 	public List<Unit> getSummonables(){
-		LinkedList<Unit> units = new LinkedList<Unit>(FileCombatant.getCombatantsForAge(level + 1));
+		LinkedList<Unit> units = new LinkedList<Unit>(FileCombatant.getCombatantsForAge(level));
 		return units;
 	}
 }
