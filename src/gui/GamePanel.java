@@ -173,9 +173,11 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	}
 
 	/** Processes the path selection - if ok, deletes it.
+	 * Do nothing if the path is empty (or length 1 - no movement) - stay in path selection mode.
 	 * Otherwise makes err noise or something. 
 	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
 	public void processPathSelection() throws RuntimeException{
+		if(pathSelector.getPath().size() < 2) return;
 		Toggle t = getFrame().removeTopToggle();
 		if(! t.equals(Toggle.PATH_SELECTION))
 			throw new RuntimeException("Can't cancel path selection, currently toggling " + getFrame().getToggle());
