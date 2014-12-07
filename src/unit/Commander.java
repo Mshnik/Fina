@@ -1,5 +1,10 @@
 package unit;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import unit.combatant.FileCombatant;
+
 import game.Player;
 import board.Tile;
 
@@ -200,5 +205,13 @@ public abstract class Commander extends MovingUnit {
 	public void levelUp(){
 		research = 0;
 		recalculateScalingStats();
+	}
+	
+	//SUMMONING
+	/** Returns the list of units this can summon. Can be overridden to add additional units.
+	 * Base Return is FileUnits for this' level */
+	public List<Unit> getSummonables(){
+		LinkedList<Unit> units = new LinkedList<Unit>(FileCombatant.getCombatantsForAge(level + 1));
+		return units;
 	}
 }

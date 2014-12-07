@@ -62,6 +62,7 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** The types of decisions that can be made */
 	public enum Type{
 		ACTION,
+		SUMMON,
 		END_OF_TURN
 	}
 	
@@ -88,13 +89,13 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** The width of this Panel is the width of a single decision */
 	@Override
 	public int getWidth(){
-		return DECISION_WIDTH;
+		return DECISION_WIDTH + (type == Type.SUMMON ? 100 : 0);
 	}
 	
 	/** The height of this Panel is the height of all the decisions */
 	@Override
 	public int getHeight(){
-		return DECISION_HEIGHT * choices.length;
+		return DECISION_HEIGHT * Math.min(super.getShowedRows(), choices.length);
 	}
 	
 	/** Overrides super version by adding the x coordinate of this panel to super's result */
@@ -119,19 +120,19 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	public void paintComponent(Graphics g){
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(BACKGROUND);
-		g2d.fillRect(x, y, DECISION_WIDTH, DECISION_HEIGHT * getMatrixHeight());
+		g2d.fillRect(x, y, getWidth(), getHeight());
 		g2d.setStroke(new BasicStroke(BORDER_WIDTH));
 		g2d.setColor(BORDER);
 		g2d.drawRect(x + BORDER_WIDTH/2, y + BORDER_WIDTH/2, 
-				DECISION_WIDTH - BORDER_WIDTH, DECISION_HEIGHT * getMatrixHeight() - BORDER_WIDTH);
+				getWidth() - BORDER_WIDTH, getHeight() - BORDER_WIDTH);
 		
 		g2d.setColor(TEXT_COLOR);
 		g2d.setFont(TEXT_FONT);
 		g2d.setRenderingHint(
 				RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-		for(int r = 0; r < getMatrixHeight(); r++){
-			g2d.drawString(choices[r].getMessage(), TEXT_X + x, TEXT_Y + y + r * DECISION_HEIGHT);
+		for(int r = scrollY; r < scrollY + Math.min(super.getShowedRows(), getMatrixHeight()); r++){
+			g2d.drawString(choices[r].getMessage(), TEXT_X + x, TEXT_Y + y + (r - scrollY) * DECISION_HEIGHT);
 		}
 		
 		//Draw cursor

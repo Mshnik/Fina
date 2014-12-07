@@ -1,6 +1,7 @@
 package gui;
 
 import game.Game;
+import game.Player;
 import gui.Frame.Toggle;
 
 import java.awt.Color;
@@ -67,6 +68,9 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		case Unit.MOVE:
 			startPathSelection();
 			break;
+		case Unit.SUMMON:
+			startSummonDecision();
+			break;
 		default:
 			break;
 		}
@@ -128,12 +132,35 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		fixDecisionPanel(DecisionPanel.Type.ACTION, decisionsArr);
 	}
 	
+	/** Creates a decisionPanel for summoning new units */
+	public void startSummonDecision(){
+		Player p = game.getCurrentPlayer();
+		Commander c = p.getCommander();
+		LinkedList<Decision> decisions = new LinkedList<Decision>();
+		int i = 0;
+		for(Unit u : c.getSummonables()){
+			decisions.add(new Decision(i++, u.name + " (" + u.manaCost + ")"));
+		}
+		Decision[] decisionsArr = decisions.toArray(new Decision[decisions.size()]);
+		fixDecisionPanel(DecisionPanel.Type.SUMMON, decisionsArr);
+	}
+	
 	/** Creates a decisionPanel with the given decisionArray. 
 	 * Fixes the location of the open decisionPanel for the location of the boardCursor,
 	 * sets active toggle and active cursor, and repaints.
 	 */
 	private void fixDecisionPanel(DecisionPanel.Type type, Decision[] decisionsArr){
 		decisionPanel = new DecisionPanel(game, type, Math.min(3, decisionsArr.length), decisionsArr);
+		moveDecisionPanel();
+		getFrame().addToggle(Toggle.DECISION);
+		getFrame().setActiveCursor(decisionPanel.cursor);
+		repaint();
+	}
+	
+	/** Moves the decision panel to accomidate the current location of the boardCursor *?
+	 *
+	 */
+	private void moveDecisionPanel(){
 		Tile t = boardCursor.getElm();
 		int x = getXPosition(t);
 		if(x < getWidth() / 2){
@@ -147,9 +174,6 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		}
 		decisionPanel.setXPosition(x);
 		decisionPanel.setYPosition(y);
-		getFrame().addToggle(Toggle.DECISION);
-		getFrame().setActiveCursor(decisionPanel.cursor);
-		repaint();
 	}
 
 	/** Creates a new pathSelector at the current boardCursor position.

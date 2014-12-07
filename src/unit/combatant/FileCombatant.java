@@ -93,7 +93,10 @@ public class FileCombatant extends Combatant {
 		FILE_COMBATANTS = Collections.unmodifiableList(units);
 	}
 
-
+	/** Returns a list of units for the given age - returns by value */
+	public static List<FileCombatant> getCombatantsForAge(int age){
+		return new LinkedList<FileCombatant>(FILE_COMBATANTS.get(age));
+	}
 
 	/** Constructor for FileCombatant that clones the given dummy fileCombatant,
 	 * starting on the given tile.
