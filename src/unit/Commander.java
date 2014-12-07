@@ -1,6 +1,5 @@
 package unit;
 
-import game.Const;
 import game.Player;
 import board.Tile;
 
@@ -38,6 +37,9 @@ public abstract class Commander extends MovingUnit {
 	
 	/** The ratio of manaCost -> research for the owner of the killing unit */
 	public static final double MANA_COST_TO_RESEARCH_RATIO = 0.3;
+	
+	/** The extra defense (applied first) against ranged units granted to commanders */
+	public static final double RANGED_DEFENSE = 0.5;
 	
 	/** The name of this commander */
 	public final String name;
@@ -155,6 +157,12 @@ public abstract class Commander extends MovingUnit {
 	 * If max health or mana increase this way, increase health and mana by
 	 * same amount */
 	public abstract void recalculateScalingStats();
+	
+	/** Commanders get bonus defense against ranged units */
+	@Override
+	public double getDefenseAgainst(Unit attacker){
+		return RANGED_DEFENSE + (1 - RANGED_DEFENSE) * super.getDefenseAgainst(attacker);
+	}
 
 	//LEVEL AND RESEARCH
 	/** Returns the level of this player */

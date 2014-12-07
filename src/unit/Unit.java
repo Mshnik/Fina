@@ -1,9 +1,6 @@
 package unit;
 
 import java.util.LinkedList;
-
-
-import game.Const;
 import game.Player;
 import board.Tile;
 
@@ -188,6 +185,14 @@ public abstract class Unit{
 		case TRUE: return 0.0;
 		default: return 0.0;
 		}
+	}
+	
+	/** Returns the defense for the given attacker. Can be overriden
+	 * in subclasses if they have different defense values than the default (against
+	 * the attacker's type
+	 */
+	public double getDefenseAgainst(Unit attacker){
+		return getDefense(attacker.getAttackType());
 	}
 	
 	/** Returns true if this is a ranged unit (range > 0)
