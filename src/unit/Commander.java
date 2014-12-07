@@ -40,9 +40,6 @@ public abstract class Commander extends MovingUnit {
 	
 	/** The extra defense (applied first) against ranged units granted to commanders */
 	public static final double RANGED_DEFENSE = 0.5;
-	
-	/** The name of this commander */
-	public final String name;
 
 	/** The max health for this commander. Increases with level.
 	 * Specifically, this means the maxHealth stat attribute is unused. */
@@ -78,8 +75,7 @@ public abstract class Commander extends MovingUnit {
 	 */
 	public Commander(String name, Player owner, Tile startingTile, UnitStats stats)
 			throws RuntimeException, IllegalArgumentException {
-		super(owner, 0, startingTile, stats);
-		this.name = name;
+		super(owner,name, 0, startingTile, stats);
 		level = 1;
 		research = 0;
 		recalculateScalingStats();

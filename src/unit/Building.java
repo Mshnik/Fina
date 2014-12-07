@@ -18,15 +18,16 @@ public abstract class Building extends Unit {
 	 * Throws an illegalArgumentException if a building is constructed on land other than
 	 * AncientGround
 	 * @param owner - the player owner of this unit
+	 * @param name	- the name of this unit.
 	 * @param manaCost - the cost of summoning this unit. Should be a positive number.
 	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
 	 * @param stats - the base unmodified stats of this unit.
 	 * 					stats that remain used are maxHealth, physicalDefense, 
 	 * 					magic defense, range, and visionRange
 	 */
-	public Building(Player owner, int manaCost, Tile tile, UnitStats stats) 
+	public Building(Player owner, String name, int manaCost, Tile tile, UnitStats stats) 
 			throws RuntimeException, IllegalArgumentException {
-		super(owner, manaCost, tile, stats);
+		super(owner, name, manaCost, tile, stats);
 		if(tile.terrain != Terrain.ANCIENT_GROUND){
 			throw new IllegalArgumentException("Can't construct building on non Ancient Ground terrain");
 		}

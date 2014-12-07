@@ -21,6 +21,9 @@ public abstract class Unit{
 	/** Text representing summoning */
 	public static final String SUMMON = "Summon";
 	
+	/** The name of this unit */
+	public final String name;
+	
 	/** The mana spent to summon this unit */
 	public final int manaCost;
 	
@@ -48,17 +51,19 @@ public abstract class Unit{
 	 * Subtracts manaCost from the owner, but throws a runtimeException if 
 	 * the owner doesn't have enough mana.
 	 * @param owner - the player owner of this unit
+	 * @param name	- the name of this unit. Can be generic, multiple units can share a name
 	 * @param manaCost - the cost of summoning this unit. Should be a positive number.
 	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
 	 * @param stats - the base unmodified stats of this unit.
 	 */
-	public Unit(Player owner, int manaCost, Tile tile, UnitStats stats) 
+	public Unit(Player owner, String name, int manaCost, Tile tile, UnitStats stats) 
 			throws IllegalArgumentException, RuntimeException{
 		if(manaCost < 0)
 			throw new IllegalArgumentException("manaCosts should be provided as positive ints");
 		if(manaCost > 0 && owner.getMana() < manaCost)
 			throw new RuntimeException(owner + " can't afford to summon unit with cost " + manaCost);
 		this.owner = owner;
+		this.name = name;
 		this.manaCost = manaCost;
 		
 		if(manaCost > 0 ) 
@@ -152,6 +157,12 @@ public abstract class Unit{
 		owner.removeUnit(this);
 		location.removeOccupyingUnit();
 		killer.owner.getCommander().addResearch((int)(manaCost * Commander.MANA_COST_TO_RESEARCH_RATIO));
+	}
+	
+	/** Returns the full stats for this unit - returns by value, so altering the
+	 * return won't do anything to this unit */
+	public UnitStats getStats(){
+		return new UnitStats(stats, null);
 	}
 	
 	/** Returns the attack strength of this unit. 0 if this is not a combatant. */
