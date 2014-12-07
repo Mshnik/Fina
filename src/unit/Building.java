@@ -28,7 +28,7 @@ public abstract class Building extends Unit {
 	public Building(Player owner, String name, int manaCost, Tile tile, UnitStats stats) 
 			throws RuntimeException, IllegalArgumentException {
 		super(owner, name, manaCost, tile, stats);
-		if(tile.terrain != Terrain.ANCIENT_GROUND){
+		if(tile != null && tile.terrain != Terrain.ANCIENT_GROUND){
 			throw new IllegalArgumentException("Can't construct building on non Ancient Ground terrain");
 		}
 	}

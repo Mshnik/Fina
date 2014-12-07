@@ -50,6 +50,7 @@ public abstract class Unit{
 	 * its owner as a unit that player owns,
 	 * Subtracts manaCost from the owner, but throws a runtimeException if 
 	 * the owner doesn't have enough mana.
+	 * Tile and owner can be null in a dummy (not on board) instance
 	 * @param owner - the player owner of this unit
 	 * @param name	- the name of this unit. Can be generic, multiple units can share a name
 	 * @param manaCost - the cost of summoning this unit. Should be a positive number.
@@ -60,21 +61,23 @@ public abstract class Unit{
 			throws IllegalArgumentException, RuntimeException{
 		if(manaCost < 0)
 			throw new IllegalArgumentException("manaCosts should be provided as positive ints");
-		if(manaCost > 0 && owner.getMana() < manaCost)
+		if(manaCost > 0 && owner != null && owner.getMana() < manaCost)
 			throw new RuntimeException(owner + " can't afford to summon unit with cost " + manaCost);
 		this.owner = owner;
 		this.name = name;
 		this.manaCost = manaCost;
-		
-		if(manaCost > 0 ) 
-			owner.getCommander().addMana(-manaCost);
-		
-		location = tile;
-		location.addOccupyingUnit(this);
 		this.stats = new UnitStats(stats, null);
 		modifiers = new LinkedList<UnitModifier>();
 		
-		owner.addUnit(this);
+		if(tile != null){
+			location = tile;
+			location.addOccupyingUnit(this);
+		}
+		
+		if(owner != null) {
+			if(! (this instanceof Commander)) owner.getCommander().addMana(Math.min(0,-manaCost));
+			owner.addUnit(this);
+		}
 	}
 	
 	/** Call at the beginning of every turn.

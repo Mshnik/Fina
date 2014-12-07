@@ -11,7 +11,7 @@ public enum AttackType {
 	 * @param s - either "p" - Physical, "m" - Magic, "t" - true, or anything else - NO_ATTACK
 	 * @return
 	 */
-	public AttackType fromAbbrevString(String s){
+	public static AttackType fromAbbrevString(String s){
 		switch(s.toLowerCase()){
 		case "p": return PHYSICAL;
 		case "m": return MAGIC;
@@ -20,7 +20,7 @@ public enum AttackType {
 		}
 	}
 	
-	public String getAbbrevString(AttackType t){
+	public static String getAbbrevString(AttackType t){
 		switch(t){
 		case MAGIC:		return "m";
 		case PHYSICAL:	return "p";
