@@ -35,7 +35,7 @@ public class HeaderPanel extends JPanel {
 
 	/** X coordinate of the start of the bars.
 	 */
-	protected static final int X_BAR_START = 275;
+	protected static final int X_BAR_START = 300;
 
 	/** Color of text used to show mana and health bars */
 	protected static final Color TEXT_COLOR = Color.white;
@@ -44,7 +44,7 @@ public class HeaderPanel extends JPanel {
 	protected static final Color BACK_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.2f);
 
 	/** Width of the health bar */
-	protected static final int BAR_WIDTH = 200;
+	protected static final int BAR_WIDTH = 175;
 	
 	/** Increments drawn with thin black lines along bar */
 	protected static final int INCREMENT_VAL = 25;
@@ -67,6 +67,9 @@ public class HeaderPanel extends JPanel {
 	/** The filled in color for the manaPerTurn cap in the mana bar */
 	protected static final Color MANA_PER_TURN_FILL = new Color(9, 169, 237);
 
+	/** Color for level text */
+	protected static final Color LEVEL = Color.WHITE;
+	
 	/** The border color for the exp bar */
 	protected static final Color EXP_BORDER = new Color(201, 186, 18);
 	
@@ -140,11 +143,20 @@ public class HeaderPanel extends JPanel {
 			g2d.drawString(p.getMana() + " (+" + Math.abs(p.getManaPerTurn()) + ")", 
 					MANA_START + BAR_WIDTH/2 - 10, HEIGHT/2 + STROKE);
 
-			//Level and exp bar
-			final int LEVEL_START = (int)(MANA_START + BAR_WIDTH * 1.125);
+			//research bar
+			final int LEVEL_SPACE = 40;
+			final int LEVEL_TOP = 33;
+			final int LEVEL_START = (int)(MANA_START + BAR_WIDTH * 1.125 + LEVEL_SPACE);
 			drawBar(g2d, LEVEL_START, EXP_BORDER, EXP_FILL, p.getResearchRequirement(),
 					(double)p.getResearch() / p.getResearchRequirement(), 
 					(int)(p.getResearch()) + "/" + p.getResearchRequirement());
+			
+			//Draw level on top of bar
+			g2d.setColor(EXP_BORDER);
+			g2d.fillRect(LEVEL_START - LEVEL_SPACE + 5, MARGIN - STROKE/2, LEVEL_SPACE - 5, HEIGHT - MARGIN * 2 + STROKE );
+			g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, 25));
+			g2d.setColor(LEVEL);
+			g2d.drawString("" + p.getCommander().getLevel(), LEVEL_START + MARGIN - LEVEL_SPACE, LEVEL_TOP);
 		}
 	}
 
