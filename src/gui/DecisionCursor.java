@@ -12,6 +12,11 @@ public class DecisionCursor extends Cursor<Decision, DecisionPanel> {
 		super(panel, panel.getElmAt(0, 0));
 	}
 
+	/** Can only select if the decision it is on is selectable */
+	public boolean canSelect(){
+		return getElm().isSelectable();
+	}
+	
 	/** DecisionCursors have custom yellow color */
 	@Override
 	public Color getColor(){

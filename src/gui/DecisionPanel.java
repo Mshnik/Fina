@@ -89,13 +89,13 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** The width of this Panel is the width of a single decision */
 	@Override
 	public int getWidth(){
-		return DECISION_WIDTH + (type == Type.SUMMON ? 100 : 0);
+		return getElementWidth();
 	}
 	
 	/** The height of this Panel is the height of all the decisions */
 	@Override
 	public int getHeight(){
-		return DECISION_HEIGHT * Math.min(super.getShowedRows(), choices.length);
+		return getElementHeight() * Math.min(super.getShowedRows(), choices.length);
 	}
 	
 	/** Overrides super version by adding the x coordinate of this panel to super's result */
@@ -177,6 +177,6 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** Returns DecisionPanel.DECISION_WIDTH */
 	@Override
 	public int getElementWidth() {
-		return DECISION_WIDTH;
+		return DECISION_WIDTH + (type == Type.SUMMON ? 100 : 0);
 	}
 }

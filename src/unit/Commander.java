@@ -17,7 +17,7 @@ import board.Tile;
 public abstract class Commander extends MovingUnit {
 
 	/** Base level of health for lvl1 commanders */
-	public static final int BASE_HEALTH = 1000;
+	public static final int BASE_HEALTH = 800;
 	
 	/** Base amount of max health gained per level */
 	public static final int SCALE_HEALTH = 200;
@@ -26,7 +26,7 @@ public abstract class Commander extends MovingUnit {
 	public static final int START_MANA = 500;
 	
 	/** Base starting level of mana per turn for lvl1 commanders */
-	public static final int BASE_MANA_PT = 500;
+	public static final int BASE_MANA_PT = 250;
 	
 	/** Base amount of mana per turn gained per level */
 	public static final int SCALE_MANA_PT = 250;

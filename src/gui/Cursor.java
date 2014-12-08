@@ -62,6 +62,9 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 		return panel;
 	}
 	
+	/** Returns true if the cursor can select the current selected elm, false otehrwise */
+	public abstract boolean canSelect();
+	
 	/** Called internally whenever a move would occur.
 	 * Do validation, return true if move is ok, false otherwise
 	 */
@@ -115,7 +118,7 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 		int w = getPanel().getElementWidth();
 		
 		//delta - depends on animation state. when non 0, makes cursor smaller.
-		int d = Math.abs(animationState - 3);
+		int d = Math.abs(animationState - (getStateCount() + 1)/2);
 		
 		//(x,y) coordinates for polylines. Each is 3 points, clockwise.
 		int[][][] coords = {
@@ -146,16 +149,16 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 		}
 	}
 	
-	/** Cursors have a cycle length of some fraction of a second. */
+	/** Cursors have a state length of some fraction of a second. */
 	@Override
 	public int getStateLength() {
-		return 100;
+		return 75;
 	}
 
-	/** Cursors have 2 states */
+	/** Cursors have 7 states */
 	@Override
 	public int getStateCount() {
-		return 5;
+		return 7;
 	}
 
 	/** Sets the animation state */

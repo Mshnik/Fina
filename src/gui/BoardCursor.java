@@ -1,5 +1,6 @@
 package gui;
 
+import game.Player;
 import board.Tile;
 
 /** An instance represents the cursor on the GUI */
@@ -10,6 +11,11 @@ public class BoardCursor extends Cursor<Tile, GamePanel>{
 	 */
 	public BoardCursor(GamePanel bp){
 		super(bp, bp.game.board.getTileAt(0, 0));
+	}
+	
+	/** Returns true - selection criteria depends on the application */
+	public boolean canSelect(){
+		return true;
 	}
 	
 	/** Called internally whenever the cursor will be moved

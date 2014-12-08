@@ -62,6 +62,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	/** Processes the currently selected Actiondecision.
 	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
 	public void processActionDecision() throws RuntimeException{
+		if(! decisionPanel.cursor.canSelect()) return;
 		String choice = decisionPanel.getSelectedDecisionMessage();
 		cancelDecision();
 		switch(choice){
@@ -89,6 +90,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	
 	/** Processes an endOfTurn Decision */
 	public void processEndTurnDecision(){
+		if(! decisionPanel.cursor.canSelect()) return;
 		String m = decisionPanel.getSelectedDecisionMessage();
 		cancelDecision();
 		switch(m){
@@ -106,6 +108,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	 */
 	public void startActionDecision(){
 		Tile t = boardCursor.getElm();
+		if(! boardCursor.canSelect()) return;
 		if(t.getOccupyingUnit() == null || t.getOccupyingUnit().owner != game.getCurrentPlayer()){
 			return;
 		} 
@@ -202,6 +205,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	 * Otherwise makes err noise or something. 
 	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
 	public void processPathSelection() throws RuntimeException{
+		if(! boardCursor.canSelect()) return;
 		if(pathSelector.getPath().size() < 2) return;
 		Toggle t = getFrame().removeTopToggle();
 		if(! t.equals(Toggle.PATH_SELECTION))
