@@ -126,12 +126,15 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 		g2d.drawRect(x + BORDER_WIDTH/2, y + BORDER_WIDTH/2, 
 				getWidth() - BORDER_WIDTH, getHeight() - BORDER_WIDTH);
 		
-		g2d.setColor(TEXT_COLOR);
 		g2d.setFont(TEXT_FONT);
 		g2d.setRenderingHint(
 				RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
 		for(int r = scrollY; r < scrollY + Math.min(super.getShowedRows(), getMatrixHeight()); r++){
+			if(choices[r].isSelectable())
+				g2d.setColor(TEXT_COLOR);
+			else
+				g2d.setColor(TEXT_COLOR.darker());
 			g2d.drawString(choices[r].getMessage(), TEXT_X + x, TEXT_Y + y + (r - scrollY) * DECISION_HEIGHT);
 		}
 		

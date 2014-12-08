@@ -5,6 +5,7 @@ import game.Player;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,6 +45,12 @@ public class FileCombatant extends Combatant {
 
 			LinkedList<FileCombatant> currentAgeUnits = null;
 			int currentAge = 0;
+			final Comparator<FileCombatant> manaCostSorter = new Comparator<FileCombatant>(){
+				@Override
+				public int compare(FileCombatant o1, FileCombatant o2) {
+					return o1.manaCost - o2.manaCost;
+				}
+			};
 			for(String line : unitLines){
 				String[] comps = line.split(",");
 				if(comps.length == 0) continue;	//Blank line
@@ -52,6 +59,11 @@ public class FileCombatant extends Combatant {
 				try{
 					int x = Integer.parseInt(comps[0]);
 					if(x == currentAge + 1){
+						//Sort old age, if any
+						if(currentAgeUnits != null){
+							Collections.sort(currentAgeUnits, manaCostSorter);
+						}
+						
 						currentAgeUnits = new LinkedList<FileCombatant>();
 						units.add(currentAgeUnits);
 						currentAge++;

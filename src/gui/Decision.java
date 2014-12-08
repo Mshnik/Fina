@@ -8,11 +8,21 @@ public class Decision implements MatrixElement{
 	/** The index of this Decision in its decisionPanel */
 	private int index;
 	
+	/** True if this is selectable, false otherwise *
+	 * 
+	 */
+	private boolean selectable;
+	
 	/** The string drawn and represented by this actionDecision */
 	private String message;
 	
 	public Decision(int index, String message){
+		this(index, true, message);
+	}
+	
+	public Decision(int index, boolean selectable, String message){
 		this.index = index;
+		this.selectable = selectable;
 		this.message = message;
 	}
 	
@@ -26,6 +36,11 @@ public class Decision implements MatrixElement{
 	@Override
 	public int getCol() {
 		return 0;
+	}
+	
+	/** Returns iff this is selectable */
+	public boolean isSelectable(){
+		return selectable;
 	}
 	
 	/** Returns the message of this string */

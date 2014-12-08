@@ -139,7 +139,8 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		LinkedList<Decision> decisions = new LinkedList<Decision>();
 		int i = 0;
 		for(Unit u : c.getSummonables()){
-			decisions.add(new Decision(i++, u.name + " (" + u.manaCost + ")"));
+			boolean ok = u.manaCost <= c.getMana();
+			decisions.add(new Decision(i++, ok, u.name + " (" + u.manaCost + ")"));
 		}
 		Decision[] decisionsArr = decisions.toArray(new Decision[decisions.size()]);
 		fixDecisionPanel(DecisionPanel.Type.SUMMON, decisionsArr);
