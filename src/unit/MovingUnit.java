@@ -60,6 +60,12 @@ public abstract class MovingUnit extends Unit{
 	 * can't travel the given terrain
 	 */
 	public abstract int getMovementCost(Terrain t);
+	
+	/** Returns true iff movementCost(t) <= getMovementCap() */
+	@Override
+	public boolean canOccupy(Terrain t){
+		return getMovementCost(t) <= getMovementCap();
+	}
 
 	/** Processes a pre-move action that may be caused by modifiers.
 	 * Still only called when the move is valid. */

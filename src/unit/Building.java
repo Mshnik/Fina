@@ -51,6 +51,11 @@ public abstract class Building extends Unit {
 		return false;
 	}
 	
+	/** Buildings can only occupy Ancient Ground */
+	public boolean canOccupy(Terrain t){
+		return t.equals(Terrain.ANCIENT_GROUND);
+	}
+	
 	/** Buildings don't do anything before a fight */
 	@Override
 	public void preCounterFight(Combatant other){}

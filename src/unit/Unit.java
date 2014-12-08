@@ -2,6 +2,7 @@ package unit;
 
 import java.util.LinkedList;
 import game.Player;
+import board.Terrain;
 import board.Tile;
 
 /** Represents any thing that can be owned by a player.
@@ -96,6 +97,13 @@ public abstract class Unit{
 			stats = stats.modifiedWith(modifiers);
 		}
 	}
+	
+	/** Returns iff this unit can occupy the given type of terrain.
+	 * For moving units, this is true iff the cost of traveling the given terrain
+	 * is less than its total movement cost
+	 * For buildings, this is true only for Ancient Ground
+	 */
+	public abstract boolean canOccupy(Terrain t);
 	
 	/** Returns the tile this Unit is on */
 	public Tile getLocation(){
