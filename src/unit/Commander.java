@@ -87,6 +87,13 @@ public abstract class Commander extends MovingUnit {
 		setMana(START_MANA);
 		setHealth(getMaxHealth(), this);
 	}
+	
+	/** Throws a runtime exception - commanders are not clonable */
+	@Override
+	public Unit clone(Player owner, Tile t){
+		throw new RuntimeException("Can't clone commander " + this);
+	}
+	
 	/** Commanders can always summon */
 	@Override
 	public boolean canSummon(){

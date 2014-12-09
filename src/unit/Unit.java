@@ -1,6 +1,7 @@
 package unit;
 
 import java.util.LinkedList;
+
 import game.Player;
 import board.Terrain;
 import board.Tile;
@@ -80,6 +81,9 @@ public abstract class Unit{
 			owner.addUnit(this);
 		}
 	}
+	
+	/** Returns a copy of this for the given player, on the given tile */
+	public abstract Unit clone(Player owner, Tile location);
 	
 	/** Call at the beginning of every turn.
 	 *  Can be overridden in subclasses, but those classes should call the super

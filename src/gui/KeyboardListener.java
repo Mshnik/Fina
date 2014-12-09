@@ -3,7 +3,6 @@ package gui;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-
 import board.Direction;
 
 /** Manager for all keyboard input. Only singleton instance is allowed. */
@@ -80,6 +79,8 @@ public class KeyboardListener implements KeyListener{
 					case END_OF_TURN:
 						gp.processEndTurnDecision();
 						break;
+					case SUMMON:
+						gp.startSummonSelection((Decision) frame.getActiveCursor().getElm());
 					default:
 						break;
 					}
@@ -87,7 +88,15 @@ public class KeyboardListener implements KeyListener{
 					gp.cancelDecision();
 				}
 				break;
-
+			case SUMMON:
+				if(keyCode == A) {
+					gp.processSummonSelection();
+				}
+				else{
+					gp.cancelSummonSelection();
+				}
+				break;
+				
 				//Path selection - should only be the case after pathSelection already started
 			case PATH_SELECTION:
 				if(keyCode == A) {

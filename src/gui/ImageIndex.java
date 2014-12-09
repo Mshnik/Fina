@@ -36,6 +36,9 @@ public class ImageIndex {
 	/** The image for dummy commander */
 	public static BufferedImage DUMMY_COMMANDER;
 	
+	/** The image for a dummy unit */
+	public static BufferedImage DUMMY_UNIT;
+	
 	/** Static initializer for the Image Class - do all image reading here */
 	static{
 		try {
@@ -50,6 +53,7 @@ public class ImageIndex {
 			
 			//Units
 			DUMMY_COMMANDER = ImageIO.read(new File(IMAGE_ROOT + MovingUnit.IMAGE_ROOT + "link.png"));
+			DUMMY_UNIT = ImageIO.read(new File(IMAGE_ROOT + MovingUnit.IMAGE_ROOT + "mario.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -72,6 +76,7 @@ public class ImageIndex {
 	public static BufferedImage imageForUnit(Unit unit){
 		switch(unit.getImgFilename()){
 			case "chrono.gif": return DUMMY_COMMANDER;
+			case "mario.png": return DUMMY_UNIT;
 			
 			//Image not found
 			default: 		   return null;

@@ -6,7 +6,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -17,44 +16,36 @@ import unit.MovingUnit;
  * @author MPatashnik
  *
  */
-public class PathSelector implements Paintable, Iterable<Tile>{
+public class PathSelector extends LocationSelector implements Paintable, Iterable<Tile>{
 
 	/** Color for Path Drawing - red */
 	protected static final Color PATH_COLOR = Color.red;
-	
-	/** Color for Cloud Drawing - translucent white */
-	protected static final Color CLOUD_COLOR = new Color(1, 1, 1, 0.5f);
 	
 	/** Thickness of lines in Path Drawing */
 	protected static final int THICKNESS = 8;
 	
 	/** The unit this path is moving */
 	public final MovingUnit unit;
-	
-	/** The gamePanel this is drawing for */
-	public final GamePanel gamePanel;
 
 	/** The path this pathSelector currently represents and is drawing.
 	 * First element is always the start tile */
 	private LinkedList<Tile> path;
-	
-	/** The possible tiles the path could go to from here - possibilities cloud */
-	private HashSet<Tile> cloud;
 
 	/** Constructor for PathSelector
 	 * @param s - start of path.
 	 */
 	public PathSelector(GamePanel gp, MovingUnit unit){
-		gamePanel = gp;
+		super(gp);
 		this.unit = unit;
 		path = new LinkedList<Tile>();
 		path.add(unit.getLocation());
-		cloud = new HashSet<Tile>();
 		refreshPossibilitiesCloud();
 	}
 	
 	/** Empties and recalculated the possibilities cloud using the current path as set */
-	private void refreshPossibilitiesCloud(){
+	@Override
+	protected void refreshPossibilitiesCloud(){
+		if(path == null) return; //Don't do anything during super class initialziation.
 		cloud = gamePanel.game.board.getMovementCloud(this);
 		gamePanel.repaint();
 	}
@@ -63,13 +54,6 @@ public class PathSelector implements Paintable, Iterable<Tile>{
 	 * This is pass-by-value, so editing the returned list won't change the PathSelector. */
 	public LinkedList<Tile> getPath(){
 		return new LinkedList<Tile>(path);
-	}
-	
-	/** Returns the possible movements cloud.
-	 * This is pass-by-value, so editing the returned set won't change the PathSelector.
-	 **/
-	public HashSet<Tile> getPossibleMovementsCloud(){
-		return new HashSet<Tile>(cloud);
 	}
 	
 	/** Returns a toString for this PathSelector as the toString of its list of tiles */
@@ -117,15 +101,7 @@ public class PathSelector implements Paintable, Iterable<Tile>{
 	public void paintComponent(Graphics g){
 		//Draw the possible movement cloud
 		Graphics2D g2d = (Graphics2D)g;
-		g2d.setColor(CLOUD_COLOR);
-		
-		for(Tile t : cloud){
-			if(t != unit.getLocation()){
-				int x = gamePanel.getXPosition(t);
-				int y = gamePanel.getYPosition(t);
-				g2d.fillRect(x, y, GamePanel.CELL_SIZE, GamePanel.CELL_SIZE);
-			}
-		}
+		super.paintComponent(g);
 		
 		//Draw the path itself
 		if(getLength() < 2) return;	//Do nothing for drawing path of length 1 (or 0, but that's impossible).

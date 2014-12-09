@@ -116,11 +116,17 @@ public class FileCombatant extends Combatant {
 	 * @param startingTile 	- the tile on which the new FileCombatant is spawned.
 	 * @param dummy			- the FileCombatant to clone
 	 */
-	public FileCombatant(Player owner, Tile startingTile, FileCombatant dummy){
+	private FileCombatant(Player owner, Tile startingTile, FileCombatant dummy){
 		super(owner, dummy.name, dummy.manaCost, startingTile, dummy.getStats());
 		this.img = dummy.img;
 		this.moveCost = new HashMap<Terrain, Integer>(dummy.moveCost);
 		this.movementCap = dummy.movementCap;
+	}
+	
+	/** Clones this unit for the given player */
+	@Override
+	public Unit clone(Player owner, Tile t){
+		return new FileCombatant(owner, t, this);
 	}
 
 	/** Constructor used during initialization to create a dummy instance
@@ -132,7 +138,7 @@ public class FileCombatant extends Combatant {
 	 * @param costs			- the momement costs of clones of this
 	 * @param img			- the image to draw for clones of this
 	 */
-	public FileCombatant(String name, int manaCost, UnitStats stats, int moveTotal, 
+	private FileCombatant(String name, int manaCost, UnitStats stats, int moveTotal, 
 			HashMap<Terrain, Integer> costs, String img){
 		super(null, name, manaCost, null, stats);
 		this.img = img;

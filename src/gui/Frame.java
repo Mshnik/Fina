@@ -47,6 +47,7 @@ public class Frame extends JFrame {
 	protected enum Toggle{
 		NONE,
 		PATH_SELECTION,
+		SUMMON,
 		DECISION
 	}
 	

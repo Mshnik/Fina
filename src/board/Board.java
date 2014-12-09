@@ -1,6 +1,7 @@
 package board;
 
 import gui.PathSelector;
+import gui.SummonSelector;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -112,6 +113,17 @@ public class Board implements Iterable<Tile>{
 		return tiles;
 	}
 
+	/** Returns the set of tiles the given summon selector could choose to summon a new unit */
+	public HashSet<Tile> getSummonCloud(SummonSelector ss){
+		HashSet<Tile> radialTiles = getRadialCloud(ss.summoner.getLocation(), ss.summoner.getRange());
+		HashSet<Tile> toRemove = new HashSet<Tile>();
+		for(Tile t : radialTiles){
+			if(! ss.summoner.owner.canSee(t) || t.isOccupied() || ! ss.toSummon.canOccupy(t.terrain))
+				toRemove.add(t);
+		}
+		radialTiles.removeAll(toRemove);
+		return radialTiles;
+	}
 
 	/** Returns the set of tiles the given path selector could move to from its
 	 * current location with its movement cap.

@@ -1,6 +1,5 @@
 package gui;
 
-import game.Player;
 import board.Tile;
 
 /** An instance represents the cursor on the GUI */
@@ -24,9 +23,15 @@ public class BoardCursor extends Cursor<Tile, GamePanel>{
 	 */
 	@Override
 	protected boolean willMoveTo(Tile destination){
-		if(getPanel().getPathSelector() == null) return true;
-		PathSelector ps = getPanel().getPathSelector();
-		return ps.getPath().contains(destination) || ps.getPossibleMovementsCloud().contains(destination);
+		if(getPanel().getLocationSelector() == null) return true;
+		LocationSelector ls = getPanel().getLocationSelector();
+		boolean cloudOK = ls.getPossibleMovementsCloud().contains(destination);
+		if(ls instanceof PathSelector){
+			PathSelector ps = (PathSelector) ls;
+			return cloudOK || ps.getPath().contains(destination);
+		} else{
+			return cloudOK;
+		}
 	}
 	
 	/** Called internally whenever the cursor is moved
@@ -34,7 +39,9 @@ public class BoardCursor extends Cursor<Tile, GamePanel>{
 	@Override
 	protected void moved(){
 		super.moved();
-		if(getPanel().getPathSelector() != null)
-			getPanel().getPathSelector().addToPath(getElm());
+		if(getPanel().getLocationSelector() != null && getPanel().getLocationSelector() instanceof PathSelector){
+			PathSelector ps = (PathSelector) getPanel().getLocationSelector();
+			ps.addToPath(getElm());
+		}
 	}
 }

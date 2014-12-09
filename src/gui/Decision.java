@@ -26,6 +26,11 @@ public class Decision implements MatrixElement{
 		this.message = message;
 	}
 	
+	/** Returns the index of this decision */
+	public int getIndex(){
+		return index;
+	}
+	
 	/** Returns the index of this Decision in its decisionPanel */
 	@Override
 	public int getRow() {
