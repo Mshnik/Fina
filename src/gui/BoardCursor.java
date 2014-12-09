@@ -1,5 +1,7 @@
 package gui;
 
+import gui.decision.PathSelector;
+import gui.panel.GamePanel;
 import board.Tile;
 
 /** An instance represents the cursor on the GUI */

@@ -2,6 +2,8 @@ package gui;
 
 import board.*;
 
+import gui.panel.GamePanel;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;

@@ -8,6 +8,8 @@ import javax.swing.JFrame;
 
 import unit.dummy.*;
 import game.*;
+import gui.panel.GamePanel;
+import gui.panel.HeaderPanel;
 import board.*;
 
 

@@ -1,5 +1,7 @@
-package gui;
+package gui.decision;
 
+import gui.LocationSelector;
+import gui.panel.GamePanel;
 import unit.Unit;
 
 /** A location selector for summoning a new unit */

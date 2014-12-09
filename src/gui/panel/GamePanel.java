@@ -1,8 +1,18 @@
-package gui;
+package gui.panel;
 
 import game.Game;
 import game.Player;
+import gui.BoardCursor;
+import gui.Frame;
+import gui.ImageIndex;
+import gui.LocationSelector;
+import gui.MatrixPanel;
+import gui.Paintable;
 import gui.Frame.Toggle;
+import gui.decision.Decision;
+import gui.decision.DecisionPanel;
+import gui.decision.PathSelector;
+import gui.decision.SummonSelector;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -186,7 +196,6 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	public void startSummonSelection(Decision decision){
 		if(! decision.isSelectable()) return;
 		cancelDecision();
-		game.getFrame().setActiveCursor(boardCursor);
 		Tile t = boardCursor.getElm();
 		if(! t.isOccupied() || ! t.getOccupyingUnit().canSummon()) return;
 		Unit toSummon = t.getOccupyingUnit().owner.getCommander().getSummonables().get(decision.getIndex());

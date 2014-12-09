@@ -1,4 +1,6 @@
-package gui;
+package gui.decision;
+
+import gui.Cursor;
 
 import java.awt.Color;
 

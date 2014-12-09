@@ -1,5 +1,8 @@
 package gui;
 
+import gui.decision.Decision;
+import gui.panel.GamePanel;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 

@@ -1,7 +1,7 @@
 package board;
 
-import gui.PathSelector;
-import gui.SummonSelector;
+import gui.decision.PathSelector;
+import gui.decision.SummonSelector;
 
 import java.util.Comparator;
 import java.util.HashSet;

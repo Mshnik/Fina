@@ -1,6 +1,9 @@
-package gui;
+package gui.decision;
 
 import game.Game;
+import gui.Frame;
+import gui.MatrixPanel;
+import gui.Paintable;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

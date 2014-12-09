@@ -1,4 +1,4 @@
-package gui;
+package gui.panel;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -11,6 +11,8 @@ import java.util.HashMap;
 
 import game.Game;
 import game.Player;
+import gui.Frame;
+import gui.ImageIndex;
 
 import javax.swing.JPanel;
 

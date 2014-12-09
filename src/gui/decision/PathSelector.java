@@ -1,6 +1,10 @@
-package gui;
+package gui.decision;
 
 import board.*;
+
+import gui.LocationSelector;
+import gui.Paintable;
+import gui.panel.GamePanel;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
