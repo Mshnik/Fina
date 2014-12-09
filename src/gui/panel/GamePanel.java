@@ -31,7 +31,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	private static final long serialVersionUID = 1L;
 
 	/** Pixels (size) for each square tile. */
-	protected static final int CELL_SIZE = 64; 
+	public static final int CELL_SIZE = 64; 
 
 	/** Shading for fog of war - translucent black */
 	protected static final Color FOG_OF_WAR = new Color(0,0,0,0.75f);
@@ -200,7 +200,9 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		if(! t.isOccupied() || ! t.getOccupyingUnit().canSummon()) return;
 		Unit toSummon = t.getOccupyingUnit().owner.getCommander().getSummonables().get(decision.getIndex());
 		locationSelector = new SummonSelector(this, t.getOccupyingUnit(), toSummon);
-		boardCursor.setElm(locationSelector.cloud.iterator().next());
+		Tile t2 = locationSelector.getPossibleMovementsCloud().get(0);
+		boardCursor.setElm(t2);
+		fixScrollToShow(t2.getRow(), t2.getCol());
 		getFrame().addToggle(Frame.Toggle.SUMMON);
 	}
 	

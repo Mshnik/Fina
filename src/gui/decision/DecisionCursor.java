@@ -4,6 +4,8 @@ import gui.Cursor;
 
 import java.awt.Color;
 
+import board.Direction;
+
 /** A default cursor implementation for when no special cursor actions are necessary */
 public class DecisionCursor extends Cursor<Decision, DecisionPanel> {
 
@@ -25,10 +27,10 @@ public class DecisionCursor extends Cursor<Decision, DecisionPanel> {
 		return new Color(255, 240, 28);
 	}
 	
-	/** Moves are always oked. Returns true */
+	/** Moves are always oked. Returns true, so long as destination isn't null */
 	@Override
-	protected boolean willMoveTo(Decision destination) {
-		return true;
+	protected boolean willMoveTo(Direction d, Decision destination) {
+		return destination != null;
 	}
 	
 	/** Needs to have the gamePanel repaint */

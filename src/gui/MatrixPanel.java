@@ -76,6 +76,29 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 	/** Returns the element at the given indices. Throws IllegalArgumentException if this is OOB */
 	public abstract T getElmAt(int row, int col) throws IllegalArgumentException;
 	
+	/** Fixes the scroll to show the given row and column. Scrolls as little as possible to make this
+	 * change
+	 * row, col must be in range of matrix this is painting.
+	 */
+	public void fixScrollToShow(int row, int col) throws IllegalArgumentException{
+		if(row < 0 || col < 0 || row > getMatrixHeight() || col > getMatrixWidth())
+			throw new IllegalArgumentException("Can't show " + row + ", " + col + " : OOB");
+		
+		while(row < scrollY){
+			scrollY--;
+		}
+		while(row > scrollY + maxY){
+			scrollY++;
+		}
+		while(col < scrollX){
+			scrollX--;
+		}
+		while(col > scrollX + maxX){
+			scrollX++;
+		}
+		getFrame().repaint();
+	}
+	
 	/** Returns the xPosition (graphically) of the top left corner of the given element */
 	public int getXPosition(T t){
 		return (t.getCol() - scrollX) * getElementWidth();

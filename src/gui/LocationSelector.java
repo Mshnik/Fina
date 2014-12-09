@@ -7,7 +7,7 @@ import gui.panel.GamePanel;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.HashSet;
+import java.util.ArrayList;
 
 /** An instance represents a selector for any location with a given criteria */
 public abstract class LocationSelector implements Paintable {
@@ -18,7 +18,7 @@ public abstract class LocationSelector implements Paintable {
 	public final GamePanel gamePanel;
 
 	/** The possible tiles the path could go to from here - possibilities cloud */
-	protected HashSet<Tile> cloud;
+	protected ArrayList<Tile> cloud;
 
 	/** Constructor for PathSelector.
 	 * Implementing classes should refresh possibilities cloud at end of construction
@@ -26,17 +26,17 @@ public abstract class LocationSelector implements Paintable {
 	 */
 	public LocationSelector(GamePanel gp){
 		gamePanel = gp;
-		cloud = new HashSet<Tile>();
+		cloud = new ArrayList<Tile>();
 	}
 
 	/** Empties and recalculated the possibilities cloud using the current path as set */
 	protected abstract void refreshPossibilitiesCloud();
-
+	
 	/** Returns the possible movements cloud.
 	 * This is pass-by-value, so editing the returned set won't change the PathSelector.
 	 **/
-	public HashSet<Tile> getPossibleMovementsCloud(){
-		return new HashSet<Tile>(cloud);
+	public ArrayList<Tile> getPossibleMovementsCloud(){
+		return new ArrayList<Tile>(cloud);
 	}
 
 	/** Draws this cloud */

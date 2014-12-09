@@ -48,10 +48,10 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	private Decision[] choices;
 	
 	/** The drawing height of a Decision */
-	protected static final int DECISION_HEIGHT = 40;
+	public static final int DECISION_HEIGHT = 40;
 	
 	/** The drawing width of an Decision */
-	protected static final int DECISION_WIDTH = 120;
+	public static final int DECISION_WIDTH = 120;
 	
 	/** A Cursor for this DecisionPanel */
 	public final DecisionCursor cursor;

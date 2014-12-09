@@ -3,6 +3,8 @@ package board;
 import gui.decision.PathSelector;
 import gui.decision.SummonSelector;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -89,8 +91,8 @@ public class Board implements Iterable<Tile>{
 	 * A radius of 0 will return a set containing only center.
 	 * Doesn't check terrain or current occupants at all.
 	 */
-	public HashSet<Tile> getRadialCloud(Tile center, int radius){
-		HashSet<Tile> tiles = new HashSet<Tile>();
+	public ArrayList<Tile> getRadialCloud(Tile center, int radius){
+		ArrayList<Tile> tiles = new ArrayList<Tile>();
 		tiles.add(center);
 		int col = center.col;
 		int row = center.row; 
@@ -110,12 +112,13 @@ public class Board implements Iterable<Tile>{
 				}catch(IllegalArgumentException e){}
 			}
 		}
+		Collections.sort(tiles);
 		return tiles;
 	}
 
 	/** Returns the set of tiles the given summon selector could choose to summon a new unit */
-	public HashSet<Tile> getSummonCloud(SummonSelector ss){
-		HashSet<Tile> radialTiles = getRadialCloud(ss.summoner.getLocation(), ss.summoner.getRange());
+	public ArrayList<Tile> getSummonCloud(SummonSelector ss){
+		ArrayList<Tile> radialTiles = getRadialCloud(ss.summoner.getLocation(), ss.summoner.getRange());
 		HashSet<Tile> toRemove = new HashSet<Tile>();
 		for(Tile t : radialTiles){
 			if(! ss.summoner.owner.canSee(t) || t.isOccupied() || ! ss.toSummon.canOccupy(t.terrain))
@@ -128,7 +131,7 @@ public class Board implements Iterable<Tile>{
 	/** Returns the set of tiles the given path selector could move to from its
 	 * current location with its movement cap.
 	 */
-	public HashSet<Tile> getMovementCloud(PathSelector ps){
+	public ArrayList<Tile> getMovementCloud(PathSelector ps){
 		MovingUnit unit = ps.unit;
 		//Initialize
 		for(Tile t : this){
@@ -151,7 +154,7 @@ public class Board implements Iterable<Tile>{
 			}
 		});
 		frontier.add(start);
-		HashSet<Tile> settled = new HashSet<Tile>();
+		ArrayList<Tile> settled = new ArrayList<Tile>();
 
 		//Iteration
 		while(! frontier.isEmpty()){
@@ -171,7 +174,15 @@ public class Board implements Iterable<Tile>{
 			}
 		}
 
-		//Just return settled tiles as possible movement.
+		//Just return settled tiles as possible movement. Remove duplicates as possible.
+		int i = 0;
+		while(i < settled.size()){
+			if(settled.indexOf(settled.get(i)) != i){
+				settled.remove(i);
+			} else{
+				i++;
+			}
+		}
 		return settled;
 	}
 

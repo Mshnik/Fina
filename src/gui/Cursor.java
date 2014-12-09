@@ -68,13 +68,13 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 	/** Called internally whenever a move would occur.
 	 * Do validation, return true if move is ok, false otherwise
 	 */
-	protected abstract boolean willMoveTo(T destination);
+	protected abstract boolean willMoveTo(Direction d, T destination);
 	
 	/** Call to move in the given direction, if possible */
 	public void move(Direction d){
 		T dest = getPanel().getElmInDirection(getElm(), d);
 		
-		if(dest != null && willMoveTo(dest)){
+		if(willMoveTo(d, dest)){
 			setElm(dest);
 			if(getCol() < getPanel().scrollX)
 				getPanel().scrollX = Math.max(getPanel().scrollX - 1, 0);
@@ -94,7 +94,7 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 	/** Called after a move occurs to do painting and the like. Can
 	 * be overriden, but this method should be called first before adding new behavior */
 	protected void moved(){
-		panel.repaint();
+		panel.fixScrollToShow(getRow(), getCol());
 	}
 	
 	/** Returns the color of the cursor. Can be overriden in subclasses

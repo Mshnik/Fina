@@ -30,7 +30,7 @@ public class Frame extends JFrame {
 	//Monotype corsiva
 	//Papyrus
 	/** The font to use for all text */
-	protected static final String FONTNAME = "Damascus";
+	public static final String FONTNAME = "Damascus";
 	
 	/** The headerPanel this Frame is drawing, if any */
 	protected HeaderPanel headerPanel;
@@ -46,7 +46,7 @@ public class Frame extends JFrame {
 	private Cursor activeCursor;
 	
 	/** Different possiblities for toggle options */
-	protected enum Toggle{
+	public enum Toggle{
 		NONE,
 		PATH_SELECTION,
 		SUMMON,
@@ -107,7 +107,7 @@ public class Frame extends JFrame {
 	/** Returns the current active cursor that is moved by arrow keys.
 	 * Because cursor has many different implementations, casting is needed */
 	@SuppressWarnings("rawtypes")
-	protected void setActiveCursor(Cursor c){
+	public void setActiveCursor(Cursor c){
 		activeCursor = c;
 		animator.addAnimatable(c);
 	}
@@ -123,13 +123,13 @@ public class Frame extends JFrame {
 	}
 	
 	/** Sets the current Toggle setting by adding it to the top of the stack */
-	protected void addToggle(Toggle t){
+	public void addToggle(Toggle t){
 		toggle.push(t);
 	}
 	
 	/** Removes the top-most Toggle setting. 
 	 * Returns the removed setting for checking purposes */
-	protected Toggle removeTopToggle(){
+	public Toggle removeTopToggle(){
 		return toggle.pop();
 	}
 	
