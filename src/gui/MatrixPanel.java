@@ -87,13 +87,13 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 		while(row < scrollY){
 			scrollY--;
 		}
-		while(row > scrollY + maxY){
+		while(row > scrollY + maxY - 1){
 			scrollY++;
 		}
 		while(col < scrollX){
 			scrollX--;
 		}
-		while(col > scrollX + maxX){
+		while(col > scrollX + maxX - 1){
 			scrollX++;
 		}
 		getFrame().repaint();

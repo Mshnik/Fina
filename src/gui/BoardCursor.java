@@ -21,8 +21,9 @@ public class BoardCursor extends Cursor<Tile, GamePanel>{
 	}
 
 	/** Called internally whenever the cursor will be moved
-	 * Validate if there is a path selector 
-	 * @return true iff the move is ok.
+	 * Validate if there is a path selector or other selector. 
+	 * If in some cloud and the move is to wrap around, return false but do the move anyways.
+	 * @return true iff the move is ok (allow move)
 	 */
 	@Override
 	protected boolean willMoveTo(Direction d, Tile destination){
@@ -40,13 +41,33 @@ public class BoardCursor extends Cursor<Tile, GamePanel>{
 				if(d.equals(Direction.LEFT) && i > 0){
 					setElm(ls.cloud.get(i - 1));
 					moved();
-					return false;
 				} else if(d.equals(Direction.RIGHT) && i < ls.cloud.size() - 1){
 					setElm(ls.cloud.get(i+1));
 					moved();
-					return false;
+				} else if(d.equals(Direction.UP)){
+					Tile t2 = null;
+					for(Tile t : ls.cloud){
+						if(t.col == getElm().col && t.row < getElm().row 
+								&& (t2 == null || t2.row < t.row))
+							t2 = t;
+					}
+					if(t2 != null){
+						setElm(t2);
+						moved();
+					}
+				} else if(d.equals(Direction.DOWN)){
+					Tile t2 = null;
+					for(Tile t : ls.cloud){
+						if(t.col == getElm().col && t.row > getElm().row 
+								&& (t2 == null || t2.row > t.row))
+							t2 = t;
+					}
+					if(t2 != null){
+						setElm(t2);
+						moved();
+					}
 				}
-				return cloudOK;
+				return false;
 			}
 		}
 	}

@@ -76,17 +76,6 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 		
 		if(willMoveTo(d, dest)){
 			setElm(dest);
-			if(getCol() < getPanel().scrollX)
-				getPanel().scrollX = Math.max(getPanel().scrollX - 1, 0);
-			if(getCol() > getPanel().scrollX + getPanel().getShowedCols() - 1)
-				getPanel().scrollX = 
-				Math.min(getPanel().scrollX + 1, 
-						getPanel().getWidth() - getPanel().getShowedCols());
-			if(getRow() < getPanel().scrollY)
-				getPanel().scrollY = Math.max(getPanel().scrollY - 1, 0);
-			if(getRow() > getPanel().scrollY + getPanel().getShowedRows() - 1)
-				getPanel().scrollY= Math.min(getPanel().scrollY + 1, 
-						getPanel().getHeight() - getPanel().getShowedRows() );
 			moved();
 		}
 	}
