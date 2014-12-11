@@ -1,9 +1,6 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.util.EmptyStackException;
-import java.util.Stack;
-
 import javax.swing.JFrame;
 
 import unit.dummy.*;
@@ -45,17 +42,6 @@ public class Frame extends JFrame {
 	@SuppressWarnings("rawtypes")
 	private Cursor activeCursor;
 	
-	/** Different possiblities for toggle options */
-	public enum Toggle{
-		NONE,
-		PATH_SELECTION,
-		SUMMON,
-		DECISION
-	}
-	
-	/** The layers of active toggles. Topmost is the current toggle */
-	private Stack<Toggle> toggle;
-	
 	public Frame(){
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -63,7 +49,6 @@ public class Frame extends JFrame {
 		setResizable(false);
 		setLocation(100, 100);
 		animator = new Animator();
-		toggle = new Stack<Toggle>();
 		KeyboardListener.setFrame(this);
 	}
 	
@@ -110,27 +95,6 @@ public class Frame extends JFrame {
 	public void setActiveCursor(Cursor c){
 		activeCursor = c;
 		animator.addAnimatable(c);
-	}
-	
-	/** Returns the current Toggle setting.
-	 * Returns Toggle.NONE if there are no current toggles open */
-	public Toggle getToggle(){
-		try{
-			return toggle.peek();
-		}catch(EmptyStackException e){
-			return Toggle.NONE;
-		}
-	}
-	
-	/** Sets the current Toggle setting by adding it to the top of the stack */
-	public void addToggle(Toggle t){
-		toggle.push(t);
-	}
-	
-	/** Removes the top-most Toggle setting. 
-	 * Returns the removed setting for checking purposes */
-	public Toggle removeTopToggle(){
-		return toggle.pop();
 	}
 	
 	/** Returns the object responsible for animating things for this frame */

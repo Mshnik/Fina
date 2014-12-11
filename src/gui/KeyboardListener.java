@@ -63,7 +63,7 @@ public class KeyboardListener implements KeyListener{
 
 		//Check different toggles - if non-none, handle
 		if((keyCode == A || keyCode == B)){
-			switch(frame.getToggle()){
+			switch(gp.getToggle()){
 				//No toggle currently open. Maybe open one.
 			case NONE:
 				if(keyCode == A){
@@ -82,7 +82,7 @@ public class KeyboardListener implements KeyListener{
 					case END_OF_TURN:
 						gp.processEndTurnDecision();
 						break;
-					case SUMMON:
+					case SUMMON_SELECTION:
 						gp.startSummonSelection((Decision) frame.getActiveCursor().getElm());
 					default:
 						break;

@@ -8,7 +8,6 @@ import gui.ImageIndex;
 import gui.LocationSelector;
 import gui.MatrixPanel;
 import gui.Paintable;
-import gui.Frame.Toggle;
 import gui.decision.Decision;
 import gui.decision.DecisionPanel;
 import gui.decision.PathSelector;
@@ -19,7 +18,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.util.EmptyStackException;
 import java.util.LinkedList;
+import java.util.Stack;
 
 import board.*;
 import unit.*;
@@ -45,46 +46,48 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	/** The LocationSelector that is currently active. Null if none */
 	private LocationSelector locationSelector;
 
+	/** Different possiblities for toggle options */
+	public enum Toggle{
+		NONE,
+		PATH_SELECTION,
+		SUMMON,
+		DECISION
+	}
+	
+	/** The layers of active toggles. Topmost is the current toggle */
+	private Stack<Toggle> toggle;
+	
 	/** Constructor for GamePanel
 	 * @param g - the game to display using this panel
 	 * @param maxRows - the maximum number of rows of tiles to show at a time
 	 * @param maxCols - the maximum number of cols of tiles to show at a time
 	 */
 	public GamePanel(Game g, int maxRows, int maxCols){
-		super(g, maxCols, maxRows, 0, 0);
+		super(g, maxCols, maxRows, 0, 0);		
+		toggle = new Stack<Toggle>();
 		boardCursor = new BoardCursor(this);
-
 		setPreferredSize(new Dimension(getShowedCols() * CELL_SIZE, getShowedRows() * CELL_SIZE));
 	}
 	
-	/** Cancels the currently selected decision for any decision
-	 * Throws a runtimeException if this was a bad time to cancel because decision wasn't happening. */
-	public void cancelDecision() throws RuntimeException{
-		Toggle t = getFrame().removeTopToggle();
-		if(! t.equals(Toggle.DECISION))
-			throw new RuntimeException("Can't cancel decision, currently toggling " + getFrame().getToggle());
-		getFrame().getAnimator().removeAnimatable(decisionPanel.cursor);
-		decisionPanel = null;
-		getFrame().setActiveCursor(boardCursor);
-		repaint();
+	/** Returns the current Toggle setting.
+	 * Returns Toggle.NONE if there are no current toggles open */
+	public Toggle getToggle(){
+		try{
+			return toggle.peek();
+		}catch(EmptyStackException e){
+			return Toggle.NONE;
+		}
 	}
 	
-	/** Processes the currently selected Actiondecision.
-	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
-	public void processActionDecision() throws RuntimeException{
-		if(! decisionPanel.cursor.canSelect()) return;
-		String choice = decisionPanel.getSelectedDecisionMessage();
-		cancelDecision();
-		switch(choice){
-		case Unit.MOVE:
-			startPathSelection();
-			break;
-		case Unit.SUMMON:
-			startSummonDecision();
-			break;
-		default:
-			break;
-		}
+	/** Sets the current Toggle setting by adding it to the top of the stack */
+	protected void addToggle(Toggle t){
+		toggle.push(t);
+	}
+	
+	/** Removes the top-most Toggle setting. 
+	 * Returns the removed setting for checking purposes */
+	protected Toggle removeTopToggle(){
+		return toggle.pop();
 	}
 	
 	/** Returns the current active decision panel, if any */
@@ -92,24 +95,49 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		return decisionPanel;
 	}
 	
-	/** Starts a decisionPanel for ending the current player's turn */
-	public void startEndTurnDecision(){
-		Decision[] decisionsArr = {new Decision(0, Game.CANCEL), new Decision(1, Game.END_TURN)};
-		fixDecisionPanel(DecisionPanel.Type.END_OF_TURN, decisionsArr);
+	/** Cancels the currently selected decision for any decision
+	 * Throws a runtimeException if this was a bad time to cancel because decision wasn't happening. */
+	public void cancelDecision() throws RuntimeException{
+		Toggle t = removeTopToggle();
+		if(! t.equals(Toggle.DECISION))
+			throw new RuntimeException("Can't cancel decision, currently toggling " + getToggle());
+		getFrame().getAnimator().removeAnimatable(decisionPanel.cursor);
+		decisionPanel = null;
+		getFrame().setActiveCursor(boardCursor);
+		repaint();
 	}
 	
-	/** Processes an endOfTurn Decision */
-	public void processEndTurnDecision(){
-		if(! decisionPanel.cursor.canSelect()) return;
-		String m = decisionPanel.getSelectedDecisionMessage();
-		cancelDecision();
-		switch(m){
-		case Game.END_TURN:
-			game.getCurrentPlayer().turnEnd();
-			break;
-		}
+	/** Creates a decisionPanel with the given decisionArray. 
+	 * Fixes the location of the open decisionPanel for the location of the boardCursor,
+	 * sets active toggle and active cursor, and repaints.
+	 */
+	private void fixDecisionPanel(DecisionPanel.Type type, Decision[] decisionsArr){
+		decisionPanel = new DecisionPanel(game, type, Math.min(3, decisionsArr.length), decisionsArr);
+		moveDecisionPanel();
+		addToggle(Toggle.DECISION);
+		getFrame().setActiveCursor(decisionPanel.cursor);
+		repaint();
 	}
-
+	
+	/** Moves the decision panel to accomidate the current location of the boardCursor *?
+	 *
+	 */
+	private void moveDecisionPanel(){
+		Tile t = boardCursor.getElm();
+		int x = getXPosition(t);
+		if(x < getWidth() / 2){
+			x += GamePanel.CELL_SIZE + 5;
+		} else{
+			x -= (DecisionPanel.DECISION_WIDTH + 5);
+		}
+		int y = getYPosition(t);
+		if(y > getHeight() / 2){
+			y = getYPosition(t) - decisionPanel.getHeight() + GamePanel.CELL_SIZE;
+		}
+		decisionPanel.setXPosition(x);
+		decisionPanel.setYPosition(y);
+	}
+	
 	/** Creates a new Decision Panel for doing things with a unit, 
 	 * shown to the side of the current tile (side depending
 	 * on location of current tile)
@@ -145,6 +173,42 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		fixDecisionPanel(DecisionPanel.Type.ACTION, decisionsArr);
 	}
 	
+	/** Processes the currently selected Actiondecision.
+	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
+	public void processActionDecision() throws RuntimeException{
+		if(! decisionPanel.cursor.canSelect()) return;
+		String choice = decisionPanel.getSelectedDecisionMessage();
+		cancelDecision();
+		switch(choice){
+		case Unit.MOVE:
+			startPathSelection();
+			break;
+		case Unit.SUMMON:
+			startSummonDecision();
+			break;
+		default:
+			break;
+		}
+	}
+	
+	/** Starts a decisionPanel for ending the current player's turn */
+	public void startEndTurnDecision(){
+		Decision[] decisionsArr = {new Decision(0, Game.CANCEL), new Decision(1, Game.END_TURN)};
+		fixDecisionPanel(DecisionPanel.Type.END_OF_TURN, decisionsArr);
+	}
+	
+	/** Processes an endOfTurn Decision */
+	public void processEndTurnDecision(){
+		if(! decisionPanel.cursor.canSelect()) return;
+		String m = decisionPanel.getSelectedDecisionMessage();
+		cancelDecision();
+		switch(m){
+		case Game.END_TURN:
+			game.getCurrentPlayer().turnEnd();
+			break;
+		}
+	}
+	
 	/** Creates a decisionPanel for summoning new units */
 	public void startSummonDecision(){
 		Player p = game.getCurrentPlayer();
@@ -156,40 +220,9 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			decisions.add(new Decision(i++, ok, u.name + " (" + u.manaCost + ")"));
 		}
 		Decision[] decisionsArr = decisions.toArray(new Decision[decisions.size()]);
-		fixDecisionPanel(DecisionPanel.Type.SUMMON, decisionsArr);
+		fixDecisionPanel(DecisionPanel.Type.SUMMON_SELECTION, decisionsArr);
 	}
 	
-	/** Creates a decisionPanel with the given decisionArray. 
-	 * Fixes the location of the open decisionPanel for the location of the boardCursor,
-	 * sets active toggle and active cursor, and repaints.
-	 */
-	private void fixDecisionPanel(DecisionPanel.Type type, Decision[] decisionsArr){
-		decisionPanel = new DecisionPanel(game, type, Math.min(3, decisionsArr.length), decisionsArr);
-		moveDecisionPanel();
-		getFrame().addToggle(Toggle.DECISION);
-		getFrame().setActiveCursor(decisionPanel.cursor);
-		repaint();
-	}
-	
-	/** Moves the decision panel to accomidate the current location of the boardCursor *?
-	 *
-	 */
-	private void moveDecisionPanel(){
-		Tile t = boardCursor.getElm();
-		int x = getXPosition(t);
-		if(x < getWidth() / 2){
-			x += GamePanel.CELL_SIZE + 5;
-		} else{
-			x -= (DecisionPanel.DECISION_WIDTH + 5);
-		}
-		int y = getYPosition(t);
-		if(y > getHeight() / 2){
-			y = getYPosition(t) - decisionPanel.getHeight() + GamePanel.CELL_SIZE;
-		}
-		decisionPanel.setXPosition(x);
-		decisionPanel.setYPosition(y);
-	}
-
 	/** Creates a new summon selector at the current boardCursor position.
 	 * 
 	 */
@@ -203,15 +236,15 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		Tile t2 = locationSelector.getPossibleMovementsCloud().get(0);
 		boardCursor.setElm(t2);
 		fixScrollToShow(t2.getRow(), t2.getCol());
-		getFrame().addToggle(Frame.Toggle.SUMMON);
+		addToggle(Toggle.SUMMON);
 	}
 	
 	/** Cancels the summon selection - deletes it but does nothing.
 	 * Throws a runtimeException if this was a bad time to cancel because summonSelection wasn't happening. */
 	public void cancelSummonSelection() throws RuntimeException{
-		Toggle t = getFrame().removeTopToggle();
+		Toggle t =removeTopToggle();
 		if(! t.equals(Toggle.SUMMON))
-			throw new RuntimeException("Can't cancel summon selection, currently toggling " + getFrame().getToggle());
+			throw new RuntimeException("Can't cancel summon selection, currently toggling " + getToggle());
 		if(locationSelector != null){
 			SummonSelector ss = (SummonSelector) locationSelector;
 			boardCursor.setElm(ss.summoner.getLocation());
@@ -226,9 +259,9 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	public void processSummonSelection() throws RuntimeException{
 		if(! boardCursor.canSelect()) return;
 		SummonSelector summonSelector = (SummonSelector) locationSelector;
-		Toggle t = getFrame().removeTopToggle();
+		Toggle t = removeTopToggle();
 		if(! t.equals(Toggle.SUMMON))
-			throw new RuntimeException("Can't cancel summon selection, currently toggling " + getFrame().getToggle());
+			throw new RuntimeException("Can't cancel summon selection, currently toggling " + getToggle());
 		try{
 			summonSelector.toSummon.clone(summonSelector.summoner.owner, boardCursor.getElm());
 			locationSelector = null;
@@ -246,15 +279,15 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		if(! t.isOccupied() || ! t.getOccupyingUnit().canMove()) return;
 
 		locationSelector = new PathSelector(this, (MovingUnit) t.getOccupyingUnit());
-		getFrame().addToggle(Frame.Toggle.PATH_SELECTION);
+		addToggle(Toggle.PATH_SELECTION);
 	}
 
 	/** Cancels the path selection - deletes it but does nothing.
 	 * Throws a runtimeException if this was a bad time to cancel because pathSelection wasn't happening. */
 	public void cancelPathSelection() throws RuntimeException{
-		Toggle t = getFrame().removeTopToggle();
+		Toggle t = removeTopToggle();
 		if(! t.equals(Toggle.PATH_SELECTION))
-			throw new RuntimeException("Can't cancel path selection, currently toggling " + getFrame().getToggle());
+			throw new RuntimeException("Can't cancel path selection, currently toggling " + getToggle());
 		if(locationSelector != null){
 			PathSelector ps = (PathSelector) locationSelector;
 			boardCursor.setElm(ps.getPath().getFirst());
@@ -270,9 +303,10 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		if(! boardCursor.canSelect()) return;
 		PathSelector pathSelector = (PathSelector) locationSelector;
 		if(pathSelector.getPath().size() < 2) return;
-		Toggle t = getFrame().removeTopToggle();
+		if(boardCursor.getElm().isOccupied()) return;
+		Toggle t = removeTopToggle();
 		if(! t.equals(Toggle.PATH_SELECTION))
-			throw new RuntimeException("Can't cancel path selection, currently toggling " + getFrame().getToggle());
+			throw new RuntimeException("Can't cancel path selection, currently toggling " + getToggle());
 		try{
 			pathSelector.unit.move(pathSelector.getPath());
 			locationSelector = null;
