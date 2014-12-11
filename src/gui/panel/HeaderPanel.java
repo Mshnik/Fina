@@ -29,6 +29,9 @@ public class HeaderPanel extends JPanel {
 	/** The Height of the HeaderPanel */
 	protected static final int HEIGHT = 50;
 
+	/** The color of the border surrounding the headerPanel */
+	protected static final Color BORDER_COLOR = new Color(74, 47, 12);
+	
 	/** Distance (in pixels) between the top of the HeaderPanel and the top of the bars */
 	private static final int MARGIN = 15;
 
@@ -100,7 +103,7 @@ public class HeaderPanel extends JPanel {
 		for(int i = 0; i <= getWidth(); i+= getHeight()){
 			g2d.drawImage(ImageIndex.SANDSTONE, i, 0, getHeight(), getHeight(), null);
 		}
-		g2d.setColor(new Color(74, 47, 12));
+		g2d.setColor(BORDER_COLOR);
 		int width = 6;
 		g2d.setStroke(new BasicStroke(width));
 		g2d.drawRect(width/2, width/2, getWidth() - width, getHeight() - width);

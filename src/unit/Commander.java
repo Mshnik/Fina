@@ -117,6 +117,12 @@ public abstract class Commander extends MovingUnit {
 	public AttackType getAttackType(){
 		return AttackType.NO_ATTACK;
 	}
+	
+	/** Returns Commander */
+	@Override
+	public String getIdentifierString(){
+		return "Commander";
+	}
 
 	//HEALTH and MANA
 	/** Returns the max health of this commander.

@@ -7,6 +7,7 @@ import unit.dummy.*;
 import game.*;
 import gui.panel.GamePanel;
 import gui.panel.HeaderPanel;
+import gui.panel.InfoPanel;
 import board.*;
 
 
@@ -34,6 +35,9 @@ public class Frame extends JFrame {
 	
 	/** The gamePanel this Frame is drawing, if any */
 	protected GamePanel gamePanel;
+	
+	/** The infoPanel this Frame is drawing, if any */
+	protected InfoPanel infoPanel;
 	
 	/** The animator for this Frame */
 	protected Animator animator;
@@ -76,7 +80,10 @@ public class Frame extends JFrame {
 		animator.addAnimatable(gamePanel.boardCursor);
 		HeaderPanel hp = new HeaderPanel(g, gp);
 		add(hp, BorderLayout.NORTH);
+		InfoPanel ip = new InfoPanel(g, gp);
+		add(ip, BorderLayout.SOUTH);
 		headerPanel = hp;
+		infoPanel = ip;
 		pack();
 		repaint();
 		setVisible(true);

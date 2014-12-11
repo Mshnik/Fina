@@ -122,5 +122,12 @@ public abstract class Combatant extends MovingUnit {
 		}
 		return ! other.isAlive();
 	}
+	
+	
+	/** Returns Combatant */
+	@Override
+	public String getIdentifierString(){
+		return "Combatant";
+	}
 
 }

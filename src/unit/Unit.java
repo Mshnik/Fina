@@ -69,6 +69,7 @@ public abstract class Unit{
 		this.name = name;
 		this.manaCost = manaCost;
 		this.stats = new UnitStats(stats, null);
+		health = getMaxHealth();
 		modifiers = new LinkedList<UnitModifier>();
 		
 		if(tile != null){
@@ -294,4 +295,9 @@ public abstract class Unit{
 	//DRAWING
 	/** Returns the name of the file that represents this unit as an image */
 	public abstract String getImgFilename();
+	
+	/** Returns a simple string describing this type of unit 
+	 * Either Commander, Building, or Combatant
+	 */
+	public abstract String getIdentifierString();
 }

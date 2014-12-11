@@ -1,11 +1,13 @@
 package unit;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 
 /** Holder for the stats for a unit.
  * Unless otherwise noted, all stats are non-negative. */
-public class UnitStats{
+public class UnitStats implements Iterable<Stat>{
 
 	/** The base (pre-modification) stats this was calculated from, if any */
 	private UnitStats base; 		
@@ -40,6 +42,9 @@ public class UnitStats{
 	
 	/** Base vision radius of this unit */
 	private int visionRange;
+	
+	/** Number of non-base fields this stat represents */
+	private static final int NUMB_FIELDS = 8;
 
 	/** Constructor for UnitStats
 	 * @param maxHealth 		- the Maximum health (life points, etc) of this unit
@@ -185,5 +190,56 @@ public class UnitStats{
 			"; Attack : " + attack + "; AttackType : " + attackType + "; Physical Defense : " +
 			physicalDefense + "; Magic Defense : " + magicDefense + "; Range : " + range + 
 			"; VisionRange : " + visionRange + " Base : " + isBase();
+	}
+	
+	/** An iterator over this stats that shows each stat in turn.
+	 * Might not catch concurrent modification exceptions, so make sure
+	 * to get a new iterator after the UnitStats has been modified. */
+	class StatIterator implements Iterator<Stat>{
+
+		private int index;
+		private ArrayList<Stat> stats;
+		
+		private StatIterator(){
+			index = 0;
+			stats = new ArrayList<Stat>();
+			stats.add(new Stat("Max Health", maxHealth));
+			stats.add(new Stat("Mana / Turn", manaPerTurn));
+			stats.add(new Stat("Attack", attack));
+			stats.add(new Stat("Attack Type", attackType));
+			stats.add(new Stat("Phys. Defense", physicalDefense));
+			stats.add(new Stat("Magic Defense", magicDefense));
+			stats.add(new Stat("Range", range));
+			stats.add(new Stat("Vision Range", visionRange));
+		}
+		
+		/** Returns true if there is another stat to return */
+		@Override
+		public boolean hasNext() {
+			return index < NUMB_FIELDS;
+		}
+
+		/** Returns the next stat, in standard order */
+		@Override
+		public Stat next() {
+			Stat s = stats.get(index);
+			index++;
+			return s;
+		}
+
+		/** Removal not supported - throws runtime exception */
+		@Override
+		public void remove() {
+			throw new RuntimeException("Not Supported");
+		}
+		
+	}
+
+	/** Returns a new iterator over these stats.
+	 * Won't catch a concurrent modification exception, so don't alter stats while iterating
+	 */
+	@Override
+	public Iterator<Stat> iterator() {
+		return new StatIterator();
 	}
 }

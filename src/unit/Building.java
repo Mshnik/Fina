@@ -56,6 +56,12 @@ public abstract class Building extends Unit {
 		return t.equals(Terrain.ANCIENT_GROUND);
 	}
 	
+	/** Returns Building */
+	@Override
+	public String getIdentifierString(){
+		return "Building";
+	}
+	
 	/** Buildings don't do anything before a fight */
 	@Override
 	public void preCounterFight(Combatant other){}
