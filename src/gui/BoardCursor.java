@@ -27,7 +27,9 @@ public class BoardCursor extends Cursor<Tile, GamePanel>{
 	 */
 	@Override
 	protected boolean willMoveTo(Direction d, Tile destination){
-		if(getPanel().getLocationSelector() == null) return true;
+		if(getPanel().getLocationSelector() == null){
+			return destination != null;
+		}
 		LocationSelector ls = getPanel().getLocationSelector();
 		boolean cloudOK = destination != null && ls.getPossibleMovementsCloud().contains(destination);
 		if(ls instanceof PathSelector){
@@ -82,5 +84,6 @@ public class BoardCursor extends Cursor<Tile, GamePanel>{
 			PathSelector ps = (PathSelector) getPanel().getLocationSelector();
 			ps.addToPath(getElm());
 		}
+		panel.getFrame().infoPanel.setTile(getElm());
 	}
 }
