@@ -15,6 +15,9 @@ public abstract class Player {
 	/** The Game this player is playing in */
 	public final Game game;
 	
+	/** The index of this player in the game, where player 1 is the first player */
+	public final int index;
+	
 	/** The Units this player controls */
 	private HashSet<Unit> units;
 	
@@ -33,9 +36,17 @@ public abstract class Player {
 	 */
 	public Player(Game g){
 		game = g;
-		g.addPlayer(this);
+		this.index = g.addPlayer(this);
 		units = new HashSet<Unit>();
 		visionCloud = new HashSet<Tile>();
+	}
+	
+	/** A very simple toString that returns the player index of this player.
+	 * Can be overriden in subclasses for more specific behavior
+	 */
+	@Override
+	public String toString(){
+		return "Player " + index;
 	}
 	
 	/** Returns true if it is this player's turn, false if some other player */

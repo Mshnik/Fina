@@ -80,12 +80,14 @@ public class Game implements Runnable{
 	}
 	
 	/** Adds this player to the game at the end of the player list.
-	 * Throws a runtimeException if the game is already underway. */
-	protected void addPlayer(Player p) throws RuntimeException{
+	 * Throws a runtimeException if the game is already underway.
+	 * Returns the number of players after adding p */
+	protected int addPlayer(Player p) throws RuntimeException{
 		if(running)
 			throw new RuntimeException("Can't add " + p + " to " + this 
 					+ " because game is already started");
 		players.add(p);
+		return players.size();
 	}
 	
 	/** Returns the player who's currently taking his turn.
