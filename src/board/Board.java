@@ -130,6 +130,7 @@ public class Board implements Iterable<Tile>{
 
 	/** Returns the set of tiles the given path selector could move to from its
 	 * current location with its movement cap.
+	 * Only counts enemy units as obstacles if they are visible.
 	 */
 	public ArrayList<Tile> getMovementCloud(PathSelector ps){
 		MovingUnit unit = ps.unit;
@@ -163,9 +164,10 @@ public class Board implements Iterable<Tile>{
 			for(Tile neighbor : getTileNeighbors(current)){
 				if(neighbor != null){
 					int nDist = current.dist - unit.getMovementCost(neighbor.terrain);
-					if(nDist >= 0 && 
-							(! neighbor.isOccupied() || neighbor.getOccupyingUnit().owner == unit.owner)
-							){
+					boolean unitObstacle = neighbor.isOccupied() 
+							&& neighbor.getOccupyingUnit().owner != unit.owner
+							&& unit.owner.canSee(neighbor.getOccupyingUnit());
+					if(nDist >= 0 && ! unitObstacle){
 						neighbor.dist = nDist;
 						frontier.remove(neighbor);
 						frontier.add(neighbor);

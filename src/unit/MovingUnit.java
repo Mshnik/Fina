@@ -79,7 +79,7 @@ public abstract class MovingUnit extends Unit{
 	/** Attempts to move this unit along the given path.
 	 * @param path - the path to travel, where the first of path is location, 
 	 * 	last is the desired destination, and whole path is manhattan contiguous.
-	 * @return true iff the movement happens.
+	 * @return The tile the movement ended on
 	 * @throws RuntimeException if...
 	 * 		- this can't move this turn (already moved)
 	 * @throws IllegalArgumentException if...
@@ -87,11 +87,14 @@ public abstract class MovingUnit extends Unit{
 	 * 		- The ending tile is occupied
 	 * 		- the total cost of movement exceeds this' movement total
 	 */
-	public final boolean move(LinkedList<Tile> path) throws IllegalArgumentException, RuntimeException{
+	public final Tile move(LinkedList<Tile> path) throws IllegalArgumentException, RuntimeException{
 		if(! canMove)
 			throw new RuntimeException(this + " can't move again this turn");
 		if(path.get(0) != location)
 			throw new IllegalArgumentException(this + " can't travel path " + path + ", it is on " + location);
+		
+		//Ok, starting at current location. ok to drop starting tile
+		path.remove(0);
 		
 		int cost = 0;
 		for(Tile t : path){
@@ -103,16 +106,21 @@ public abstract class MovingUnit extends Unit{
 	
 		preMove(path);
 		
-		//movement probably ok. If end is occupied, tile move call will throw
-		location.moveUnitTo(path.getLast());
-		location = path.getLast();
-		
+		//Movement seems ok. Try to move along path, break if another unit is encountered.
+		for(Tile t : path){
+			try{
+				location.moveUnitTo(t);
+				location = t;
+			}catch(RuntimeException e){
+				break;
+			}
+		}
 		canMove = false;
 		owner.refreshVisionCloud();
 		
 		postMove(path);
 		
-		return true;
+		return location;
 	}
 
 }

@@ -84,6 +84,7 @@ public class BoardCursor extends Cursor<Tile, GamePanel>{
 			PathSelector ps = (PathSelector) getPanel().getLocationSelector();
 			ps.addToPath(getElm());
 		}
-		panel.getFrame().infoPanel.setTile(getElm());
+		if(getElm().isOccupied())
+			panel.getFrame().infoPanel.setUnit(getElm().getOccupyingUnit());
 	}
 }

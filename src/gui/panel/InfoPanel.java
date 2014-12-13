@@ -18,8 +18,6 @@ import unit.AttackType;
 import unit.Stat;
 import unit.Unit;
 
-import board.Tile;
-
 public class InfoPanel extends JPanel{
 	/***/
 	private static final long serialVersionUID = 1L;
@@ -37,7 +35,7 @@ public class InfoPanel extends JPanel{
 	public final Game game;
 	
 	/** The Tile (if any) this InfoPanel is currently drawing info for */
-	private Tile tile;
+	private Unit unit;
 	
 	public InfoPanel(Game g, GamePanel gp){
 		game = g;
@@ -45,13 +43,13 @@ public class InfoPanel extends JPanel{
 	}
 	
 	/** Returns the tile this InfoPanel is currently drawing info for */
-	public Tile getTile(){
-		return tile;
+	public Unit getUnit(){
+		return unit;
 	}
 	
 	/** Sets the unit this InfoPanel is to draw info for, and causes a repaint */
-	public void setTile(Tile t){
-		tile = t;
+	public void setUnit(Unit u){
+		unit = u;
 		repaint();
 	}
 	
@@ -80,8 +78,7 @@ public class InfoPanel extends JPanel{
 		
 		
 		//Unit painting
-		if(tile != null && tile.isOccupied()){
-			Unit unit = tile.getOccupyingUnit();
+		if(unit != null){
 			int xInc = 25;
 			g2d.drawString(unit.name, xInc, YMARGIN);
 			int subFont = 19;

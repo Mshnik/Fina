@@ -308,18 +308,12 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		if(! boardCursor.canSelect()) return;
 		PathSelector pathSelector = (PathSelector) locationSelector;
 		if(pathSelector.getPath().size() < 2) return;
-		if(boardCursor.getElm().isOccupied()) return;
 		Toggle t = removeTopToggle();
 		if(! t.equals(Toggle.PATH_SELECTION))
 			throw new RuntimeException("Can't cancel path selection, currently toggling " + getToggle());
-		try{
-			pathSelector.unit.move(pathSelector.getPath());
-			locationSelector = null;
-			startActionDecision();
-		}catch(Exception e){
-			//TODO - sound err
-			Toolkit.getDefaultToolkit().beep();
-		}
+		Tile loc = pathSelector.unit.move(pathSelector.getPath());
+		boardCursor.setElm(loc);
+		locationSelector = null;
 	}
 
 	/** Starts an attack selection - selects from units within range.
@@ -358,7 +352,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		if(! t.equals(Toggle.ATTACK_SELECTION))
 			throw new RuntimeException("Can't cancel attack selection, currently toggling " + getToggle());
 		Unit defender = boardCursor.getElm().getOccupyingUnit();
-		
+
 		attackSelector.attacker.fight(defender);
 		game.getFrame().repaint();
 		boardCursor.setElm(attackSelector.attacker.getLocation());

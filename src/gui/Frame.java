@@ -3,6 +3,7 @@ package gui;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 
+import unit.Unit;
 import unit.dummy.*;
 import game.*;
 import gui.panel.GamePanel;
@@ -87,6 +88,13 @@ public class Frame extends JFrame {
 		pack();
 		repaint();
 		setVisible(true);
+	}
+	
+	/** Updates the info panel to show the given unit *
+	 * 
+	 */
+	public void showUnitStats(Unit u){
+		infoPanel.setUnit(u);
 	}
 	
 	/** Returns the current active cursor that is moved by arrow keys.
