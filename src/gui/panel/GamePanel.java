@@ -19,6 +19,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.util.EmptyStackException;
 import java.util.LinkedList;
 import java.util.Stack;
@@ -404,7 +405,8 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 
 				//Draw a unit if necessary - only if player can see it.
 				if(t.isOccupied() && isVisible(t)){
-					g2d.drawImage(ImageIndex.imageForUnit(t.getOccupyingUnit()), x, y, 
+					BufferedImage unitImg =ImageIndex.imageForUnit(t.getOccupyingUnit());
+					g2d.drawImage(ImageIndex.tint(unitImg, game.getColorFor(t.getOccupyingUnit().owner)), x, y, 
 							CELL_SIZE, CELL_SIZE, null);
 				}
 			}

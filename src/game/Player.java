@@ -1,5 +1,6 @@
 package game;
 
+import java.awt.Color;
 import java.util.HashSet;
 
 import board.*;
@@ -34,9 +35,9 @@ public abstract class Player {
 	 * @param g
 	 * @param c
 	 */
-	public Player(Game g){
+	public Player(Game g, Color c){
 		game = g;
-		this.index = g.addPlayer(this);
+		this.index = g.addPlayer(this, c);
 		units = new HashSet<Unit>();
 		visionCloud = new HashSet<Tile>();
 	}

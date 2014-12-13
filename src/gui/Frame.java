@@ -1,6 +1,8 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+
 import javax.swing.JFrame;
 
 import unit.Unit;
@@ -131,9 +133,9 @@ public class Frame extends JFrame {
 	    	}
 	    }
 	    Game g = new Game(new Board(t), true);
-	    Player p1 = new HumanPlayer(g);
+	    Player p1 = new HumanPlayer(g, Color.RED);
 	    new DummyCommander(p1, g.board.getTileAt(0, 0));
-	    Player p2 = new HumanPlayer(g);
+	    Player p2 = new HumanPlayer(g, Color.BLUE);
 	    new DummyCommander(p2, g.board.getTileAt(3, 3));
 
 	    f.setGame(g, 8, 15);

@@ -1,5 +1,7 @@
 package game;
 
+import java.awt.Color;
+
 /** A human controlled player */
 public class HumanPlayer extends Player {
 
@@ -12,8 +14,8 @@ public class HumanPlayer extends Player {
 	private boolean takingAction;
 	
 	/** Constructs a human player for the given game */
-	public HumanPlayer(Game g) {
-		super(g);
+	public HumanPlayer(Game g, Color c) {
+		super(g, c);
 	}
 
 	@Override

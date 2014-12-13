@@ -1,10 +1,15 @@
 package gui;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+
+import com.jhlabs.image.HSBAdjustFilter;
 
 import unit.MovingUnit;
 import unit.Unit;
@@ -57,6 +62,16 @@ public class ImageIndex {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/** Tints the given image //TODO
+	 * borders with given color */
+	public static BufferedImage tint(BufferedImage img, Color color) {
+		Graphics2D g2d = (Graphics2D)img.getGraphics();
+		g2d.setColor(color);
+		g2d.setStroke(new BasicStroke(10));
+		g2d.drawRect(0, 0, img.getWidth(), img.getHeight());
+	    return img;
 	}
 	
 	/** Returns the image file corresponding to the given terrain type */

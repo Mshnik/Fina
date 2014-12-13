@@ -2,6 +2,8 @@ package game;
 
 import gui.Frame;
 
+import java.awt.Color;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import board.Board;
@@ -23,6 +25,9 @@ public class Game implements Runnable{
 	
 	/** The players currently playing this game */
 	private LinkedList<Player> players;
+	
+	/** A hashmap from each player to the color to tint their units */
+	private static final HashMap<Player, Color> PLAYER_COLORS  = new HashMap<Player, Color>();;
 	
 	/** The index of the current player.
 	 * -1 before the game has started, in range [0 ... players.size() - 1] afterwards */
@@ -82,11 +87,12 @@ public class Game implements Runnable{
 	/** Adds this player to the game at the end of the player list.
 	 * Throws a runtimeException if the game is already underway.
 	 * Returns the number of players after adding p */
-	protected int addPlayer(Player p) throws RuntimeException{
+	protected int addPlayer(Player p, Color c) throws RuntimeException{
 		if(running)
 			throw new RuntimeException("Can't add " + p + " to " + this 
 					+ " because game is already started");
 		players.add(p);
+		PLAYER_COLORS.put(p, c.darker());
 		return players.size();
 	}
 	
@@ -96,6 +102,11 @@ public class Game implements Runnable{
 		if(! running)
 			return null;
 		return players.getFirst();
+	}
+	
+	/** Gets the color for the given player */
+	public Color getColorFor(Player p){
+		return PLAYER_COLORS.get(p);
 	}
 	
 	/** Returns the index of the current player,
