@@ -87,7 +87,8 @@ public class InfoPanel extends JPanel{
 			int subFont = 19;
 			g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, subFont - 3));
 			g2d.drawString("(" + unit.getIdentifierString() + ")", xInc, YMARGIN + subFont);
-			g2d.drawString("Owned by " + unit.owner, xInc, YMARGIN + subFont * 2);
+			if(unit.owner != null)
+				g2d.drawString("Owned by " + unit.owner, xInc, YMARGIN + subFont * 2);
 			
 			xInc += 160;
 			int y = YMARGIN;

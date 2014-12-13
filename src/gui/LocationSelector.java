@@ -11,14 +11,14 @@ import java.util.ArrayList;
 
 /** An instance represents a selector for any location with a given criteria */
 public abstract class LocationSelector implements Paintable {
-	/** Color for Cloud Drawing - translucent white */
-	protected static final Color CLOUD_COLOR = new Color(1, 1, 1, 0.5f);
-
 	/** The gamePanel this is drawing for */
 	public final GamePanel gamePanel;
 
 	/** The possible tiles the path could go to from here - possibilities cloud */
 	protected ArrayList<Tile> cloud;
+	
+	/** Color for Cloud Drawing - translucent white - can be changed by subclasses */
+	protected Color cloudColor = new Color(1, 1, 1, 0.5f);
 
 	/** Constructor for PathSelector.
 	 * Implementing classes should refresh possibilities cloud at end of construction
@@ -44,7 +44,7 @@ public abstract class LocationSelector implements Paintable {
 	public void paintComponent(Graphics g){
 		//Draw the possible movement cloud
 		Graphics2D g2d = (Graphics2D)g;
-		g2d.setColor(CLOUD_COLOR);
+		g2d.setColor(cloudColor);
 
 		for(Tile t : cloud){
 			int x = gamePanel.getXPosition(t);

@@ -64,9 +64,9 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	
 	/** The types of decisions that can be made */
 	public enum Type{
-		ACTION,
-		SUMMON_SELECTION,
-		END_OF_TURN
+		ACTION_DECISION,
+		SUMMON_DECISION,
+		END_OF_TURN_DECISION
 	}
 	
 	/** The type of this DecisionPanel - what kind of decision it is making */
@@ -180,6 +180,6 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** Returns DecisionPanel.DECISION_WIDTH */
 	@Override
 	public int getElementWidth() {
-		return DECISION_WIDTH + (type == Type.SUMMON_SELECTION ? 100 : 0);
+		return DECISION_WIDTH + (type == Type.SUMMON_DECISION ? 100 : 0);
 	}
 }

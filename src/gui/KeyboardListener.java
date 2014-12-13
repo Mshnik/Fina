@@ -76,13 +76,13 @@ public class KeyboardListener implements KeyListener{
 			case DECISION:
 				if(keyCode == A){
 					switch(gp.getDecisionPanel().type){
-					case ACTION:
+					case ACTION_DECISION:
 						gp.processActionDecision();
 						break;
-					case END_OF_TURN:
+					case END_OF_TURN_DECISION:
 						gp.processEndTurnDecision();
 						break;
-					case SUMMON_SELECTION:
+					case SUMMON_DECISION:
 						gp.startSummonSelection((Decision) frame.getActiveCursor().getElm());
 					default:
 						break;
@@ -91,7 +91,7 @@ public class KeyboardListener implements KeyListener{
 					gp.cancelDecision();
 				}
 				break;
-			case SUMMON:
+			case SUMMON_SELECTION:
 				if(keyCode == A) {
 					gp.processSummonSelection();
 				}
@@ -99,7 +99,14 @@ public class KeyboardListener implements KeyListener{
 					gp.cancelSummonSelection();
 				}
 				break;
-				
+			case ATTACK_SELECTION:
+				if(keyCode == A) {
+					gp.processAttackSelection();
+				}
+				else{
+					gp.cancelAttackSelection();
+				}
+				break;
 				//Path selection - should only be the case after pathSelection already started
 			case PATH_SELECTION:
 				if(keyCode == A) {

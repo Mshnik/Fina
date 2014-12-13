@@ -78,7 +78,7 @@ public abstract class Combatant extends MovingUnit {
 	 * 		- this' owner can't see other
 	 * @return true iff other is killed because of this action
 	 **/
-	public final boolean fight(MovingUnit other) throws IllegalArgumentException, RuntimeException{
+	public final boolean fight(Unit other) throws IllegalArgumentException, RuntimeException{
 		if(! isAlive()) 
 			throw new RuntimeException (this + " can't fight, it is dead.");
 		if(! other.isAlive()) 
@@ -94,14 +94,17 @@ public abstract class Combatant extends MovingUnit {
 		if(room > getRange())
 			throw new IllegalArgumentException(this + " can't fight " + other + ", it is too far away.");
 
+		int damage = (int)(getAttack() * (1 - other.getDefenseAgainst(this)));
+		
 		//True if a counterAttack is happening, false otherwise.
-		boolean counterAttack = other.isAlive() && other.owner.canSee(this) && room <= other.getRange();
+		boolean counterAttack = other.isAlive() && other.owner.canSee(this) && room <= other.getRange()
+								&& damage < other.getHealth();
 
 		preFight(other);
 		if(counterAttack) other.preCounterFight(this);
 
 		//This attacks other
-		other.changeHealth(- (int)(getAttack() * (1 - other.getDefenseAgainst(this))), this);
+		other.changeHealth(- damage, this);
 
 		//If other is still alive, can see the first unit, 
 		//and this is within range, other counterattacks
