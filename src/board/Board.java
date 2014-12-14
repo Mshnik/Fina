@@ -143,7 +143,10 @@ public class Board implements Iterable<Tile>{
 		Tile start = ps.getPath().getLast();
 
 		//Uses dist to hold remainingDistance as possible.
-		start.dist = unit.getMovementCap() - ps.getTotalCost(); 
+		if(ps.getPath().getLast() != ps.unit.getLocation())
+			start.dist = unit.getMovementCap() - ps.getTotalCost(); 
+		else
+			start.dist = unit.getMovementCap();
 
 		// frontier sorts with higher distance earlier
 		PriorityQueue<Tile> frontier = new PriorityQueue<Tile>(1, 

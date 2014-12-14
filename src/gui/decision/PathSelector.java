@@ -71,11 +71,16 @@ public class PathSelector extends LocationSelector implements Paintable, Iterabl
 		return path.size();
 	}
 	
-	/** Return the total cost of traveling the given path for unit */
+	/** Return the total cost of traveling the given path for unit.
+	 * Doesn't count the first tile - tile the unit is already on */
 	public int getTotalCost(){
 		int c = 0;
+		boolean ignoreFirst = false;
 		for(Tile t : path){
-			c += unit.getMovementCost(t.terrain);
+			if(ignoreFirst)
+				c += unit.getMovementCost(t.terrain);
+			else
+				ignoreFirst = true;
 		}
 		return c;
 	}

@@ -106,15 +106,15 @@ public abstract class MovingUnit extends Unit{
 	
 		preMove(path);
 		
-		//Movement seems ok. Try to move along path, break if another unit is encountered.
+		//Movement seems ok. Try to move along path, break if another unit of other player is encountered.
+		Tile oldLoc = location;
 		for(Tile t : path){
-			try{
-				location.moveUnitTo(t);
-				location = t;
-			}catch(RuntimeException e){
+			if(t.isOccupied() && t.getOccupyingUnit().owner != owner)
 				break;
-			}
+			location = t;
 		}
+		if(oldLoc != location)
+			oldLoc.moveUnitTo(location);
 		canMove = false;
 		owner.refreshVisionCloud();
 		

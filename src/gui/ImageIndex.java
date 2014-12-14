@@ -6,10 +6,9 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
-
-import com.jhlabs.image.HSBAdjustFilter;
 
 import unit.MovingUnit;
 import unit.Unit;
@@ -38,11 +37,8 @@ public class ImageIndex {
 	/** The image for sandstone texture */
 	public static BufferedImage SANDSTONE;
 	
-	/** The image for dummy commander */
-	public static BufferedImage DUMMY_COMMANDER;
-	
-	/** The image for a dummy unit */
-	public static BufferedImage DUMMY_UNIT;
+	/** Read in units thus far */
+	private static HashMap<String, BufferedImage> readUnits;
 	
 	/** Static initializer for the Image Class - do all image reading here */
 	static{
@@ -57,8 +53,7 @@ public class ImageIndex {
 			ANCIENT_GROUND = ImageIO.read(new File(IMAGE_ROOT + Terrain.IMAGE_ROOT + "gold.jpg"));	
 			
 			//Units
-			DUMMY_COMMANDER = ImageIO.read(new File(IMAGE_ROOT + MovingUnit.IMAGE_ROOT + "link.png"));
-			DUMMY_UNIT = ImageIO.read(new File(IMAGE_ROOT + MovingUnit.IMAGE_ROOT + "mario.png"));
+			readUnits = new HashMap<String, BufferedImage>();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -89,12 +84,36 @@ public class ImageIndex {
 	
 	/** Returns the image file corresponding to the given unit */
 	public static BufferedImage imageForUnit(Unit unit){
-		switch(unit.getImgFilename()){
-			case "chrono.gif": return DUMMY_COMMANDER;
-			case "mario.png": return DUMMY_UNIT;
-			
-			//Image not found
-			default: 		   return null;
+		if(readUnits.containsKey(unit.getImgFilename()))
+			return readUnits.get(unit.getImgFilename());
+		
+		BufferedImage u = null;
+		try {
+			u = ImageIO.read(new File(IMAGE_ROOT + MovingUnit.IMAGE_ROOT + unit.getImgFilename()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		readUnits.put(unit.getImgFilename(), u);
+		return u;
+	}
+	
+	/** An image utility main method. */
+	public static void main(String[] args){
+		try {
+			BufferedImage sheet = ImageIO.read(new File(IMAGE_ROOT + "spriteSheet.png"));
+			int sideLength = 67;
+			int i = 1;
+			for(int y = 0; y <= sheet.getWidth(); y+= sideLength){
+				for(int x = 0; x <= sheet.getHeight(); x+= sideLength){
+					try{
+					BufferedImage cut = sheet.getSubimage(x, y, sideLength, sideLength);
+					ImageIO.write(cut, "png", new File(IMAGE_ROOT + MovingUnit.IMAGE_ROOT + "_" + i + ".png"));
+					i++;
+					} catch(Exception e){}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

@@ -324,6 +324,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		if(! t.isOccupied() || ! t.getOccupyingUnit().canFight()) return;
 		Combatant attacker = (Combatant)t.getOccupyingUnit();
 		locationSelector = new AttackSelector(this, attacker);
+		if(locationSelector.getPossibleMovementsCloud().isEmpty()) return;
 		boardCursor.setElm(locationSelector.getPossibleMovementsCloud().get(0));
 		addToggle(Toggle.ATTACK_SELECTION);
 	}

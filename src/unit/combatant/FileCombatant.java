@@ -107,7 +107,12 @@ public class FileCombatant extends Combatant {
 
 	/** Returns a list of units for the given age (minus 1 because age is 1 indexed, this is 0 indexed) - returns by value */
 	public static List<FileCombatant> getCombatantsForAge(int age){
-		return new LinkedList<FileCombatant>(FILE_COMBATANTS.get(age - 1));
+		LinkedList<FileCombatant> combatants = new LinkedList<FileCombatant>();
+		for(int a = 0; a < age; a++){ //less than -> -1
+			combatants.addAll(FILE_COMBATANTS.get(a));
+		}
+		
+		return combatants;
 	}
 
 	/** Constructor for FileCombatant that clones the given dummy fileCombatant,

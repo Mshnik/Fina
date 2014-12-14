@@ -14,7 +14,7 @@ import unit.UnitStats;
 public class DummyCommander extends Commander {
 
 	public static final UnitStats BASE_STATS = 
-			new UnitStats(0, 0, 0, AttackType.NO_ATTACK, 5, 5, 5, 3);
+			new UnitStats(0, 0, 0, AttackType.NO_ATTACK, .1, .1, 2, 3);
 
 	
 	public DummyCommander(Player owner, Tile startingTile) {
@@ -25,8 +25,15 @@ public class DummyCommander extends Commander {
 	public void recalculateScalingStats() {
 		maxHealth = Commander.BASE_HEALTH + Commander.SCALE_HEALTH * getLevel();
 		manaPerTurn = Commander.BASE_MANA_PT + Commander.SCALE_MANA_PT * getLevel();
+		
 	}
 
+	@Override
+	public void refreshForTurn(){
+		super.refreshForTurn();
+		setHealth(getHealth() + 50, this);
+	}
+	
 	@Override
 	public int getMovementCap() {
 		return 5;
@@ -34,7 +41,13 @@ public class DummyCommander extends Commander {
 
 	@Override
 	public int getMovementCost(Terrain t) {
-		return 1;
+		switch(t){
+		case ANCIENT_GROUND:	return 1;
+		case GRASS:				return 1;
+		case MOUNTAIN:			return 9999;
+		case WOODS:				return 2;
+		default:				return 9999;
+		}
 	}
 
 	@Override
@@ -45,8 +58,7 @@ public class DummyCommander extends Commander {
 
 	@Override
 	public void postMove(LinkedList<Tile> path) {
-		this.refreshForTurn();
-
+		
 	}
 	
 	@Override
