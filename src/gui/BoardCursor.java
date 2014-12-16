@@ -40,11 +40,17 @@ public class BoardCursor extends Cursor<Tile, GamePanel>{
 			if(cloudOK) return true;
 			else{
 				int i = ls.cloud.indexOf(getElm());
-				if(d.equals(Direction.LEFT) && i > 0){
-					setElm(ls.cloud.get(i - 1));
+				if(d.equals(Direction.LEFT)){
+					if(i > 0)
+						setElm(ls.cloud.get(i - 1));
+					else
+						setElm(ls.cloud.get(ls.cloud.size() - 1));
 					moved();
-				} else if(d.equals(Direction.RIGHT) && i < ls.cloud.size() - 1){
-					setElm(ls.cloud.get(i+1));
+				} else if(d.equals(Direction.RIGHT)){
+					if(i < ls.cloud.size() - 1)
+						setElm(ls.cloud.get(i+1));
+					else
+						setElm(ls.cloud.get(0));
 					moved();
 				} else if(d.equals(Direction.UP)){
 					Tile t2 = null;
