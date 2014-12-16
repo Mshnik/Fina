@@ -1,7 +1,7 @@
 package unit;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import unit.combatant.FileCombatant;
 
@@ -34,7 +34,7 @@ public abstract class Commander extends MovingUnit {
 	/** The amount of research required to get to the next level for free.
 	 * Index i = cost to get from level i+1 to i+2 (because levels are 1 indexed). */
 	public static final int[] RESEARCH_REQS = {
-		1000, 2500, 6000, 15000
+		1000, 3000, 6000, 10000
 	};
 	
 	/** The highest level commanders can achieve */
@@ -222,9 +222,24 @@ public abstract class Commander extends MovingUnit {
 	
 	//SUMMONING
 	/** Returns the list of units this can summon. Can be overridden to add additional units.
-	 * Base Return is FileUnits for this' level */
-	public List<Unit> getSummonables(){
-		LinkedList<Unit> units = new LinkedList<Unit>(FileCombatant.getCombatantsForAge(level));
+	 * Base Return is FileUnits for this' level. */
+	public Map<String, Combatant> getSummonables(){
+		HashMap<String, Combatant> units = new HashMap<String, Combatant>();
+		for(int i = 1; i <= level; i++){
+			for(FileCombatant c : FileCombatant.getCombatantsForAge(i)){
+				units.put(c.name, c);
+			}
+		}
 		return units;
+	}
+	
+	/** Returns the list of buildings this can build. Can be overriden to add additional buildings */
+	public Map<String, Building> getBuildables(){
+		HashMap<String, Building> units = new HashMap<String, Building>();
+		for(Building b : Building.getBuildings()){
+			units.put(b.name, b);
+		}
+		return units;
+
 	}
 }

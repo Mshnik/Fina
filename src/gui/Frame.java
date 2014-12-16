@@ -9,6 +9,7 @@ import unit.Unit;
 import unit.dummy.*;
 import game.*;
 import gui.panel.GamePanel;
+import gui.panel.GamePanel.Toggle;
 import gui.panel.HeaderPanel;
 import gui.panel.InfoPanel;
 import board.*;
@@ -90,6 +91,11 @@ public class Frame extends JFrame {
 		pack();
 		repaint();
 		setVisible(true);
+	}
+	
+	/** Returns the currently active toggle */
+	public Toggle getToggle(){
+		return gamePanel.getToggle();
 	}
 	
 	/** Updates the info panel to show the given unit *

@@ -20,8 +20,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
 
 import board.*;
@@ -166,6 +169,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		}
 		if(u.canSummon()){
 			decisions.add(new Decision(i++, Unit.SUMMON));
+			decisions.add(new Decision(i++, Unit.BUILD));
 		}
 
 		//If there are no applicable choices, do nothing
@@ -187,7 +191,10 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			startPathSelection();
 			break;
 		case Unit.SUMMON:
-			startSummonDecision();
+			startSummonCombatantDecision();
+			break;
+		case Unit.BUILD:
+			startSummonBuildingDecision();
 			break;
 		case Unit.FIGHT:
 			startAttackSelection();
@@ -214,32 +221,60 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			break;
 		}
 	}
-
-	/** Creates a decisionPanel for summoning new units */
-	public void startSummonDecision(){
-		Player p = game.getCurrentPlayer();
-		Commander c = p.getCommander();
+	
+	/** Creates a decisionPanel for creating either units or buildings */
+	private void startSummonDecision(Commander c, Map<String, ? extends Unit> creatables){
 		LinkedList<Decision> decisions = new LinkedList<Decision>();
 		int i = 0;
-		for(Unit u : c.getSummonables()){
+		for(Entry<String, ? extends Unit> e : creatables.entrySet()){
+			Unit u = e.getValue();
+			String name = e.getKey();
 			boolean ok = u.manaCost <= c.getMana();
-			decisions.add(new Decision(i++, ok, u.name + " (" + u.manaCost + ")"));
+			decisions.add(new Decision(i++, ok, name + ":(" + u.manaCost + ")"));
 		}
 		Decision[] decisionsArr = decisions.toArray(new Decision[decisions.size()]);
 		fixDecisionPanel(DecisionPanel.Type.SUMMON_DECISION, decisionsArr);
+	}
+
+	/** Creates a decisionPanel for summoning new units */
+	public void startSummonCombatantDecision(){
+		Player p = game.getCurrentPlayer();
+		Commander c = p.getCommander();
+		startSummonDecision(c, c.getSummonables());
+	}
+	
+	/** Creates a decisionPanel for summoning new buildings */
+	public void startSummonBuildingDecision(){
+		Player p = game.getCurrentPlayer();
+		Commander c = p.getCommander();
+		startSummonDecision(c, c.getBuildables());
 	}
 
 	/** Creates a new summon selector at the current boardCursor position.
 	 * 
 	 */
 	public void startSummonSelection(Decision decision){
-		if(! decision.isSelectable()) return;
-		cancelDecision();
+		if(! decision.isSelectable()){
+			return;
+		}
 		Tile t = boardCursor.getElm();
-		if(! t.isOccupied() || ! t.getOccupyingUnit().canSummon()) return;
-		Unit toSummon = t.getOccupyingUnit().owner.getCommander().getSummonables().get(decision.getIndex());
+		if(! t.isOccupied() || ! t.getOccupyingUnit().canSummon()){
+			return;
+		}
+		cancelDecision();
+		String name = decision.getMessage().substring(0, decision.getMessage().indexOf(':'));
+		Commander commander = t.getOccupyingUnit().owner.getCommander();
+		Map<String, Combatant> summonables = commander.getSummonables();
+		Unit toSummon = summonables.get(name);
+		if(toSummon == null)
+			toSummon = commander.getBuildables().get(name);
 		locationSelector = new SummonSelector(this, t.getOccupyingUnit(), toSummon);
-		Tile t2 = locationSelector.getPossibleMovementsCloud().get(0);
+		ArrayList<Tile> cloud = locationSelector.getPossibleMovementsCloud();
+		if(cloud.isEmpty()){
+			locationSelector = null;
+			return; //No possible summoning locations for this unit
+		}
+		Tile t2 = cloud.get(0);
 		boardCursor.setElm(t2);
 		fixScrollToShow(t2.getRow(), t2.getCol());
 		addToggle(Toggle.SUMMON_SELECTION);
@@ -324,7 +359,10 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		if(! t.isOccupied() || ! t.getOccupyingUnit().canFight()) return;
 		Combatant attacker = (Combatant)t.getOccupyingUnit();
 		locationSelector = new AttackSelector(this, attacker);
-		if(locationSelector.getPossibleMovementsCloud().isEmpty()) return;
+		if(locationSelector.getPossibleMovementsCloud().isEmpty()){
+			locationSelector = null;
+			return;
+		}
 		boardCursor.setElm(locationSelector.getPossibleMovementsCloud().get(0));
 		addToggle(Toggle.ATTACK_SELECTION);
 	}

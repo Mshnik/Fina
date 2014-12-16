@@ -1,12 +1,30 @@
 package unit;
 
+import java.util.LinkedList;
+
 import game.Player;
 import board.Terrain;
 import board.Tile;
+import unit.buildings.*;
 
 /** Represents a Building on the board, controllable by a player */
 public abstract class Building extends Unit {
 
+	/** Index of available buildings
+	 *		- Well
+	 */
+	private static final LinkedList<Building> BUILDINGS;
+	
+	static{
+		BUILDINGS = new LinkedList<Building>();
+		BUILDINGS.add(new Well(null, null));
+	}
+	
+	/** Returns a copy of the building index - all available buildings */
+	public static LinkedList<Building> getBuildings(){
+		return new LinkedList<Building>(BUILDINGS);
+	}
+	
 	/** Image root for Building images, inside of global image root */
 	public static final String IMAGE_ROOT = "building/";
 	

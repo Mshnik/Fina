@@ -14,7 +14,7 @@ import unit.UnitStats;
 public class DummyCommander extends Commander {
 
 	public static final UnitStats BASE_STATS = 
-			new UnitStats(0, 0, 0, AttackType.NO_ATTACK, .1, .1, 2, 3);
+			new UnitStats(0, 0, 0, AttackType.NO_ATTACK, .1, .1, 1, 3);
 
 	
 	public DummyCommander(Player owner, Tile startingTile) {

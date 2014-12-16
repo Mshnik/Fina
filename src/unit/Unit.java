@@ -23,6 +23,9 @@ public abstract class Unit{
 	/** Text representing summoning */
 	public static final String SUMMON = "Summon";
 	
+	/** Text representing building (building summoning) */
+	public static final String BUILD = "Build";
+	
 	/** The name of this unit */
 	public final String name;
 	
