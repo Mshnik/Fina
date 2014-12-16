@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import unit.Building;
 import unit.MovingUnit;
 import unit.Unit;
 
@@ -89,7 +90,12 @@ public class ImageIndex {
 		
 		BufferedImage u = null;
 		try {
-			u = ImageIO.read(new File(IMAGE_ROOT + MovingUnit.IMAGE_ROOT + unit.getImgFilename()));
+			String root = IMAGE_ROOT;
+			if(unit instanceof MovingUnit)
+				root += MovingUnit.IMAGE_ROOT;
+			else if(unit instanceof Building)
+				root += Building.IMAGE_ROOT;
+			u = ImageIO.read(new File(root + unit.getImgFilename()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -99,21 +105,21 @@ public class ImageIndex {
 	
 	/** An image utility main method. */
 	public static void main(String[] args){
-		try {
-			BufferedImage sheet = ImageIO.read(new File(IMAGE_ROOT + "spriteSheet.png"));
-			int sideLength = 67;
-			int i = 1;
-			for(int y = 0; y <= sheet.getWidth(); y+= sideLength){
-				for(int x = 0; x <= sheet.getHeight(); x+= sideLength){
-					try{
-					BufferedImage cut = sheet.getSubimage(x, y, sideLength, sideLength);
-					ImageIO.write(cut, "png", new File(IMAGE_ROOT + MovingUnit.IMAGE_ROOT + "_" + i + ".png"));
-					i++;
-					} catch(Exception e){}
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			BufferedImage sheet = ImageIO.read(new File(IMAGE_ROOT + "spriteSheet.png"));
+//			int sideLength = 67;
+//			int i = 1;
+//			for(int y = 0; y <= sheet.getWidth(); y+= sideLength){
+//				for(int x = 0; x <= sheet.getHeight(); x+= sideLength){
+//					try{
+//					BufferedImage cut = sheet.getSubimage(x, y, sideLength, sideLength);
+//					ImageIO.write(cut, "png", new File(IMAGE_ROOT + MovingUnit.IMAGE_ROOT + "_" + i + ".png"));
+//					i++;
+//					} catch(Exception e){}
+//				}
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 }

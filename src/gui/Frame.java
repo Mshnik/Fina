@@ -135,6 +135,8 @@ public class Frame extends JFrame {
 	    			t[r][c] = Terrain.GRASS;
 	    		else if ( (r > 4 || r < 7) && (c > 5 && c < 15))
 	    			t[r][c] = Terrain.WOODS;
+	    		else if ( (r * c) % 7 == 1)
+	    			t[r][c] = Terrain.ANCIENT_GROUND;
 	    		else if(( (r + c) % 4 == 0 && r != 0 && c != 0))
 	    			t[r][c] = Terrain.MOUNTAIN;
 	    		else
