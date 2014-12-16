@@ -5,6 +5,7 @@ import gui.Frame;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import board.Board;
 
@@ -25,6 +26,9 @@ public class Game implements Runnable{
 	
 	/** The players currently playing this game */
 	private LinkedList<Player> players;
+	
+	/** The players remaining in the game */
+	private HashMap<Player, Boolean> remainingPlayers;
 	
 	/** A hashmap from each player to the color to tint their units */
 	private static final HashMap<Player, Color> PLAYER_COLORS  = new HashMap<Player, Color>();;
@@ -49,6 +53,7 @@ public class Game implements Runnable{
 		board = b;
 		fogOfWar = fog;
 		players = new LinkedList<Player>();
+		remainingPlayers = new HashMap<Player, Boolean>();
 		running = false;
 		index = -1;
 	}
@@ -92,6 +97,7 @@ public class Game implements Runnable{
 			throw new RuntimeException("Can't add " + p + " to " + this 
 					+ " because game is already started");
 		players.add(p);
+		remainingPlayers.put(p, true);
 		PLAYER_COLORS.put(p, c.darker());
 		return players.size();
 	}
@@ -132,11 +138,15 @@ public class Game implements Runnable{
 	}
 
 	/** Returns true if this game is ended (one of the termination conditions
-	 * is true), false otherwise
+	 * is true), false otherwise.
+	 * Returns true if there are more than 1 remaining player.
 	 */
 	public boolean isGameOver(){
-		//TODO
-		return false;
+		int i = 0;
+		for(Boolean b : remainingPlayers.values()){
+			if(b) i++;
+		}
+		return i <= 1;
 	}
 	
 	/** Takes the current player's turn, then advances the player.
@@ -145,9 +155,14 @@ public class Game implements Runnable{
 		if(! running)
 			throw new RuntimeException("Can't take turn for player - " + this + " isn't started");
 		Player p = getCurrentPlayer();
-		p.turnStart();
-		p.turn();
-		p.turnEnd();
+		boolean ok = p.turnStart();
+		if(ok){
+			p.turn();
+			p.turnEnd();
+		}
+		else{
+			remainingPlayers.put(p, false);
+		}
 		
 		//Move this player to the end, inc players index
 		players.remove(0);

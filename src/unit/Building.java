@@ -12,12 +12,14 @@ public abstract class Building extends Unit {
 
 	/** Index of available buildings
 	 *		- Well
+	 *		- Baracks
 	 */
 	private static final LinkedList<Building> BUILDINGS;
 	
 	static{
 		BUILDINGS = new LinkedList<Building>();
 		BUILDINGS.add(new Well(null, null));
+		BUILDINGS.add(new Baracks(null, null));
 	}
 	
 	/** Returns a copy of the building index - all available buildings */
