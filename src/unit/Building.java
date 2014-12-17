@@ -20,6 +20,7 @@ public abstract class Building extends Unit {
 		BUILDINGS = new LinkedList<Building>();
 		BUILDINGS.add(new Well(null, null));
 		BUILDINGS.add(new Baracks(null, null));
+		BUILDINGS.add(new Temple(null, null));
 	}
 	
 	/** Returns a copy of the building index - all available buildings */

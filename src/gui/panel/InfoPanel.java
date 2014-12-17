@@ -112,7 +112,9 @@ public class InfoPanel extends JPanel{
 			x += xInc;
 			y = YMARGIN;
 			for(Stat s : stats.getMovementStatsList()){
+				drawStat(g2d, s, x, y);				drawStat(g2d, s, x, y);
 				drawStat(g2d, s, x, y);
+
 				y += infoFont;
 			}
 		}

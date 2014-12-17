@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import util.Mth;
+
 /** Holder for the stats for a unit.
  * Unless otherwise noted, all stats are non-negative. */
 public class UnitStats implements Iterable<Stat>{
@@ -30,6 +32,10 @@ public class UnitStats implements Iterable<Stat>{
 		TEMPLATE.put(StatType.ATTACK_RANGE, 0);
 		TEMPLATE.put(StatType.SUMMON_RANGE, 0);
 		TEMPLATE.put(StatType.VISION_RANGE, 0);
+		TEMPLATE.put(StatType.MOVEMENT_TOTAL, 0);
+		TEMPLATE.put(StatType.GRASS_COST, 0);
+		TEMPLATE.put(StatType.WOODS_COST, 0);
+		TEMPLATE.put(StatType.MOUNTAIN_COST, 0);
 	}
 	
 	/** The stats maintained by this unitstats */
@@ -72,9 +78,9 @@ public class UnitStats implements Iterable<Stat>{
 				}
 				else if(m.getModVal() instanceof Double){
 					switch(m.modType){
-					case ADD: newVal = (double) ((Double)newVal + (int)m.getModVal());
+					case ADD: newVal = Mth.roundTo(((Double)newVal + (double)m.getModVal()), -2);
 						break;
-					case MULTIPLY: newVal = (double) ((Double)newVal * (double)m.getModVal());
+					case MULTIPLY: newVal = Mth.roundTo(((Double)newVal * (double)m.getModVal()), -2);
 						break;
 					}
 				}

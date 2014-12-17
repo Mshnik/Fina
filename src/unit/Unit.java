@@ -183,7 +183,7 @@ public abstract class Unit{
 	 * Can be overriden in subclasses to add additional behavior,
 	 * but this method should be called somewhere in that overriden method */
 	protected void died(Unit killer){
-		for(UnitModifier m : grantedModifiers){
+		for(UnitModifier m : getGrantedModifiers()){
 			m.kill();
 		}
 		owner.removeUnit(this);

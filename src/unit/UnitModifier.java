@@ -86,7 +86,7 @@ public class UnitModifier {
 	 * @return true iff this is is now dead (remainingTurns < 0)
 	 */
 	public boolean decRemainingTurns(){
-		if(remainingTurns == Integer.MAX_VALUE || isDummy()) return true;
+		if(remainingTurns == Integer.MAX_VALUE || isDummy()) return false;
 		remainingTurns--;
 		return remainingTurns < 0;
 	}

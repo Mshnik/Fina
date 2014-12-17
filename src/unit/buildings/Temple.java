@@ -1,9 +1,5 @@
 package unit.buildings;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-
 import game.Player;
 import board.Tile;
 import unit.AttackType;
@@ -47,11 +43,11 @@ public class Temple extends Building {
 	public static final String NAME = "Temple";
 	
 	/** Mana cost of constructing a Temple */
-	public static final int COST = 1000;
+	public static final int COST = 200;
 	
 	/** Stats for maxHealth, defenses, range and visionRange of baracks */
 	private static final UnitStats STATS = new UnitStats(
-			new Stat(StatType.MAX_HEALTH, 800),
+			new Stat(StatType.MAX_HEALTH, 100),
 			new Stat(StatType.MAGIC_DEFENSE, 0.1),
 			new Stat(StatType.PHYSICAL_DEFENSE, 0.1)
 	);
