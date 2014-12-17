@@ -1,5 +1,6 @@
 package unit;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import game.Player;
@@ -47,6 +48,9 @@ public abstract class Unit{
 	 * Should never be null, but may be empty-ish */
 	UnitStats stats;
 	
+	/** The modifiers this is the source of */
+	private LinkedList<UnitModifier> grantedModifiers;
+	
 	/** A set of modifiers that are currently affecting this unit */
 	private LinkedList<UnitModifier> modifiers;
 
@@ -74,6 +78,7 @@ public abstract class Unit{
 		this.stats = new UnitStats(stats, null);
 		health = getMaxHealth();
 		modifiers = new LinkedList<UnitModifier>();
+		grantedModifiers = new LinkedList<UnitModifier>();
 		
 		if(tile != null){
 			location = tile;
@@ -178,6 +183,9 @@ public abstract class Unit{
 	 * Can be overriden in subclasses to add additional behavior,
 	 * but this method should be called somewhere in that overriden method */
 	protected void died(Unit killer){
+		for(UnitModifier m : grantedModifiers){
+			m.kill();
+		}
 		owner.removeUnit(this);
 		location.removeOccupyingUnit();
 		killer.owner.getCommander().addResearch((int)(manaCost * Commander.MANA_COST_TO_RESEARCH_RATIO));
@@ -276,17 +284,34 @@ public abstract class Unit{
 	}
 	
 	/** Adds a new modifier to this unit. Also updates stats with the new modifiers,
-	 * from its original base stats. */
-	public void addModifier(UnitModifier m){
+	 * from its original base stats. Called by modifier during construction */
+	void addModifier(UnitModifier m){
 		modifiers.add(m);
 		refreshStats();
 	}
 	
 	/** Removes the given modifier from this unit. Also updates stats with new modifier
-	 * from its original base stats. */
-	public void removeModifier(UnitModifier m){
+	 * from its original base stats. Called by modifier on death */
+	void removeModifier(UnitModifier m){
 		modifiers.remove(m);
 		refreshStats();
+	}
+	
+	/** Returns the modifiers this is currently granting.
+	 * Pass-by-value, so editing the returned set doesn't do anything
+	 */
+	public HashSet<UnitModifier> getGrantedModifiers(){
+		return new HashSet<UnitModifier>(grantedModifiers);
+	}
+	
+	/** Adds the given modifier to the modifiers this is granting. Called by modifier on construciton */
+	void addGrantedModifier(UnitModifier m){
+		grantedModifiers.add(m);
+	}
+	
+	/** Removes the given modifier from its designated unit. Called by modifier on death */
+	void removeGrantedModifier(UnitModifier m){
+		grantedModifiers.remove(m);
 	}
 	
 	//FIGHTING

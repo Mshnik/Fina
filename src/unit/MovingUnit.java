@@ -16,8 +16,8 @@ public abstract class MovingUnit extends Unit{
 	/** Image root for moving unit (people) files */
 	public static final String IMAGE_ROOT = "unit/";
 	
-	/** true iff this can still move this turn. Has an impact on how to draw this */
-	private boolean canMove;
+	/** Units of movement remaining this turn. Can't move if this is 0 */
+	private int movement;
 
 	/** Constructor for MovingUnit.
 	 * Also adds this unit to the tile it is on as an occupant, and
@@ -44,13 +44,18 @@ public abstract class MovingUnit extends Unit{
 	@Override
 	public void refreshForTurn(){
 		super.refreshForTurn();
-		canMove = true;
+		movement = getMovementCap();
 	}
 	
 	//MOVEMENT
 	/** Returns iff this can move */
 	public boolean canMove(){
-		return canMove;
+		return movement > 0;
+	}
+	
+	/** Returns the amount of movement this can still make this turn */
+	public int getMovement(){
+		return movement;
 	}
 
 	/** Returns the total converted movement this unit can take in a turn */
@@ -98,8 +103,8 @@ public abstract class MovingUnit extends Unit{
 	 * 		- the total cost of movement exceeds this' movement total
 	 */
 	public final Tile move(LinkedList<Tile> path) throws IllegalArgumentException, RuntimeException{
-		if(! canMove)
-			throw new RuntimeException(this + " can't move again this turn");
+		if(! canMove())
+			throw new RuntimeException(this + " can't move this turn");
 		if(path.get(0) != location)
 			throw new IllegalArgumentException(this + " can't travel path " + path + ", it is on " + location);
 		
@@ -111,21 +116,24 @@ public abstract class MovingUnit extends Unit{
 			cost += getMovementCost(t.terrain);
 		}
 		
-		if(cost > getMovementCap())
+		if(cost > movement)
 			throw new IllegalArgumentException(this + " can't travel path " + path + ", total cost of " + cost + " is too high");
 	
 		preMove(path);
 		
+		cost = 0;
 		//Movement seems ok. Try to move along path, break if another unit of other player is encountered.
+		//Recalc cost as movement occurs
 		Tile oldLoc = location;
 		for(Tile t : path){
 			if(t.isOccupied() && t.getOccupyingUnit().owner != owner)
 				break;
 			location = t;
+			cost += getMovementCost(t.terrain);
 		}
 		if(oldLoc != location)
 			oldLoc.moveUnitTo(location);
-		canMove = false;
+		movement -= cost;
 		owner.refreshVisionCloud();
 		
 		postMove(path);

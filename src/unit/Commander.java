@@ -19,17 +19,26 @@ public abstract class Commander extends MovingUnit {
 	/** Base level of health for lvl1 commanders */
 	public static final int BASE_HEALTH = 1000;
 	
-	/** Base amount of max health gained per level */
-	public static final int SCALE_HEALTH = 200;
-	
 	/** Base starting amount of mana for lvl1 commanders */
 	public static final int START_MANA = 500;
 	
 	/** Base starting level of mana per turn for lvl1 commanders */
 	public static final int BASE_MANA_PT = 500;
 	
-	/** Base amount of mana per turn gained per level */
-	public static final int SCALE_MANA_PT = 250;
+	/** Amount of health gained per level */
+	public static final int LEVELUP_HEALTH = 200;
+	
+	/** Amount of mana per turn gained per level */
+	public static final int LEVELUP_MANAPT = 250;
+	
+	protected static final UnitModifier LEVELUP_MANA_BUFF = 
+			new UnitModifier(Integer.MAX_VALUE, StatType.MANA_PER_TURN, 
+				UnitModifier.ModificationType.ADD, LEVELUP_MANAPT);
+	
+	protected static final UnitModifier LEVELUP_HEALTH_BUFF = 
+			new UnitModifier(Integer.MAX_VALUE, StatType.MAX_HEALTH, 
+					UnitModifier.ModificationType.ADD, LEVELUP_HEALTH);
+	
 	
 	/** The amount of research required to get to the next level for free.
 	 * Index i = cost to get from level i+1 to i+2 (because levels are 1 indexed). */
@@ -190,11 +199,9 @@ public abstract class Commander extends MovingUnit {
 	private void levelUp(){
 		research = 0;
 		level++;
-		addModifier(new UnitModifier(this, this, Integer.MAX_VALUE, 
-				StatType.MANA_PER_TURN, UnitModifier.ModificationType.ADD, SCALE_MANA_PT));
-		addModifier(new UnitModifier(this, this, Integer.MAX_VALUE, 
-				StatType.MAX_HEALTH, UnitModifier.ModificationType.ADD, SCALE_HEALTH));
-		setHealth(getHealth() + SCALE_HEALTH, this);
+		new UnitModifier(this, this, LEVELUP_HEALTH_BUFF);
+		new UnitModifier(this, this, LEVELUP_MANA_BUFF);
+		setHealth(getHealth() + LEVELUP_HEALTH, this);
 		owner.updateManaPerTurn();
 		owner.game.getFrame().repaint();
 	}

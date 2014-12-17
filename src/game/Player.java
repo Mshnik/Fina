@@ -1,10 +1,14 @@
 package game;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashSet;
+
+import javax.swing.event.ListSelectionEvent;
 
 import board.*;
 import unit.*;
+import unit.buildings.Temple;
 
 /** An instance is a player (not the commander piece).
  * Extended to be either human controlled or AI.
@@ -25,6 +29,9 @@ public abstract class Player {
 	/** The commander belonging to this player */
 	private Commander commander;
 
+	/** The temples this player controls, if any. Max length 5 */
+	private ArrayList<Temple> temples;
+	
 	/** The Tiles in the board this player has vision of */
 	private HashSet<Tile> visionCloud;
 
@@ -39,6 +46,7 @@ public abstract class Player {
 		game = g;
 		this.index = g.addPlayer(this, c);
 		units = new HashSet<Unit>();
+		temples = new ArrayList<Temple>();
 		visionCloud = new HashSet<Tile>();
 	}
 
@@ -126,6 +134,11 @@ public abstract class Player {
 		return new HashSet<Unit>(units);
 	}
 
+	/** Returns the index of the given temple, or -1 if this is not a temple owned by this */
+	public int getTempleIndex(Temple t){
+		return temples.indexOf(t);
+	}
+	
 	/** The commander belonging to this player */
 	public Commander getCommander(){
 		return commander;
@@ -134,6 +147,7 @@ public abstract class Player {
 	/** Adds the given unit to this player's units.
 	 * Call whenever a unit is constructed.
 	 * If commander is null and u is a commander, sets commander to u.
+	 * If temple, adds to temples, refreshes buffs.
 	 * @throws IllegalArgumentException - If u is a commander and commander isn't null.
 	 */
 	public void addUnit(Unit u) throws IllegalArgumentException {
@@ -142,6 +156,13 @@ public abstract class Player {
 			if(commander == null) commander = (Commander)u;
 			else throw new IllegalArgumentException("Can't set " + u + " to commander for " + this);
 		}
+		if(u instanceof Temple){
+			if(temples.size() >= Temple.MAX_TEMPLES)
+				throw new IllegalArgumentException(this + " can't construct another temple, already has max");
+			Temple t = (Temple)u;
+			temples.add(t);
+		}
+		refreshTempleBuffs();
 		refreshVisionCloud();
 		updateManaPerTurn();
 	}
@@ -152,8 +173,19 @@ public abstract class Player {
 	public void removeUnit(Unit u){
 		units.remove(u);
 		if(u instanceof Commander && (Commander)u == commander) commander = null;
+		if(u instanceof Temple){
+			temples.remove(u);
+		}
+		refreshTempleBuffs();
 		refreshVisionCloud();
 		updateManaPerTurn();
+	}
+	
+	/** Refreshes all temples buffs on all units */
+	private void refreshTempleBuffs(){
+		for(Temple t : temples){
+			t.refreshForIndex();
+		}
 	}
 
 	//VISION
