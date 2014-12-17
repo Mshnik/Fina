@@ -156,6 +156,7 @@ public class Game implements Runnable{
 		Player p = getCurrentPlayer();
 		boolean ok = p.turnStart();
 		if(ok){
+			frame.startTurnFor(p);
 			p.turn();
 			p.turnEnd();
 		}

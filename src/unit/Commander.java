@@ -143,7 +143,8 @@ public abstract class Commander extends MovingUnit {
 	
 	/** Commanders get bonus defense against ranged units */
 	@Override
-	public double getDefenseAgainst(Unit attacker){
+	public double getDefenseAgainst(Combatant attacker){
+		if(attacker.getAttackRange() == 0) return super.getDefenseAgainst(attacker);
 		return RANGED_DEFENSE + (1 - RANGED_DEFENSE) * super.getDefenseAgainst(attacker);
 	}
 
@@ -170,7 +171,7 @@ public abstract class Commander extends MovingUnit {
 		return research - getResearchRequirement();
 	}
 
-	/** Adds the given amount of research to resarch, capping at the requirement.
+	/** Adds the given amount of research to research, capping at the requirement.
 	 * Input must be positive (you can only gain research)
 	 */
 	public void addResearch(int deltaResearch) throws IllegalArgumentException{

@@ -304,6 +304,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			throw new RuntimeException("Can't cancel summon selection, currently toggling " + getToggle());
 		summonSelector.toSummon.clone(summonSelector.summoner.owner, boardCursor.getElm());
 		locationSelector = null;
+		boardCursor.setElm(boardCursor.getElm()); //Cause info update
 		repaint();
 
 	}

@@ -226,7 +226,7 @@ public abstract class Unit{
 	 * in subclasses if they have different defense values than the default (against
 	 * the attacker's type
 	 */
-	public double getDefenseAgainst(Unit attacker){
+	public double getDefenseAgainst(Combatant attacker){
 		return getDefense(attacker.getAttackType());
 	}
 	

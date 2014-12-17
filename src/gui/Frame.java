@@ -98,6 +98,11 @@ public class Frame extends JFrame {
 		return gamePanel.getToggle();
 	}
 	
+	/** Starts the turn for player p, making graphic updates as necessary */
+	public void startTurnFor(Player p){
+		gamePanel.boardCursor.setElm(p.getCommander().getLocation());
+	}
+	
 	/** Updates the info panel to show the given unit *
 	 * 
 	 */

@@ -18,7 +18,7 @@ public class DummyCommander extends Commander {
 			new Stat(StatType.MAX_HEALTH, Commander.BASE_HEALTH),
 			new Stat(StatType.MANA_PER_TURN, Commander.BASE_MANA_PT),
 			new Stat(StatType.MAGIC_DEFENSE, 0.1),
-			new Stat(StatType.PHYSICAL_DEFENSE, 0.25),
+			new Stat(StatType.PHYSICAL_DEFENSE, 0.1),
 			new Stat(StatType.SUMMON_RANGE, 2),
 			new Stat(StatType.VISION_RANGE, 3),
 			new Stat(StatType.MOVEMENT_TOTAL, 5),

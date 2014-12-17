@@ -98,7 +98,7 @@ public abstract class Combatant extends MovingUnit {
 		
 		//True if a counterAttack is happening, false otherwise.
 		boolean counterAttack = other.isAlive() && other.owner.canSee(this) && room <= other.getAttackRange()
-								&& damage < other.getHealth();
+								&& damage < other.getHealth() && other instanceof Combatant;
 
 		preFight(other);
 		if(counterAttack) other.preCounterFight(this);
@@ -109,7 +109,7 @@ public abstract class Combatant extends MovingUnit {
 		//If other is still alive, can see the first unit, 
 		//and this is within range, other counterattacks
 		if(counterAttack){
-			changeHealth(- (int)(other.getAttack() * (1 - getDefenseAgainst(other))), other);
+			changeHealth(- (int)(other.getAttack() * (1 - getDefenseAgainst((Combatant)other))), other);
 			counterAttack = true;
 		}
 

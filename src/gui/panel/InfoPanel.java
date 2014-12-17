@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.Iterator;
 
 import game.Game;
 import gui.Frame;
@@ -22,7 +21,7 @@ public class InfoPanel extends JPanel{
 	private static final long serialVersionUID = 1L;
 
 	/** The Height of the InfoPanel */
-	protected static final int HEIGHT = 100;
+	protected static final int HEIGHT = 200;
 
 	/** The color of the border surrounding the headerPanel */
 	protected static final Color BORDER_COLOR = new Color(74, 47, 12);
@@ -80,21 +79,21 @@ public class InfoPanel extends JPanel{
 		if(unit != null){
 			int xInc = 25;
 			g2d.drawString(unit.name, xInc, YMARGIN);
-			int subFont = 19;
+			int subFont = 17;
 			g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, subFont - 3));
 			g2d.drawString("(" + unit.getIdentifierString() + ")", xInc, YMARGIN + subFont);
 			if(unit.owner != null)
 				g2d.drawString("Owned by " + unit.owner, xInc, YMARGIN + subFont * 2);
 			
 			xInc += 160;
-			int y = YMARGIN;
-			Iterator<Stat> i = unit.getStats().iterator();
-			while(i.hasNext()){
-				Stat s = i.next();
+			final int INFO_MARGIN = YMARGIN - 7;
+			int y = INFO_MARGIN;
+			for(Stat s : unit.getStats()){
+				if(s.name == StatType.BASE) continue;
 				drawStat(g2d, s, xInc, y);
 				y += subFont;
-				if(y >= YMARGIN + 3 * subFont){
-					y = YMARGIN;
+				if(y >= INFO_MARGIN + 4 * subFont){
+					y = INFO_MARGIN;
 					xInc += 190;
 				}
 			}
@@ -108,6 +107,6 @@ public class InfoPanel extends JPanel{
 		if(s.val instanceof AttackType){
 			str = AttackType.getAbbrevString((AttackType) s.val);
 		}
-		g2d.drawString(str, x + 130, y);
+		g2d.drawString(str, x + 145, y);
 	}
 }

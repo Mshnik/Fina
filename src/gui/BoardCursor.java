@@ -80,6 +80,12 @@ public class BoardCursor extends Cursor<Tile, GamePanel>{
 		}
 	}
 
+	/** Called whenever the cursor is forcably moved */
+	@Override
+	public void setElm(Tile t){
+		super.setElm(t);
+		updateUnitHover();
+	}
 
 	/** Called internally whenever the cursor is moved
 	 * works with pathSelector */
@@ -90,6 +96,11 @@ public class BoardCursor extends Cursor<Tile, GamePanel>{
 			PathSelector ps = (PathSelector) getPanel().getLocationSelector();
 			ps.addToPath(getElm());
 		}
+		updateUnitHover();
+	}
+	
+	/** Updates info of the unit this is on. Call whenever moved or elm set */
+	private void updateUnitHover(){
 		if(getElm().isOccupied() && panel.game.getCurrentPlayer().canSee(getElm()))
 			panel.getFrame().infoPanel.setUnit(getElm().getOccupyingUnit());
 		else
