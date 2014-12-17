@@ -206,6 +206,14 @@ public abstract class Commander extends MovingUnit {
 		owner.game.getFrame().repaint();
 	}
 	
+	/** Commanders can't attack, so attack modifications aren't ok. */
+	@Override
+	public boolean modifierOk(UnitModifier m){
+		StatType s = m.modifiedStat;
+		return s != StatType.ATTACK && s != StatType.ATTACK_RANGE &&
+				s != StatType.ATTACK_TYPE;
+	}
+	
 	//SUMMONING
 	/** Returns the list of units this can summon. Can be overridden to add additional units.
 	 * Base Return is FileUnits for this' level. */

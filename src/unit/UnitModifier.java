@@ -61,8 +61,8 @@ public class UnitModifier {
 		modType = dummy.modType;
 		val = dummy.val;
 		
-		unit.addModifier(this);
-		source.addGrantedModifier(this);
+		boolean ok = unit.addModifier(this);
+		if(ok) source.addGrantedModifier(this);
 	}
 	
 	/** Returns true if this is a dummy (unit is null ) */

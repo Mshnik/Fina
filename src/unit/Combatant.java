@@ -50,6 +50,12 @@ public abstract class Combatant extends MovingUnit {
 		return super.canMove() && canFight();
 	}
 	
+	/** Combatants are ok with any kind of modifier except summon range */
+	@Override
+	public boolean modifierOk(UnitModifier m){
+		return m.modifiedStat != StatType.SUMMON_RANGE;
+	}
+	
 	//FIGHTING
 	/** Returns iff this can fight this turn */
 	public boolean canFight(){

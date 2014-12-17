@@ -283,18 +283,33 @@ public abstract class Unit{
 		return new LinkedList<UnitModifier>(modifiers);
 	}
 	
+	/** Checks modifier m for applying to this unit */
+	public abstract boolean modifierOk(UnitModifier m);
+	
 	/** Adds a new modifier to this unit. Also updates stats with the new modifiers,
-	 * from its original base stats. Called by modifier during construction */
-	void addModifier(UnitModifier m){
-		modifiers.add(m);
-		refreshStats();
+	 * from its original base stats. Called by modifier during construction.
+	 * Returns true if the modifier was applied, false otw */
+	boolean addModifier(UnitModifier m){
+		if(modifierOk(m)){
+			modifiers.add(m);
+			refreshStats();
+			return true;
+		} else{
+			return false;
+		}
 	}
 	
 	/** Removes the given modifier from this unit. Also updates stats with new modifier
-	 * from its original base stats. Called by modifier on death */
-	void removeModifier(UnitModifier m){
-		modifiers.remove(m);
-		refreshStats();
+	 * from its original base stats. Called by modifier on death.
+	 * Returns true if the modifier was applied, false otw */
+	boolean removeModifier(UnitModifier m){
+		if(modifierOk(m)){
+			modifiers.remove(m);
+			refreshStats();
+			return true;
+		} else{
+			return false;
+		}
 	}
 	
 	/** Returns the modifiers this is currently granting.

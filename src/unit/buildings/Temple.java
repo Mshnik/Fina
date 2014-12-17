@@ -43,11 +43,11 @@ public class Temple extends Building {
 	public static final String NAME = "Temple";
 	
 	/** Mana cost of constructing a Temple */
-	public static final int COST = 200;
+	public static final int COST = 1500;
 	
 	/** Stats for maxHealth, defenses, range and visionRange of baracks */
 	private static final UnitStats STATS = new UnitStats(
-			new Stat(StatType.MAX_HEALTH, 100),
+			new Stat(StatType.MAX_HEALTH, 1200),
 			new Stat(StatType.MAGIC_DEFENSE, 0.1),
 			new Stat(StatType.PHYSICAL_DEFENSE, 0.1)
 	);

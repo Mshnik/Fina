@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import javax.swing.event.ListSelectionEvent;
-
 import board.*;
 import unit.*;
 import unit.buildings.Temple;
