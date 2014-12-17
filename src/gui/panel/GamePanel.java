@@ -221,7 +221,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			break;
 		}
 	}
-	
+
 	/** Creates a decisionPanel for creating either units or buildings */
 	private void startSummonDecision(Commander c, Map<String, ? extends Unit> creatables){
 		LinkedList<Decision> decisions = new LinkedList<Decision>();
@@ -242,7 +242,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		Commander c = p.getCommander();
 		startSummonDecision(c, c.getSummonables());
 	}
-	
+
 	/** Creates a decisionPanel for summoning new buildings */
 	public void startSummonBuildingDecision(){
 		Player p = game.getCurrentPlayer();
@@ -303,14 +303,10 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		Toggle t = removeTopToggle();
 		if(! t.equals(Toggle.SUMMON_SELECTION))
 			throw new RuntimeException("Can't cancel summon selection, currently toggling " + getToggle());
-		try{
-			summonSelector.toSummon.clone(summonSelector.summoner.owner, boardCursor.getElm());
-			locationSelector = null;
-			repaint();
-		}catch(Exception e){
-			//TODO - sound err
-			Toolkit.getDefaultToolkit().beep();
-		}
+		summonSelector.toSummon.clone(summonSelector.summoner.owner, boardCursor.getElm());
+		locationSelector = null;
+		repaint();
+
 	}
 
 	/** Creates a new pathSelector at the current boardCursor position.
@@ -342,8 +338,10 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
 	public void processPathSelection() throws RuntimeException{
 		if(! boardCursor.canSelect()) return;
-		if(boardCursor.getElm().isOccupied()) return;
 		PathSelector pathSelector = (PathSelector) locationSelector;
+		if(boardCursor.getElm().isOccupied() && 
+				boardCursor.getElm().getOccupyingUnit().owner == pathSelector.unit.owner)
+			return;
 		if(pathSelector.getPath().size() < 2) return;
 		Toggle t = removeTopToggle();
 		if(! t.equals(Toggle.PATH_SELECTION))
