@@ -28,7 +28,7 @@ public abstract class Combatant extends MovingUnit {
 			throws RuntimeException, IllegalArgumentException {
 		super(owner, name, manaCost, startingTile, stats);
 
-		if(stats.getAttackType().equals(AttackType.NO_ATTACK))
+		if(stats.getStat(StatType.ATTACK_TYPE).equals(AttackType.NO_ATTACK))
 			throw new IllegalArgumentException("Combatant " + this + " can't have attackType NO_ATTACK");
 	}
 
@@ -91,13 +91,13 @@ public abstract class Combatant extends MovingUnit {
 			throw new IllegalArgumentException(owner + " can't see " + other);
 
 		int room = location.manhattanDistance(other.getLocation()) - 1; //Account for melee = 0 range
-		if(room > getRange())
+		if(room > getAttackRange())
 			throw new IllegalArgumentException(this + " can't fight " + other + ", it is too far away.");
 
 		int damage = (int)(getAttack() * (1 - other.getDefenseAgainst(this)));
 		
 		//True if a counterAttack is happening, false otherwise.
-		boolean counterAttack = other.isAlive() && other.owner.canSee(this) && room <= other.getRange()
+		boolean counterAttack = other.isAlive() && other.owner.canSee(this) && room <= other.getAttackRange()
 								&& damage < other.getHealth();
 
 		preFight(other);

@@ -2,8 +2,9 @@ package unit.buildings;
 
 import game.Player;
 import board.Tile;
-import unit.AttackType;
 import unit.Building;
+import unit.Stat;
+import unit.StatType;
 import unit.Unit;
 import unit.UnitStats;
 
@@ -16,8 +17,13 @@ public class Baracks extends Building {
 	public static final int COST = 800;
 	
 	/** Stats for maxHealth, defenses, range and visionRange of baracks */
-	public static final UnitStats STATS = 
-			new UnitStats(1000, 0, 0, AttackType.NO_ATTACK, 0.25, 0.1, 1, 1);
+	private static final UnitStats STATS = new UnitStats(
+			new Stat(StatType.MAX_HEALTH, 1000),
+			new Stat(StatType.MAGIC_DEFENSE, 0.1),
+			new Stat(StatType.PHYSICAL_DEFENSE, 0.25),
+			new Stat(StatType.SUMMON_RANGE, 1),
+			new Stat(StatType.VISION_RANGE, 1)
+	);
 	
 	public Baracks(Player owner, Tile tile) throws RuntimeException, IllegalArgumentException {
 		super(owner, NAME, COST, tile, STATS);

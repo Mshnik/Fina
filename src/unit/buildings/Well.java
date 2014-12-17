@@ -4,6 +4,8 @@ import game.Player;
 import board.Tile;
 import unit.AttackType;
 import unit.Building;
+import unit.Stat;
+import unit.StatType;
 import unit.Unit;
 import unit.UnitStats;
 
@@ -22,9 +24,13 @@ public class Well extends Building {
 	/** ManaPerTurn generated per well */
 	public static final int MANAPT = 100;
 	
-	/** Stats for maxHealth, defenses, range and visionRange of wells */
-	public static final UnitStats STATS = 
-			new UnitStats(800, MANAPT, 0, AttackType.NO_ATTACK, 0.05, 0.20, 0, 0);
+	/** Stats for wells */
+	private static final UnitStats STATS = new UnitStats(
+			new Stat(StatType.MAX_HEALTH, 800),
+			new Stat(StatType.MANA_PER_TURN, MANAPT),
+			new Stat(StatType.MAGIC_DEFENSE, 0.15),
+			new Stat(StatType.PHYSICAL_DEFENSE, 0.05)
+	);
 
 	/** Constructor for a Well
 	 * @param owner		- owner of this well

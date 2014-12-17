@@ -6,18 +6,24 @@ public class UnitModifier {
 	/** The unit this is modifying */
 	public final Unit unit;
 	
+	/** The source of this modification */
+	public final Unit source;
+	
 	/** The remaining turns for this Modifier.
 	 * If 0, on its last turn.
 	 */
 	private int remainingTurns;
 	
+	
 	/** Constructor
 	 * @param u - The unit this is modifying
 	 * @param turns - the total duration of this modifier (turns after this one)
+	 * @param source - the unit this modifier is tied to.
 	 */
-	public UnitModifier(Unit u, int turns){
+	public UnitModifier(Unit u, int turns, Unit source){
 		unit = u;
 		remainingTurns = turns;
+		this.source = source;
 	}
 	
 	/** Returns the remaining turns of this modifier */

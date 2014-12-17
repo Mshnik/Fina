@@ -118,7 +118,7 @@ public class Board implements Iterable<Tile>{
 
 	/** Returns the set of tiles the given summon selector could choose to summon a new unit */
 	public ArrayList<Tile> getSummonCloud(SummonSelector ss){
-		ArrayList<Tile> radialTiles = getRadialCloud(ss.summoner.getLocation(), ss.summoner.getRange());
+		ArrayList<Tile> radialTiles = getRadialCloud(ss.summoner.getLocation(), ss.summoner.getSummonRange());
 		HashSet<Tile> toRemove = new HashSet<Tile>();
 		for(Tile t : radialTiles){
 			if(! ss.summoner.owner.canSee(t) || t.isOccupied() || ! ss.toSummon.canOccupy(t.terrain))

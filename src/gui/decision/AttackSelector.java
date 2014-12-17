@@ -22,7 +22,7 @@ public class AttackSelector extends LocationSelector {
 
 	@Override
 	protected void refreshPossibilitiesCloud() {
-		cloud = gamePanel.game.board.getRadialCloud(attacker.getLocation(), attacker.getRange() + 1);
+		cloud = gamePanel.game.board.getRadialCloud(attacker.getLocation(), attacker.getAttackRange() + 1);
 		int i = 0;
 		while(i < cloud.size()){
 			Tile t= cloud.get(i);

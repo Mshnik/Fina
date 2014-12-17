@@ -6,19 +6,25 @@ import java.util.LinkedList;
 
 import board.Terrain;
 import board.Tile;
-import unit.AttackType;
 import unit.Combatant;
 import unit.Commander;
+import unit.Stat;
+import unit.StatType;
 import unit.UnitStats;
 
 public class DummyCommander extends Commander {
 
-	public static final UnitStats BASE_STATS = 
-			new UnitStats(0, 0, 0, AttackType.NO_ATTACK, .1, .1, 1, 3);
+	/** Stats for maxHealth, defenses, range and visionRange of dummy commander */
+	private static final UnitStats STATS = new UnitStats(
+			new Stat(StatType.MAGIC_DEFENSE, 0.1),
+			new Stat(StatType.PHYSICAL_DEFENSE, 0.25),
+			new Stat(StatType.SUMMON_RANGE, 2),
+			new Stat(StatType.VISION_RANGE, 3)
+	);
 
 	
 	public DummyCommander(Player owner, Tile startingTile) {
-		super("Dummy", owner, startingTile, BASE_STATS);
+		super("Dummy", owner, startingTile, STATS);
 	}
 
 	@Override

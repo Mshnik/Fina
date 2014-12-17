@@ -136,7 +136,7 @@ public abstract class Unit{
 	//STATS
 	/** Returns the max health of this unit */
 	public int getMaxHealth(){
-		return stats.getMaxHealth();
+		return (Integer)stats.getStat(StatType.MAX_HEALTH);
 	}
 	
 	/** Returns the current health of this Unit */
@@ -186,22 +186,22 @@ public abstract class Unit{
 	
 	/** Returns the attack strength of this unit. 0 if this is not a combatant. */
 	public int getAttack(){
-		return stats.getAttack();
+		return (Integer)stats.getStat(StatType.ATTACK);
 	}
 
 	/** Returns the attack type of this unit. NO_ATTACK if this is not a combatant. */
 	public AttackType getAttackType(){
-		return stats.getAttackType();
+		return (AttackType)stats.getStat(StatType.ATTACK_TYPE);
 	}
 
 	/** Returns the physical defense of this unit */
 	public double getPhysicalDefense(){
-		return stats.getPhysicalDefense();
+		return (Double)stats.getStat(StatType.PHYSICAL_DEFENSE);
 	}
 
 	/** Returns the magic defense of this unit */
 	public double getMagicDefense(){
-		return stats.getMagicDefense();
+		return (Double)stats.getStat(StatType.MAGIC_DEFENSE);
 	}
 
 
@@ -229,24 +229,27 @@ public abstract class Unit{
 	 * false if this is melee (range == 0)
 	 */
 	public boolean isRanged(){
-		return getRange() > 0;
+		return getAttackRange() > 0;
 	}
 
-	/** Returns the range of this unit.
-	 * If this is a combatant, this is its attack range.
-	 * If this is a summoner, this is its summon range.  */
-	public int getRange(){
-		return stats.getRange();
+	/** Returns the attack range of this unit. */
+	public int getAttackRange(){
+		return (Integer)stats.getStat(StatType.ATTACK_RANGE);
 	}
 	
 	/** Returns the vision range of this unit. */
 	public int getVisionRange(){
-		return stats.getVisionRange();
+		return (Integer)stats.getStat(StatType.VISION_RANGE);
+	}
+	
+	/** Returns the summon range of this unit. */
+	public int getSummonRange(){
+		return (Integer)stats.getStat(StatType.SUMMON_RANGE);
 	}
 	
 	/** Returns the mana per turn this unit costs/generates */
 	public int getManaPerTurn(){
-		return stats.getManaPerTurn();
+		return (Integer)stats.getStat(StatType.MANA_PER_TURN);
 	}
 
 	/** Returns true if this is a generator (manaPerTurn > 0) */

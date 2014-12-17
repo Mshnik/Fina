@@ -14,6 +14,8 @@ import board.Terrain;
 import board.Tile;
 import unit.AttackType;
 import unit.Combatant;
+import unit.Stat;
+import unit.StatType;
 import unit.Unit;
 import unit.UnitStats;
 import util.TextIO;
@@ -90,9 +92,16 @@ public class FileCombatant extends Combatant {
 					int manaPerTurn = Integer.parseInt(comps[14]);
 					String img = comps[15];
 
-					UnitStats stats = new UnitStats(hp, manaPerTurn, 
-							attack, atkType, physDef, 
-							magDef, range, vision);
+					UnitStats stats = new UnitStats(
+							new Stat(StatType.MAX_HEALTH, hp),
+							new Stat(StatType.PHYSICAL_DEFENSE, physDef),
+							new Stat(StatType.MAGIC_DEFENSE, magDef),
+							new Stat(StatType.ATTACK, attack),
+							new Stat(StatType.ATTACK_TYPE, atkType),
+							new Stat(StatType.ATTACK_RANGE, range),
+							new Stat(StatType.VISION_RANGE, vision),
+							new Stat(StatType.MANA_PER_TURN, manaPerTurn)
+					);
 					currentAgeUnits.add(new FileCombatant(name, manaCost, 
 							stats, moveTotal, costs, img));
 				} catch(NumberFormatException | ArrayIndexOutOfBoundsException e){} 

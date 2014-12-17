@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.util.Iterator;
 
 import game.Game;
 import gui.Frame;
@@ -14,9 +15,7 @@ import gui.ImageIndex;
 
 import javax.swing.JPanel;
 
-import unit.AttackType;
-import unit.Stat;
-import unit.Unit;
+import unit.*;
 
 public class InfoPanel extends JPanel{
 	/***/
@@ -89,20 +88,22 @@ public class InfoPanel extends JPanel{
 			
 			xInc += 160;
 			int y = YMARGIN;
-			for(Stat s : unit.getStats()){
+			Iterator<Stat> i = unit.getStats().iterator();
+			while(i.hasNext()){
+				Stat s = i.next();
 				drawStat(g2d, s, xInc, y);
 				y += subFont;
-				if(y >= YMARGIN + 2 * subFont){
+				if(y >= YMARGIN + 3 * subFont){
 					y = YMARGIN;
 					xInc += 190;
 				}
 			}
-			drawStat(g2d, new Stat("Health", unit.getHealth()), 185, YMARGIN + 2 * subFont);
+			//drawStat(g2d, new Stat("Health", unit.getHealth()), 185, YMARGIN + 2 * subFont);
 		}
 	}
 	
 	private void drawStat(Graphics2D g2d, Stat s, int x, int y){
-		g2d.drawString(s.name, x, y);
+		g2d.drawString(s.name.toString(), x, y);
 		String str = s.val.toString();
 		if(s.val instanceof AttackType){
 			str = AttackType.getAbbrevString((AttackType) s.val);
