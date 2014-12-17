@@ -5,7 +5,6 @@ import gui.Frame;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 import board.Board;
 

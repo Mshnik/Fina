@@ -54,12 +54,22 @@ public abstract class MovingUnit extends Unit{
 	}
 
 	/** Returns the total converted movement this unit can take in a turn */
-	public abstract int getMovementCap();
+	public final int getMovementCap(){
+		return (Integer)stats.getStat(StatType.MOVEMENT_TOTAL);
+	}
 
 	/** Returns the movement cost of traveling terrain t, infinity if this unit
 	 * can't travel the given terrain
 	 */
-	public abstract int getMovementCost(Terrain t);
+	public final int getMovementCost(Terrain t){
+		switch(t){
+		case ANCIENT_GROUND:
+		case GRASS:		return (Integer)stats.getStat(StatType.GRASS_COST);
+		case MOUNTAIN:	return (Integer)stats.getStat(StatType.MOUNTAIN_COST);
+		case WOODS:		return (Integer)stats.getStat(StatType.WOODS_COST);
+		default:		return Integer.MAX_VALUE;
+		}
+	}
 	
 	/** Returns true iff movementCost(t) <= getMovementCap() */
 	@Override

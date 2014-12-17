@@ -4,7 +4,6 @@ import game.Player;
 
 import java.util.LinkedList;
 
-import board.Terrain;
 import board.Tile;
 import unit.Combatant;
 import unit.Commander;
@@ -19,7 +18,11 @@ public class DummyCommander extends Commander {
 			new Stat(StatType.MAGIC_DEFENSE, 0.1),
 			new Stat(StatType.PHYSICAL_DEFENSE, 0.25),
 			new Stat(StatType.SUMMON_RANGE, 2),
-			new Stat(StatType.VISION_RANGE, 3)
+			new Stat(StatType.VISION_RANGE, 3),
+			new Stat(StatType.MOVEMENT_TOTAL, 5),
+			new Stat(StatType.GRASS_COST, 1),
+			new Stat(StatType.WOODS_COST, 2),
+			new Stat(StatType.MOUNTAIN_COST, 9999)
 	);
 
 	
@@ -38,22 +41,6 @@ public class DummyCommander extends Commander {
 	public void refreshForTurn(){
 		super.refreshForTurn();
 		setHealth(getHealth() + 50, this);
-	}
-	
-	@Override
-	public int getMovementCap() {
-		return 5;
-	}
-
-	@Override
-	public int getMovementCost(Terrain t) {
-		switch(t){
-		case ANCIENT_GROUND:	return 1;
-		case GRASS:				return 1;
-		case MOUNTAIN:			return 9999;
-		case WOODS:				return 2;
-		default:				return 9999;
-		}
 	}
 
 	@Override

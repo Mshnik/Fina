@@ -2,7 +2,6 @@ package unit.buildings;
 
 import game.Player;
 import board.Tile;
-import unit.AttackType;
 import unit.Building;
 import unit.Stat;
 import unit.StatType;

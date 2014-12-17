@@ -9,26 +9,28 @@ import java.util.Map;
 
 /** Holder for the stats for a unit.
  * Unless otherwise noted, all stats are non-negative. */
-public class UnitStats{
+public class UnitStats implements Iterable<Stat>{
 	
-	/** Base stats for everything, to be overridden as template.
-	 * Initializes all stats to their base 0-ish vals
-	 */
-	private static final HashMap<StatType, Object> TEMPLATE;
-	
-	static{
-		TEMPLATE = new HashMap<StatType, Object>();
-		//Base -> Null
-		TEMPLATE.put(StatType.MAX_HEALTH, 0);
-		TEMPLATE.put(StatType.MANA_PER_TURN, 0);
-		TEMPLATE.put(StatType.ATTACK, 0);
-		TEMPLATE.put(StatType.ATTACK_TYPE, AttackType.NO_ATTACK);
-		TEMPLATE.put(StatType.PHYSICAL_DEFENSE, 0.0);
-		TEMPLATE.put(StatType.MAGIC_DEFENSE, 0.0);
-		TEMPLATE.put(StatType.ATTACK_RANGE, 0);
-		TEMPLATE.put(StatType.SUMMON_RANGE, 0);
-		TEMPLATE.put(StatType.VISION_RANGE, 0);
-	}
+//	/** Base stats for everything, to be overridden as template.
+//	 * Initializes all stats to their base 0-ish vals.
+//	 * 
+//	 * //TODO - use?
+//	 */
+//	private static final HashMap<StatType, Object> TEMPLATE;
+//	
+//	static{
+//		TEMPLATE = new HashMap<StatType, Object>();
+//		//Base -> Null
+//		TEMPLATE.put(StatType.MAX_HEALTH, 0);
+//		TEMPLATE.put(StatType.MANA_PER_TURN, 0);
+//		TEMPLATE.put(StatType.ATTACK, 0);
+//		TEMPLATE.put(StatType.ATTACK_TYPE, AttackType.NO_ATTACK);
+//		TEMPLATE.put(StatType.PHYSICAL_DEFENSE, 0.0);
+//		TEMPLATE.put(StatType.MAGIC_DEFENSE, 0.0);
+//		TEMPLATE.put(StatType.ATTACK_RANGE, 0);
+//		TEMPLATE.put(StatType.SUMMON_RANGE, 0);
+//		TEMPLATE.put(StatType.VISION_RANGE, 0);
+//	}
 	
 	/** The stats maintained by this unitstats */
 	private HashMap<StatType, Object> stats;

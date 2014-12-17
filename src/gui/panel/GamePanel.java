@@ -342,6 +342,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
 	public void processPathSelection() throws RuntimeException{
 		if(! boardCursor.canSelect()) return;
+		if(boardCursor.getElm().isOccupied()) return;
 		PathSelector pathSelector = (PathSelector) locationSelector;
 		if(pathSelector.getPath().size() < 2) return;
 		Toggle t = removeTopToggle();

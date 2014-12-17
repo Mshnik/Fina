@@ -30,6 +30,15 @@ public enum StatType{
 	 * range >= 0.
 	 */
 	SUMMON_RANGE,
+	/** Total movement a unit can do in a turn */
+	MOVEMENT_TOTAL,
 	/** Vision radius of this unit */
-	VISION_RANGE
+	VISION_RANGE,
+	/** Grass movement cost */
+	GRASS_COST,
+	/** Woods movement cost */
+	WOODS_COST,
+	/** Mountain movement cost */
+	MOUNTAIN_COST
+	
 }

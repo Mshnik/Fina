@@ -100,10 +100,14 @@ public class FileCombatant extends Combatant {
 							new Stat(StatType.ATTACK_TYPE, atkType),
 							new Stat(StatType.ATTACK_RANGE, range),
 							new Stat(StatType.VISION_RANGE, vision),
-							new Stat(StatType.MANA_PER_TURN, manaPerTurn)
+							new Stat(StatType.MANA_PER_TURN, manaPerTurn),
+							new Stat(StatType.MOVEMENT_TOTAL, moveTotal),
+							new Stat(StatType.GRASS_COST, costs.get(Terrain.GRASS)),
+							new Stat(StatType.WOODS_COST, costs.get(Terrain.WOODS)),
+							new Stat(StatType.MOUNTAIN_COST, costs.get(Terrain.MOUNTAIN))
 					);
 					currentAgeUnits.add(new FileCombatant(name, manaCost, 
-							stats, moveTotal, costs, img));
+							stats, img));
 				} catch(NumberFormatException | ArrayIndexOutOfBoundsException e){} 
 				// Must be header line, other bad line
 			}
@@ -130,8 +134,6 @@ public class FileCombatant extends Combatant {
 	private FileCombatant(Player owner, Tile startingTile, FileCombatant dummy){
 		super(owner, dummy.name, dummy.manaCost, startingTile, dummy.getStats());
 		this.img = dummy.img;
-		this.moveCost = new HashMap<Terrain, Integer>(dummy.moveCost);
-		this.movementCap = dummy.movementCap;
 	}
 	
 	/** Clones this unit for the given player */
@@ -145,44 +147,22 @@ public class FileCombatant extends Combatant {
 	 * @param name			- the name of clones of this
 	 * @param manaCost		- the mana cost for clones of this
 	 * @param stats			- the stats of clones of this
-	 * @param moveTotal		- the total movement cap of clones of this
-	 * @param costs			- the momement costs of clones of this
 	 * @param img			- the image to draw for clones of this
 	 */
-	private FileCombatant(String name, int manaCost, UnitStats stats, int moveTotal, 
-			HashMap<Terrain, Integer> costs, String img){
+	private FileCombatant(String name, int manaCost, UnitStats stats, String img){
 		super(null, name, manaCost, null, stats);
 		this.img = img;
-		movementCap = moveTotal;
-		moveCost = costs;
 	}
 	
 
 	/** The image file associated with this FileCombatant */
 	public final String img;
 
-	/** The total movement cap for this unit */
-	private int movementCap;
-	
-	/** The movement cost for traveling the given type of terrian */
-	private HashMap<Terrain, Integer> moveCost;
-
 	@Override
 	public void preFight(Unit other) {}
 
 	@Override
 	public void postFight(Unit other) {}
-
-	@Override
-	public int getMovementCap() {
-		return movementCap;
-	}
-
-	@Override
-	public int getMovementCost(Terrain t) {
-		if(! moveCost.containsKey(t)) return Integer.MAX_VALUE;
-		return moveCost.get(t);
-	}
 
 	@Override
 	public void preMove(LinkedList<Tile> path) {}

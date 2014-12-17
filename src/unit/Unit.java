@@ -44,8 +44,8 @@ public abstract class Unit{
 	private int health;
 
 	/** The current stats of this unit. These are updated whenever unitModifiers are added or removed.
-	 * Should never be null, but may be empty */
-	private UnitStats stats;
+	 * Should never be null, but may be empty-ish */
+	UnitStats stats;
 	
 	/** A set of modifiers that are currently affecting this unit */
 	private LinkedList<UnitModifier> modifiers;
