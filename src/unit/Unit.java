@@ -89,6 +89,11 @@ public abstract class Unit{
 	/** Returns a copy of this for the given player, on the given tile */
 	public abstract Unit clone(Player owner, Tile location);
 	
+	/** Refreshes this' stats with the locally stored modifiers */
+	public void refreshStats(){
+		stats = stats.modifiedWith(modifiers);
+	}
+	
 	/** Call at the beginning of every turn.
 	 *  Can be overridden in subclasses, but those classes should call the super
 	 *  version before doing their own additions.
@@ -97,12 +102,12 @@ public abstract class Unit{
 	public void refreshForTurn(){
 		LinkedList<UnitModifier> deadModifiers = new LinkedList<UnitModifier>();
 		for(UnitModifier m : modifiers){
-			if(m.decRemainingTurns())
+			if(m.decRemainingTurns() || ! m.source.isAlive())
 				deadModifiers.add(m);
 		}
 		if(! deadModifiers.isEmpty()){
 			modifiers.removeAll(deadModifiers);
-			stats = stats.modifiedWith(modifiers);
+			refreshStats();
 		}
 	}
 	
@@ -274,14 +279,14 @@ public abstract class Unit{
 	 * from its original base stats. */
 	public void addModifier(UnitModifier m){
 		modifiers.add(m);
-		stats = stats.modifiedWith(modifiers);
+		refreshStats();
 	}
 	
 	/** Removes the given modifier from this unit. Also updates stats with new modifier
 	 * from its original base stats. */
 	public void removeModifier(UnitModifier m){
 		modifiers.remove(m);
-		stats = stats.modifiedWith(modifiers);
+		refreshStats();
 	}
 	
 	//FIGHTING

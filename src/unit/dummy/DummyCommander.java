@@ -15,6 +15,8 @@ public class DummyCommander extends Commander {
 
 	/** Stats for maxHealth, defenses, range and visionRange of dummy commander */
 	private static final UnitStats STATS = new UnitStats(
+			new Stat(StatType.MAX_HEALTH, Commander.BASE_HEALTH),
+			new Stat(StatType.MANA_PER_TURN, Commander.BASE_MANA_PT),
 			new Stat(StatType.MAGIC_DEFENSE, 0.1),
 			new Stat(StatType.PHYSICAL_DEFENSE, 0.25),
 			new Stat(StatType.SUMMON_RANGE, 2),
@@ -28,13 +30,6 @@ public class DummyCommander extends Commander {
 	
 	public DummyCommander(Player owner, Tile startingTile) {
 		super("Dummy", owner, startingTile, STATS);
-	}
-
-	@Override
-	public void recalculateScalingStats() {
-		maxHealth = Commander.BASE_HEALTH + Commander.SCALE_HEALTH * getLevel();
-		manaPerTurn = Commander.BASE_MANA_PT + Commander.SCALE_MANA_PT * getLevel();
-		
 	}
 
 	@Override

@@ -17,7 +17,7 @@ import board.Tile;
 public abstract class Commander extends MovingUnit {
 
 	/** Base level of health for lvl1 commanders */
-	public static final int BASE_HEALTH = 800;
+	public static final int BASE_HEALTH = 1000;
 	
 	/** Base amount of max health gained per level */
 	public static final int SCALE_HEALTH = 200;
@@ -26,7 +26,7 @@ public abstract class Commander extends MovingUnit {
 	public static final int START_MANA = 500;
 	
 	/** Base starting level of mana per turn for lvl1 commanders */
-	public static final int BASE_MANA_PT = 250;
+	public static final int BASE_MANA_PT = 500;
 	
 	/** Base amount of mana per turn gained per level */
 	public static final int SCALE_MANA_PT = 250;
@@ -41,20 +41,13 @@ public abstract class Commander extends MovingUnit {
 	public static final int MAX_LEVEL = RESEARCH_REQS.length + 1;
 	
 	/** The ratio of manaCost -> research for the owner of the killing unit */
-	public static final double MANA_COST_TO_RESEARCH_RATIO = 0.3;
+	public static final double MANA_COST_TO_RESEARCH_RATIO = 0.4;
 	
 	/** The extra defense (applied first) against ranged units granted to commanders */
 	public static final double RANGED_DEFENSE = 0.5;
 
-	/** The max health for this commander. Increases with level.
-	 * Specifically, this means the maxHealth stat attribute is unused. */
-	protected int maxHealth;
-
 	/** The current mana level of this commander. Varies over the course of the game. */
 	private int mana;
-
-	/** The current mana per turn generation of this commander. Increases with level. */
-	protected int manaPerTurn;
 
 	/** The current level of this player.
 	 * Starts at 1, increases by 1 every time the player performs a levelup action.
@@ -74,7 +67,7 @@ public abstract class Commander extends MovingUnit {
 	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
 	 * @param stats			- the stats of this commander.
 	 * 							Notably, because of restrictions on commander,
-	 * 							the maxHealth, attack, manaPerTurn, counterattack, and attackType
+	 * 							the attack, counterattack, and attackType
 	 * 							Attributes are unused, because they are either unnecessary 
 	 * 							or calculated elsewhere.
 	 */
@@ -83,7 +76,6 @@ public abstract class Commander extends MovingUnit {
 		super(owner,name, 0, startingTile, stats);
 		level = 1;
 		research = 0;
-		recalculateScalingStats();
 		setMana(START_MANA);
 		setHealth(getMaxHealth(), this);
 	}
@@ -125,25 +117,9 @@ public abstract class Commander extends MovingUnit {
 	}
 
 	//HEALTH and MANA
-	/** Returns the max health of this commander.
-	 * Overrides Unit.getMaxHealth so level can affect maxHealth.
-	 * This does mean the stats.maxHealth attribute is unused for commanders */
-	@Override
-	public int getMaxHealth(){
-		return maxHealth;
-	}
-
 	/** Returns the current mana of this commander */
 	public int getMana(){
 		return mana;
-	}
-
-	/** Returns the mana per turn this commander generates
-	 * Overrides Unit.getMaxHealth so level can affect maxHealth.
-	 * This does mean the stats.maxHealth attribute is unused for commanders */
-	@Override
-	public int getManaPerTurn(){
-		return manaPerTurn;
 	}
 
 	/** Sets to the given amount of mana. Input must be non-negative */
@@ -164,13 +140,6 @@ public abstract class Commander extends MovingUnit {
 		if(mana < 0) mana = 0;
 		return nMana;
 	}
-
-	/** Re-calculates maxHealth, maxMana, and manaPerTurn off of level and other factors.
-	 * Should start with base formulae based off of static constants
-	 * 	stat = BASE_STAT + SCALE_STAT * (lvl - 1)
-	 * If max health or mana increase this way, increase health and mana by
-	 * same amount */
-	public abstract void recalculateScalingStats();
 	
 	/** Commanders get bonus defense against ranged units */
 	@Override
@@ -209,15 +178,24 @@ public abstract class Commander extends MovingUnit {
 			throw new IllegalArgumentException("Can't add negative amount of research to " + this);
 
 		research = Math.min(research + deltaResearch, getResearchRequirement());
+		if(research == getResearchRequirement())
+			levelUp();
 	}
 
 	/** Called by Player class when this levels up.
 	 * Can be overriden by subclass to cause affect when leveled up, 
 	 * but this super method should be called first.
-	 * resets research, recalculates manaPerTurn and health of commander */
-	public void levelUp(){
+	 * resets research, recalculates manaPerTurn and health of commander, updates stats */
+	private void levelUp(){
 		research = 0;
-		recalculateScalingStats();
+		level++;
+		addModifier(new UnitModifier(this, this, Integer.MAX_VALUE, 
+				StatType.MANA_PER_TURN, UnitModifier.ModificationType.ADD, SCALE_MANA_PT));
+		addModifier(new UnitModifier(this, this, Integer.MAX_VALUE, 
+				StatType.MAX_HEALTH, UnitModifier.ModificationType.ADD, SCALE_HEALTH));
+		setHealth(getHealth() + SCALE_HEALTH, this);
+		owner.updateManaPerTurn();
+		owner.game.getFrame().repaint();
 	}
 	
 	//SUMMONING

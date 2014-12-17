@@ -48,14 +48,38 @@ public class UnitStats implements Iterable<Stat>{
 	
 	/** Constructor for UnitStats from a base stats and a collection of modifiers.
 	 */
+	@SuppressWarnings("incomplete-switch")
 	public UnitStats(UnitStats base, Collection<UnitModifier> modifiers) throws IllegalArgumentException{
 		this.stats = new HashMap<StatType, Object>(base.stats);
+		stats.put(StatType.BASE, base);
 		
 		//Process modifiers
 		if(modifiers != null){
-//			for( UnitModifier m : modifiers){
-//				//TODO
-//			}
+			for(UnitModifier m : modifiers){
+				StatType t = m.modifiedStat;
+				if(m.modType == UnitModifier.ModificationType.SET){
+					stats.put(t, m.getModVal());
+					continue;
+				}
+				Object newVal = stats.get(m.modifiedStat);
+				if(m.getModVal() instanceof Integer){
+					switch(m.modType){
+					case ADD: newVal = (int) ((Integer)newVal + (int)m.getModVal());
+						break;
+					case MULTIPLY: newVal = (int) ((Integer)newVal * (double)m.getModVal());
+						break;
+					}
+				}
+				else if(m.getModVal() instanceof Double){
+					switch(m.modType){
+					case ADD: newVal = (double) ((Double)newVal + (int)m.getModVal());
+						break;
+					case MULTIPLY: newVal = (double) ((Double)newVal * (double)m.getModVal());
+						break;
+					}
+				}
+				stats.put(m.modifiedStat, newVal);
+			}
 		}
 	}
 	
@@ -85,6 +109,7 @@ public class UnitStats implements Iterable<Stat>{
 		Iterator<Stat> i = iterator();
 		while(i.hasNext()){
 			Stat st = i.next();
+			if(st.name == StatType.BASE) continue;
 			s += st.name + " : " + st.val + ", ";
 		}
 		return s;

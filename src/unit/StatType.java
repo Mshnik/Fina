@@ -39,6 +39,32 @@ public enum StatType{
 	/** Woods movement cost */
 	WOODS_COST,
 	/** Mountain movement cost */
-	MOUNTAIN_COST
+	MOUNTAIN_COST;
+	
+	/** Returns the class of the given type */
+	public static Class<?> getClassOfType(StatType t){
+		switch(t){
+		case ATTACK:
+		case ATTACK_RANGE:
+		case GRASS_COST:
+		case MANA_PER_TURN:
+		case MAX_HEALTH:
+		case MOUNTAIN_COST:
+		case MOVEMENT_TOTAL:
+		case SUMMON_RANGE:
+		case VISION_RANGE:
+		case WOODS_COST:
+			return Integer.class;
+			
+		case MAGIC_DEFENSE:
+		case PHYSICAL_DEFENSE:
+			return Double.class;
+			
+		case ATTACK_TYPE: 	return AttackType.class;
+		case BASE:		 	return UnitStats.class;
+		
+		default : return null;
+		}
+	}
 	
 }

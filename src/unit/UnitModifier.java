@@ -32,7 +32,11 @@ public class UnitModifier {
 	/** Constructor
 	 * @param u - The unit this is modifying
 	 * @param source - the unit this modifier is tied to.
-	 * @param turns - the total duration of this modifier (turns after this one)
+	 * @param turns - the total duration of this modifier (turns after this one).
+	 * 					Can be Integer.MAX_VAL - interpreted as forever rather than the actual val
+	 * @param stat - the stat to modify
+	 * @param modType - the operation on stat to perform
+	 * @param modVal - the value to modify by
 	 */
 	public UnitModifier(Unit u, Unit source, int turns, 
 			StatType stat, ModificationType modType,
@@ -55,12 +59,13 @@ public class UnitModifier {
 		return remainingTurns;
 	}
 	
-	/** Decrements the remaining turns.
+	/** Decrements the remaining turns. Doesn't dec if is infinite (Integer.MAX_VAL)
 	 * Method calling this method should use the return of the method to maybe
 	 * remove this modifier.
 	 * @return true iff this is is now dead (remainingTurns < 0)
 	 */
 	public boolean decRemainingTurns(){
+		if(remainingTurns == Integer.MAX_VALUE) return true;
 		remainingTurns--;
 		return remainingTurns < 0;
 	}
