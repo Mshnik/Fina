@@ -21,7 +21,7 @@ public class InfoPanel extends JPanel{
 	private static final long serialVersionUID = 1L;
 
 	/** The Height of the InfoPanel */
-	protected static final int HEIGHT = 200;
+	protected static final int HEIGHT = 125;
 
 	/** The color of the border surrounding the headerPanel */
 	protected static final Color BORDER_COLOR = new Color(74, 47, 12);
@@ -77,27 +77,44 @@ public class InfoPanel extends JPanel{
 		
 		//Unit painting
 		if(unit != null){
-			int xInc = 25;
-			g2d.drawString(unit.name, xInc, YMARGIN);
-			int subFont = 17;
-			g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, subFont - 3));
-			g2d.drawString("(" + unit.getIdentifierString() + ")", xInc, YMARGIN + subFont);
-			if(unit.owner != null)
-				g2d.drawString("Owned by " + unit.owner, xInc, YMARGIN + subFont * 2);
 			
-			xInc += 160;
-			final int INFO_MARGIN = YMARGIN - 7;
-			int y = INFO_MARGIN;
-			for(Stat s : unit.getStats()){
-				if(s.name == StatType.BASE) continue;
-				drawStat(g2d, s, xInc, y);
-				y += subFont;
-				if(y >= INFO_MARGIN + 4 * subFont){
-					y = INFO_MARGIN;
-					xInc += 190;
-				}
+			int x = 25;
+			final int xInc = 225;
+			
+			
+			g2d.drawString(unit.name, x, YMARGIN);
+			final int infoFont = 16;
+			g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, infoFont));
+			g2d.drawString("(" + unit.getIdentifierString() + ")", x, YMARGIN + infoFont);
+			if(unit.owner != null)
+				g2d.drawString("Owned by " + unit.owner, x, YMARGIN + infoFont * 2);
+			
+			g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, infoFont - 3));
+			x += xInc;
+			int y = YMARGIN;
+			UnitStats stats = unit.getStats();
+			
+			//Insert health at top here
+			g2d.drawString("Health", x, y);
+			g2d.drawString(unit.getHealth() + "", x + 145, y);
+			y += infoFont;
+			
+			for(Stat s : stats.getStandardStatsList()){
+				drawStat(g2d, s, x, y);
+				y += infoFont;
 			}
-			//drawStat(g2d, new Stat("Health", unit.getHealth()), 185, YMARGIN + 2 * subFont);
+			x += xInc;
+			y = YMARGIN;
+			for(Stat s : stats.getAttackStatsList()){
+				drawStat(g2d, s, x, y);
+				y += infoFont;
+			}
+			x += xInc;
+			y = YMARGIN;
+			for(Stat s : stats.getMovementStatsList()){
+				drawStat(g2d, s, x, y);
+				y += infoFont;
+			}
 		}
 	}
 	

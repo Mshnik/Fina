@@ -92,6 +92,51 @@ public class UnitStats implements Iterable<Stat>{
 	public Object getStat(StatType type){
 		return stats.get(type);
 	}
+	
+	private ArrayList<Stat> getStatsList(StatType[] t){
+		ArrayList<Stat> s = new ArrayList<Stat>();
+		for(StatType p : t){
+			s.add(new Stat(p, stats.get(p)));
+		}
+		return s;
+	}
+	
+	/** Returns an arrayList of the movement stats:
+	 * 		- Move total
+	 * 		- Grass cost
+	 * 		- woods cost
+	 * 		- mountain cost
+	 */
+	public ArrayList<Stat> getMovementStatsList(){
+		StatType[] t = {StatType.MOVEMENT_TOTAL, StatType.GRASS_COST, 
+				StatType.WOODS_COST, StatType.MOUNTAIN_COST};
+		return getStatsList(t);
+	}
+	
+	/** Returns an arrayList of the attack stats:
+	 * 		- Attack
+	 * 		- Attack Type
+	 * 		- Attack Range
+	 * 		- Physical Defense
+	 * 		- Magic Defense
+	 */
+	public ArrayList<Stat> getAttackStatsList(){
+		StatType[] t = {StatType.ATTACK, StatType.ATTACK_TYPE, 
+				StatType.ATTACK_RANGE, StatType.PHYSICAL_DEFENSE, StatType.MAGIC_DEFENSE};
+		return getStatsList(t);
+	}
+	
+	/** Returns an arrayList of the standard stats:
+	 * 		- Max Health
+	 * 		- Mana Per Turn
+	 * 		- Vision Range
+	 * 		- Summon Range
+	 */
+	public ArrayList<Stat> getStandardStatsList(){
+		StatType[] t = {StatType.MAX_HEALTH, StatType.MANA_PER_TURN, 
+				StatType.VISION_RANGE, StatType.SUMMON_RANGE};
+		return getStatsList(t);
+	}
 
 	/** Returns a new UnitStats with this (if this is a base) as the base
 	 * or this' base if this is non-base, and the given modifiers */

@@ -306,7 +306,6 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		locationSelector = null;
 		boardCursor.setElm(boardCursor.getElm()); //Cause info update
 		repaint();
-
 	}
 
 	/** Creates a new pathSelector at the current boardCursor position.

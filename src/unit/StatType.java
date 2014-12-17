@@ -41,6 +41,28 @@ public enum StatType{
 	/** Mountain movement cost */
 	MOUNTAIN_COST;
 	
+	/** Overrides traditional enum tostring - returns camel case, no underscores */
+	@Override
+	public String toString(){
+		String s = super.toString();
+		s = s.replace('_', ' ').toLowerCase();
+		String finishedS = "";
+		do{
+			int i = s.indexOf(' ');
+			if(i == -1)
+				i = s.length();
+			finishedS += Character.toUpperCase(s.charAt(0)) + s.substring(1, i);
+			if(i != s.length()){
+				finishedS += ' ';
+				s = s.substring(i + 1);
+			} else{
+				break;
+			}
+		}while(true);
+		
+		return finishedS;
+	}
+	
 	/** Returns the class of the given type */
 	public static Class<?> getClassOfType(StatType t){
 		switch(t){
