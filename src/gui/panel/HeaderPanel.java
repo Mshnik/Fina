@@ -120,12 +120,12 @@ public class HeaderPanel extends JPanel {
 			Player p = game.getCurrentPlayer();
 			g2d.drawString(p.getCommander().name + " (p" + (game.getPlayerIndex() + 1) + ")", 15, 32);
 
-			g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, 10));
+			Font f = new Font(Frame.FONTNAME, Font.BOLD, 10);
 
 			//Health bar
 			drawBar(g2d, X_BAR_START, HEALTH_BORDER, HEALTH_FILL,  p.getMaxHealth(),
 					(double)p.getHealth() / (double)p.getMaxHealth(), 
-					p.getHealth() + "/" + p.getMaxHealth());
+					p.getHealth() + "/" + p.getMaxHealth(), f);
 
 			//Update "max" mana for this player, if necessary
 			if(! maxMana.containsKey(p) || p.getMana() + p.getManaPerTurn() > maxMana.get(p)){
@@ -136,7 +136,7 @@ public class HeaderPanel extends JPanel {
 			final int MANA_START = (int)(X_BAR_START + BAR_WIDTH * 1.125);
 			drawBar(g2d, MANA_START, MANA_BORDER, MANA_FILL,  maxMana.get(p),
 					(double)p.getMana() / (double)maxMana.get(p), 
-					"");
+					"", f);
 
 			double pManaPT = Math.min((double)
 					(maxMana.get(p) - p.getMana())/(double)maxMana.get(p),
@@ -155,7 +155,7 @@ public class HeaderPanel extends JPanel {
 			final int LEVEL_START = (int)(MANA_START + BAR_WIDTH * 1.125 + LEVEL_SPACE);
 			drawBar(g2d, LEVEL_START, EXP_BORDER, EXP_FILL, p.getResearchRequirement(),
 					(double)p.getResearch() / p.getResearchRequirement(), 
-					(int)(p.getResearch()) + "/" + p.getResearchRequirement());
+					(int)(p.getResearch()) + "/" + p.getResearchRequirement(), f);
 			
 			//Draw level on top of bar
 			g2d.setColor(EXP_BORDER);
@@ -176,10 +176,10 @@ public class HeaderPanel extends JPanel {
 	 * @param text	- the text to draw.
 	 */
 	private void drawBar(Graphics2D g2d, final int X, Color border, Color fill, 
-			int maxVal, double percentFull, String text){
+			int maxVal, double percentFull, String text, Font f){
 		ImageIndex.drawBar(g2d, X, MARGIN, BAR_WIDTH, HEIGHT - MARGIN * 2, BACK_COLOR,
 				border, STROKE, fill, maxVal, percentFull, 
-				text, TEXT_COLOR, INCREMENT_COLOR, INCREMENT_VAL);
+				text, TEXT_COLOR, f, INCREMENT_COLOR, INCREMENT_VAL);
 	}
 
 }

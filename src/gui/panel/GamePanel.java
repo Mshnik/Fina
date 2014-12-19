@@ -398,32 +398,15 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	/** Paints this boardpanel, for use in the frame it is in. */
 	public void paintComponent(Graphics g){
 		Graphics2D g2d = (Graphics2D)g;
-
-		if(game.getCurrentPlayer() != null){
-			g2d.setColor(FOG_OF_WAR);
-		}
 		//Paint the board itself, painting the portion within
 		//[scrollY ... scrollY + maxY - 1], 
 		//[scrollX ... scrollX + maxX - 1]
 		for(int row = scrollY; row < scrollY + getShowedRows(); row ++){
 			for(int col = scrollX; col < scrollX + getShowedCols(); col ++){
 				Tile t = game.board.getTileAt(row, col);
-				int x = getXPosition(t);
-				int y = getYPosition(t);
-				//Draw terrain
-				g.drawImage(ImageIndex.imageForTile(t), x, y,
-						CELL_SIZE, CELL_SIZE, null);
-
-				//If the player can't see this tile, shade darkly.
-				if(! isVisible(t)){
-					g2d.fillRect(x, y, CELL_SIZE, CELL_SIZE);
-				}
-
-				//Draw a unit if necessary - only if player can see it.
+				drawTile(g2d, t);
 				if(t.isOccupied() && isVisible(t)){
-					BufferedImage unitImg =ImageIndex.imageForUnit(t.getOccupyingUnit());
-					g2d.drawImage(ImageIndex.tint(unitImg, game.getColorFor(t.getOccupyingUnit().owner)), x, y, 
-							CELL_SIZE, CELL_SIZE, null);
+					drawUnit(g2d, t.getOccupyingUnit());
 				}
 			}
 		}
@@ -449,8 +432,6 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 				ImageIndex.drawRadial(boardCursor.getElm(), 
 						boardCursor.getElm().getOccupyingUnit().getSummonRange(), this, g2d);
 				break;
-
-				
 			}
 		}
 		
@@ -461,6 +442,42 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		if(decisionPanel != null){
 			decisionPanel.paintComponent(g);
 		}
+	}
+	
+	/** Draws the given tile. Doesn't do any unit drawing. */
+	private void drawTile(Graphics2D g2d, Tile t){
+		int x = getXPosition(t);
+		int y = getYPosition(t);
+		//Draw terrain
+		g2d.drawImage(ImageIndex.imageForTile(t), x, y,
+				CELL_SIZE, CELL_SIZE, null);
+
+		//If the player can't see this tile, shade darkly.
+		if(! isVisible(t)){
+			g2d.setColor(FOG_OF_WAR);
+			g2d.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+		}
+	}
+	
+	/** Draws the given unit. Doesn't do any tile drawing. */
+	private void drawUnit(Graphics2D g2d, Unit u){
+		int x = getXPosition(u.getLocation());
+		int y = getYPosition(u.getLocation());
+		
+		//Draw unit
+		BufferedImage unitImg =ImageIndex.imageForUnit(u);
+		g2d.drawImage(ImageIndex.tint(unitImg, game.getColorFor(u.owner)), x, y, 
+				CELL_SIZE, CELL_SIZE, null);
+		
+		//Draw health bar
+		final int marginX = 4; //Room from left side of tile
+		final int marginY = 4; //Room from BOTTOM side of tile
+		final int barX = x + marginX;
+		final int barY = y + CELL_SIZE - marginY * 2;
+		ImageIndex.drawBar(g2d, barX, barY, CELL_SIZE - marginX * 2, marginY, 
+				null, null, 0, Color.red, u.getMaxHealth(), u.getHealthPercent(), 
+				null, null, null, null, 0);
+		
 	}
 
 	/** Returns the tile at the given row and col. Ignores scrolling for this. */

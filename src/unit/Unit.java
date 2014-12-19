@@ -158,6 +158,11 @@ public abstract class Unit{
 		return health;
 	}
 	
+	/** Returns the percent of health this currently has */
+	public double getHealthPercent(){
+		return (double)getHealth() / (double)getMaxHealth();
+	}
+	
 	/** Sets the current health of this unit (alters it by difference)
 	 * @see changeHealth(desired - current, source)
 	 */
