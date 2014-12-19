@@ -157,8 +157,37 @@ public class ImageIndex {
 		}
 	}
 	
-	/** An image utility main method. */
-	public static void main(String[] args){
+	/** Draws a bar with the border and fill colors, full the given amount
+	 * //TODO
+	 */
+	public static void drawBar(Graphics2D g2d, 
+			final int X, final int Y, final int BAR_WIDTH, final int BAR_HEIGHT,
+			Color backColor, Color border, int strokeWidth, Color fill, 
+			int maxVal, double percentFull, String text, Color textColor, 
+			Color incrementColor, int incrementVal){
+		g2d.setStroke(new BasicStroke(strokeWidth));
+		g2d.setColor(border);
+		g2d.drawRect(X, Y, BAR_WIDTH, BAR_HEIGHT);
+		g2d.setColor(backColor);
+		g2d.fillRect(X + strokeWidth/2, Y + strokeWidth/2, 
+				BAR_WIDTH - strokeWidth/2 - 1, BAR_HEIGHT - strokeWidth/2 - 1);
+		g2d.setColor(fill);
+		g2d.fillRect(X + strokeWidth/2, Y + strokeWidth/2, 
+				(int)((BAR_WIDTH - strokeWidth/2 - 1) * percentFull), BAR_HEIGHT - strokeWidth/2 - 1);
+		
+		g2d.setColor(incrementColor);
+		g2d.setStroke(new BasicStroke(2));
+		for(int i = incrementVal; i < maxVal; i+= incrementVal){
+			int x = X + strokeWidth/2 + (int)(BAR_WIDTH * (double)i/(double)maxVal);
+			g2d.drawLine(x, strokeWidth/2 + Y + 1, x, Y + BAR_HEIGHT - strokeWidth/2);
+		}
+		
+		g2d.setColor(textColor);
+		g2d.drawString(text, X + BAR_WIDTH/2 - 10, Y + BAR_HEIGHT/2 + strokeWidth);
+	}
+	
+//	/** An image utility main method. */
+//	public static void main(String[] args){
 //		try {
 //			BufferedImage sheet = ImageIO.read(new File(IMAGE_ROOT + "spriteSheet.png"));
 //			int sideLength = 67;
@@ -175,5 +204,5 @@ public class ImageIndex {
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
-	}
+//	}
 }

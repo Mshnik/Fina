@@ -175,26 +175,11 @@ public class HeaderPanel extends JPanel {
 	 * @param percentFull - the percentage to fill
 	 * @param text	- the text to draw.
 	 */
-	private void drawBar(Graphics2D g2d, final int X, Color border, Color fill, int maxVal, double percentFull, String text){
-		g2d.setStroke(new BasicStroke(STROKE));
-		g2d.setColor(border);
-		g2d.drawRect(X, MARGIN, BAR_WIDTH, HEIGHT - MARGIN * 2);
-		g2d.setColor(BACK_COLOR);
-		g2d.fillRect(X + STROKE/2, MARGIN + STROKE/2, 
-				BAR_WIDTH - STROKE/2 - 1, HEIGHT - MARGIN *2 - STROKE/2 - 1);
-		g2d.setColor(fill);
-		g2d.fillRect(X + STROKE/2, MARGIN + STROKE/2, 
-				(int)((BAR_WIDTH - STROKE/2 - 1) * percentFull), HEIGHT - MARGIN *2 - STROKE/2 - 1);
-		
-		g2d.setColor(INCREMENT_COLOR);
-		g2d.setStroke(new BasicStroke(2));
-		for(int i = INCREMENT_VAL; i < maxVal; i+= INCREMENT_VAL){
-			int x = X + STROKE/2 + (int)(BAR_WIDTH * (double)i/(double)maxVal);
-			g2d.drawLine(x, STROKE/2 + MARGIN + 1, x, HEIGHT - MARGIN - STROKE/2);
-		}
-		
-		g2d.setColor(TEXT_COLOR);
-		g2d.drawString(text, X + BAR_WIDTH/2 - 10, HEIGHT/2 + STROKE);
+	private void drawBar(Graphics2D g2d, final int X, Color border, Color fill, 
+			int maxVal, double percentFull, String text){
+		ImageIndex.drawBar(g2d, X, MARGIN, BAR_WIDTH, HEIGHT - MARGIN * 2, BACK_COLOR,
+				border, STROKE, fill, maxVal, percentFull, 
+				text, TEXT_COLOR, INCREMENT_COLOR, INCREMENT_VAL);
 	}
 
 }
