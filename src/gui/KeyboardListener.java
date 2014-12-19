@@ -1,6 +1,7 @@
 package gui;
 
 import gui.decision.Decision;
+import gui.decision.DecisionPanel;
 import gui.panel.GamePanel;
 
 import java.awt.event.KeyEvent;
@@ -88,7 +89,9 @@ public class KeyboardListener implements KeyListener{
 						break;
 					}
 				} else{
+					boolean resetDecision = gp.getDecisionPanel().type == DecisionPanel.Type.SUMMON_DECISION;
 					gp.cancelDecision();
+					if(resetDecision) gp.startActionDecision();
 				}
 				break;
 			case SUMMON_SELECTION:
@@ -97,6 +100,7 @@ public class KeyboardListener implements KeyListener{
 				}
 				else{
 					gp.cancelSummonSelection();
+					gp.startActionDecision();
 				}
 				break;
 			case ATTACK_SELECTION:
@@ -105,6 +109,7 @@ public class KeyboardListener implements KeyListener{
 				}
 				else{
 					gp.cancelAttackSelection();
+					gp.startActionDecision();
 				}
 				break;
 				//Path selection - should only be the case after pathSelection already started
@@ -114,6 +119,7 @@ public class KeyboardListener implements KeyListener{
 				}
 				else{
 					gp.cancelPathSelection();
+					gp.startActionDecision();
 				}
 				break;
 			default:

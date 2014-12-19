@@ -1,11 +1,13 @@
 package unit;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import unit.combatant.FileCombatant;
 
 import game.Player;
+import board.Terrain;
 import board.Tile;
 
 /** Represents a commander for a player. Each player should have one.
@@ -14,7 +16,7 @@ import board.Tile;
  * @author MPatashnik
  *
  */
-public abstract class Commander extends MovingUnit {
+public abstract class Commander extends MovingUnit implements Summoner{
 
 	/** Base level of health for lvl1 commanders */
 	public static final int BASE_HEALTH = 1000;
@@ -99,6 +101,24 @@ public abstract class Commander extends MovingUnit {
 	@Override
 	public boolean canSummon(){
 		return true;
+	}
+	
+	/** Returns true if summoning a unit is currently ok - checks surrounding area for free space */
+	public boolean hasSummonSpace(){
+		ArrayList<Tile> tiles = owner.game.board.getRadialCloud(location, getSummonRange());
+		for(Tile t : tiles){
+			if(! t.isOccupied()) return true;
+		}
+		return false;
+	}
+	
+	/** Returns true if building a unit is currently ok - checks surrounding area for free ancient ground */
+	public boolean hasBuildSpace(){
+		ArrayList<Tile> tiles = owner.game.board.getRadialCloud(location, getSummonRange());
+		for(Tile t : tiles){
+			if(! t.isOccupied() && t.terrain == Terrain.ANCIENT_GROUND) return true;
+		}
+		return false;
 	}
 	
 	//RESTRICTIONS

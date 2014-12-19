@@ -1,5 +1,7 @@
 package unit;
 
+import java.util.ArrayList;
+
 import game.Player;
 import board.Tile;
 
@@ -60,6 +62,18 @@ public abstract class Combatant extends MovingUnit {
 	/** Returns iff this can fight this turn */
 	public boolean canFight(){
 		return canFight;
+	}
+	
+	/** Returns true iff there is at least one enemy unit within range and sight */
+	public boolean hasFightableTarget(){
+		ArrayList<Tile> tiles = owner.game.board.getRadialCloud(location, getAttackRange() + 1);
+		for(Tile t : tiles){
+			if(t.isOccupied()){
+				Unit u = t.getOccupyingUnit();
+				if(u.owner != owner && owner.canSee(u)) return true;
+			}
+		}
+		return false;
 	}
 
 	/** Processes a pre-fight action that may be caused by modifiers.

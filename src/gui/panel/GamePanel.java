@@ -29,6 +29,7 @@ import java.util.Stack;
 
 import board.*;
 import unit.*;
+import unit.buildings.Baracks;
 
 /** Drawable wrapper for a board object */
 public class GamePanel extends MatrixPanel<Tile> implements Paintable{
@@ -161,15 +162,15 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		//Add choices based on the unit on this tile
 		LinkedList<Decision> decisions = new LinkedList<Decision>();
 		int i = 0;
-		if(u.canMove()){
-			decisions.add(new Decision(i++, Unit.MOVE));
+		if(u instanceof MovingUnit){
+			decisions.add(new Decision(i++, u.canMove(), Unit.MOVE));
 		}
-		if(u.canFight()){
-			decisions.add(new Decision(i++, Unit.FIGHT));
+		if(u instanceof Combatant){
+			decisions.add(new Decision(i++, u.canFight() && ((Combatant) u).hasFightableTarget(), Unit.FIGHT));
 		}
-		if(u.canSummon()){
-			decisions.add(new Decision(i++, Unit.SUMMON));
-			decisions.add(new Decision(i++, Unit.BUILD));
+		if(u instanceof Summoner){
+			decisions.add(new Decision(i++, ((Summoner) u).hasSummonSpace(), Unit.SUMMON));
+			decisions.add(new Decision(i++, ((Summoner) u).hasBuildSpace(), Unit.BUILD));
 		}
 
 		//If there are no applicable choices, do nothing
