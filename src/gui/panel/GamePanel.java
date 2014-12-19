@@ -1,35 +1,18 @@
 package gui.panel;
 
-import game.Game;
-import game.Player;
-import gui.BoardCursor;
+import game.*;
+import gui.*;
 import gui.Frame;
-import gui.ImageIndex;
-import gui.LocationSelector;
-import gui.MatrixPanel;
-import gui.Paintable;
-import gui.decision.AttackSelector;
-import gui.decision.Decision;
-import gui.decision.DecisionPanel;
-import gui.decision.PathSelector;
-import gui.decision.SummonSelector;
-
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Stack;
-
+import gui.decision.*;
 import board.*;
 import unit.*;
-import unit.buildings.Baracks;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.*;
+import java.util.Map.Entry;
+
+
 
 /** Drawable wrapper for a board object */
 public class GamePanel extends MatrixPanel<Tile> implements Paintable{
