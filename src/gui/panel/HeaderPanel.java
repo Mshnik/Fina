@@ -142,9 +142,9 @@ public class HeaderPanel extends JPanel {
 					(maxMana.get(p) - p.getMana())/(double)maxMana.get(p),
 					(double)p.getManaPerTurn() / (double)maxMana.get(p));
 			g2d.setColor(MANA_PER_TURN_FILL);
-			g2d.fillRect(MANA_START + STROKE/2 + (int)((BAR_WIDTH - STROKE/2 - 1) * (double)p.getMana() / (double)maxMana.get(p)), 
+			g2d.fillRect(MANA_START + STROKE/2 + (int)((BAR_WIDTH - STROKE) * (double)p.getMana() / (double)maxMana.get(p)), 
 					MARGIN + STROKE/2, 
-					(int)((BAR_WIDTH - STROKE/2 - 1) * pManaPT), HEIGHT - MARGIN *2 - STROKE/2 - 1);
+					(int)((BAR_WIDTH - STROKE) * pManaPT), HEIGHT - MARGIN *2 - STROKE);
 			g2d.setColor(TEXT_COLOR);
 			g2d.drawString(p.getMana() + " (+" + Math.abs(p.getManaPerTurn()) + ")", 
 					MANA_START + BAR_WIDTH/2 - 10, HEIGHT/2 + STROKE);

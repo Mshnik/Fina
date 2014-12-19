@@ -1,5 +1,9 @@
 package unit;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -351,4 +355,16 @@ public abstract class Unit{
 	 * Either Commander, Building, or Combatant
 	 */
 	public abstract String getIdentifierString();
+	
+	//UTIL
+	/** Returns an Arraylist of the given units, sorted by name */
+	public static ArrayList<Unit> sortedList(Collection<? extends Unit> units){
+		ArrayList<Unit> arr = new ArrayList<Unit>(units);
+		Collections.sort(arr, new Comparator<Unit>(){
+			public int compare(Unit o1, Unit o2) {
+				return o1.name.compareTo(o2.name);
+			}
+		});
+		return arr;
+	}
 }

@@ -67,7 +67,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	private int level;
 
 	/** The amount of research towards the next level this commander has accrewed.
-	 * Alwasy in the range [0, RESEARCH_REQS[level-1]] */
+	 * Always in the range [0, RESEARCH_REQS[level-1]] */
 	private int research;
 
 	/** Constructor for Commander.

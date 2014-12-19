@@ -170,10 +170,10 @@ public class ImageIndex {
 		g2d.drawRect(X, Y, BAR_WIDTH, BAR_HEIGHT);
 		g2d.setColor(backColor);
 		g2d.fillRect(X + strokeWidth/2, Y + strokeWidth/2, 
-				BAR_WIDTH - strokeWidth/2 - 1, BAR_HEIGHT - strokeWidth/2 - 1);
+				BAR_WIDTH - strokeWidth/2 - 1, BAR_HEIGHT - strokeWidth);
 		g2d.setColor(fill);
 		g2d.fillRect(X + strokeWidth/2, Y + strokeWidth/2, 
-				(int)((BAR_WIDTH - strokeWidth/2 - 1) * percentFull), BAR_HEIGHT - strokeWidth/2 - 1);
+				(int)((BAR_WIDTH - strokeWidth/2 - 1) * percentFull), BAR_HEIGHT - strokeWidth);
 		
 		g2d.setColor(incrementColor);
 		g2d.setStroke(new BasicStroke(2));

@@ -10,7 +10,6 @@ import unit.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
-import java.util.Map.Entry;
 
 /** Drawable wrapper for a board object */
 public class GamePanel extends MatrixPanel<Tile> implements Paintable{
@@ -207,10 +206,10 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	/** Creates a decisionPanel for creating either units or buildings */
 	private void startSummonDecision(Commander c, Map<String, ? extends Unit> creatables){
 		LinkedList<Decision> decisions = new LinkedList<Decision>();
+		ArrayList<Unit> units = Unit.sortedList(creatables.values());
 		int i = 0;
-		for(Entry<String, ? extends Unit> e : creatables.entrySet()){
-			Unit u = e.getValue();
-			String name = e.getKey();
+		for(Unit u : units){
+			String name = u.name;
 			boolean ok = u.manaCost <= c.getMana();
 			decisions.add(new Decision(i++, ok, name + Decision.SEPERATOR +"(" + u.manaCost + ")"));
 		}
