@@ -9,6 +9,28 @@ public enum Direction {
 	RIGHT,
 	DOWN;
 
+	/** The row difference caused by this direction*/
+	public int dRow(){
+		switch(this){
+		case DOWN: return 1;
+		case LEFT: return 0;
+		case RIGHT: return 0;
+		case UP:	return -1;
+		default:	return 0;
+		}
+	}
+	
+	/** The col difference caused by this direction */
+	public int dCol(){
+		switch(this){
+		case DOWN: return 0;
+		case LEFT: return -1;
+		case RIGHT: return 1;
+		case UP: return 0;
+		default: return 0;
+		}
+	}
+	
 	/** Return the direction for the given keycode, or null
 	 * if not a direction
 	 * @param code - the keycode. See KeyboardListener constansts.

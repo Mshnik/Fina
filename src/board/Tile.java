@@ -12,6 +12,9 @@ import unit.Unit;
  */
 public class Tile implements Comparable<Tile>, MatrixElement{
 
+	/** The board this belongs to */
+	public final Board board;
+	
 	/** The row of this tile in its board */
 	public final int row;
 
@@ -35,7 +38,8 @@ public class Tile implements Comparable<Tile>, MatrixElement{
 	 * @param c - the column of this tile in the board matrix it belongs to
 	 * @param t - the terrain type of this tile.
 	 */
-	public Tile(int r, int c, Terrain t){
+	public Tile(Board b, int r, int c, Terrain t){
+		board = b;
 		row = r;
 		col = c;
 		terrain = t;

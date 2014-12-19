@@ -1,11 +1,14 @@
 package gui;
 
+import gui.panel.GamePanel;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
@@ -14,10 +17,13 @@ import unit.Building;
 import unit.MovingUnit;
 import unit.Unit;
 
+import board.Board;
+import board.Direction;
 import board.Terrain;
 import board.Tile;
 
-/** Library for lookup of different image resources */
+/** Library for lookup of different image resources.
+ * Also some drawing functionality */
 public class ImageIndex {
 
 	/** Prevent instantiation of ImageIndex */
@@ -101,6 +107,43 @@ public class ImageIndex {
 		}
 		readUnits.put(unit.getImgFilename(), u);
 		return u;
+	}
+	
+	/** Draws a border around the set of tiles using center and radius.
+	 * Assumes graphic settings such as color, stroke have been set
+	 * Radius is extra tiles around center - radius of 0 is just center */
+	public static void drawRadial(Tile center, int radius, GamePanel gp, Graphics2D g2d){
+		Board b = center.board;
+		ArrayList<Tile> tiles = b.getRadialCloud(center, radius);
+		for(Tile t : tiles){
+			for(Direction d : Direction.values()){
+				boolean paint = true;
+				try{
+					Tile n = b.getTileAt(t.row + d.dRow() , t.col + d.dCol());
+					paint = ! tiles.contains(n);
+				} catch(IllegalArgumentException e){
+				}
+				if(paint) drawLine(g2d, gp, t, d);
+			}
+		}
+		
+	}
+	
+	private static void drawLine(Graphics2D g2d, GamePanel gp, Tile t, Direction side){
+		switch(side){
+		case UP:	g2d.drawLine(gp.getXPosition(t), gp.getYPosition(t), 
+				gp.getXPosition(t) + GamePanel.CELL_SIZE, gp.getYPosition(t));
+			break;
+		case RIGHT: g2d.drawLine(gp.getXPosition(t) + GamePanel.CELL_SIZE, gp.getYPosition(t), 
+				gp.getXPosition(t) + GamePanel.CELL_SIZE, gp.getYPosition(t) + GamePanel.CELL_SIZE);
+			break;
+		case DOWN: g2d.drawLine(gp.getXPosition(t), gp.getYPosition(t) + GamePanel.CELL_SIZE, 
+				gp.getXPosition(t) + GamePanel.CELL_SIZE, gp.getYPosition(t) + GamePanel.CELL_SIZE);
+			break;
+		case LEFT: g2d.drawLine(gp.getXPosition(t), gp.getYPosition(t), 
+				gp.getXPosition(t), gp.getYPosition(t) + GamePanel.CELL_SIZE);
+			break;
+		}
 	}
 	
 	/** An image utility main method. */

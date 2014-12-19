@@ -35,7 +35,7 @@ public class Board implements Iterable<Tile>{
 						+ terrain);
 
 			for(int j = 0; j < terrain[i].length; j++){
-				tiles[i][j] = new Tile(i,j,terrain[i][j]);
+				tiles[i][j] = new Tile(this, i,j,terrain[i][j]);
 			}
 		}
 	}

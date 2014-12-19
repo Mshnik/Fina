@@ -14,6 +14,7 @@ import gui.decision.DecisionPanel;
 import gui.decision.PathSelector;
 import gui.decision.SummonSelector;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -454,6 +455,27 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			locationSelector.paintComponent(g);
 		}
 
+		//Depending on the decision panel, draw ranges as applicable.
+		//This happens when the action menu is up
+		if(decisionPanel != null && decisionPanel.type == DecisionPanel.Type.ACTION_DECISION){
+			g2d.setStroke(new BasicStroke(3));
+			switch(decisionPanel.cursor.getElm().getMessage()){
+			case Unit.FIGHT:
+				g2d.setColor(Color.red);
+				ImageIndex.drawRadial(boardCursor.getElm(), 
+						boardCursor.getElm().getOccupyingUnit().getAttackRange() + 1, this, g2d);
+				break;
+			case Unit.BUILD:
+			case Unit.SUMMON:
+				g2d.setColor(Color.cyan);
+				ImageIndex.drawRadial(boardCursor.getElm(), 
+						boardCursor.getElm().getOccupyingUnit().getSummonRange(), this, g2d);
+				break;
+
+				
+			}
+		}
+		
 		//Draw the cursor
 		boardCursor.paintComponent(g);
 

@@ -133,23 +133,51 @@ public class Frame extends JFrame {
 	/** Simple main method to test out Frame features */
 	public static void main(String[] args){
 	    Frame f = new Frame();
-	    Terrain[][] t = new Terrain[8][15];
-	    for(int r = 0; r < t.length; r++){
-	    	for(int c = 0; c < t[r].length; c++){
-	    		if(r == 1 || c == 1 || r == t.length - 2 || c == t.length - 2)
-	    			t[r][c] = Terrain.GRASS;
-	    		else if ( (r > 4 || r < 7) && (c > 5 && c < 15))
-	    			t[r][c] = Terrain.WOODS;
-	    		else if ( (r * c) % 7 == 1)
-	    			t[r][c] = Terrain.ANCIENT_GROUND;
-	    		else if(( (r + c) % 4 == 0 && r != 0 && c != 0))
-	    			t[r][c] = Terrain.MOUNTAIN;
-	    		else
-	    			t[r][c] = Terrain.GRASS;
-	    	}
-	    }
+	    Terrain[][] t = {
+	    		{ Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 	
+	    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
+	    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
+	    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS
+	    		},
+	    		{ Terrain.GRASS, Terrain.MOUNTAIN, Terrain.GRASS, Terrain.GRASS, 	
+		    		  Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
+		    		  Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
+		    		  Terrain.GRASS, Terrain.MOUNTAIN, Terrain.GRASS
+		    	},
+	    		{ Terrain.GRASS, Terrain.GRASS, Terrain.WOODS, Terrain.WOODS, 	
+    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
+    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.WOODS, 
+    				Terrain.WOODS, Terrain.GRASS, Terrain.GRASS
+	    		},
+	    		{ Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.ANCIENT_GROUND, 	
+    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
+    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.ANCIENT_GROUND, 
+    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS
+	    		},
+	    		{ Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.ANCIENT_GROUND, 	
+    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
+    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.ANCIENT_GROUND, 
+    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS
+	    		},
+	    		{ Terrain.GRASS, Terrain.GRASS, Terrain.WOODS, Terrain.WOODS, 	
+    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
+    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.WOODS, 
+    				Terrain.WOODS, Terrain.GRASS, Terrain.GRASS
+	    		},
+	    		{ Terrain.GRASS, Terrain.MOUNTAIN, Terrain.GRASS, Terrain.GRASS, 	
+		    		  Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
+		    		  Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
+		    		  Terrain.GRASS, Terrain.MOUNTAIN, Terrain.GRASS
+		    	},
+	    		{ Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 	
+    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
+    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
+    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS
+	    		}
+	    };
 	    
-	    Game g = new Game(new Board(t), true);
+	    
+	    Game g = new Game(new Board(t), false);
 	    Player p1 = new HumanPlayer(g, Color.RED);
 	    new DummyCommander(p1, g.board.getTileAt(0, 0));
 	    Player p2 = new HumanPlayer(g, Color.BLUE);
