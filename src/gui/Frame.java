@@ -178,9 +178,9 @@ public class Frame extends JFrame {
 	    
 	    
 	    Game g = new Game(new Board(t), false);
-	    Player p1 = new HumanPlayer(g, Color.RED);
+	    Player p1 = new HumanPlayer(g, Color.green);
 	    new DummyCommander(p1, g.board.getTileAt(0, 0));
-	    Player p2 = new HumanPlayer(g, Color.BLUE);
+	    Player p2 = new HumanPlayer(g, Color.magenta);
 	    new DummyCommander(p2, g.board.getTileAt(7, 14));
 
 	    f.setGame(g, 8, 15);

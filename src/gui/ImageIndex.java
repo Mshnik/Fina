@@ -67,27 +67,6 @@ public class ImageIndex {
 		}
 	}
 
-	/** Tints the given image //TODO
-	 * borders with given color */
-	public static BufferedImage tint(BufferedImage img, Color color) {
-		Graphics2D g2d = (Graphics2D)img.getGraphics();
-		g2d.setColor(color);
-		g2d.setStroke(new BasicStroke(10));
-		g2d.drawRect(0, 0, img.getWidth(), img.getHeight());
-
-		//		BufferedImage img = new BufferedImage(loadImg.getWidth(), loadImg.getHeight(),
-		//	            BufferedImage.TRANSLUCENT);
-		//	        Graphics2D graphics = img.createGraphics(); 
-		//	        Color newColor = new Color(color.getRed(), color.getGreen(), 
-		//	        							color.getBlue(), 0 /* alpha needs to be zero */);
-		//	        graphics.setColor(color);
-		//	        graphics.drawRect(0, 0, loadImg.getWidth(), loadImg.getHeight());
-		//	        graphics.drawImage(loadImg, null, 0, 0);
-		//	        graphics.dispose();
-
-		return img;
-	}
-
 	/** Returns the image file corresponding to the given terrain type */
 	public static BufferedImage imageForTile(Tile t){
 		switch(t.terrain){
@@ -119,6 +98,19 @@ public class ImageIndex {
 		}
 		readUnits.put(unit.getImgFilename(), u);
 		return u;
+	}
+
+	/** Tints the given image //TODO
+	 * borders with given color */
+	public static BufferedImage tint(BufferedImage loadImg, Color color) {
+		BufferedImage img = new BufferedImage(loadImg.getWidth(), loadImg.getHeight(),
+				BufferedImage.TRANSLUCENT);
+		Graphics2D g2d = img.createGraphics(); 
+		g2d.setColor(new Color(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 0.3f));
+		g2d.fillRect(0, 0, img.getWidth(), img.getHeight());
+		g2d.drawImage(loadImg, null, 0, 0);
+		g2d.dispose();
+		return img;
 	}
 
 	/** Draws a border around the set of tiles using center and radius.
@@ -186,7 +178,7 @@ public class ImageIndex {
 			throw new IllegalArgumentException("Bar Border Can't have negative width");
 		if(percentFull < 0 || percentFull > 1)
 			throw new IllegalArgumentException("Can't fill a bar an illegal Percent full: " + percentFull);
-		
+
 		if(strokeWidth > 0){
 			g2d.setStroke(new BasicStroke(strokeWidth));
 			g2d.setColor(borderColor);
@@ -215,24 +207,4 @@ public class ImageIndex {
 			g2d.drawString(text, X + BAR_WIDTH/2 - 10, Y + BAR_HEIGHT/2 + strokeWidth);
 		}
 	}
-
-	//	/** An image utility main method. */
-	//	public static void main(String[] args){
-	//		try {
-	//			BufferedImage sheet = ImageIO.read(new File(IMAGE_ROOT + "spriteSheet.png"));
-	//			int sideLength = 67;
-	//			int i = 1;
-	//			for(int y = 0; y <= sheet.getWidth(); y+= sideLength){
-	//				for(int x = 0; x <= sheet.getHeight(); x+= sideLength){
-	//					try{
-	//					BufferedImage cut = sheet.getSubimage(x, y, sideLength, sideLength);
-	//					ImageIO.write(cut, "png", new File(IMAGE_ROOT + MovingUnit.IMAGE_ROOT + "_" + i + ".png"));
-	//					i++;
-	//					} catch(Exception e){}
-	//				}
-	//			}
-	//		} catch (IOException e) {
-	//			e.printStackTrace();
-	//		}
-	//	}
 }

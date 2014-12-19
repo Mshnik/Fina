@@ -64,7 +64,7 @@ public class DummyCommander extends Commander {
 	@Override
 	public String getImgFilename() {
 		// TODO Auto-generated method stub
-		return "chrono.gif";
+		return "mario.png";
 	}
 
 }
