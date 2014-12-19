@@ -215,6 +215,15 @@ public abstract class Commander extends MovingUnit {
 	}
 	
 	//SUMMONING
+	/** Returns a dummy unit for the given name, if possible (otherwise null ) */
+	public Unit getUnitByName(String name){
+		Map<String, Combatant> summonables = getSummonables();
+		Unit toSummon = summonables.get(name);
+		if(toSummon == null)
+			toSummon = getBuildables().get(name);
+		return toSummon;
+	}
+	
 	/** Returns the list of units this can summon. Can be overridden to add additional units.
 	 * Base Return is FileUnits for this' level. */
 	public Map<String, Combatant> getSummonables(){

@@ -4,6 +4,9 @@ import gui.Cursor;
 
 import java.awt.Color;
 
+import unit.Commander;
+import unit.Unit;
+
 import board.Direction;
 
 /** A default cursor implementation for when no special cursor actions are necessary */
@@ -37,6 +40,16 @@ public class DecisionCursor extends Cursor<Decision, DecisionPanel> {
 	@Override
 	protected void moved(){
 		super.moved();
+		
+		//Check to be in summon decision - if so, update info on unit examining
+		if(panel.type == DecisionPanel.Type.SUMMON_DECISION){
+			String unitName = getElm().getMessage();
+			unitName = unitName.substring(0, unitName.indexOf(Decision.SEPERATOR));
+			Commander c = panel.game.getCurrentPlayer().getCommander();
+			Unit u = c.getUnitByName(unitName);
+			panel.getFrame().showUnitStats(u);
+		}
+		
 		panel.getFrame().repaint();
 	}
 

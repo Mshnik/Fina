@@ -230,7 +230,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			Unit u = e.getValue();
 			String name = e.getKey();
 			boolean ok = u.manaCost <= c.getMana();
-			decisions.add(new Decision(i++, ok, name + ":(" + u.manaCost + ")"));
+			decisions.add(new Decision(i++, ok, name + Decision.SEPERATOR +"(" + u.manaCost + ")"));
 		}
 		Decision[] decisionsArr = decisions.toArray(new Decision[decisions.size()]);
 		fixDecisionPanel(DecisionPanel.Type.SUMMON_DECISION, decisionsArr);
@@ -262,12 +262,9 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			return;
 		}
 		cancelDecision();
-		String name = decision.getMessage().substring(0, decision.getMessage().indexOf(':'));
+		String name = decision.getMessage().substring(0, decision.getMessage().indexOf(Decision.SEPERATOR));
 		Commander commander = t.getOccupyingUnit().owner.getCommander();
-		Map<String, Combatant> summonables = commander.getSummonables();
-		Unit toSummon = summonables.get(name);
-		if(toSummon == null)
-			toSummon = commander.getBuildables().get(name);
+		Unit toSummon = commander.getUnitByName(name);
 		locationSelector = new SummonSelector(this, t.getOccupyingUnit(), toSummon);
 		ArrayList<Tile> cloud = locationSelector.getPossibleMovementsCloud();
 		if(cloud.isEmpty()){

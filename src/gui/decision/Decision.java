@@ -5,6 +5,9 @@ import game.MatrixElement;
 /** Represents an element in a decisionPanel that can be selected */
 public class Decision implements MatrixElement{
 	
+	/** The standard seperator character for name to mana cost */
+	public static final char SEPERATOR = ':';
+	
 	/** The index of this Decision in its decisionPanel */
 	private int index;
 	

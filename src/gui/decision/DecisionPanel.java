@@ -77,6 +77,7 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 		this.type = t;
 		this.choices = choices;
 		cursor = new DecisionCursor(this);
+		cursor.moved();
 	}
 	
 	/** Sets the x position of this DecisionPanel */
