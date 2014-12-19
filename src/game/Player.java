@@ -189,7 +189,7 @@ public abstract class Player {
 	//VISION
 	/** Return true iff this player's vision contains tile T */
 	public boolean canSee(Tile t){
-		return visionCloud.contains(t);
+		return ! game.isFogOfWar() || visionCloud.contains(t);
 	}
 
 	/** Return true iff the tile u occupies is in this Player's vision */
