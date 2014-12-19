@@ -12,8 +12,6 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.Map.Entry;
 
-
-
 /** Drawable wrapper for a board object */
 public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 
