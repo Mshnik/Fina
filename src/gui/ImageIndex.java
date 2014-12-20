@@ -7,6 +7,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,15 +102,31 @@ public class ImageIndex {
 		return u;
 	}
 
-	/** Tints the given image //TODO
-	 * borders with given color */
+	/** Tints the given image with the given color.
+	 * @param loadImg - the image to paint and tint
+	 * @param color - the color to tint. Alpha value of input color isn't used.
+	 * @return A tinted version of loadImg */
 	public static BufferedImage tint(BufferedImage loadImg, Color color) {
 		BufferedImage img = new BufferedImage(loadImg.getWidth(), loadImg.getHeight(),
 				BufferedImage.TRANSLUCENT);
+		final float tintOpacity = 0.45f;
 		Graphics2D g2d = img.createGraphics(); 
-		g2d.setColor(new Color(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 0.3f));
-		g2d.fillRect(0, 0, img.getWidth(), img.getHeight());
+		
+		//Draw the base image
 		g2d.drawImage(loadImg, null, 0, 0);
+		//Set the color to a transparent version of the input color
+		g2d.setColor(new Color(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, tintOpacity));
+		
+		//Iterate over every pixel, if it isn't transparent paint over it
+		Raster data = loadImg.getData();
+		for(int x = data.getMinX(); x < data.getWidth(); x++){
+			for(int y = data.getMinY(); y < data.getHeight(); y++){
+				int[] pixel = data.getPixel(x, y, new int[4]);
+				if(pixel[3] > 0){ //If pixel isn't full alpha. Could also be pixel[3]==255
+					g2d.fillRect(x, y, 1, 1);
+				}
+			}
+		}
 		g2d.dispose();
 		return img;
 	}
