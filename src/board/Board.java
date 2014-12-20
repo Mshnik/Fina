@@ -170,7 +170,7 @@ public class Board implements Iterable<Tile>{
 					boolean unitObstacle = neighbor.isOccupied() 
 							&& neighbor.getOccupyingUnit().owner != unit.owner
 							&& unit.owner.canSee(neighbor.getOccupyingUnit());
-					if(nDist >= 0 && ! unitObstacle){
+					if(nDist >= 0 && ! unitObstacle && nDist > neighbor.dist){
 						neighbor.dist = nDist;
 						frontier.remove(neighbor);
 						frontier.add(neighbor);
