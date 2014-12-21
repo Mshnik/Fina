@@ -42,6 +42,9 @@ public class Temple extends Building {
 	/** The in game name of a Temple */
 	public static final String NAME = "Temple";
 	
+	/** Minimum level for building a Temple */
+	public static final int LEVEL = 2;
+	
 	/** Mana cost of constructing a Temple */
 	public static final int COST = 1500;
 	
@@ -54,7 +57,7 @@ public class Temple extends Building {
 	
 	
 	public Temple(Player owner, Tile tile) throws RuntimeException, IllegalArgumentException {
-		super(owner, NAME, COST, tile, STATS);
+		super(owner, NAME, LEVEL, COST, tile, STATS);
 	}
 
 

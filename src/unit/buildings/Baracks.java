@@ -17,6 +17,9 @@ public class Baracks extends Building implements Summoner{
 	/** The in game name of a Baracks */
 	public static final String NAME = "Baracks";
 	
+	/** Minimum level for building a baracks */
+	public static final int LEVEL = 2;
+	
 	/** Mana cost of constructing a baracks */
 	public static final int COST = 800;
 	
@@ -30,7 +33,7 @@ public class Baracks extends Building implements Summoner{
 	);
 	
 	public Baracks(Player owner, Tile tile) throws RuntimeException, IllegalArgumentException {
-		super(owner, NAME, COST, tile, STATS);
+		super(owner, NAME, LEVEL, COST, tile, STATS);
 	}
 
 	/** Baracks are able to summon new units */

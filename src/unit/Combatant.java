@@ -22,13 +22,14 @@ public abstract class Combatant extends MovingUnit {
 	 * the owner doesn't have enough mana.
 	 * @param owner - the player owner of this unit
 	 * @param name	- the name of this unit
+	 * @param level - the level of this unit - the age this belongs to
 	 * @param manaCost - the cost of summoning this unit. Should be a positive number.
 	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
 	 * @param stats - the base unmodified stats of this unit.
 	 */
-	public Combatant(Player owner, String name, int manaCost, Tile startingTile, UnitStats stats) 
+	public Combatant(Player owner, String name, int level, int manaCost, Tile startingTile, UnitStats stats) 
 			throws RuntimeException, IllegalArgumentException {
-		super(owner, name, manaCost, startingTile, stats);
+		super(owner, name, level, manaCost, startingTile, stats);
 
 		if(stats.getStat(StatType.ATTACK_TYPE).equals(AttackType.NO_ATTACK))
 			throw new IllegalArgumentException("Combatant " + this + " can't have attackType NO_ATTACK");

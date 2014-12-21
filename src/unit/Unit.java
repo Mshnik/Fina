@@ -34,6 +34,11 @@ public abstract class Unit{
 	/** The name of this unit */
 	public final String name;
 	
+	/** The level of this unit - the age in which it was summoned.
+	 * If less than the level of the owner, may be eligible for an upgrade
+	 */
+	private final int level;
+	
 	/** The mana spent to summon this unit */
 	public final int manaCost;
 	
@@ -66,11 +71,12 @@ public abstract class Unit{
 	 * Tile and owner can be null in a dummy (not on board) instance
 	 * @param owner - the player owner of this unit
 	 * @param name	- the name of this unit. Can be generic, multiple units can share a name
+	 * @param level - the level of this unit - the age this belongs to
 	 * @param manaCost - the cost of summoning this unit. Should be a positive number.
 	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
 	 * @param stats - the base unmodified stats of this unit.
 	 */
-	public Unit(Player owner, String name, int manaCost, Tile tile, UnitStats stats) 
+	public Unit(Player owner, String name, int level, int manaCost, Tile tile, UnitStats stats) 
 			throws IllegalArgumentException, RuntimeException{
 		if(manaCost < 0)
 			throw new IllegalArgumentException("manaCosts should be provided as positive ints");
@@ -92,11 +98,21 @@ public abstract class Unit{
 		if(owner != null) {
 			if(! (this instanceof Commander)) owner.getCommander().addMana(Math.min(0,-manaCost));
 			owner.addUnit(this);
+			if(owner.getLevel() < level)
+				throw new RuntimeException(owner + " can't summon unit with higher level than it");
+			this.level = level;
+		} else{
+			this.level = level;
 		}
 	}
 	
 	/** Returns a copy of this for the given player, on the given tile */
 	public abstract Unit clone(Player owner, Tile location);
+	
+	/** Returns the level of this unit */
+	public int getLevel(){
+		return level;
+	}
 	
 	/** Refreshes this' stats with the locally stored modifiers */
 	public void refreshStats(){

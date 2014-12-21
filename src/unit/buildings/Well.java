@@ -20,6 +20,9 @@ public class Well extends Building {
 	/** Mana cost of constructing a well */
 	public static final int COST = 500;
 	
+	/** Minimum level for building a well */
+	public static final int LEVEL = 1;
+	
 	/** ManaPerTurn generated per well */
 	public static final int MANAPT = 100;
 	
@@ -31,13 +34,10 @@ public class Well extends Building {
 			new Stat(StatType.PHYSICAL_DEFENSE, 0.05)
 	);
 
-	/** Constructor for a Well
-	 * @param owner		- owner of this well
-	 * @param tile		- tile to put this well on
-	 */
 	public Well(Player owner, Tile tile){
-		super(owner, NAME, COST, tile, STATS);
+		super(owner, NAME, LEVEL, COST, tile, STATS);
 	}
+	
 
 	/** Wells are drawn as well.png" */
 	@Override

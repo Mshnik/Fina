@@ -106,7 +106,7 @@ public class FileCombatant extends Combatant {
 							new Stat(StatType.WOODS_COST, costs.get(Terrain.WOODS)),
 							new Stat(StatType.MOUNTAIN_COST, costs.get(Terrain.MOUNTAIN))
 					);
-					currentAgeUnits.add(new FileCombatant(name, manaCost, 
+					currentAgeUnits.add(new FileCombatant(name, currentAge, manaCost,
 							stats, img));
 				} catch(NumberFormatException | ArrayIndexOutOfBoundsException e){} 
 				// Must be header line, other bad line
@@ -132,7 +132,7 @@ public class FileCombatant extends Combatant {
 	 * @param dummy			- the FileCombatant to clone
 	 */
 	private FileCombatant(Player owner, Tile startingTile, FileCombatant dummy){
-		super(owner, dummy.name, dummy.manaCost, startingTile, dummy.getStats());
+		super(owner, dummy.name, dummy.getLevel(), dummy.manaCost, startingTile, dummy.getStats());
 		this.img = dummy.img;
 	}
 	
@@ -145,12 +145,13 @@ public class FileCombatant extends Combatant {
 	/** Constructor used during initialization to create a dummy instance
 	 * Creates with null owner, tile.
 	 * @param name			- the name of clones of this
+	 * @param level 		- the level of clones of this
 	 * @param manaCost		- the mana cost for clones of this
 	 * @param stats			- the stats of clones of this
 	 * @param img			- the image to draw for clones of this
 	 */
-	private FileCombatant(String name, int manaCost, UnitStats stats, String img){
-		super(null, name, manaCost, null, stats);
+	private FileCombatant(String name, int level, int manaCost, UnitStats stats, String img){
+		super(null, name, level, manaCost, null, stats);
 		this.img = img;
 	}
 	

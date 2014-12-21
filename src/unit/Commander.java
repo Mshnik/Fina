@@ -20,40 +20,40 @@ public abstract class Commander extends MovingUnit implements Summoner{
 
 	/** Base level of health for lvl1 commanders */
 	public static final int BASE_HEALTH = 1000;
-	
+
 	/** Base starting amount of mana for lvl1 commanders */
 	public static final int START_MANA = 500;
-	
+
 	/** Base starting level of mana per turn for lvl1 commanders */
 	public static final int BASE_MANA_PT = 500;
-	
+
 	/** Amount of health gained per level */
 	public static final int LEVELUP_HEALTH = 200;
-	
+
 	/** Amount of mana per turn gained per level */
 	public static final int LEVELUP_MANAPT = 250;
-	
+
 	protected static final UnitModifier LEVELUP_MANA_BUFF = 
 			new UnitModifier(Integer.MAX_VALUE, StatType.MANA_PER_TURN, 
-				UnitModifier.ModificationType.ADD, LEVELUP_MANAPT);
-	
+					UnitModifier.ModificationType.ADD, LEVELUP_MANAPT);
+
 	protected static final UnitModifier LEVELUP_HEALTH_BUFF = 
 			new UnitModifier(Integer.MAX_VALUE, StatType.MAX_HEALTH, 
 					UnitModifier.ModificationType.ADD, LEVELUP_HEALTH);
-	
-	
+
+
 	/** The amount of research required to get to the next level for free.
 	 * Index i = cost to get from level i+1 to i+2 (because levels are 1 indexed). */
 	public static final int[] RESEARCH_REQS = {
 		1000, 3000, 6000, 10000
 	};
-	
+
 	/** The highest level commanders can achieve */
 	public static final int MAX_LEVEL = RESEARCH_REQS.length + 1;
-	
+
 	/** The ratio of manaCost -> research for the owner of the killing unit */
 	public static final double MANA_COST_TO_RESEARCH_RATIO = 0.4;
-	
+
 	/** The extra defense (applied first) against ranged units granted to commanders */
 	public static final double RANGED_DEFENSE = 0.5;
 
@@ -84,25 +84,25 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	 */
 	public Commander(String name, Player owner, Tile startingTile, UnitStats stats)
 			throws RuntimeException, IllegalArgumentException {
-		super(owner,name, 0, startingTile, stats);
+		super(owner, name, 0, 0, startingTile, stats);
 		level = 1;
 		research = 0;
 		setMana(START_MANA);
 		setHealth(getMaxHealth(), this);
 	}
-	
+
 	/** Throws a runtime exception - commanders are not clonable */
 	@Override
 	public Unit clone(Player owner, Tile t){
 		throw new RuntimeException("Can't clone commander " + this);
 	}
-	
+
 	/** Commanders can always summon */
 	@Override
 	public boolean canSummon(){
 		return true;
 	}
-	
+
 	/** Returns true if summoning a unit is currently ok - checks surrounding area for free space */
 	public boolean hasSummonSpace(){
 		ArrayList<Tile> tiles = owner.game.board.getRadialCloud(location, getSummonRange());
@@ -111,7 +111,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 		}
 		return false;
 	}
-	
+
 	/** Returns true if building a unit is currently ok - checks surrounding area for free ancient ground */
 	public boolean hasBuildSpace(){
 		ArrayList<Tile> tiles = owner.game.board.getRadialCloud(location, getSummonRange());
@@ -120,7 +120,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 		}
 		return false;
 	}
-	
+
 	//RESTRICTIONS
 	/** Restricted attack - has val 0. */
 	@Override
@@ -138,7 +138,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	public AttackType getAttackType(){
 		return AttackType.NO_ATTACK;
 	}
-	
+
 	/** Returns Commander */
 	@Override
 	public String getIdentifierString(){
@@ -169,7 +169,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 		if(mana < 0) mana = 0;
 		return nMana;
 	}
-	
+
 	/** Commanders get bonus defense against ranged units */
 	@Override
 	public double getDefenseAgainst(Combatant attacker){
@@ -178,7 +178,9 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	}
 
 	//LEVEL AND RESEARCH
-	/** Returns the level of this player */
+	/** Returns the level of this player. Uses the mutable level field of commander
+	 *, thus ignores the immutable unit level field */
+	@Override
 	public int getLevel(){
 		return level;
 	}
@@ -225,7 +227,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 		owner.updateManaPerTurn();
 		owner.game.getFrame().repaint();
 	}
-	
+
 	/** Commanders can't attack, so attack modifications aren't ok. */
 	@Override
 	public boolean modifierOk(UnitModifier m){
@@ -233,7 +235,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 		return s != StatType.ATTACK && s != StatType.ATTACK_RANGE &&
 				s != StatType.ATTACK_TYPE;
 	}
-	
+
 	//SUMMONING
 	/** Returns a dummy unit for the given name, if possible (otherwise null ) */
 	public Unit getUnitByName(String name){
@@ -243,24 +245,26 @@ public abstract class Commander extends MovingUnit implements Summoner{
 			toSummon = getBuildables().get(name);
 		return toSummon;
 	}
-	
+
 	/** Returns the list of units this can summon. Can be overridden to add additional units.
 	 * Base Return is FileUnits for this' level. */
 	public Map<String, Combatant> getSummonables(){
 		HashMap<String, Combatant> units = new HashMap<String, Combatant>();
-		for(int i = 1; i <= level; i++){
+		for(int i = 1; i <= getLevel(); i++){
 			for(FileCombatant c : FileCombatant.getCombatantsForAge(i)){
 				units.put(c.name, c);
 			}
 		}
 		return units;
 	}
-	
+
 	/** Returns the list of buildings this can build. Can be overriden to add additional buildings */
 	public Map<String, Building> getBuildables(){
 		HashMap<String, Building> units = new HashMap<String, Building>();
-		for(Building b : Building.getBuildings()){
-			units.put(b.name, b);
+		for(int i = 0; i <= getLevel(); i++){
+			for(Building b : Building.getBuildings(i)){
+				units.put(b.name, b);
+			}
 		}
 		return units;
 

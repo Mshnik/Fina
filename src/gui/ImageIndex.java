@@ -8,7 +8,6 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -108,7 +107,7 @@ public class ImageIndex {
 	 * @return A tinted version of loadImg */
 	public static BufferedImage tint(BufferedImage loadImg, Color color) {
 		BufferedImage img = new BufferedImage(loadImg.getWidth(), loadImg.getHeight(),
-				BufferedImage.TRANSLUCENT);
+				BufferedImage.TRANSLUCENT);		
 		final float tintOpacity = 0.45f;
 		Graphics2D g2d = img.createGraphics(); 
 		

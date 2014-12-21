@@ -1,5 +1,6 @@
 package unit;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import game.Player;
@@ -10,22 +11,39 @@ import unit.buildings.*;
 /** Represents a Building on the board, controllable by a player */
 public abstract class Building extends Unit {
 
-	/** Index of available buildings
+	/** Index of available buildings, from level -> available buildings
 	 *		- Well
 	 *		- Baracks
+	 *		- Temple
 	 */
-	private static final LinkedList<Building> BUILDINGS;
+	private static final HashMap<Integer, LinkedList<Building>> BUILDINGS;
 	
 	static{
-		BUILDINGS = new LinkedList<Building>();
-		BUILDINGS.add(new Well(null, null));
-		BUILDINGS.add(new Baracks(null, null));
-		BUILDINGS.add(new Temple(null, null));
+		
+		//All available buildings start here
+		Building[] rawBuildings = {
+				new Well(null, null), 
+				new Baracks(null, null), 
+				new Temple(null, null)
+		};
+
+		//Put by level
+		BUILDINGS = new HashMap<Integer, LinkedList<Building>>();
+		for(Building b : rawBuildings){
+			if(BUILDINGS.containsKey(b.getLevel())) BUILDINGS.get(b.getLevel()).add(b);
+			else{
+				LinkedList<Building> e = new LinkedList<Building>();
+				e.add(b);
+				BUILDINGS.put(b.getLevel(), e);
+			}
+		}
 	}
 	
-	/** Returns a copy of the building index - all available buildings */
-	public static LinkedList<Building> getBuildings(){
-		return new LinkedList<Building>(BUILDINGS);
+	/** Returns a copy of the building index - all available buildings for the given level */
+	public static LinkedList<Building> getBuildings(int level){
+		LinkedList<Building> buildings = BUILDINGS.get(level);
+		if(buildings == null) return new LinkedList<Building>();
+		else return new LinkedList<Building>(buildings);
 	}
 	
 	/** Image root for Building images, inside of global image root */
@@ -40,15 +58,16 @@ public abstract class Building extends Unit {
 	 * AncientGround
 	 * @param owner - the player owner of this unit
 	 * @param name	- the name of this unit.
+	 * @param level - the level of this unit - the age this belongs to
 	 * @param manaCost - the cost of summoning this unit. Should be a positive number.
 	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
 	 * @param stats - the base unmodified stats of this unit.
 	 * 					stats that remain used are maxHealth, physicalDefense, 
 	 * 					magic defense, range, and visionRange
 	 */
-	public Building(Player owner, String name, int manaCost, Tile tile, UnitStats stats) 
+	public Building(Player owner, String name, int level, int manaCost, Tile tile, UnitStats stats) 
 			throws RuntimeException, IllegalArgumentException {
-		super(owner, name, manaCost, tile, stats);
+		super(owner, name, level, manaCost, tile, stats);
 		if(tile != null && tile.terrain != Terrain.ANCIENT_GROUND){
 			throw new IllegalArgumentException("Can't construct building on non Ancient Ground terrain");
 		}
