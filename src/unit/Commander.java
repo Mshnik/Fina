@@ -82,7 +82,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	 * 							Attributes are unused, because they are either unnecessary 
 	 * 							or calculated elsewhere.
 	 */
-	public Commander(String name, Player owner, Tile startingTile, UnitStats stats)
+	public Commander(String name, Player owner, Tile startingTile, Stats stats)
 			throws RuntimeException, IllegalArgumentException {
 		super(owner, name, 0, 0, startingTile, stats);
 		level = 1;

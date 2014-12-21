@@ -65,7 +65,7 @@ public abstract class Building extends Unit {
 	 * 					stats that remain used are maxHealth, physicalDefense, 
 	 * 					magic defense, range, and visionRange
 	 */
-	public Building(Player owner, String name, int level, int manaCost, Tile tile, UnitStats stats) 
+	public Building(Player owner, String name, int level, int manaCost, Tile tile, Stats stats) 
 			throws RuntimeException, IllegalArgumentException {
 		super(owner, name, level, manaCost, tile, stats);
 		if(tile != null && tile.terrain != Terrain.ANCIENT_GROUND){

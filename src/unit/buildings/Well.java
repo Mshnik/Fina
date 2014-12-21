@@ -6,7 +6,7 @@ import unit.Building;
 import unit.Stat;
 import unit.StatType;
 import unit.Unit;
-import unit.UnitStats;
+import unit.Stats;
 
 /** A Well is a building that grants its owner mana per turn
  * as long as it is controlled.
@@ -27,7 +27,7 @@ public class Well extends Building {
 	public static final int MANAPT = 100;
 	
 	/** Stats for wells */
-	private static final UnitStats STATS = new UnitStats(
+	private static final Stats STATS = new Stats(
 			new Stat(StatType.MAX_HEALTH, 800),
 			new Stat(StatType.MANA_PER_TURN, MANAPT),
 			new Stat(StatType.MAGIC_DEFENSE, 0.15),

@@ -92,7 +92,7 @@ public class InfoPanel extends JPanel{
 			g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, infoFont - 3));
 			x += xInc;
 			int y = YMARGIN;
-			UnitStats stats = unit.getStats();
+			Stats stats = unit.getStats();
 			
 			//Insert health at top here
 			g2d.drawString("Health", x, y);

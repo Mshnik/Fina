@@ -55,7 +55,7 @@ public abstract class Unit{
 
 	/** The current stats of this unit. These are updated whenever unitModifiers are added or removed.
 	 * Should never be null, but may be empty-ish */
-	UnitStats stats;
+	Stats stats;
 	
 	/** The modifiers this is the source of */
 	private LinkedList<UnitModifier> grantedModifiers;
@@ -76,7 +76,7 @@ public abstract class Unit{
 	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
 	 * @param stats - the base unmodified stats of this unit.
 	 */
-	public Unit(Player owner, String name, int level, int manaCost, Tile tile, UnitStats stats) 
+	public Unit(Player owner, String name, int level, int manaCost, Tile tile, Stats stats) 
 			throws IllegalArgumentException, RuntimeException{
 		if(manaCost < 0)
 			throw new IllegalArgumentException("manaCosts should be provided as positive ints");
@@ -85,7 +85,7 @@ public abstract class Unit{
 		this.owner = owner;
 		this.name = name;
 		this.manaCost = manaCost;
-		this.stats = new UnitStats(stats, null);
+		this.stats = new Stats(stats, null);
 		health = getMaxHealth();
 		modifiers = new LinkedList<UnitModifier>();
 		grantedModifiers = new LinkedList<UnitModifier>();
@@ -218,8 +218,8 @@ public abstract class Unit{
 	
 	/** Returns the full stats for this unit - returns by value, so altering the
 	 * return won't do anything to this unit */
-	public UnitStats getStats(){
-		return new UnitStats(stats, null);
+	public Stats getStats(){
+		return new Stats(stats, null);
 	}
 	
 	/** Returns the attack strength of this unit. 0 if this is not a combatant. */

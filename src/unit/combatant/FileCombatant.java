@@ -17,7 +17,7 @@ import unit.Combatant;
 import unit.Stat;
 import unit.StatType;
 import unit.Unit;
-import unit.UnitStats;
+import unit.Stats;
 import util.TextIO;
 
 /** A FileUnit is a combatant read in from file.
@@ -92,7 +92,7 @@ public class FileCombatant extends Combatant {
 					int manaPerTurn = Integer.parseInt(comps[14]);
 					String img = comps[15];
 
-					UnitStats stats = new UnitStats(
+					Stats stats = new Stats(
 							new Stat(StatType.MAX_HEALTH, hp),
 							new Stat(StatType.PHYSICAL_DEFENSE, physDef),
 							new Stat(StatType.MAGIC_DEFENSE, magDef),
@@ -150,7 +150,7 @@ public class FileCombatant extends Combatant {
 	 * @param stats			- the stats of clones of this
 	 * @param img			- the image to draw for clones of this
 	 */
-	private FileCombatant(String name, int level, int manaCost, UnitStats stats, String img){
+	private FileCombatant(String name, int level, int manaCost, Stats stats, String img){
 		super(null, name, level, manaCost, null, stats);
 		this.img = img;
 	}

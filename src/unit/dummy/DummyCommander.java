@@ -9,12 +9,12 @@ import unit.Combatant;
 import unit.Commander;
 import unit.Stat;
 import unit.StatType;
-import unit.UnitStats;
+import unit.Stats;
 
 public class DummyCommander extends Commander {
 
 	/** Stats for maxHealth, defenses, range and visionRange of dummy commander */
-	private static final UnitStats STATS = new UnitStats(
+	private static final Stats STATS = new Stats(
 			new Stat(StatType.MAX_HEALTH, Commander.BASE_HEALTH),
 			new Stat(StatType.MANA_PER_TURN, Commander.BASE_MANA_PT),
 			new Stat(StatType.MAGIC_DEFENSE, 0.1),

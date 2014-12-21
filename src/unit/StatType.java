@@ -83,7 +83,7 @@ public enum StatType{
 			return Double.class;
 			
 		case ATTACK_TYPE: 	return AttackType.class;
-		case BASE:		 	return UnitStats.class;
+		case BASE:		 	return Stats.class;
 		
 		default : return null;
 		}

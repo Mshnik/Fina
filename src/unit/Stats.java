@@ -11,7 +11,7 @@ import util.Mth;
 
 /** Holder for the stats for a unit.
  * Unless otherwise noted, all stats are non-negative. */
-public class UnitStats implements Iterable<Stat>{
+public class Stats implements Iterable<Stat>{
 	
 	/** Base stats for everything, to be overridden as template.
 	 * Initializes all stats to their base 0-ish vals.
@@ -41,21 +41,21 @@ public class UnitStats implements Iterable<Stat>{
 	/** The stats maintained by this unitstats */
 	private HashMap<StatType, Object> stats;
 
-	/** Constructor for UnitStats.
+	/** Constructor for Stats.
 	 * Can have a base or not.
 	 * Input stats must not have no duplicates among type - will overwrite arbitrarily.
 	 */
-	public UnitStats(Stat... stats) {
+	public Stats(Stat... stats) {
 		this.stats = new HashMap<StatType, Object>(TEMPLATE);
 		for(Stat s : stats){
 			this.stats.put(s.name, s.val);
 		}
 	}
 	
-	/** Constructor for UnitStats from a base stats and a collection of modifiers.
+	/** Constructor for Stats from a base stats and a collection of modifiers.
 	 */
 	@SuppressWarnings("incomplete-switch")
-	public UnitStats(UnitStats base, Collection<UnitModifier> modifiers) throws IllegalArgumentException{
+	public Stats(Stats base, Collection<UnitModifier> modifiers) throws IllegalArgumentException{
 		this.stats = new HashMap<StatType, Object>(base.stats);
 		stats.put(StatType.BASE, base);
 		
@@ -144,13 +144,13 @@ public class UnitStats implements Iterable<Stat>{
 		return getStatsList(t);
 	}
 
-	/** Returns a new UnitStats with this (if this is a base) as the base
+	/** Returns a new Stats with this (if this is a base) as the base
 	 * or this' base if this is non-base, and the given modifiers */
-	public UnitStats modifiedWith(Collection<UnitModifier> modifiers) {
+	public Stats modifiedWith(Collection<UnitModifier> modifiers) {
 		if(isBase())
-			return new UnitStats(this, modifiers);
+			return new Stats(this, modifiers);
 		else
-			return new UnitStats((UnitStats)getStat(StatType.BASE), modifiers);
+			return new Stats((Stats)getStat(StatType.BASE), modifiers);
 	}
 	
 	/** Basic toString impelementation that shows off the stats this represents */
@@ -173,7 +173,7 @@ public class UnitStats implements Iterable<Stat>{
 	
 	/** An iterator over this stats that shows each stat in turn.
 	 * Might not catch concurrent modification exceptions, so make sure
-	 * to get a new iterator after the UnitStats has been modified. */
+	 * to get a new iterator after the Stats has been modified. */
 	private class StatIterator implements Iterator<Stat>{
 
 		private int index;

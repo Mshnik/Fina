@@ -27,7 +27,7 @@ public abstract class Combatant extends MovingUnit {
 	 * @param tile - the tile this unit begins the game on. Also notifies the tile of this.
 	 * @param stats - the base unmodified stats of this unit.
 	 */
-	public Combatant(Player owner, String name, int level, int manaCost, Tile startingTile, UnitStats stats) 
+	public Combatant(Player owner, String name, int level, int manaCost, Tile startingTile, Stats stats) 
 			throws RuntimeException, IllegalArgumentException {
 		super(owner, name, level, manaCost, startingTile, stats);
 
