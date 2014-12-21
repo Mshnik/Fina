@@ -98,7 +98,7 @@ public abstract class Building extends Unit {
 	
 	/** Modifiers can't add movement or attack */
 	@Override
-	public boolean modifierOk(UnitModifier m){
+	public boolean modifierOk(Modifier m){
 		StatType s = m.modifiedStat;
 		return s != StatType.ATTACK && s != StatType.ATTACK_RANGE && s != StatType.ATTACK_TYPE
 				&& s != StatType.MOVEMENT_TOTAL && s != StatType.GRASS_COST && s != StatType.WOODS_COST

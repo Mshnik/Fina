@@ -55,7 +55,7 @@ public abstract class Combatant extends MovingUnit {
 	
 	/** Combatants are ok with any kind of modifier except summon range */
 	@Override
-	public boolean modifierOk(UnitModifier m){
+	public boolean modifierOk(Modifier m){
 		return m.modifiedStat != StatType.SUMMON_RANGE;
 	}
 	

@@ -7,33 +7,33 @@ import unit.Building;
 import unit.Stat;
 import unit.StatType;
 import unit.Unit;
-import unit.UnitModifier;
-import unit.UnitModifier.ModificationType;
+import unit.Modifier;
+import unit.Modifier.ModificationType;
 import unit.Stats;
 
 public class Temple extends Building {
 	
 	/** Buffs, by number of temples other than this (0 indexed) */
-	private static final UnitModifier[][] BUFFS = {
+	private static final Modifier[][] BUFFS = {
 		//1 temple
-		{ new UnitModifier(Integer.MAX_VALUE, StatType.ATTACK, ModificationType.ADD, 50) },
+		{ new Modifier(Integer.MAX_VALUE, StatType.ATTACK, ModificationType.ADD, 50) },
 		
 		//2 temples
-		{ new UnitModifier(Integer.MAX_VALUE, StatType.MAGIC_DEFENSE, ModificationType.ADD, 0.05),
-		  new UnitModifier(Integer.MAX_VALUE, StatType.PHYSICAL_DEFENSE, ModificationType.ADD, 0.05)},
+		{ new Modifier(Integer.MAX_VALUE, StatType.MAGIC_DEFENSE, ModificationType.ADD, 0.05),
+		  new Modifier(Integer.MAX_VALUE, StatType.PHYSICAL_DEFENSE, ModificationType.ADD, 0.05)},
 		
 		//3 temples  
-		{ new UnitModifier(Integer.MAX_VALUE, StatType.VISION_RANGE, ModificationType.ADD, 2),
-		  new UnitModifier(Integer.MAX_VALUE, StatType.MOVEMENT_TOTAL, ModificationType.ADD, 2)}, 
+		{ new Modifier(Integer.MAX_VALUE, StatType.VISION_RANGE, ModificationType.ADD, 2),
+		  new Modifier(Integer.MAX_VALUE, StatType.MOVEMENT_TOTAL, ModificationType.ADD, 2)}, 
 		
 		//4 temples
-		{ new UnitModifier(Integer.MAX_VALUE, StatType.ATTACK_RANGE, ModificationType.ADD, 1),
-		  new UnitModifier(Integer.MAX_VALUE, StatType.ATTACK_TYPE, ModificationType.SET, AttackType.TRUE)},
+		{ new Modifier(Integer.MAX_VALUE, StatType.ATTACK_RANGE, ModificationType.ADD, 1),
+		  new Modifier(Integer.MAX_VALUE, StatType.ATTACK_TYPE, ModificationType.SET, AttackType.TRUE)},
 		
 		//5 temples  
-		{ new UnitModifier(Integer.MAX_VALUE, StatType.ATTACK, ModificationType.MULTIPLY, 1.5),
-		  new UnitModifier(Integer.MAX_VALUE, StatType.PHYSICAL_DEFENSE, ModificationType.MULTIPLY, 1.5),
-		  new UnitModifier(Integer.MAX_VALUE, StatType.MAGIC_DEFENSE, ModificationType.MULTIPLY, 1.5)} 
+		{ new Modifier(Integer.MAX_VALUE, StatType.ATTACK, ModificationType.MULTIPLY, 1.5),
+		  new Modifier(Integer.MAX_VALUE, StatType.PHYSICAL_DEFENSE, ModificationType.MULTIPLY, 1.5),
+		  new Modifier(Integer.MAX_VALUE, StatType.MAGIC_DEFENSE, ModificationType.MULTIPLY, 1.5)} 
 	};
 	
 	/** Maximum number of temples a player can own */
@@ -82,14 +82,14 @@ public class Temple extends Building {
 	public void refreshForIndex(){
 		int index = getIndex();
 		//Remove old modifiers
-		for(UnitModifier m : getGrantedModifiers()){
+		for(Modifier m : getGrantedModifiers()){
 			m.kill();
 		}
 		
 		//Add new modifiers based on index to all units this owns
 		for(Unit u : owner.getUnits()){
-			for(UnitModifier dummy : BUFFS[index]){
-				new UnitModifier(u, this, dummy);
+			for(Modifier dummy : BUFFS[index]){
+				new Modifier(u, this, dummy);
 			}
 		}
 	}

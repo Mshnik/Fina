@@ -1,7 +1,7 @@
 package unit;
 
 /** A Modifier for a unit - a buff or nerf, etc. */
-public class UnitModifier {
+public abstract class Modifier {
 
 	/** The unit this is modifying */
 	public final Unit unit;
@@ -13,38 +13,26 @@ public class UnitModifier {
 	 * If 0, on its last turn.
 	 */
 	private int remainingTurns;
-
-	/** The stat this is modifying */
-	public final StatType modifiedStat;
-
-	public enum ModificationType{
-		SET,
-		ADD,
-		MULTIPLY
-	}
-
-	/** The type of modification - set, add, mult */
-	public final ModificationType modType;
-
-	/** The set/added/multed value of the stat */
-	private Object val;
+	
+	/** True iff a unit is allowed to have multiple modifiers by this name
+	 * 
+	 */
+	public final boolean stackable;
+	
+	/** True once this has been attached to a unit */
+	private boolean attached;
 
 	/** Constructor for dummy instance
 	 * @param turns - the total duration of this modifier (turns after this one).
 	 * 					Can be Integer.MAX_VAL - interpreted as forever rather than the actual val
-	 * @param stat - the stat to modify
-	 * @param modType - the operation on stat to perform
-	 * @param modVal - the value to modify by
+	 * @param stackable - true iff a unit can have multiple copies of this modifier
 	 */
-	public UnitModifier(int turns, 
-			StatType stat, ModificationType modType,
-			Object modVal){
+	public Modifier(int turns, boolean stackable){
 		unit = null;
 		remainingTurns = turns;
 		source = null;
-		modifiedStat = stat;
-		this.modType = modType;
-		val = modVal;
+		attached = false;
+		this.stackable = stackable;
 	}
 	
 	/** Constructor for cloning instances
@@ -52,15 +40,18 @@ public class UnitModifier {
 	 * @param source - the unit this modifier is tied to.
 	 * @param dummy - the unitModifier to make a copy of
 	 */
-	public UnitModifier(Unit unit, Unit source, UnitModifier dummy){
+	public Modifier(Unit unit, Unit source, Modifier dummy){
+		attached = false;
 		this.unit = unit;
 		this.source = source;
-		
+		this.stackable = dummy.stackable;
 		remainingTurns = dummy.remainingTurns;
-		modifiedStat = dummy.modifiedStat;
-		modType = dummy.modType;
-		val = dummy.val;
-		
+	}
+	
+	/** Call when construction of a non-dummy instance is done - adds to affected unit */
+	protected void attachToUnit(){
+		if(isDummy() || attached) 
+			throw new RuntimeException("Can't attach a dummy or already attached modifier");
 		boolean ok = unit.addModifier(this);
 		if(ok) source.addGrantedModifier(this);
 	}
@@ -68,11 +59,6 @@ public class UnitModifier {
 	/** Returns true if this is a dummy (unit is null ) */
 	public boolean isDummy(){
 		return unit == null;
-	}
-
-	/** Returns the mod val - for what to do with it, see modType */
-	Object getModVal(){
-		return val;
 	}
 
 	/** Returns the remaining turns of this modifier */
@@ -92,9 +78,10 @@ public class UnitModifier {
 	}
 
 	/** Kills this modifier - removes it from its source and its unit.
-	 * Does nothing if its a dummy. */
+	 * Throws exception if dummy*/
 	public void kill(){
-		if(isDummy()) return;
+		if(isDummy())
+			throw new RuntimeException("Can't kill a dummy modifier");
 		unit.removeModifier(this);
 		source.removeGrantedModifier(this);
 	}

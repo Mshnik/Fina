@@ -12,14 +12,14 @@ import util.Mth;
 /** Holder for the stats for a unit.
  * Unless otherwise noted, all stats are non-negative. */
 public class Stats implements Iterable<Stat>{
-	
+
 	/** Base stats for everything, to be overridden as template.
 	 * Initializes all stats to their base 0-ish vals.
 	 * 
 	 * //TODO - use?
 	 */
 	private static final HashMap<StatType, Object> TEMPLATE;
-	
+
 	static{
 		TEMPLATE = new HashMap<StatType, Object>();
 		//Base -> Null
@@ -37,7 +37,7 @@ public class Stats implements Iterable<Stat>{
 		TEMPLATE.put(StatType.WOODS_COST, 0);
 		TEMPLATE.put(StatType.MOUNTAIN_COST, 0);
 	}
-	
+
 	/** The stats maintained by this unitstats */
 	private HashMap<StatType, Object> stats;
 
@@ -51,54 +51,57 @@ public class Stats implements Iterable<Stat>{
 			this.stats.put(s.name, s.val);
 		}
 	}
-	
+
 	/** Constructor for Stats from a base stats and a collection of modifiers.
 	 */
 	@SuppressWarnings("incomplete-switch")
-	public Stats(Stats base, Collection<UnitModifier> modifiers) throws IllegalArgumentException{
+	public Stats(Stats base, Collection<Modifier> modifiers) throws IllegalArgumentException{
 		this.stats = new HashMap<StatType, Object>(base.stats);
 		stats.put(StatType.BASE, base);
-		
-		//Process modifiers
+
+		//Process modifiers - ignore non stat modifiers
 		if(modifiers != null){
-			for(UnitModifier m : modifiers){
-				StatType t = m.modifiedStat;
-				if(m.modType == UnitModifier.ModificationType.SET){
-					stats.put(t, m.getModVal());
-					continue;
-				}
-				Object newVal = stats.get(m.modifiedStat);
-				if(m.getModVal() instanceof Integer){
-					switch(m.modType){
-					case ADD: newVal = (int) ((Integer)newVal + (int)m.getModVal());
-						break;
-					case MULTIPLY: newVal = (int) ((Integer)newVal * (double)m.getModVal());
-						break;
+			for(Modifier m : modifiers){
+				if(m instanceof StatModifier){
+					StatModifier s = (StatModifier)m;
+					StatType t = s.modifiedStat;
+					if(s.modType == StatModifier.ModificationType.SET){
+						stats.put(t, s.getModVal());
+						continue;
 					}
-				}
-				else if(m.getModVal() instanceof Double){
-					switch(m.modType){
-					case ADD: newVal = Mth.roundTo(((Double)newVal + (double)m.getModVal()), -2);
+					Object newVal = stats.get(s.modifiedStat);
+					if(s.getModVal() instanceof Integer){
+						switch(s.modType){
+						case ADD: newVal = (int) ((Integer)newVal + (int)s.getModVal());
 						break;
-					case MULTIPLY: newVal = Mth.roundTo(((Double)newVal * (double)m.getModVal()), -2);
+						case MULTIPLY: newVal = (int) ((Integer)newVal * (double)s.getModVal());
 						break;
+						}
 					}
+					else if(s.getModVal() instanceof Double){
+						switch(s.modType){
+						case ADD: newVal = Mth.roundTo(((Double)newVal + (double)s.getModVal()), -2);
+						break;
+						case MULTIPLY: newVal = Mth.roundTo(((Double)newVal * (double)s.getModVal()), -2);
+						break;
+						}
+					}
+					stats.put(s.modifiedStat, newVal);
 				}
-				stats.put(m.modifiedStat, newVal);
 			}
 		}
 	}
-	
+
 	/** Returns true if this is a base (has no base stat), false otherwise */
 	public boolean isBase(){
 		return ! stats.containsKey(StatType.BASE);
 	}
-	
+
 	/** Returns the requested stat */
 	public Object getStat(StatType type){
 		return stats.get(type);
 	}
-	
+
 	private ArrayList<Stat> getStatsList(StatType[] t){
 		ArrayList<Stat> s = new ArrayList<Stat>();
 		for(StatType p : t){
@@ -106,7 +109,7 @@ public class Stats implements Iterable<Stat>{
 		}
 		return s;
 	}
-	
+
 	/** Returns an arrayList of the movement stats:
 	 * 		- Move total
 	 * 		- Grass cost
@@ -118,7 +121,7 @@ public class Stats implements Iterable<Stat>{
 				StatType.WOODS_COST, StatType.MOUNTAIN_COST};
 		return getStatsList(t);
 	}
-	
+
 	/** Returns an arrayList of the attack stats:
 	 * 		- Attack
 	 * 		- Attack Type
@@ -131,7 +134,7 @@ public class Stats implements Iterable<Stat>{
 				StatType.ATTACK_RANGE, StatType.PHYSICAL_DEFENSE, StatType.MAGIC_DEFENSE};
 		return getStatsList(t);
 	}
-	
+
 	/** Returns an arrayList of the standard stats:
 	 * 		- Max Health
 	 * 		- Mana Per Turn
@@ -146,13 +149,13 @@ public class Stats implements Iterable<Stat>{
 
 	/** Returns a new Stats with this (if this is a base) as the base
 	 * or this' base if this is non-base, and the given modifiers */
-	public Stats modifiedWith(Collection<UnitModifier> modifiers) {
+	public Stats modifiedWith(Collection<Modifier> modifiers) {
 		if(isBase())
 			return new Stats(this, modifiers);
 		else
 			return new Stats((Stats)getStat(StatType.BASE), modifiers);
 	}
-	
+
 	/** Basic toString impelementation that shows off the stats this represents */
 	@Override
 	public String toString(){
@@ -165,12 +168,12 @@ public class Stats implements Iterable<Stat>{
 		}
 		return s;
 	}
-	
+
 	/** Returns an iterator over these stats */
 	public Iterator<Stat> iterator(){
 		return new StatIterator();
 	}
-	
+
 	/** An iterator over this stats that shows each stat in turn.
 	 * Might not catch concurrent modification exceptions, so make sure
 	 * to get a new iterator after the Stats has been modified. */
@@ -178,7 +181,7 @@ public class Stats implements Iterable<Stat>{
 
 		private int index;
 		private ArrayList<Stat> statArr;
-		
+
 		private StatIterator(){
 			index = 0;
 			statArr = new ArrayList<Stat>();
@@ -187,7 +190,7 @@ public class Stats implements Iterable<Stat>{
 			}
 			Collections.sort(statArr);
 		}
-		
+
 		/** Returns true if there is another stat to return */
 		@Override
 		public boolean hasNext() {
@@ -207,6 +210,6 @@ public class Stats implements Iterable<Stat>{
 		public void remove() {
 			throw new RuntimeException("Not Supported");
 		}
-		
+
 	}
 }

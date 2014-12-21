@@ -33,13 +33,13 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	/** Amount of mana per turn gained per level */
 	public static final int LEVELUP_MANAPT = 250;
 
-	protected static final UnitModifier LEVELUP_MANA_BUFF = 
-			new UnitModifier(Integer.MAX_VALUE, StatType.MANA_PER_TURN, 
-					UnitModifier.ModificationType.ADD, LEVELUP_MANAPT);
+	protected static final StatModifier LEVELUP_MANA_BUFF = 
+			new StatModifier(Integer.MAX_VALUE, true, StatType.MANA_PER_TURN, 
+					StatModifier.ModificationType.ADD, LEVELUP_MANAPT);
 
-	protected static final UnitModifier LEVELUP_HEALTH_BUFF = 
-			new UnitModifier(Integer.MAX_VALUE, StatType.MAX_HEALTH, 
-					UnitModifier.ModificationType.ADD, LEVELUP_HEALTH);
+	protected static final StatModifier LEVELUP_HEALTH_BUFF = 
+			new StatModifier(Integer.MAX_VALUE, true, StatType.MAX_HEALTH, 
+					StatModifier.ModificationType.ADD, LEVELUP_HEALTH);
 
 
 	/** The amount of research required to get to the next level for free.
@@ -221,8 +221,8 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	private void levelUp(){
 		research = 0;
 		level++;
-		new UnitModifier(this, this, LEVELUP_HEALTH_BUFF);
-		new UnitModifier(this, this, LEVELUP_MANA_BUFF);
+		new StatModifier(this, this, LEVELUP_HEALTH_BUFF);
+		new StatModifier(this, this, LEVELUP_MANA_BUFF);
 		setHealth(getHealth() + LEVELUP_HEALTH, this);
 		owner.updateManaPerTurn();
 		owner.game.getFrame().repaint();
@@ -230,7 +230,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 
 	/** Commanders can't attack, so attack modifications aren't ok. */
 	@Override
-	public boolean modifierOk(UnitModifier m){
+	public boolean modifierOk(Modifier m){
 		StatType s = m.modifiedStat;
 		return s != StatType.ATTACK && s != StatType.ATTACK_RANGE &&
 				s != StatType.ATTACK_TYPE;

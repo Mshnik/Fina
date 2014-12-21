@@ -58,10 +58,10 @@ public abstract class Unit{
 	Stats stats;
 	
 	/** The modifiers this is the source of */
-	private LinkedList<UnitModifier> grantedModifiers;
+	private LinkedList<Modifier> grantedModifiers;
 	
 	/** A set of modifiers that are currently affecting this unit */
-	private LinkedList<UnitModifier> modifiers;
+	private LinkedList<Modifier> modifiers;
 
 	/** Constructor for Unit.
 	 * Also adds this unit to the tile it is on as an occupant, and
@@ -87,8 +87,8 @@ public abstract class Unit{
 		this.manaCost = manaCost;
 		this.stats = new Stats(stats, null);
 		health = getMaxHealth();
-		modifiers = new LinkedList<UnitModifier>();
-		grantedModifiers = new LinkedList<UnitModifier>();
+		modifiers = new LinkedList<Modifier>();
+		grantedModifiers = new LinkedList<Modifier>();
 		
 		if(tile != null){
 			location = tile;
@@ -125,8 +125,8 @@ public abstract class Unit{
 	 * 		- ticks down modifiers and re-calculates stats, if necessary.
 	 */
 	public void refreshForTurn(){
-		LinkedList<UnitModifier> deadModifiers = new LinkedList<UnitModifier>();
-		for(UnitModifier m : modifiers){
+		LinkedList<Modifier> deadModifiers = new LinkedList<Modifier>();
+		for(Modifier m : modifiers){
 			if(m.decRemainingTurns() || ! m.source.isAlive())
 				deadModifiers.add(m);
 		}
@@ -208,7 +208,7 @@ public abstract class Unit{
 	 * Can be overriden in subclasses to add additional behavior,
 	 * but this method should be called somewhere in that overriden method */
 	protected void died(Unit killer){
-		for(UnitModifier m : getGrantedModifiers()){
+		for(Modifier m : getGrantedModifiers()){
 			m.kill();
 		}
 		owner.removeUnit(this);
@@ -304,18 +304,18 @@ public abstract class Unit{
 	/** Returns the modifiers currently affecting this unit
 	 * Pass-by-value, so editing the returned set doesn't do anything
 	 */
-	public LinkedList<UnitModifier> getModifiers(){
-		return new LinkedList<UnitModifier>(modifiers);
+	public LinkedList<Modifier> getModifiers(){
+		return new LinkedList<Modifier>(modifiers);
 	}
 	
 	/** Checks modifier m for applying to this unit */
-	public abstract boolean modifierOk(UnitModifier m);
+	public abstract boolean modifierOk(Modifier m);
 	
 	/** Adds a new modifier to this unit. Also updates stats with the new modifiers,
 	 * from its original base stats. Called by modifier during construction.
 	 * Returns true if the modifier was applied, false otw */
-	boolean addModifier(UnitModifier m){
-		if(modifierOk(m)){
+	boolean addModifier(Modifier m){
+		if(modifierOk(m) && (! modifiers.contains(m) || m.stackable)){
 			modifiers.add(m);
 			refreshStats();
 			return true;
@@ -327,8 +327,8 @@ public abstract class Unit{
 	/** Removes the given modifier from this unit. Also updates stats with new modifier
 	 * from its original base stats. Called by modifier on death.
 	 * Returns true if the modifier was applied, false otw */
-	boolean removeModifier(UnitModifier m){
-		if(modifierOk(m)){
+	boolean removeModifier(Modifier m){
+		if(modifiers.contains(m)){
 			modifiers.remove(m);
 			refreshStats();
 			return true;
@@ -340,17 +340,17 @@ public abstract class Unit{
 	/** Returns the modifiers this is currently granting.
 	 * Pass-by-value, so editing the returned set doesn't do anything
 	 */
-	public HashSet<UnitModifier> getGrantedModifiers(){
-		return new HashSet<UnitModifier>(grantedModifiers);
+	public HashSet<Modifier> getGrantedModifiers(){
+		return new HashSet<Modifier>(grantedModifiers);
 	}
 	
 	/** Adds the given modifier to the modifiers this is granting. Called by modifier on construciton */
-	void addGrantedModifier(UnitModifier m){
+	void addGrantedModifier(Modifier m){
 		grantedModifiers.add(m);
 	}
 	
 	/** Removes the given modifier from its designated unit. Called by modifier on death */
-	void removeGrantedModifier(UnitModifier m){
+	void removeGrantedModifier(Modifier m){
 		grantedModifiers.remove(m);
 	}
 	
