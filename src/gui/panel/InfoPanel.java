@@ -81,7 +81,6 @@ public class InfoPanel extends JPanel{
 			int x = 25;
 			final int xInc = 225;
 			
-			
 			g2d.drawString(unit.name, x, YMARGIN);
 			final int infoFont = 16;
 			g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, infoFont));
@@ -111,12 +110,17 @@ public class InfoPanel extends JPanel{
 			}
 			x += xInc;
 			y = YMARGIN;
+			//Insert movement at top here
+			g2d.drawString("Movement", x, y);
+			
+			String movement = "0";
+			if(unit instanceof MovingUnit){
+				movement = ((MovingUnit) unit).getMovement() + "";
+			}
+			g2d.drawString(movement, x + 145, y);
+			y += infoFont;
 			for(Stat s : stats.getMovementStatsList()){
-				drawStat(g2d, s, x, y);				drawStat(g2d, s, x, y);
 				drawStat(g2d, s, x, y);
-				drawStat(g2d, s, x, y);
-				drawStat(g2d, s, x, y);
-
 				y += infoFont;
 			}
 		}
