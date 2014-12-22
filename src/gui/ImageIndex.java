@@ -48,6 +48,9 @@ public class ImageIndex {
 
 	/** Read in units thus far */
 	private static HashMap<String, BufferedImage> readUnits;
+	
+	/** Tinted units thus far */
+	private static HashMap<BufferedImage, HashMap<Color, BufferedImage>> tintedUnits;
 
 	/** Static initializer for the Image Class - do all image reading here */
 	static{
@@ -63,6 +66,7 @@ public class ImageIndex {
 
 			//Units
 			readUnits = new HashMap<String, BufferedImage>();
+			tintedUnits = new HashMap<>();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -106,6 +110,9 @@ public class ImageIndex {
 	 * @param color - the color to tint. Alpha value of input color isn't used.
 	 * @return A tinted version of loadImg */
 	public static BufferedImage tint(BufferedImage loadImg, Color color) {
+		if(tintedUnits.containsKey(loadImg) && tintedUnits.get(loadImg).containsKey(color))
+			return tintedUnits.get(loadImg).get(color);
+		
 		BufferedImage img = new BufferedImage(loadImg.getWidth(), loadImg.getHeight(),
 				BufferedImage.TRANSLUCENT);		
 		final float tintOpacity = 0.45f;
@@ -127,6 +134,10 @@ public class ImageIndex {
 			}
 		}
 		g2d.dispose();
+		
+		if(! tintedUnits.containsKey(loadImg))
+			tintedUnits.put(loadImg, new HashMap<Color, BufferedImage>());
+		tintedUnits.get(loadImg).put(color, img);
 		return img;
 	}
 
