@@ -56,7 +56,10 @@ public abstract class Combatant extends MovingUnit {
 	/** Combatants are ok with any kind of modifier except summon range */
 	@Override
 	public boolean modifierOk(Modifier m){
-		return m.modifiedStat != StatType.SUMMON_RANGE;
+		if(m instanceof StatModifier){
+			return ((StatModifier) m).modifiedStat != StatType.SUMMON_RANGE;
+		}
+		return false;
 	}
 	
 	//FIGHTING

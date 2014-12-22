@@ -315,7 +315,7 @@ public abstract class Unit{
 	 * from its original base stats. Called by modifier during construction.
 	 * Returns true if the modifier was applied, false otw */
 	boolean addModifier(Modifier m){
-		if(modifierOk(m) && (! modifiers.contains(m) || m.stackable)){
+		if(modifierOk(m) && ( m.stackable || (! m.cloneInCollection(modifiers)))){
 			modifiers.add(m);
 			refreshStats();
 			return true;

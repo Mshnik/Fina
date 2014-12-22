@@ -231,9 +231,12 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	/** Commanders can't attack, so attack modifications aren't ok. */
 	@Override
 	public boolean modifierOk(Modifier m){
-		StatType s = m.modifiedStat;
-		return s != StatType.ATTACK && s != StatType.ATTACK_RANGE &&
+		if(m instanceof StatModifier){
+			StatType s = ((StatModifier) m).modifiedStat;
+			return s != StatType.ATTACK && s != StatType.ATTACK_RANGE &&
 				s != StatType.ATTACK_TYPE;
+		}
+		return false;
 	}
 
 	//SUMMONING

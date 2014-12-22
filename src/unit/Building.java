@@ -17,9 +17,9 @@ public abstract class Building extends Unit {
 	 *		- Temple
 	 */
 	private static final HashMap<Integer, LinkedList<Building>> BUILDINGS;
-	
+
 	static{
-		
+
 		//All available buildings start here
 		Building[] rawBuildings = {
 				new Well(null, null), 
@@ -38,17 +38,17 @@ public abstract class Building extends Unit {
 			}
 		}
 	}
-	
+
 	/** Returns a copy of the building index - all available buildings for the given level */
 	public static LinkedList<Building> getBuildings(int level){
 		LinkedList<Building> buildings = BUILDINGS.get(level);
 		if(buildings == null) return new LinkedList<Building>();
 		else return new LinkedList<Building>(buildings);
 	}
-	
+
 	/** Image root for Building images, inside of global image root */
 	public static final String IMAGE_ROOT = "building/";
-	
+
 	/** Constructor for Building.
 	 * Also adds this unit to the tile it is on as an occupant, and
 	 * its owner as a unit that player owns,
@@ -72,14 +72,14 @@ public abstract class Building extends Unit {
 			throw new IllegalArgumentException("Can't construct building on non Ancient Ground terrain");
 		}
 	}
-	
+
 	//RESTRICTIONS
 	/** Restricted attack - has val 0. */
 	@Override
 	public int getAttack(){
 		return 0;
 	}
-	
+
 	/** Restricted movement - buildings can't move */
 	@Override
 	public boolean canMove(){
@@ -90,31 +90,34 @@ public abstract class Building extends Unit {
 	public boolean canFight(){
 		return false;
 	}
-	
+
 	/** Buildings can only occupy Ancient Ground */
 	public boolean canOccupy(Terrain t){
 		return t.equals(Terrain.ANCIENT_GROUND);
 	}
-	
+
 	/** Modifiers can't add movement or attack */
 	@Override
 	public boolean modifierOk(Modifier m){
-		StatType s = m.modifiedStat;
-		return s != StatType.ATTACK && s != StatType.ATTACK_RANGE && s != StatType.ATTACK_TYPE
-				&& s != StatType.MOVEMENT_TOTAL && s != StatType.GRASS_COST && s != StatType.WOODS_COST
-				&& s != StatType.MOUNTAIN_COST;
+		if(m instanceof StatModifier){
+			StatType s = ((StatModifier) m).modifiedStat;
+			return s != StatType.ATTACK && s != StatType.ATTACK_RANGE && s != StatType.ATTACK_TYPE
+					&& s != StatType.MOVEMENT_TOTAL && s != StatType.GRASS_COST && s != StatType.WOODS_COST
+					&& s != StatType.MOUNTAIN_COST;
+		}
+		return false;
 	}
-	
+
 	/** Returns Building */
 	@Override
 	public String getIdentifierString(){
 		return "Building";
 	}
-	
+
 	/** Buildings don't do anything before a fight */
 	@Override
 	public void preCounterFight(Combatant other){}
-	
+
 	/** Buildings don't do anything after a fight */
 	@Override
 	public void postCounterFight(Combatant other){}
