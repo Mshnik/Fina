@@ -2,7 +2,6 @@ package unit;
 
 import java.util.LinkedList;
 
-import unit.ability.Ability;
 import unit.stat.StatType;
 import unit.stat.Stats;
 

@@ -59,12 +59,6 @@ public abstract class Combatant extends MovingUnit {
 		canFight = true;
 	}
 	
-	/** Combatants can only move if they haven't fought already */
-	@Override
-	public boolean canMove(){
-		return super.canMove() && canFight();
-	}
-	
 	/** Combatants are ok with any kind of modifier except summon range */
 	@Override
 	public boolean modifierOk(Modifier m){

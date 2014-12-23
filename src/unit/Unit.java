@@ -7,9 +7,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import unit.ability.Ability;
 import unit.modifier.Modifier;
-import unit.modifier.ModifierBundle;
 import unit.stat.StatType;
 import unit.stat.Stats;
 

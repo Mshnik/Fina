@@ -315,9 +315,11 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	 * actually has access to. Will return null if the input is greater than the current level
 	 */
 	public Ability getAbility(int level){
-		if(level > getLevel())
+		try{
+			return getPossibleAbilities(level)[abilityChoices[level - 1]];
+		}catch(NullPointerException | ArrayIndexOutOfBoundsException e){
 			return null;
-		return getPossibleAbilities(level)[abilityChoices[level - 1]];
+		}
 	}
 	
 	/** Returns all abilities this Commander currently has access to. 
@@ -325,7 +327,9 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	public List<Ability> getAbilities(){
 		LinkedList<Ability> abilities = new LinkedList<Ability>();
 		for(int i = 1; i <= getLevel(); i++){
-			abilities.add(getAbility(i));
+			Ability a = getAbility(i);
+			if(a != null)
+				abilities.add(a);
 		}
 		return abilities;
 	}
@@ -335,8 +339,9 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	public List<Ability> getActiveAbilities(){
 		LinkedList<Ability> abilities = new LinkedList<Ability>();
 		for(int i = 1; i <= getLevel(); i++){
-			if(! getAbility(i).isPassive())
-				abilities.add(getAbility(i));
+			Ability a = getAbility(i);
+			if(a != null && ! a.isPassive())
+				abilities.add(a);
 		}
 		return abilities;
 	}
@@ -346,8 +351,9 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	public List<Ability> getPassiveAbilities(){
 		LinkedList<Ability> abilities = new LinkedList<Ability>();
 		for(int i = 1; i <= getLevel(); i++){
-			if(getAbility(i).isPassive())
-				abilities.add(getAbility(i));
+			Ability a = getAbility(i);
+			if(a != null && a.isPassive())
+				abilities.add(a);
 		}
 		return abilities;
 	}
