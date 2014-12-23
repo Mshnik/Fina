@@ -5,6 +5,9 @@ import java.util.Collection;
 /** A Modifier for a unit - a buff or nerf, etc. */
 public abstract class Modifier {
 
+	/** The name of this modifier */
+	public final String name;
+	
 	/** The unit this is modifying */
 	public final Unit unit;
 
@@ -28,11 +31,13 @@ public abstract class Modifier {
 	private final Modifier clonedFrom;
 
 	/** Constructor for dummy instance
+	 * @param name - the name of this modifier
 	 * @param turns - the total duration of this modifier (turns after this one).
 	 * 					Can be Integer.MAX_VAL - interpreted as forever rather than the actual val
 	 * @param stackable - true iff a unit can have multiple copies of this modifier
 	 */
-	public Modifier(int turns, boolean stackable){
+	public Modifier(String name, int turns, boolean stackable){
+		this.name = name;
 		unit = null;
 		remainingTurns = turns;
 		source = null;
@@ -48,12 +53,16 @@ public abstract class Modifier {
 	 */
 	public Modifier(Unit unit, Unit source, Modifier dummy){
 		attached = false;
+		this.name = dummy.name;
 		this.unit = unit;
 		this.source = source;
 		this.stackable = dummy.stackable;
 		remainingTurns = dummy.remainingTurns;
 		clonedFrom = dummy;
 	}
+	
+	/** Clones a copy of this. Should fully produce a clone of this, and do unit attaching. */
+	public abstract Modifier clone(Unit unit, Unit source);
 	
 	/** Call when construction of a non-dummy instance is done - adds to affected unit */
 	protected void attachToUnit(){

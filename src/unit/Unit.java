@@ -96,10 +96,15 @@ public abstract class Unit{
 		}
 		
 		if(owner != null) {
-			if(! (this instanceof Commander)) owner.getCommander().addMana(Math.min(0,-manaCost));
-			owner.addUnit(this);
 			if(owner.getLevel() < level)
 				throw new RuntimeException(owner + " can't summon unit with higher level than it");
+			if(! (this instanceof Commander)){
+				owner.getCommander().addMana(Math.min(0,-manaCost));
+				for(Modifier m : owner.getCommander().getCommanderGrantingModifiers()){
+					m.clone(this, owner.getCommander());
+				}
+			}
+			owner.addUnit(this);
 			this.level = level;
 		} else{
 			this.level = level;

@@ -3,10 +3,12 @@ package unit.dummy;
 import game.Player;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import board.Tile;
 import unit.Combatant;
 import unit.Commander;
+import unit.Modifier;
 import unit.Stat;
 import unit.StatType;
 import unit.Stats;
@@ -65,6 +67,11 @@ public class DummyCommander extends Commander {
 	public String getImgFilename() {
 		// TODO Auto-generated method stub
 		return "mario.png";
+	}
+
+	@Override
+	public List<Modifier> getCommanderGrantingModifiers() {
+		return new LinkedList<Modifier>();
 	}
 
 }

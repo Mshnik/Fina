@@ -18,6 +18,7 @@ public final class StatModifier extends Modifier {
 	private Object val;
 	
 	/** Constructor for dummy instance
+	 * @param name - the name of this statModifier
 	 * @param turns - the total duration of this modifier (turns after this one).
 	 * 					Can be Integer.MAX_VAL - interpreted as forever rather than the actual val
 	 * @param stackable - true iff this is stackable
@@ -25,9 +26,9 @@ public final class StatModifier extends Modifier {
 	 * @param modType - the operation on stat to perform
 	 * @param modVal - the value to modify by
 	 */
-	public StatModifier(int turns, boolean stackable, 
+	public StatModifier(String name, int turns, boolean stackable, 
 			StatType stat, ModificationType modType, Object modVal){
-		super(turns, stackable);
+		super(name, turns, stackable);
 		modifiedStat = stat;
 		this.modType = modType;
 		val = modVal;
@@ -49,6 +50,12 @@ public final class StatModifier extends Modifier {
 	/** Returns the mod val - for what to do with it, see modType */
 	Object getModVal(){
 		return val;
+	}
+
+	/** Returns a StatModifier clone of this with the given unit and source */
+	@Override
+	public Modifier clone(Unit unit, Unit source) {
+		return new StatModifier(unit, source, this);
 	}
 }
 

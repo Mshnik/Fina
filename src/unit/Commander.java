@@ -2,6 +2,7 @@ package unit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import unit.combatant.FileCombatant;
@@ -34,11 +35,11 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	public static final int LEVELUP_MANAPT = 250;
 
 	protected static final StatModifier LEVELUP_MANA_BUFF = 
-			new StatModifier(Integer.MAX_VALUE, true, StatType.MANA_PER_TURN, 
+			new StatModifier("Level Up Mana", Integer.MAX_VALUE, true, StatType.MANA_PER_TURN, 
 					StatModifier.ModificationType.ADD, LEVELUP_MANAPT);
 
 	protected static final StatModifier LEVELUP_HEALTH_BUFF = 
-			new StatModifier(Integer.MAX_VALUE, true, StatType.MAX_HEALTH, 
+			new StatModifier("Level Up Health", Integer.MAX_VALUE, true, StatType.MAX_HEALTH, 
 					StatModifier.ModificationType.ADD, LEVELUP_HEALTH);
 
 
@@ -240,6 +241,10 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	}
 
 	//SUMMONING
+	/** Returns a list of modifiers to be applied to all units this owns. Can be empty.
+	 * Should be a list of dummy modifiers that will be copied to all new units upon construction */
+	public abstract List<Modifier> getCommanderGrantingModifiers();
+	
 	/** Returns a dummy unit for the given name, if possible (otherwise null ) */
 	public Unit getUnitByName(String name){
 		Map<String, Combatant> summonables = getSummonables();

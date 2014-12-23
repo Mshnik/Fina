@@ -10,24 +10,24 @@ public class Temple extends Building {
 	/** Buffs, by number of temples other than this (0 indexed) */
 	private static final StatModifier[][] BUFFS = {
 		//1 temple
-		{ new StatModifier(Integer.MAX_VALUE, false, StatType.ATTACK, ModificationType.ADD, 50) },
+		{ new StatModifier("Temple Attack", Integer.MAX_VALUE, false, StatType.ATTACK, ModificationType.ADD, 50) },
 		
 		//2 temples
-		{ new StatModifier(Integer.MAX_VALUE, false, StatType.MAGIC_DEFENSE, ModificationType.ADD, 0.05),
-		  new StatModifier(Integer.MAX_VALUE, false, StatType.PHYSICAL_DEFENSE, ModificationType.ADD, 0.05)},
+		{ new StatModifier("Temple Mag Def", Integer.MAX_VALUE, false, StatType.MAGIC_DEFENSE, ModificationType.ADD, 0.05),
+		  new StatModifier("Temple Phys Def", Integer.MAX_VALUE, false, StatType.PHYSICAL_DEFENSE, ModificationType.ADD, 0.05)},
 		
 		//3 temples  
-		{ new StatModifier(Integer.MAX_VALUE, false, StatType.VISION_RANGE, ModificationType.ADD, 2),
-		  new StatModifier(Integer.MAX_VALUE, false, StatType.MOVEMENT_TOTAL, ModificationType.ADD, 2)}, 
+		{ new StatModifier("Temple Vision", Integer.MAX_VALUE, false, StatType.VISION_RANGE, ModificationType.ADD, 2),
+		  new StatModifier("Temple Movement", Integer.MAX_VALUE, false, StatType.MOVEMENT_TOTAL, ModificationType.ADD, 2)}, 
 		
 		//4 temples
-		{ new StatModifier(Integer.MAX_VALUE, false, StatType.ATTACK_RANGE, ModificationType.ADD, 1),
-		  new StatModifier(Integer.MAX_VALUE, false, StatType.ATTACK_TYPE, ModificationType.SET, AttackType.TRUE)},
+		{ new StatModifier("Temple Range", Integer.MAX_VALUE, false, StatType.ATTACK_RANGE, ModificationType.ADD, 1),
+		  new StatModifier("Temple Type", Integer.MAX_VALUE, false, StatType.ATTACK_TYPE, ModificationType.SET, AttackType.TRUE)},
 		
 		//5 temples  
-		{ new StatModifier(Integer.MAX_VALUE, false, StatType.ATTACK, ModificationType.MULTIPLY, 1.5),
-		  new StatModifier(Integer.MAX_VALUE, false, StatType.PHYSICAL_DEFENSE, ModificationType.MULTIPLY, 1.5),
-		  new StatModifier(Integer.MAX_VALUE, false, StatType.MAGIC_DEFENSE, ModificationType.MULTIPLY, 1.5)} 
+		{ new StatModifier("Temple Ult1",Integer.MAX_VALUE, false, StatType.ATTACK, ModificationType.MULTIPLY, 1.5),
+		  new StatModifier("Temple Ult2",Integer.MAX_VALUE, false, StatType.PHYSICAL_DEFENSE, ModificationType.MULTIPLY, 1.5),
+		  new StatModifier("Temple Ult3",Integer.MAX_VALUE, false, StatType.MAGIC_DEFENSE, ModificationType.MULTIPLY, 1.5)} 
 	};
 	
 	/** Maximum number of temples a player can own */
