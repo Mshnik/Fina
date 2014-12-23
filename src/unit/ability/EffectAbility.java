@@ -36,6 +36,9 @@ public class EffectAbility extends Ability {
 		super(name, manaCost, caster, castDist, multiCast, appliesToAllied,
 				appliesToFoe, cloud);
 		
+		if(manaCost <= 0)
+			throw new IllegalArgumentException("Effect Abilities can't be passive");
+		
 		this.type = type;
 		this.magnitude = magnitude;
 	}
@@ -62,6 +65,17 @@ public class EffectAbility extends Ability {
 			u.changeHealth(- magnitude.intValue(), caster);
 			return;
 		}		
+	}
+
+
+	@Override
+	public void remove(Unit u) {
+		throw new UnsupportedOperationException("Can't Remove EffectAbility from Unit");
+	}
+	
+	@Override
+	public boolean isAffecting(Unit u) {
+		throw new UnsupportedOperationException("Can't check isAffecting EffectAbility on Unit");
 	}
 
 }

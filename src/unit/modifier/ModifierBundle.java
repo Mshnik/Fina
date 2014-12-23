@@ -39,6 +39,26 @@ public class ModifierBundle implements Iterable<Modifier>{
 		return b;
 	}
 	
+	/** Returns true iff the given unit is affected by modifiers cloned from this bundle
+	 */
+	public boolean isAffecting(Unit u){
+		for(Modifier m : u.getModifiers()){
+			if(modifiers.contains(m.clonedFrom))
+				return true;
+		}
+		return false;
+	}
+	
+	
+	/** Removes all modifiers clone from dummies in this bundle from the given unit 
+	 */
+	public void removeFrom(Unit u){
+		for(Modifier m : u.getModifiers()){
+			if(modifiers.contains(m.clonedFrom))
+				m.kill();
+		}
+	}
+	
 	/** Returns true iff every modifier this bundle wraps is a dummy */
 	public boolean isDummyBundle(){
 		for(Modifier m : this){

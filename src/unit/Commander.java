@@ -268,10 +268,6 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	}
 
 	//SUMMONING
-	/** Returns a list of modifiers to be applied to all units this owns. Can be empty.
-	 * Should be a list of dummy modifiers that will be copied to all new units upon construction */
-	public abstract List<ModifierBundle> getCommanderGrantingModifiers();
-	
 	/** Returns a dummy unit for the given name, if possible (otherwise null ) */
 	public Unit getUnitByName(String name){
 		Map<String, Combatant> summonables = getSummonables();
@@ -324,6 +320,28 @@ public abstract class Commander extends MovingUnit implements Summoner{
 		LinkedList<Ability> abilities = new LinkedList<Ability>();
 		for(int i = 1; i <= getLevel(); i++){
 			abilities.add(getAbility(i));
+		}
+		return abilities;
+	}
+	
+	/** Returns all active (castable) abilities this Commander currently has access to. 
+	 */
+	public List<Ability> getActiveAbilities(){
+		LinkedList<Ability> abilities = new LinkedList<Ability>();
+		for(int i = 1; i <= getLevel(); i++){
+			if(! getAbility(i).isPassive())
+				abilities.add(getAbility(i));
+		}
+		return abilities;
+	}
+	
+	/** Returns all passive (always on) abilities this Commander currently has access to. 
+	 */
+	public List<Ability> getPassiveAbilities(){
+		LinkedList<Ability> abilities = new LinkedList<Ability>();
+		for(int i = 1; i <= getLevel(); i++){
+			if(getAbility(i).isPassive())
+				abilities.add(getAbility(i));
 		}
 		return abilities;
 	}

@@ -18,6 +18,7 @@ public class CustomModifier extends Modifier {
 	/** Constructor for dummy instance
 	 * @param name - the name of this modifier
 	 * @param description - a description of this modifier
+	 * @param val - the magnitude of the modifier, as needed
 	 * @param turns - the total duration of this modifier (turns after this one).
 	 * 					Can be Integer.MAX_VAL - interpreted as forever rather than the actual val
 	 * @param stackable - true iff this is stackable

@@ -39,5 +39,16 @@ public class ModifierAbility extends Ability {
 	protected void affect(Unit u) {
 		modifiers.clone(u, caster);
 	}
+
+	/** Returns the modifiers granted through this ability from unit u */
+	@Override
+	public void remove(Unit u) {
+		modifiers.removeFrom(u);
+	}
+	
+	/** Returns true iff the given unit has the modifiers in this bundle */
+	public boolean isAffecting(Unit u){
+		return modifiers.isAffecting(u);
+	}
 	
 }

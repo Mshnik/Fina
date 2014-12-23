@@ -2,6 +2,7 @@ package unit;
 
 import java.util.LinkedList;
 
+import unit.ability.Ability;
 import unit.stat.StatType;
 import unit.stat.Stats;
 
@@ -49,6 +50,11 @@ public abstract class MovingUnit extends Unit{
 	public void refreshForTurn(){
 		super.refreshForTurn();
 		movement = getMovementCap();
+	}
+	
+	/** Adds the given amount of movement. This is a temporary addition, not a recurring one */
+	public void addMovement(int deltaMovement){
+		movement = Math.max(movement + deltaMovement, 0);
 	}
 	
 	/** Refreshes Just movement. Can be done mid-turn for effect purposes */
@@ -144,6 +150,8 @@ public abstract class MovingUnit extends Unit{
 			oldLoc.moveUnitTo(location);
 		movement -= cost;
 		owner.refreshVisionCloud();
+		
+		owner.game.refreshPassiveAbilities();
 		
 		postMove(path);
 		

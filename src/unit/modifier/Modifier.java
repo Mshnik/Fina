@@ -33,7 +33,7 @@ public abstract class Modifier {
 	private boolean attached;
 	
 	/** The modifier this was cloned from. Null if this is a dummy */
-	private final Modifier clonedFrom;
+	final Modifier clonedFrom;
 
 	/** Constructor for dummy instance
 	 * @param name - the name of this modifier

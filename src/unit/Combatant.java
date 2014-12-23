@@ -2,6 +2,8 @@ package unit;
 
 import java.util.ArrayList;
 
+import unit.commander.Bhen;
+import unit.modifier.CustomModifier;
 import unit.modifier.Modifier;
 import unit.modifier.StatModifier;
 import unit.stat.StatType;
@@ -157,7 +159,16 @@ public abstract class Combatant extends MovingUnit {
 		if(other.isAlive() && counterAttack) {
 			other.postCounterFight(this);
 		}
-		return ! other.isAlive();
+		
+		boolean otherIsDead = ! other.isAlive();
+		
+		//Check for killing modifiers
+		Modifier mod1 = getModifierByName(Bhen.ABILITY_NAMES[0][0]);
+		if(mod1 != null){
+			addMovement(((CustomModifier)mod1).val.intValue());
+		}
+		
+		return otherIsDead;
 	}
 	
 	

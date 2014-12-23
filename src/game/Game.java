@@ -5,6 +5,11 @@ import gui.Frame;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+
+import unit.Commander;
+import unit.Unit;
+import unit.ability.Ability;
 
 import board.Board;
 
@@ -107,6 +112,39 @@ public class Game implements Runnable{
 		if(! running)
 			return null;
 		return players.getFirst();
+	}
+	
+	/** Returns the remaining players in the game */
+	public List<Player> getRemainingPlayers(){
+		List<Player> remaining = new LinkedList<Player>();
+		for(Player p : remainingPlayers.keySet()){
+			if(remainingPlayers.get(p))
+				remaining.add(p);
+		}
+		return remaining;
+	}
+	
+	/** Returns all units in the game */
+	public List<Unit> getUnits(){
+		LinkedList<Unit> units = new LinkedList<Unit>();
+		for(Player p : getRemainingPlayers()){
+			units.addAll(p.getUnits());
+		}
+		return units;
+	}
+	
+	/** Refreshes all passive abilities on all units in the game */
+	public void refreshPassiveAbilities(){
+		List<Unit> units = getUnits();
+		for(Player p : getRemainingPlayers()){
+			Commander c = p.getCommander();
+			for(Ability a : c.getPassiveAbilities()){
+				for(Unit u : units){
+					a.remove(u);
+				}
+				a.cast(c.getLocation());
+			}
+		}
 	}
 	
 	/** Gets the color for the given player */
