@@ -38,6 +38,14 @@ public class ModifierBundle implements Iterable<Modifier>{
 		}
 		return b;
 	}
+	
+	/** Returns true iff every modifier this bundle wraps is a dummy */
+	public boolean isDummyBundle(){
+		for(Modifier m : this){
+			if(! m.isDummy()) return false;
+		}
+		return true;
+	}
 
 	/** Returns an iterator voer the modifers in this Bundle */
 	@Override

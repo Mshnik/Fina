@@ -52,6 +52,11 @@ public abstract class Combatant extends MovingUnit {
 		canFight = true;
 	}
 	
+	/** Refreshes just attack. Can be done mid-turn if by effect */
+	public void refreshAttack(){
+		canFight = true;
+	}
+	
 	/** Combatants can only move if they haven't fought already */
 	@Override
 	public boolean canMove(){

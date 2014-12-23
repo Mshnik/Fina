@@ -83,6 +83,9 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	 */
 	private int[] abilityChoices;
 	
+	/** The abilities the commander has cast this turn */
+	private LinkedList<Ability> currentTurnCasts;
+	
 	/** Constructor for Commander.
 	 * Also adds this unit to the tile it is on as an occupant, and
 	 * its owner as a unit that player owns,
@@ -100,6 +103,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 		super(owner, name, 0, 0, startingTile, stats);
 		level = 1;		
 		research = 0;
+		currentTurnCasts = new LinkedList<Ability>();
 		setMana(START_MANA);
 		setHealth(getMaxHealth(), this);
 		
@@ -115,6 +119,13 @@ public abstract class Commander extends MovingUnit implements Summoner{
 		throw new RuntimeException("Can't clone commander " + this);
 	}
 
+	/** Adds clearing currentTurnCasts to super's refresh for turn */
+	@Override
+	public void refreshForTurn(){
+		super.refreshForTurn();
+		currentTurnCasts.clear();
+	}
+	
 	/** Commanders can always summon */
 	@Override
 	public boolean canSummon(){
@@ -315,5 +326,10 @@ public abstract class Commander extends MovingUnit implements Summoner{
 			abilities.add(getAbility(i));
 		}
 		return abilities;
+	}
+	
+	/** Returns the abilities this commander has cast this turn */
+	public LinkedList<Ability> getAbilitiesCastThisTurn(){
+		return new LinkedList<Ability>(currentTurnCasts);
 	}
 }

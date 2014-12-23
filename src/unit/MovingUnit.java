@@ -51,6 +51,11 @@ public abstract class MovingUnit extends Unit{
 		movement = getMovementCap();
 	}
 	
+	/** Refreshes Just movement. Can be done mid-turn for effect purposes */
+	public void refreshMovement(){
+		movement = getMovementCap();
+	}
+	
 	//MOVEMENT
 	/** Returns iff this can move */
 	public boolean canMove(){

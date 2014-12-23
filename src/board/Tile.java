@@ -121,5 +121,10 @@ public class Tile implements Comparable<Tile>, MatrixElement{
 	public int getCol() {
 		return col;
 	}
+	
+	/** Returns the location of this as a Point in (col, row) form */
+	public MPoint getPoint(){
+		return new MPoint(row, col);
+	}
 
 }

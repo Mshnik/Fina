@@ -9,7 +9,6 @@ import board.Tile;
 import unit.Combatant;
 import unit.Commander;
 import unit.ability.Ability;
-import unit.modifier.Modifier;
 import unit.modifier.ModifierBundle;
 import unit.stat.Stat;
 import unit.stat.StatType;

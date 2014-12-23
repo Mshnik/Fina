@@ -202,7 +202,7 @@ public abstract class Unit{
 	 * @param deltaHealth - amount to change health by.
 	 * @param source - the unit causing this change in health
 	 */
-	protected void changeHealth(int deltaHealth, Unit source){
+	public void changeHealth(int deltaHealth, Unit source){
 		health += deltaHealth;
 		health = Math.min(health, getMaxHealth());
 		if(health <= 0) died(source);
@@ -326,7 +326,14 @@ public abstract class Unit{
 	 * from its original base stats. Called by modifier during construction.
 	 * Returns true if the modifier was applied, false otw */
 	public boolean addModifier(Modifier m){
-		if(modifierOk(m) && ( m.stackable || (! m.cloneInCollection(modifiers)))){
+		if(modifierOk(m)){
+			if(! m.stackable){ //Kill all clones before applying this modifier
+				while(true){
+					Modifier clone = m.cloneInCollection(modifiers);
+					if(clone == null) break;
+					clone.kill();
+				}
+			}
 			modifiers.add(m);
 			refreshStats();
 			return true;

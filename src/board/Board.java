@@ -58,6 +58,11 @@ public class Board implements Iterable<Tile>{
 
 		return tiles[r][c];
 	}
+	
+	/** Returns the tile at the given location. Loc expected in (col, row). */
+	public Tile getTileAt(MPoint loc){
+		return getTileAt(loc.row, loc.col);
+	}
 
 	/** Return the tile in the given direction from this tile.
 	 * If oob, returns null or if direction invalid.

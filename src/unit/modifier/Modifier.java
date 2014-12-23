@@ -78,16 +78,17 @@ public abstract class Modifier {
 		if(ok) source.addGrantedModifier(this);
 	}
 	
-	/** Returns true if another copy of this exists within the given collection
+	/** Returns a copy if another copy of this exists within the given collection
 	 * Checks each member of the given collection for having the same clonedFrom as this.
+	 * Otherwise returns null
 	 * If this is a dummy, throws runtimeException
 	 */
-	public boolean cloneInCollection(Collection<? extends Modifier> elms) throws RuntimeException{
+	public Modifier cloneInCollection(Collection<? extends Modifier> elms) throws RuntimeException{
 		if(isDummy()) throw new RuntimeException("Can't check if dummy is in list");
 		for(Modifier m : elms){
-			if(m.clonedFrom == clonedFrom) return true;
+			if(m.clonedFrom == clonedFrom) return m;
 		}
-		return false;
+		return null;
 	}
 	
 	/** Returns true if this is a dummy (unit is null ) */
