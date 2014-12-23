@@ -56,7 +56,10 @@ public abstract class Ability {
 		this.name = name;
 		this.appliesToAllied = appliesToAllied;
 		this.appliesToFoe = appliesToFoe;
-		this.effectCloud = new HashSet<MPoint>(cloud);
+		if(cloud != null)
+			this.effectCloud = new HashSet<MPoint>(cloud);
+		else
+			this.effectCloud = null;
 		this.caster = caster;
 		if(manaCost > 0){
 			this.manaCost = manaCost;

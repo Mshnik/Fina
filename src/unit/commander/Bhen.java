@@ -67,12 +67,12 @@ public class Bhen extends Commander {
 
 	@Override
 	public String getImgFilename() {
-		return null;
+		return "link.png";
 	}
 
 	@Override
 	public Ability[] getPossibleAbilities(int level) {
-		return ABILITIES[level];
+		return ABILITIES[level - 1];
 	}
 
 }

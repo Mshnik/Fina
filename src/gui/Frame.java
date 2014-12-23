@@ -6,6 +6,7 @@ import java.awt.Color;
 import javax.swing.JFrame;
 
 import unit.Unit;
+import unit.commander.Bhen;
 import unit.dummy.*;
 import game.*;
 import gui.panel.GamePanel;
@@ -178,7 +179,7 @@ public class Frame extends JFrame {
 	    
 	    Game g = new Game(new Board(t), false);
 	    Player p1 = new HumanPlayer(g, Color.green);
-	    new DummyCommander(p1, g.board.getTileAt(0, 0));
+	    new Bhen(p1, g.board.getTileAt(0, 0));
 	    Player p2 = new HumanPlayer(g, Color.magenta);
 	    new DummyCommander(p2, g.board.getTileAt(7, 14));
 

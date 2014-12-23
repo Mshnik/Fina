@@ -71,11 +71,6 @@ public class DummyCommander extends Commander {
 	}
 
 	@Override
-	public List<ModifierBundle> getCommanderGrantingModifiers() {
-		return new LinkedList<ModifierBundle>();
-	}
-
-	@Override
 	public Ability[] getPossibleAbilities(int level) {
 		return null;
 	}

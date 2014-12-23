@@ -7,6 +7,8 @@ import game.Player;
 import board.Terrain;
 import board.Tile;
 import unit.buildings.*;
+import unit.commander.Bhen;
+import unit.modifier.CustomModifier;
 import unit.modifier.Modifier;
 import unit.modifier.StatModifier;
 import unit.stat.StatType;
@@ -108,6 +110,10 @@ public abstract class Building extends Unit {
 			return s != StatType.ATTACK && s != StatType.ATTACK_RANGE && s != StatType.ATTACK_TYPE
 					&& s != StatType.MOVEMENT_TOTAL && s != StatType.GRASS_COST && s != StatType.WOODS_COST
 					&& s != StatType.MOUNTAIN_COST;
+		}
+		if(m instanceof CustomModifier){
+			if(m.name.equals(Bhen.ABILITY_NAMES[0][0])) //Buildings can't move
+				return false;
 		}
 		return false;
 	}

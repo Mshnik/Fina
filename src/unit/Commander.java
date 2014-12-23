@@ -8,6 +8,8 @@ import java.util.Map;
 
 import unit.ability.Ability;
 import unit.combatant.FileCombatant;
+import unit.commander.Bhen;
+import unit.modifier.CustomModifier;
 import unit.modifier.Modifier;
 import unit.modifier.ModifierBundle;
 import unit.modifier.StatModifier;
@@ -264,6 +266,10 @@ public abstract class Commander extends MovingUnit implements Summoner{
 			return s != StatType.ATTACK && s != StatType.ATTACK_RANGE &&
 				s != StatType.ATTACK_TYPE;
 		}
+		if(m instanceof CustomModifier){
+			if(m.name.equals(Bhen.ABILITY_NAMES[0][0])) //Commanders can't attack
+				return false;
+		}
 		return false;
 	}
 
@@ -311,7 +317,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	public Ability getAbility(int level){
 		if(level > getLevel())
 			return null;
-		return getPossibleAbilities(level)[abilityChoices[level]];
+		return getPossibleAbilities(level)[abilityChoices[level - 1]];
 	}
 	
 	/** Returns all abilities this Commander currently has access to. 

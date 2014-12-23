@@ -15,6 +15,7 @@ import gui.ImageIndex;
 import javax.swing.JPanel;
 
 import unit.*;
+import unit.modifier.Modifier;
 import unit.stat.Stat;
 import unit.stat.Stats;
 
@@ -104,7 +105,15 @@ public class InfoPanel extends JPanel{
 				drawStat(g2d, s, x, y);
 				y += infoFont;
 			}
+			g2d.drawString("Modifiers: ", x, y);
+			String modString = "";
+			for(Modifier m : unit.getModifiers()){
+				modString += m.name + " ";
+			}
+			g2d.drawString(modString, x + 145, y);
+			
 			x += xInc;
+			//Draw modifier list along bottom
 			y = YMARGIN;
 			for(Stat s : stats.getAttackStatsList()){
 				drawStat(g2d, s, x, y);
