@@ -34,13 +34,13 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	/** Amount of mana per turn gained per level */
 	public static final int LEVELUP_MANAPT = 250;
 
-	protected static final StatModifier LEVELUP_MANA_BUFF = 
-			new StatModifier("Level Up Mana", Integer.MAX_VALUE, true, StatType.MANA_PER_TURN, 
-					StatModifier.ModificationType.ADD, LEVELUP_MANAPT);
-
-	protected static final StatModifier LEVELUP_HEALTH_BUFF = 
-			new StatModifier("Level Up Health", Integer.MAX_VALUE, true, StatType.MAX_HEALTH, 
-					StatModifier.ModificationType.ADD, LEVELUP_HEALTH);
+	protected static final ModifierBundle LEVELUP = 
+			new ModifierBundle(
+					new StatModifier("Level Up Mana", Integer.MAX_VALUE, true, StatType.MANA_PER_TURN, 
+							StatModifier.ModificationType.ADD, LEVELUP_MANAPT),
+					new StatModifier("Level Up Health", Integer.MAX_VALUE, true, StatType.MAX_HEALTH, 
+							StatModifier.ModificationType.ADD, LEVELUP_HEALTH)
+			);			
 
 
 	/** The amount of research required to get to the next level for free.
@@ -53,7 +53,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	public static final int MAX_LEVEL = RESEARCH_REQS.length + 1;
 
 	/** The ratio of manaCost -> research for the owner of the killing unit */
-	public static final double MANA_COST_TO_RESEARCH_RATIO = 0.4;
+	public static final double MANA_COST_TO_RESEARCH_RATIO = 3;
 
 	/** The extra defense (applied first) against ranged units granted to commanders */
 	public static final double RANGED_DEFENSE = 0.5;
@@ -222,8 +222,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	private void levelUp(){
 		research = 0;
 		level++;
-		new StatModifier(this, this, LEVELUP_HEALTH_BUFF);
-		new StatModifier(this, this, LEVELUP_MANA_BUFF);
+		LEVELUP.clone(this, this);
 		setHealth(getHealth() + LEVELUP_HEALTH, this);
 		owner.updateManaPerTurn();
 		owner.game.getFrame().repaint();

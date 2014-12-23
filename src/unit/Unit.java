@@ -96,8 +96,7 @@ public abstract class Unit{
 		}
 		
 		if(owner != null) {
-			if(owner.getLevel() < level)
-				throw new RuntimeException(owner + " can't summon unit with higher level than it");
+
 			if(! (this instanceof Commander)){
 				owner.getCommander().addMana(Math.min(0,-manaCost));
 				for(Modifier m : owner.getCommander().getCommanderGrantingModifiers()){
@@ -105,6 +104,8 @@ public abstract class Unit{
 				}
 			}
 			owner.addUnit(this);
+			if(owner.getLevel() < level)
+				throw new RuntimeException(owner + " can't summon unit with higher level than it");
 			this.level = level;
 		} else{
 			this.level = level;

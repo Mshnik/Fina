@@ -3,8 +3,11 @@ package unit;
 import java.util.Collection;
 
 /** A Modifier for a unit - a buff or nerf, etc. */
-public abstract class Modifier {
+public class Modifier {
 
+	/** The bundle this is a member of, if any */
+	ModifierBundle bundle;
+	
 	/** The name of this modifier */
 	public final String name;
 	
@@ -61,8 +64,15 @@ public abstract class Modifier {
 		clonedFrom = dummy;
 	}
 	
-	/** Clones a copy of this. Should fully produce a clone of this, and do unit attaching. */
-	public abstract Modifier clone(Unit unit, Unit source);
+	/** Clones a copy of this. Should fully produce a clone of this, and do unit attaching.
+	 * Must be overriden in subclasses to use their constructors instead */
+	public Modifier clone(Unit unit, Unit source){
+		if(this.getClass() != Modifier.class){
+			throw new RuntimeException("Clone method of " + this + " not overriden in subclass");
+		}
+		
+		return new Modifier(unit, source, this);
+	}
 	
 	/** Call when construction of a non-dummy instance is done - adds to affected unit */
 	protected void attachToUnit(){

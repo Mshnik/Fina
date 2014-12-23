@@ -55,6 +55,10 @@ public final class StatModifier extends Modifier {
 	/** Returns a StatModifier clone of this with the given unit and source */
 	@Override
 	public Modifier clone(Unit unit, Unit source) {
+		if(this.getClass() != StatModifier.class){
+			throw new RuntimeException("Clone method of " + this + " not overriden in subclass");
+		}
+		
 		return new StatModifier(unit, source, this);
 	}
 }
