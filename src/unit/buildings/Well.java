@@ -3,10 +3,10 @@ package unit.buildings;
 import game.Player;
 import board.Tile;
 import unit.Building;
-import unit.Stat;
-import unit.StatType;
 import unit.Unit;
-import unit.Stats;
+import unit.stat.Stat;
+import unit.stat.StatType;
+import unit.stat.Stats;
 
 /** A Well is a building that grants its owner mana per turn
  * as long as it is controlled.

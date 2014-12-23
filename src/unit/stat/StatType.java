@@ -1,4 +1,6 @@
-package unit;
+package unit.stat;
+
+import unit.AttackType;
 
 /** The different stats that are present in a unitstats */
 public enum StatType{

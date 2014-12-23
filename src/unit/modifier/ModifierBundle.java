@@ -1,7 +1,9 @@
-package unit;
+package unit.modifier;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import unit.Unit;
 
 public class ModifierBundle implements Iterable<Modifier>{
 

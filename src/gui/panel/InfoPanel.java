@@ -15,6 +15,8 @@ import gui.ImageIndex;
 import javax.swing.JPanel;
 
 import unit.*;
+import unit.stat.Stat;
+import unit.stat.Stats;
 
 public class InfoPanel extends JPanel{
 	/***/

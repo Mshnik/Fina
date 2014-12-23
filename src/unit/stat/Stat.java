@@ -1,4 +1,4 @@
-package unit;
+package unit.stat;
 
 import java.util.Objects;
 

@@ -7,6 +7,11 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import unit.modifier.Modifier;
+import unit.modifier.ModifierBundle;
+import unit.stat.StatType;
+import unit.stat.Stats;
+
 import game.Player;
 import board.Terrain;
 import board.Tile;
@@ -99,7 +104,7 @@ public abstract class Unit{
 
 			if(! (this instanceof Commander)){
 				owner.getCommander().addMana(Math.min(0,-manaCost));
-				for(Modifier m : owner.getCommander().getCommanderGrantingModifiers()){
+				for(ModifierBundle m : owner.getCommander().getCommanderGrantingModifiers()){
 					m.clone(this, owner.getCommander());
 				}
 			}
@@ -320,7 +325,7 @@ public abstract class Unit{
 	/** Adds a new modifier to this unit. Also updates stats with the new modifiers,
 	 * from its original base stats. Called by modifier during construction.
 	 * Returns true if the modifier was applied, false otw */
-	boolean addModifier(Modifier m){
+	public boolean addModifier(Modifier m){
 		if(modifierOk(m) && ( m.stackable || (! m.cloneInCollection(modifiers)))){
 			modifiers.add(m);
 			refreshStats();
@@ -333,7 +338,7 @@ public abstract class Unit{
 	/** Removes the given modifier from this unit. Also updates stats with new modifier
 	 * from its original base stats. Called by modifier on death.
 	 * Returns true if the modifier was applied, false otw */
-	boolean removeModifier(Modifier m){
+	public boolean removeModifier(Modifier m){
 		if(modifiers.contains(m)){
 			modifiers.remove(m);
 			refreshStats();
@@ -351,12 +356,12 @@ public abstract class Unit{
 	}
 	
 	/** Adds the given modifier to the modifiers this is granting. Called by modifier on construciton */
-	void addGrantedModifier(Modifier m){
+	public void addGrantedModifier(Modifier m){
 		grantedModifiers.add(m);
 	}
 	
 	/** Removes the given modifier from its designated unit. Called by modifier on death */
-	void removeGrantedModifier(Modifier m){
+	public void removeGrantedModifier(Modifier m){
 		grantedModifiers.remove(m);
 	}
 	

@@ -1,4 +1,7 @@
-package unit;
+package unit.modifier;
+
+import unit.Unit;
+import unit.stat.StatType;
 
 public final class StatModifier extends Modifier {
 
@@ -47,8 +50,8 @@ public final class StatModifier extends Modifier {
 		attachToUnit();
 	}
 	
-	/** Returns the mod val - for what to do with it, see modType */
-	Object getModVal(){
+	/** Returns the mod val - for what to do with it, see modType. Don't modify this, plz */
+	public Object getModVal(){
 		return val;
 	}
 

@@ -1,4 +1,4 @@
-package unit;
+package unit.stat;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import unit.AttackType;
+import unit.modifier.Modifier;
+import unit.modifier.StatModifier;
 import util.Mth;
 
 /** Holder for the stats for a unit.

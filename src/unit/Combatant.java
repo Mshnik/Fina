@@ -2,6 +2,11 @@ package unit;
 
 import java.util.ArrayList;
 
+import unit.modifier.Modifier;
+import unit.modifier.StatModifier;
+import unit.stat.StatType;
+import unit.stat.Stats;
+
 import game.Player;
 import board.Tile;
 

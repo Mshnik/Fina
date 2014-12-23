@@ -14,10 +14,10 @@ import board.Terrain;
 import board.Tile;
 import unit.AttackType;
 import unit.Combatant;
-import unit.Stat;
-import unit.StatType;
 import unit.Unit;
-import unit.Stats;
+import unit.stat.Stat;
+import unit.stat.StatType;
+import unit.stat.Stats;
 import util.TextIO;
 
 /** A FileUnit is a combatant read in from file.

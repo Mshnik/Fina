@@ -6,11 +6,11 @@ import game.Player;
 import board.Terrain;
 import board.Tile;
 import unit.Building;
-import unit.Stat;
-import unit.StatType;
 import unit.Summoner;
 import unit.Unit;
-import unit.Stats;
+import unit.stat.Stat;
+import unit.stat.StatType;
+import unit.stat.Stats;
 
 public class Baracks extends Building implements Summoner{
 

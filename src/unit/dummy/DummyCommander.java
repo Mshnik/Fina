@@ -8,10 +8,12 @@ import java.util.List;
 import board.Tile;
 import unit.Combatant;
 import unit.Commander;
-import unit.Modifier;
-import unit.Stat;
-import unit.StatType;
-import unit.Stats;
+import unit.ability.Ability;
+import unit.modifier.Modifier;
+import unit.modifier.ModifierBundle;
+import unit.stat.Stat;
+import unit.stat.StatType;
+import unit.stat.Stats;
 
 public class DummyCommander extends Commander {
 
@@ -70,8 +72,13 @@ public class DummyCommander extends Commander {
 	}
 
 	@Override
-	public List<Modifier> getCommanderGrantingModifiers() {
-		return new LinkedList<Modifier>();
+	public List<ModifierBundle> getCommanderGrantingModifiers() {
+		return new LinkedList<ModifierBundle>();
+	}
+
+	@Override
+	public Ability[] getPossibleAbilities(int level) {
+		return null;
 	}
 
 }

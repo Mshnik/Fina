@@ -2,10 +2,17 @@ package unit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import unit.ability.Ability;
 import unit.combatant.FileCombatant;
+import unit.modifier.Modifier;
+import unit.modifier.ModifierBundle;
+import unit.modifier.StatModifier;
+import unit.stat.StatType;
+import unit.stat.Stats;
 
 import game.Player;
 import board.Terrain;
@@ -71,6 +78,11 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	 * Always in the range [0, RESEARCH_REQS[level-1]] */
 	private int research;
 
+	/** Abilities this commander has picked. each index is -1 before a commander has reached
+	 * that level
+	 */
+	private int[] abilityChoices;
+	
 	/** Constructor for Commander.
 	 * Also adds this unit to the tile it is on as an occupant, and
 	 * its owner as a unit that player owns,
@@ -86,10 +98,15 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	public Commander(String name, Player owner, Tile startingTile, Stats stats)
 			throws RuntimeException, IllegalArgumentException {
 		super(owner, name, 0, 0, startingTile, stats);
-		level = 1;
+		level = 1;		
 		research = 0;
 		setMana(START_MANA);
 		setHealth(getMaxHealth(), this);
+		
+		abilityChoices = new int[MAX_LEVEL];
+		for(int i = 1; i < MAX_LEVEL; i++){ //leave abilityChoices[0] = 0
+			abilityChoices[i] = -1;
+		}
 	}
 
 	/** Throws a runtime exception - commanders are not clonable */
@@ -242,7 +259,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	//SUMMONING
 	/** Returns a list of modifiers to be applied to all units this owns. Can be empty.
 	 * Should be a list of dummy modifiers that will be copied to all new units upon construction */
-	public abstract List<Modifier> getCommanderGrantingModifiers();
+	public abstract List<ModifierBundle> getCommanderGrantingModifiers();
 	
 	/** Returns a dummy unit for the given name, if possible (otherwise null ) */
 	public Unit getUnitByName(String name){
@@ -274,6 +291,29 @@ public abstract class Commander extends MovingUnit implements Summoner{
 			}
 		}
 		return units;
-
+	}
+	
+	//ABILITIES
+	/** Returns the possible abilities for the given level. Note that the 
+	 * incoming levels are 1 indexed, so keep that in mind */
+	public abstract Ability[] getPossibleAbilities(int level);
+	
+	/** Returns the ability chosen for the given level. This is an ability the commander
+	 * actually has access to. Will return null if the input is greater than the current level
+	 */
+	public Ability getAbility(int level){
+		if(level > getLevel())
+			return null;
+		return getPossibleAbilities(level)[abilityChoices[level]];
+	}
+	
+	/** Returns all abilities this Commander currently has access to. 
+	 */
+	public List<Ability> getAbilities(){
+		LinkedList<Ability> abilities = new LinkedList<Ability>();
+		for(int i = 1; i <= getLevel(); i++){
+			abilities.add(getAbility(i));
+		}
+		return abilities;
 	}
 }

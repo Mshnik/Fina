@@ -2,6 +2,9 @@ package unit;
 
 import java.util.LinkedList;
 
+import unit.stat.StatType;
+import unit.stat.Stats;
+
 
 import board.*;
 import game.Player;

@@ -3,7 +3,13 @@ package unit.buildings;
 import game.Player;
 import board.Tile;
 import unit.*;
-import unit.StatModifier.ModificationType;
+import unit.modifier.Modifier;
+import unit.modifier.ModifierBundle;
+import unit.modifier.StatModifier;
+import unit.modifier.StatModifier.ModificationType;
+import unit.stat.Stat;
+import unit.stat.StatType;
+import unit.stat.Stats;
 
 public class Temple extends Building {
 	

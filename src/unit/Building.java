@@ -7,6 +7,10 @@ import game.Player;
 import board.Terrain;
 import board.Tile;
 import unit.buildings.*;
+import unit.modifier.Modifier;
+import unit.modifier.StatModifier;
+import unit.stat.StatType;
+import unit.stat.Stats;
 
 /** Represents a Building on the board, controllable by a player */
 public abstract class Building extends Unit {
