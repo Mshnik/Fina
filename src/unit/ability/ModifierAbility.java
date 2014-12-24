@@ -4,6 +4,7 @@ import java.util.Set;
 import board.MPoint;
 import unit.Commander;
 import unit.Unit;
+import unit.modifier.Modifier;
 import unit.modifier.ModifierBundle;
 
 public class ModifierAbility extends Ability {
@@ -51,4 +52,12 @@ public class ModifierAbility extends Ability {
 		return modifiers.isAffecting(u);
 	}
 	
+	@Override
+	public String toStringLong(){
+		String s = toStringShort() + ": [";
+		for(Modifier m : modifiers){
+			s += m.toStringShort() + " ";
+		}
+		return s + "]";
+	}	
 }

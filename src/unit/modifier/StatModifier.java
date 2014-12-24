@@ -64,5 +64,15 @@ public final class StatModifier extends Modifier {
 		
 		return new StatModifier(unit, source, this);
 	}
+	
+	@Override
+	public String toStringLong(){
+		return toStringShort() + " " + modifiedStat +":" + modType + " " + val;
+	}
+	
+	@Override
+	public String toStringFull(){
+		return toStringShort() + " " + modifiedStat +":" + modType + " " + val;
+	}
 }
 

@@ -20,7 +20,7 @@ import board.Board;
  * @author MPatashnik
  *
  */
-public class Game implements Runnable{
+public class Game implements Runnable, Stringable{
 
 	/** Text for canceling a decision */
 	public static final String CANCEL = "Cancel";
@@ -206,5 +206,38 @@ public class Game implements Runnable{
 		players.remove(0);
 		players.add(p);
 		index = (index + 1) % players.size();
+	}
+	
+	@Override
+	public String toString(){
+		String s = "Game of ";
+		for(Player p : players){
+			s += p.toStringLong() + (remainingPlayers.get(p) ? "=Alive" : "=Dead") + " ";
+		}
+		return s;
+	}
+
+	@Override
+	public String toStringShort() {
+		return players.size() + "-Player Game";
+	}
+
+	@Override
+	public String toStringLong() {
+		String s = "Game of ";
+		for(Player p : players){
+			s += p.toStringLong() + (remainingPlayers.get(p) ? "=Alive" : "=Dead") + " ";
+		}
+		return s;
+	}
+
+	@Override
+	public String toStringFull() {
+		String s = "Game of ";
+		for(Player p : players){
+			s += p.toStringLong() + (remainingPlayers.get(p) ? "=Alive" : "=Dead") + " ";
+		}
+		s += "Fog Of War=" + (fogOfWar ? "On" : "Off") + board.toStringLong();
+		return s;
 	}
 }

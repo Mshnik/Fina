@@ -20,6 +20,9 @@ public enum AttackType {
 		}
 	}
 	
+	/** Returns the abbreviated string (one char) from the given attack type
+	 * @return - either "p" - Physical, "m" - Magic, "t" - true, No Attack - "n"
+	 */
 	public static String getAbbrevString(AttackType t){
 		switch(t){
 		case MAGIC:		return "m";

@@ -3,7 +3,6 @@ package unit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import unit.ability.Ability;
@@ -365,5 +364,16 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	/** Returns the abilities this commander has cast this turn */
 	public LinkedList<Ability> getAbilitiesCastThisTurn(){
 		return new LinkedList<Ability>(currentTurnCasts);
+	}
+	
+	@Override
+	public String toStringFull(){
+		String s = super.toStringFull();
+		s += " Mana =" + getMana();
+		s += " Level =" + getLevel() + " and " + getResearch() + "/" + getResearchRequirement() + " ";
+		for(Ability a : getAbilities()){
+			s += a.toStringShort() + " ";
+		}
+		return s;
 	}
 }

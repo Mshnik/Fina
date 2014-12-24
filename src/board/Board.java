@@ -1,5 +1,6 @@
 package board;
 
+import game.Stringable;
 import gui.decision.PathSelector;
 import gui.decision.SummonSelector;
 
@@ -19,7 +20,7 @@ import unit.MovingUnit;
  * @author MPatashnik
  *
  */
-public class Board implements Iterable<Tile>{
+public class Board implements Iterable<Tile>, Stringable{
 
 	/** The tiles that make up this board. Must be rectangular (non-jagged) */
 	private Tile[][] tiles;
@@ -226,6 +227,35 @@ public class Board implements Iterable<Tile>{
 			throw new RuntimeException("Remove Operation Not Supported in Board Iterators");
 		}
 
+	}
+	
+	@Override
+	public String toString(){
+		return "Board of size " + getWidth() + "x" + getHeight();
+	}
+
+	@Override
+	public String toStringShort() {
+		return "Board of size " + getWidth() + "x" + getHeight();
+	}
+
+	@Override
+	public String toStringLong() {
+		return "Board of size " + getWidth() + "x" + getHeight();
+	}
+
+	@Override
+	public String toStringFull() {
+		String s = "Board of size " + getWidth() + "x" + getHeight() + ":";
+		s += "[";
+		for(int i = 0; i < getHeight(); i++){
+			s += "[";
+			for(int j = 0; j < getWidth(); j++){
+				s += tiles[i][j].toStringLong() + " ";
+			}
+			s += "] ";
+		}
+		return s + "]";
 	}
 
 

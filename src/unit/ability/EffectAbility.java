@@ -77,5 +77,15 @@ public class EffectAbility extends Ability {
 	public boolean isAffecting(Unit u) {
 		throw new UnsupportedOperationException("Can't check isAffecting EffectAbility on Unit");
 	}
+	
+	@Override
+	public String toStringLong(){
+		return toStringShort() + " : " + type + " " + magnitude;
+	}
+	
+	@Override
+	public String toStringFull(){
+		return toStringShort() + " : " + type + " " + magnitude;
+	}
 
 }

@@ -1,6 +1,7 @@
 package board;
 
 import game.MatrixElement;
+import game.Stringable;
 import unit.Unit;
 
 /** A Tile is a single square in the board.
@@ -10,7 +11,7 @@ import unit.Unit;
  * @author MPatashnik
  *
  */
-public class Tile implements Comparable<Tile>, MatrixElement{
+public class Tile implements Comparable<Tile>, MatrixElement, Stringable{
 
 	/** The board this belongs to */
 	public final Board board;
@@ -52,11 +53,6 @@ public class Tile implements Comparable<Tile>, MatrixElement{
 		if(row < other.row) return -1;
 		else if(row > other.row) return 1;
 		else return col - other.col;
-	}
-
-	/** ToString implementation - shows basic info of Tile. Remains brief to be useful in debugging */
-	public String toString(){
-		return "(" + row + "," + col + "):" + terrain; 
 	}
 
 	/** Return the Manhattan (only udlr) distance from this to other *
@@ -125,6 +121,29 @@ public class Tile implements Comparable<Tile>, MatrixElement{
 	/** Returns the location of this as a Point in (col, row) form */
 	public MPoint getPoint(){
 		return new MPoint(row, col);
+	}
+	
+	/** ToString implementation - shows basic info of Tile. Remains brief to be useful in debugging */
+	public String toString(){
+		return getPoint().toString() + ":" + terrain; 
+	}
+
+	@Override
+	public String toStringShort() {
+		return getPoint().toString() + ":" + terrain;
+	}
+
+	@Override
+	public String toStringLong() {
+		return getPoint().toString() + ":" + terrain + ", " 
+				+ (isOccupied() ? "Unoccupied" : getOccupyingUnit().toStringShort());
+	}
+
+	@Override
+	public String toStringFull() {
+		return  getPoint().toString() + ":" + terrain + ", " 
+				+ (isOccupied() ? "Unoccupied" : getOccupyingUnit().toStringShort())
+				+ " in " + board.toStringShort();
 	}
 
 }

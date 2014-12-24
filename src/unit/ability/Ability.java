@@ -1,5 +1,7 @@
 package unit.ability;
 
+import game.Stringable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -12,7 +14,7 @@ import board.Tile;
 import unit.Commander;
 import unit.Unit;
 
-public abstract class Ability {
+public abstract class Ability implements Stringable{
 
 	/** The commander that owns this ability */
 	public final Commander caster;
@@ -143,5 +145,14 @@ public abstract class Ability {
 	
 	/** Removes from the given unit. If this is a one off ability this can be unsupported */
 	public abstract void remove(Unit u);
-
+	
+	@Override
+	public String toString(){
+		return name;
+	}
+	
+	@Override
+	public String toStringShort(){
+		return name + " - " + manaCost;
+	}
 }

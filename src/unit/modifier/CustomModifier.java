@@ -65,5 +65,15 @@ public class CustomModifier extends Modifier {
 	public Modifier clone(Unit unit, Unit source) {
 		return new CustomModifier(unit, source, this);
 	}
+	
+	@Override
+	public String toStringLong(){
+		return toStringShort() + " " + description;
+	}
+	
+	@Override
+	public String toStringFull(){
+		return toStringShort() + " " + description;
+	}
 
 }
