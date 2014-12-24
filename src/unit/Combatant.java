@@ -66,8 +66,7 @@ public abstract class Combatant extends MovingUnit {
 			return ((StatModifier) m).modifiedStat != StatType.SUMMON_RANGE;
 		}
 		if(m instanceof CustomModifier){
-			if(m.name.equals(Bhen.ABILITY_NAMES[0][0])) //Combatants can attack and move
-				return true;
+			return ((CustomModifier) m).appliesToCombatants;
 		}
 		return false;
 	}

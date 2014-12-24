@@ -4,6 +4,7 @@ import game.Player;
 
 import java.util.LinkedList;
 
+import board.MPoint;
 import board.Tile;
 import unit.Combatant;
 import unit.Commander;
@@ -11,6 +12,8 @@ import unit.ability.Ability;
 import unit.ability.ModifierAbility;
 import unit.modifier.CustomModifier;
 import unit.modifier.ModifierBundle;
+import unit.modifier.StatModifier;
+import unit.modifier.StatModifier.ModificationType;
 import unit.stat.Stat;
 import unit.stat.StatType;
 import unit.stat.Stats;
@@ -33,20 +36,31 @@ public class Bhen extends Commander {
 	
 	/** Ability names */
 	public static String[][] ABILITY_NAMES = {
-		{"Battle Fury"}
+		{"Battle Fury"},
+		{"Enrage"}
 	};
 	
 	/** Battle Fury Ability */
-	public final Ability BATTLE_FURY = new ModifierAbility(ABILITY_NAMES[0][0], 0, this, 0, true, true, false, null, 
+	private final Ability BATTLE_FURY = new ModifierAbility(ABILITY_NAMES[0][0], 0, this, 0, true, true, false, null, 
 			new ModifierBundle(
 					new CustomModifier(ABILITY_NAMES[0][0], "Units gain movement after killing unit", 
-							2, Integer.MAX_VALUE, false)
+							2, Integer.MAX_VALUE, false, false, false, true)
+			)
+	  );
+	
+	/** Enrage Ability */
+	private final Ability ENRAGE = new ModifierAbility(ABILITY_NAMES[1][0], 200, this, 0, true, true, false, 
+			MPoint.ORIGIN.radialCloud(2), 
+			new ModifierBundle(
+					new StatModifier(ABILITY_NAMES[1][0], 1, false, StatType.MOVEMENT_TOTAL, ModificationType.ADD, 4),
+					new StatModifier(ABILITY_NAMES[1][0], 1, false, StatType.ATTACK, ModificationType.ADD, 250)
 			)
 	  );
 	
 	/** Ability Choices */
 	public final Ability[][] ABILITIES = {
-		{BATTLE_FURY}
+		{BATTLE_FURY},
+		{ENRAGE}
 	};
 	
 	public Bhen(Player owner, Tile startingTile) throws RuntimeException, IllegalArgumentException {

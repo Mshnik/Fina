@@ -34,6 +34,9 @@ public abstract class Unit{
 
 	/** Text representing building (building summoning) */
 	public static final String BUILD = "Build";
+	
+	/** Text representing casting (Using active abilities) */
+	public static final String CAST = "Cast";
 
 	/** The name of this unit */
 	public final String name;
@@ -166,6 +169,13 @@ public abstract class Unit{
 	 * subclasses that can summon
 	 */
 	public boolean canSummon(){
+		return false;
+	}
+	
+	/** Returns true if this unit can cast this turn. Returns false, should be overriden by subclasses
+	 * that cast (Commanders)
+	 */
+	public boolean canCast(){
 		return false;
 	}
 

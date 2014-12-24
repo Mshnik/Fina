@@ -7,7 +7,6 @@ import game.Player;
 import board.Terrain;
 import board.Tile;
 import unit.buildings.*;
-import unit.commander.Bhen;
 import unit.modifier.CustomModifier;
 import unit.modifier.Modifier;
 import unit.modifier.StatModifier;
@@ -112,8 +111,7 @@ public abstract class Building extends Unit {
 					&& s != StatType.MOUNTAIN_COST;
 		}
 		if(m instanceof CustomModifier){
-			if(m.name.equals(Bhen.ABILITY_NAMES[0][0])) //Buildings can't move
-				return false;
+			return ((CustomModifier) m).appliesToBuildings;
 		}
 		return false;
 	}

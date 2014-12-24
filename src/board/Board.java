@@ -98,24 +98,10 @@ public class Board implements Iterable<Tile>{
 	 */
 	public ArrayList<Tile> getRadialCloud(Tile center, int radius){
 		ArrayList<Tile> tiles = new ArrayList<Tile>();
-		tiles.add(center);
-		int col = center.col;
-		int row = center.row; 
-		for(int r = radius; r >= 0; r--){
-			for(int i = 0; i < r; i++){
-				try{
-					tiles.add(getTileAt(row - r + i, col + i));
-				}catch(IllegalArgumentException e){}
-				try{
-					tiles.add(getTileAt(row + i, col + r - i));
-				}catch(IllegalArgumentException e){}
-				try{
-					tiles.add(getTileAt(row + r - i, col - i));
-				}catch(IllegalArgumentException e){}
-				try{
-					tiles.add(getTileAt(row - i, col -r + i));
-				}catch(IllegalArgumentException e){}
-			}
+		for(MPoint p : center.getPoint().radialCloud(radius)){
+			try{
+				tiles.add(getTileAt(p));
+			}catch(IllegalArgumentException e){}//OOB Tile - do nothing
 		}
 		Collections.sort(tiles);
 		return tiles;

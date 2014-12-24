@@ -39,6 +39,11 @@ public class ModifierBundle implements Iterable<Modifier>{
 		return b;
 	}
 	
+	/** Returns a copy of the list represented by this modifierBundle */
+	public LinkedList<Modifier> getModifiers(){
+		return new LinkedList<Modifier>(modifiers);
+	}
+	
 	/** Returns true iff the given unit is affected by modifiers cloned from this bundle
 	 */
 	public boolean isAffecting(Unit u){

@@ -9,6 +9,15 @@ import unit.Unit;
  */
 public class CustomModifier extends Modifier {
 
+	/** True if this applies to Buildings */
+	public final boolean appliesToBuildings;
+	
+	/** True iff this applies to Commanders */
+	public final boolean appliesToCommanders;
+	
+	/** True iff this applies to Combatants */
+	public final boolean appliesToCombatants;
+	
 	/** A description of this Modifier - what it does, etc */
 	public final String description;
 	
@@ -22,11 +31,18 @@ public class CustomModifier extends Modifier {
 	 * @param turns - the total duration of this modifier (turns after this one).
 	 * 					Can be Integer.MAX_VAL - interpreted as forever rather than the actual val
 	 * @param stackable - true iff this is stackable
+	 * @param buildings - true iff this modifier can apply to buildings
+	 * @param commanders - true iff this modifier can apply to commanders
+	 * @param combatants - true iff this modifier can apply to combatants
 	 */
-	public CustomModifier(String name, String description, Number val, int turns, boolean stackable) {
+	public CustomModifier(String name, String description, Number val, int turns, boolean stackable,
+			boolean buildings, boolean commanders, boolean combatants) {
 		super(name, turns, stackable);
 		this.description = description;
 		this.val = val;
+		this.appliesToBuildings = buildings;
+		this.appliesToCommanders = commanders;
+		this.appliesToCombatants = combatants;
 	}
 	
 	/** Constructor for cloning instances
@@ -38,6 +54,9 @@ public class CustomModifier extends Modifier {
 		super(unit, source, dummy);
 		this.description = dummy.description;
 		this.val = dummy.val;
+		this.appliesToBuildings = dummy.appliesToBuildings;
+		this.appliesToCombatants = dummy.appliesToCombatants;
+		this.appliesToCommanders = dummy.appliesToCommanders;
 		attachToUnit();
 	}
 

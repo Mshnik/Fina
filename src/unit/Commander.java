@@ -8,7 +8,6 @@ import java.util.Map;
 
 import unit.ability.Ability;
 import unit.combatant.FileCombatant;
-import unit.commander.Bhen;
 import unit.modifier.CustomModifier;
 import unit.modifier.Modifier;
 import unit.modifier.ModifierBundle;
@@ -132,6 +131,12 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	@Override
 	public boolean canSummon(){
 		return true;
+	}
+	
+	/** Commanders can also cast - but only if they have at least one active ability */
+	@Override
+	public boolean canCast(){
+		return ! getActiveAbilities().isEmpty();
 	}
 
 	/** Returns true if summoning a unit is currently ok - checks surrounding area for free space */
@@ -267,8 +272,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 				s != StatType.ATTACK_TYPE;
 		}
 		if(m instanceof CustomModifier){
-			if(m.name.equals(Bhen.ABILITY_NAMES[0][0])) //Commanders can't attack
-				return false;
+			return ((CustomModifier) m).appliesToCommanders;
 		}
 		return false;
 	}
