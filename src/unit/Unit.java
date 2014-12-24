@@ -8,10 +8,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import unit.modifier.Modifier;
+import unit.stat.Stat;
 import unit.stat.StatType;
 import unit.stat.Stats;
 
 import game.Player;
+import game.Stringable;
 import board.Terrain;
 import board.Tile;
 
@@ -21,7 +23,7 @@ import board.Tile;
  * @author MPatashnik
  *
  */
-public abstract class Unit{
+public abstract class Unit implements Stringable{
 
 	/** Text representing moving */
 	public static final String MOVE = "Move";
@@ -419,5 +421,30 @@ public abstract class Unit{
 			}
 		});
 		return arr;
+	}
+	
+	@Override
+	public String toString(){
+		return name;
+	}
+	
+	@Override
+	public String toStringShort(){
+		return name + " at " + location.toStringShort();
+	}
+	
+	@Override
+	public String toStringLong(){
+		return name + " at " + location.toStringShort() + "; " + health + "/" + getMaxHealth();
+	}
+	
+	@Override
+	public String toStringFull(){
+		String s = name + " at " + location.toStringShort() + "; " + health + "/" + getMaxHealth();
+		s += " Owned by " + owner.toStringShort();
+		for(Stat st : getStats()){
+			s += st.toString() + " ";
+		}
+		return s;
 	}
 }

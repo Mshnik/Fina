@@ -1,11 +1,13 @@
 package unit.modifier;
 
+import game.Stringable;
+
 import java.util.Collection;
 
 import unit.Unit;
 
 /** A Modifier for a unit - a buff or nerf, etc. */
-public abstract class Modifier {
+public abstract class Modifier implements Stringable{
 
 	/** The bundle this is a member of, if any */
 	ModifierBundle bundle;
@@ -119,5 +121,18 @@ public abstract class Modifier {
 			throw new RuntimeException("Can't kill a dummy modifier");
 		unit.removeModifier(this);
 		source.removeGrantedModifier(this);
+	}
+	
+	@Override
+	public String toString(){
+		return (isDummy() ? "Dummy Modifier" : 
+			(attached ? "Unattached Modifier " : "Modifier on" + unit.toString()));
+	}
+	
+	@Override
+	public String toStringShort(){
+		return (isDummy() ? "Dummy Modifier" : 
+			(attached ? "Unattached Modifier " : "Modifier on" + unit.toString()))
+			+ remainingTurns + " turns remaining";
 	}
 }

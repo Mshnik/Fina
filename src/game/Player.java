@@ -13,7 +13,7 @@ import unit.buildings.Temple;
  * @author MPatashnik
  *
  */
-public abstract class Player {
+public abstract class Player implements Stringable{
 
 	/** The Game this player is playing in */
 	public final Game game;
@@ -46,14 +46,6 @@ public abstract class Player {
 		units = new HashSet<Unit>();
 		temples = new ArrayList<Temple>();
 		visionCloud = new HashSet<Tile>();
-	}
-
-	/** A very simple toString that returns the player index of this player.
-	 * Can be overriden in subclasses for more specific behavior
-	 */
-	@Override
-	public String toString(){
-		return "Player " + index;
 	}
 
 	/** Returns true if it is this player's turn, false if some other player */
@@ -242,4 +234,30 @@ public abstract class Player {
 
 	/** Called by the someone (the player / the game) when this player's turn should end. */
 	public abstract void turnEnd();
+	
+	@Override
+	public String toString(){
+		return "Player " + index;
+	}
+	
+	@Override
+	public String toStringShort(){
+		return "Player " + index;
+	}
+	
+	@Override
+	public String toStringLong(){
+		return "Player " + index + " - " + commander.toStringShort();
+	}
+	
+	@Override
+	public String toStringFull(){
+		String s = "Player " + index + " - " + commander.toStringShort() + " in " + game.toStringShort()
+				+ " controlling ";
+		for(Unit u : units){
+			s += u.toStringShort() + " ";
+		}
+		return s;
+	}
+	
 }

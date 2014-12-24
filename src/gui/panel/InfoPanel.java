@@ -15,6 +15,7 @@ import gui.ImageIndex;
 import javax.swing.JPanel;
 
 import unit.*;
+import unit.ability.*;
 import unit.modifier.Modifier;
 import unit.stat.Stat;
 import unit.stat.Stats;
@@ -35,8 +36,11 @@ public class InfoPanel extends JPanel{
 	/** The game this InfoPanel is drawing info for */
 	public final Game game;
 	
-	/** The Tile (if any) this InfoPanel is currently drawing info for */
+	/** The Unit (if any) this InfoPanel is currently drawing info for */
 	private Unit unit;
+	
+	/** The Ability (if any) this InfoPanel is currently drawing info for */
+	private Ability ability;
 	
 	public InfoPanel(Game g, GamePanel gp){
 		game = g;
@@ -48,9 +52,22 @@ public class InfoPanel extends JPanel{
 		return unit;
 	}
 	
+	/** Returns the Ability this InfoPanel is currently drawing info for */
+	public Ability getAbility(){
+		return ability;
+	}
+	
 	/** Sets the unit this InfoPanel is to draw info for, and causes a repaint */
 	public void setUnit(Unit u){
 		unit = u;
+		ability = null;
+		repaint();
+	}
+	
+	/** Sets the unit this InfoPanel is to draw info for, and causes a repaint */
+	public void setAbility(Ability a){
+		unit = null;
+		ability = a;
 		repaint();
 	}
 	
@@ -80,7 +97,6 @@ public class InfoPanel extends JPanel{
 		
 		//Unit painting
 		if(unit != null){
-			
 			int x = 25;
 			final int xInc = 225;
 			
@@ -133,6 +149,14 @@ public class InfoPanel extends JPanel{
 			for(Stat s : stats.getMovementStatsList()){
 				drawStat(g2d, s, x, y);
 				y += infoFont;
+			}
+		}
+		//Ability painting
+		else if(ability != null){
+			if(ability instanceof ModifierAbility){
+				
+			} else if(ability instanceof EffectAbility){
+				
 			}
 		}
 	}

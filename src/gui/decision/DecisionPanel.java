@@ -184,4 +184,13 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	public int getElementWidth() {
 		return DECISION_WIDTH + (type == Type.SUMMON_DECISION ? 100 : 0);
 	}
+	
+	@Override
+	public String toString(){
+		String s = type + " Decision Panel";
+		for(Decision d : choices){
+			s += d.toString() + ", ";
+		}
+		return s.substring(0, s.length() - 2);
+	}
 }

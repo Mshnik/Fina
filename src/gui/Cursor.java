@@ -174,4 +174,10 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 	public boolean isActive(){
 		return this == panel.getFrame().getActiveCursor();
 	}
+	
+	/** Simple toString that works off of the toString of the selected element */
+	@Override
+	public String toString(){
+		return "Cursor on " + elm.toString();
+	}
 }
