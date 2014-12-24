@@ -35,6 +35,11 @@ public class ModifierAbility extends Ability {
 		this.modifiers = modifiers;
 	}
 
+	/** Returns the modifierBundle this is wrapping. No editing please! */
+	public ModifierBundle getModifiers(){
+		return modifiers;
+	}
+	
 	/** Applies this modifierAbility to the given unit */
 	@Override
 	protected void affect(Unit u) {

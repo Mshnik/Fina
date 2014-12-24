@@ -103,6 +103,15 @@ public abstract class Ability implements Stringable{
 			return cloud;
 		}
 	}
+	
+	/** Returns the size of the generic (unplaced) effectCloud. Returns Integer.MAX_VALUE if
+	 * it is null (infinite)
+	 */
+	public int getEffectCloudSize(){
+		if(effectCloud == null)
+			return Integer.MAX_VALUE;
+		return effectCloud.size();
+	}
 
 	/** Casts this ability. Returns true if this call is ok and cast happens, throws exception otherwise.
 	 * If this is passive, always cast with the commander's location as its location */

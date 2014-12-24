@@ -116,7 +116,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		repaint();
 	}
 
-	/** Moves the decision panel to accomidate the current location of the boardCursor *?
+	/** Moves the decision panel to accomidate the current location of the boardCursor *
 	 *
 	 */
 	private void moveDecisionPanel(){

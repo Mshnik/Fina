@@ -11,7 +11,17 @@ public final class StatModifier extends Modifier {
 	public enum ModificationType{
 		SET,
 		ADD,
-		MULTIPLY
+		MULTIPLY;
+		
+		/** Returns a symbol string that corresponds to this enum value */
+		public String toSymbolString(){
+			switch(this){
+			case ADD:		return "+";
+			case MULTIPLY:	return "*";
+			case SET:		return "->";
+			default:		return "";
+			}
+		}
 	}
 
 	/** The type of modification - set, add, mult */
@@ -66,13 +76,18 @@ public final class StatModifier extends Modifier {
 	}
 	
 	@Override
+	public String toStatString(){
+		return  modifiedStat +":" + modType.toSymbolString() + val;
+	}
+	
+	@Override
 	public String toStringLong(){
-		return toStringShort() + " " + modifiedStat +":" + modType + " " + val;
+		return toStringShort() + " " +toStatString();
 	}
 	
 	@Override
 	public String toStringFull(){
-		return toStringShort() + " " + modifiedStat +":" + modType + " " + val;
+		return toStringShort() + " " + toStatString();
 	}
 }
 

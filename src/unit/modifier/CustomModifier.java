@@ -67,6 +67,11 @@ public class CustomModifier extends Modifier {
 	}
 	
 	@Override
+	public String toStatString(){
+		return description;
+	}
+	
+	@Override
 	public String toStringLong(){
 		return toStringShort() + " " + description;
 	}

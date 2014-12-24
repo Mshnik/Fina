@@ -1,11 +1,12 @@
 package unit.modifier;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 import unit.Unit;
 
-public class ModifierBundle implements Iterable<Modifier>{
+public class ModifierBundle implements Iterable<Modifier>, Collection<Modifier>{
 
 	private LinkedList<Modifier> modifiers;
 	
@@ -20,10 +21,28 @@ public class ModifierBundle implements Iterable<Modifier>{
 		}
 	}
 	
-	/** Adds the given modifier to this bundle */
-	private void add(Modifier m){
+	/** Adds the given modifier to this bundle.
+	 * @throws IllegalArgumentException if m doesn't match other modifiers
+	 * already in this bundle in number of turns or stackability to prevent
+	 * bundles from breaking up */
+	public boolean add(Modifier m) throws IllegalArgumentException{
+		if(! modifiers.isEmpty()){
+			Modifier base = modifiers.get(0);
+			if(m.stackable != base.stackable || m.getRemainingTurns() != base.getRemainingTurns())
+				throw new IllegalArgumentException(m + " incompatible with " + this);
+		}
 		modifiers.add(m);
 		m.bundle = this;
+		return true;
+	}
+	
+	/** Safely removes the given modifier from this bundle as part of its kill() procedure
+	 * @throws IllegalArgumentException if m doesn't belong to this bundle */
+	void removeModifier(Modifier m) throws IllegalArgumentException{
+		if(m.bundle != this)
+			throw new IllegalArgumentException(m + " doesn't belong to " + this);
+		modifiers.remove(m);
+		m.bundle = null;
 	}
 	
 	/** Clones each modifier in this bundle and adds them to a new ModifierBundle.
@@ -78,6 +97,20 @@ public class ModifierBundle implements Iterable<Modifier>{
 		return modifiers.iterator();
 	}
 	
+	/** Returns the turns remaining in this bundle, which is hopefully constant throughout
+	 * modifiers in bundle.
+	 */
+	public int getTurnsRemaining(){
+		return modifiers.get(0).getRemainingTurns();
+	}
+	
+	/** Returns true iff modifiers in this bundle. Hopefully constant throughout.
+	 * 
+	 */
+	public boolean isStackable(){
+		return modifiers.get(0).stackable;
+	}
+	
 	/** Returns the toStrings of the modifiers in this bundle */
 	public String toString(){
 		String s = "";
@@ -85,5 +118,75 @@ public class ModifierBundle implements Iterable<Modifier>{
 			s += m.toString() + "  ";
 		}
 		return s;
+	}
+
+	@Override
+	public int size() {
+		return modifiers.size();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return modifiers.isEmpty();
+	}
+
+	@Override
+	public boolean contains(Object o) {
+		return modifiers.contains(o);
+	}
+
+	@Override
+	public Object[] toArray() {
+		return modifiers.toArray();
+	}
+
+	@Override
+	public <T> T[] toArray(T[] a) {
+		return modifiers.toArray(a);
+	}
+
+	/** Unsupported */
+	@Override
+	public boolean remove(Object o) {
+		throw new UnsupportedOperationException("Removal not supported by ModifierBundle");
+	}
+
+	@Override
+	public boolean containsAll(Collection<?> c) {
+		for(Object o : c){
+			if(! contains(o)) return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends Modifier> c) throws IllegalArgumentException{
+		for(Modifier m : c){
+			add(m);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> c) {
+		for(Object o : c){
+			remove(o);
+		}
+		return true;
+	}
+
+	/** Unsupported */
+	@Override
+	public boolean retainAll(Collection<?> c) {
+		throw new UnsupportedOperationException("Retention not supported in ModifierBundle");
+	}
+
+	/** Clears this bundle by killing all modifiers in it */
+	@Override
+	public void clear() {
+		for(Modifier m : getModifiers()){
+			m.kill();
+		}
+		modifiers.clear();
 	}
 }

@@ -115,13 +115,18 @@ public abstract class Modifier implements Stringable{
 	}
 
 	/** Kills this modifier - removes it from its source and its unit.
+	 * If already removed from unit and source
 	 * Throws exception if dummy*/
 	public void kill(){
 		if(isDummy())
 			throw new RuntimeException("Can't kill a dummy modifier");
 		unit.removeModifier(this);
 		source.removeGrantedModifier(this);
+		bundle.remove(this);
 	}
+	
+	/** Returns a stat string for InfoPanel painting. Subclass should finish implementation */
+	public abstract String toStatString();
 	
 	@Override
 	public String toString(){

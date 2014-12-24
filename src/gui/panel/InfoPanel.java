@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import unit.*;
 import unit.ability.*;
 import unit.modifier.Modifier;
+import unit.modifier.ModifierBundle;
 import unit.stat.Stat;
 import unit.stat.Stats;
 
@@ -32,6 +33,12 @@ public class InfoPanel extends JPanel{
 	
 	/** Distance (in pixels) between the top of the InfoPanel and the top of the bars */
 	private static final int YMARGIN = 35;
+	
+	/** Font for drawing title text */
+	private static final Font BIG_FONT = new Font(Frame.FONTNAME, Font.BOLD, 20);
+	
+	/** Font for drawing standard text */
+	private static final Font SMALL_FONT = new Font(Frame.FONTNAME, Font.BOLD, 16);
 	
 	/** The game this InfoPanel is drawing info for */
 	public final Game game;
@@ -89,11 +96,7 @@ public class InfoPanel extends JPanel{
 		g2d.setRenderingHint(
 				RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-		g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, 20));
-		
-		//Tile painting
-		//Stuff?
-		
+		g2d.setFont(BIG_FONT);
 		
 		//Unit painting
 		if(unit != null){
@@ -101,8 +104,8 @@ public class InfoPanel extends JPanel{
 			final int xInc = 225;
 			
 			g2d.drawString(unit.name, x, YMARGIN);
-			final int infoFont = 16;
-			g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, infoFont));
+			g2d.setFont(SMALL_FONT);
+			final int infoFont = SMALL_FONT.getSize();
 			g2d.drawString("(" + unit.getIdentifierString() + ")", x, YMARGIN + infoFont);
 			if(unit.owner != null)
 				g2d.drawString("Owned by " + unit.owner, x, YMARGIN + infoFont * 2);
@@ -153,10 +156,57 @@ public class InfoPanel extends JPanel{
 		}
 		//Ability painting
 		else if(ability != null){
+			int x = 25;
+			int y = YMARGIN;
+			final int xInc = 225;
+			g2d.drawString(ability.name, x, y);
+			final int fontSize = SMALL_FONT.getSize();
+			g2d.setFont(SMALL_FONT);
+			
+			y += fontSize;
+			if(ability.manaCost > 0){
+				g2d.drawString("Costs " + ability.manaCost + " Mana Per Use", x, y);
+				if(! ability.canBeCastMultipleTimes){
+					y += fontSize;
+					g2d.drawString("Can Only Be Cast Once Per Turn", x, y);
+				}
+			}
+			else
+				g2d.drawString("Passive Ability", x, y);
+			
+			y += fontSize;
+			int size = ability.getEffectCloudSize();
+			if(size == Integer.MAX_VALUE)
+				g2d.drawString("Affects Whole Board", x, y);
+			else
+				g2d.drawString("Affects Up To " + size + " Units", x, y);
+			
+			String affects = "";
+			if(ability.appliesToAllied)
+				affects += "Allied";
+			if(ability.appliesToAllied && ability.appliesToFoe)
+				affects += " and ";
+			if(ability.appliesToFoe)
+				affects += "Enemy";
+			
+			y+= fontSize;
+			g2d.drawString("Affects " + affects + " Units", x, y);
+			
+			x += xInc;
 			if(ability instanceof ModifierAbility){
-				
+				ModifierBundle mod = ((ModifierAbility)ability).getModifiers();
+				String turns = mod.getTurnsRemaining() + " Turns Remaining (" 
+						+ (mod.isStackable() ? "" : "Not ") + "Stackable)";
+				g2d.drawString(turns, x, y);
+				y += fontSize;
+				for(Modifier m : mod.getModifiers()){
+					g2d.drawString(m.toStatString(), x, y);
+				}
 			} else if(ability instanceof EffectAbility){
-				
+				g2d.drawString("Effects:", x, y);
+				y += fontSize;
+				String s = ((EffectAbility) ability).toStringLong();
+				g2d.drawString(s, x, y);
 			}
 		}
 	}
