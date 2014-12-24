@@ -43,7 +43,7 @@ public class Bhen extends Commander {
 	/** Battle Fury Ability */
 	private final Ability BATTLE_FURY = new ModifierAbility(ABILITY_NAMES[0][0], 0, this, 0, true, true, false, null, 
 			new ModifierBundle(
-					new CustomModifier(ABILITY_NAMES[0][0], "Units gain movement after killing unit", 
+					new CustomModifier(ABILITY_NAMES[0][0], "Units gain 2 movement after killing another unit", 
 							2, Integer.MAX_VALUE, false, false, false, true)
 			)
 	  );

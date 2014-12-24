@@ -1,5 +1,6 @@
 package gui;
 
+import unit.Commander;
 import gui.decision.PathSelector;
 import gui.panel.GamePanel;
 import board.Direction;
@@ -101,8 +102,12 @@ public class BoardCursor extends Cursor<Tile, GamePanel>{
 	
 	/** Updates info of the unit this is on. Call whenever moved or elm set */
 	private void updateUnitHover(){
-		if(getElm().isOccupied() && panel.game.getCurrentPlayer().canSee(getElm()))
-			panel.getFrame().infoPanel.setUnit(getElm().getOccupyingUnit());
+		if(getElm().isOccupied() && panel.game.getCurrentPlayer().canSee(getElm())){
+			if(getElm().getOccupyingUnit() instanceof Commander)
+				panel.getFrame().infoPanel.setAbility(((Commander) getElm().getOccupyingUnit()).getAbilities().get(0));
+			else
+				panel.getFrame().infoPanel.setUnit(getElm().getOccupyingUnit());
+		}
 		else
 			panel.getFrame().infoPanel.setUnit(null);
 	}

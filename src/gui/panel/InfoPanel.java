@@ -193,9 +193,11 @@ public class InfoPanel extends JPanel{
 			g2d.drawString("Affects " + affects + " Units", x, y);
 			
 			x += xInc;
+			y = YMARGIN;
 			if(ability instanceof ModifierAbility){
 				ModifierBundle mod = ((ModifierAbility)ability).getModifiers();
-				String turns = mod.getTurnsRemaining() + " Turns Remaining (" 
+				String turns = (mod.getTurnsRemaining() == Integer.MAX_VALUE ? '\u221E' + "": mod.getTurnsRemaining())
+						+ " Turns Remaining (" 
 						+ (mod.isStackable() ? "" : "Not ") + "Stackable)";
 				g2d.drawString(turns, x, y);
 				y += fontSize;
