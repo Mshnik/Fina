@@ -6,8 +6,10 @@ import gui.Frame;
 import gui.decision.*;
 import board.*;
 import unit.*;
+import unit.ability.Ability;
 
 import java.awt.*;
+import java.awt.List;
 import java.awt.image.BufferedImage;
 import java.util.*;
 
@@ -40,9 +42,18 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		SUMMON_SELECTION,
 		ATTACK_SELECTION
 	}
+	
+	/** Different types of summoning */
+	public enum SummonType{
+		UNIT,
+		BUILDING
+	}
 
 	/** The layers of active toggles. Topmost is the current toggle */
 	private Stack<Toggle> toggle;
+	
+	/** The type of the most recent decision to summon. Null if none is currently in progress */
+	private SummonType summonType;
 
 	/** Constructor for GamePanel
 	 * @param g - the game to display using this panel
@@ -99,7 +110,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	 * sets active toggle and active cursor, and repaints.
 	 */
 	private void fixDecisionPanel(DecisionPanel.Type type, Decision[] decisionsArr){
-		decisionPanel = new DecisionPanel(game, type, Math.min(3, decisionsArr.length), decisionsArr);
+		decisionPanel = new DecisionPanel(game, type, Math.min(4, decisionsArr.length), decisionsArr);
 		moveDecisionPanel();
 		addToggle(Toggle.DECISION);
 		getFrame().setActiveCursor(decisionPanel.cursor);
@@ -152,6 +163,9 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			decisions.add(new Decision(i++, ((Summoner) u).hasSummonSpace(), Unit.SUMMON));
 			decisions.add(new Decision(i++, ((Summoner) u).hasBuildSpace(), Unit.BUILD));
 		}
+		if(u instanceof Commander){
+			decisions.add(new Decision(i++, ((Commander) u).canCast(), Unit.CAST));
+		}
 
 		//If there are no applicable choices, do nothing
 		if(decisions.isEmpty()) return;
@@ -180,6 +194,9 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		case Unit.FIGHT:
 			startAttackSelection();
 			break;
+		case Unit.CAST:
+			startCastDecision();
+			break;
 		default:
 			break;
 		}
@@ -203,6 +220,11 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		}
 	}
 
+	/** Returns the type of the current summon decision under way, null otherwise */
+	public SummonType getSummonType(){
+		return summonType;
+	}
+	
 	/** Creates a decisionPanel for creating either units or buildings */
 	private void startSummonDecision(Commander c, Map<String, ? extends Unit> creatables){
 		LinkedList<Decision> decisions = new LinkedList<Decision>();
@@ -221,6 +243,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	public void startSummonCombatantDecision(){
 		Player p = game.getCurrentPlayer();
 		Commander c = p.getCommander();
+		summonType = SummonType.UNIT;
 		startSummonDecision(c, c.getSummonables());
 	}
 
@@ -228,9 +251,30 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	public void startSummonBuildingDecision(){
 		Player p = game.getCurrentPlayer();
 		Commander c = p.getCommander();
+		summonType = SummonType.BUILDING;
 		startSummonDecision(c, c.getBuildables());
 	}
 
+	/** Creates a decisionPanel for choosing a spell to cast */
+	public void startCastDecision(){
+		LinkedList<Decision> decisions = new LinkedList<Decision>();
+		Commander c = (Commander) boardCursor.getElm().getOccupyingUnit();
+		LinkedList<Ability> abilities = c.getActiveAbilities();
+		int i = 0;
+		for(Ability a : abilities){
+			String name = a.name;
+			boolean ok = a.manaCost <= c.getMana();
+			decisions.add(new Decision(i++, ok, name + Decision.SEPERATOR +"(" + a.manaCost + ")"));
+		}
+		Decision[] decisionsArr = decisions.toArray(new Decision[decisions.size()]);
+		fixDecisionPanel(DecisionPanel.Type.CAST_DECISION, decisionsArr);
+	}
+	
+	/** Processes a casting decision */
+	public void processCastDecision(){
+		
+	}
+	
 	/** Creates a new summon selector at the current boardCursor position.
 	 * 
 	 */
@@ -268,6 +312,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			SummonSelector ss = (SummonSelector) locationSelector;
 			boardCursor.setElm(ss.summoner.getLocation());
 		}
+		summonType = null;
 		locationSelector = null;
 	}
 
@@ -282,6 +327,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		if(! t.equals(Toggle.SUMMON_SELECTION))
 			throw new RuntimeException("Can't cancel summon selection, currently toggling " + getToggle());
 		summonSelector.toSummon.clone(summonSelector.summoner.owner, boardCursor.getElm());
+		summonType = null;
 		locationSelector = null;
 		boardCursor.setElm(boardCursor.getElm()); //Cause info update
 		repaint();

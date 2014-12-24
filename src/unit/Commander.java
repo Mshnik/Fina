@@ -328,7 +328,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	
 	/** Returns all abilities this Commander currently has access to. 
 	 */
-	public List<Ability> getAbilities(){
+	public LinkedList<Ability> getAbilities(){
 		LinkedList<Ability> abilities = new LinkedList<Ability>();
 		for(int i = 1; i <= getLevel(); i++){
 			Ability a = getAbility(i);
@@ -340,7 +340,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	
 	/** Returns all active (castable) abilities this Commander currently has access to. 
 	 */
-	public List<Ability> getActiveAbilities(){
+	public LinkedList<Ability> getActiveAbilities(){
 		LinkedList<Ability> abilities = new LinkedList<Ability>();
 		for(int i = 1; i <= getLevel(); i++){
 			Ability a = getAbility(i);
@@ -352,7 +352,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	
 	/** Returns all passive (always on) abilities this Commander currently has access to. 
 	 */
-	public List<Ability> getPassiveAbilities(){
+	public LinkedList<Ability> getPassiveAbilities(){
 		LinkedList<Ability> abilities = new LinkedList<Ability>();
 		for(int i = 1; i <= getLevel(); i++){
 			Ability a = getAbility(i);

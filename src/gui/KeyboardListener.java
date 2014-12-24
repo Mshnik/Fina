@@ -3,6 +3,7 @@ package gui;
 import gui.decision.Decision;
 import gui.decision.DecisionPanel;
 import gui.panel.GamePanel;
+import gui.panel.GamePanel.SummonType;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -99,8 +100,10 @@ public class KeyboardListener implements KeyListener{
 					gp.processSummonSelection();
 				}
 				else{
+					boolean summoningUnit = gp.getSummonType().equals(SummonType.UNIT);
 					gp.cancelSummonSelection();
-					gp.startActionDecision();
+					if(summoningUnit) gp.startSummonCombatantDecision();
+					else gp.startSummonBuildingDecision();
 				}
 				break;
 			case ATTACK_SELECTION:

@@ -66,6 +66,7 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	public enum Type{
 		ACTION_DECISION,
 		SUMMON_DECISION,
+		CAST_DECISION,
 		END_OF_TURN_DECISION
 	}
 	
