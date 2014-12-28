@@ -246,9 +246,8 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			}
 			fixDecisionPanel(DecisionPanel.Type.NEW_ABILITY_DECISION, "Choose a New Ability", c.owner, true, choices);
 			centerDecisionPanel();
-		} else{
-			cancelDecision();
-		}
+		} 
+		//else do nothing
 	}
 
 	/** Processes the levelup new ability decision */
