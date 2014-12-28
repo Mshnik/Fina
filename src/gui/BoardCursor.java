@@ -1,6 +1,5 @@
 package gui;
 
-import unit.Commander;
 import gui.decision.PathSelector;
 import gui.panel.GamePanel;
 import board.Direction;

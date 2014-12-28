@@ -32,7 +32,7 @@ public class InfoPanel extends JPanel{
 	protected static final Color BORDER_COLOR = new Color(74, 47, 12);
 	
 	/** Distance (in pixels) between the top of the InfoPanel and the top of the bars */
-	private static final int YMARGIN = 35;
+	private static final int YMARGIN = 32;
 	
 	/** Font for drawing title text */
 	private static final Font BIG_FONT = new Font(Frame.FONTNAME, Font.BOLD, 20);
@@ -100,8 +100,10 @@ public class InfoPanel extends JPanel{
 		
 		//Unit painting
 		if(unit != null){
-			int x = 25;
+			final int xStart = 25;
 			final int xInc = 225;
+
+			int x = xStart;
 			
 			g2d.drawString(unit.name, x, YMARGIN);
 			g2d.setFont(SMALL_FONT);
@@ -124,14 +126,18 @@ public class InfoPanel extends JPanel{
 				drawStat(g2d, s, x, y);
 				y += infoFont;
 			}
+			
+			x = xStart;
 			g2d.drawString("Modifiers: ", x, y);
 			String modString = "";
 			for(Modifier m : unit.getModifiers()){
+				if(! (m.name.equals(Commander.LEVELUP_HEALTH_NAME) 
+						|| m.name.equals(Commander.LEVELUP_MANA_NAME)))
 				modString += m.name + " ";
 			}
 			g2d.drawString(modString, x + 145, y);
 			
-			x += xInc;
+			x = xStart + 2 * xInc;
 			//Draw modifier list along bottom
 			y = YMARGIN;
 			for(Stat s : stats.getAttackStatsList()){
@@ -200,8 +206,8 @@ public class InfoPanel extends JPanel{
 						+ " Turns Remaining (" 
 						+ (mod.isStackable() ? "" : "Not ") + "Stackable)";
 				g2d.drawString(turns, x, y);
-				y += fontSize;
 				for(Modifier m : mod.getModifiers()){
+					y += fontSize;
 					g2d.drawString(m.toStatString(), x, y);
 				}
 			} else if(ability instanceof EffectAbility){

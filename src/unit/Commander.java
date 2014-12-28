@@ -37,15 +37,21 @@ public abstract class Commander extends MovingUnit implements Summoner{
 
 	/** Amount of health gained per level */
 	public static final int LEVELUP_HEALTH = 200;
+	
+	/** Name of the LEVELUP_HEALTH buff */
+	public static final String LEVELUP_HEALTH_NAME = "Level Up Health";
 
 	/** Amount of mana per turn gained per level */
 	public static final int LEVELUP_MANAPT = 250;
+	
+	/** Name of the LEVELUP_MANA buff */
+	public static final String LEVELUP_MANA_NAME = "Level Up Mana";
 
 	protected static final ModifierBundle LEVELUP = 
 			new ModifierBundle(
-					new StatModifier("Level Up Mana", Integer.MAX_VALUE, true, StatType.MANA_PER_TURN, 
+					new StatModifier(LEVELUP_MANA_NAME, Integer.MAX_VALUE, true, StatType.MANA_PER_TURN, 
 							StatModifier.ModificationType.ADD, LEVELUP_MANAPT),
-					new StatModifier("Level Up Health", Integer.MAX_VALUE, true, StatType.MAX_HEALTH, 
+					new StatModifier(LEVELUP_HEALTH_NAME, Integer.MAX_VALUE, true, StatType.MAX_HEALTH, 
 							StatModifier.ModificationType.ADD, LEVELUP_HEALTH)
 			);			
 

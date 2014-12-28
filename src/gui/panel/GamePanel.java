@@ -456,10 +456,11 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		Unit defender = boardCursor.getElm().getOccupyingUnit();
 
 		attackSelector.attacker.fight(defender);
-		game.getFrame().repaint();
-		boardCursor.setElm(attackSelector.attacker.getLocation());
 		locationSelector = null;
-		if(decisionPanel == null) startActionDecision();
+		if(decisionPanel == null){
+			startActionDecision();
+			boardCursor.setElm(attackSelector.attacker.getLocation());
+		}
 	}
 
 	/** Returns the current locationSelector, if any */

@@ -23,6 +23,9 @@ public class Frame extends JFrame {
 	/***/
 	private static final long serialVersionUID = 1L;
 
+	/** True iff debugging output/painting should be shown */
+	public static final boolean DEBUG = true;
+	
 	//Some nice fonts to consider:
 	//Apple Chancery
 	//Ayuthaya
