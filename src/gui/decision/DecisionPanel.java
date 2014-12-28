@@ -45,6 +45,9 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** Text y margin */
 	protected static final int TEXT_Y = 25;
 	
+	/** The title of this decisionPanel, to paint at the top */
+	private String title;
+	
 	/** The choices to display on this DecisionPanel */
 	private Decision[] choices;
 	
@@ -81,12 +84,14 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** The type of this DecisionPanel - what kind of decision it is making */
 	public final Type type;
 	
-	public DecisionPanel(Game g, Player p, Type t, boolean manditory, int maxY, Decision[] choices) {
+	public DecisionPanel(Game g, Player p, Type t, boolean manditory, 
+			int maxY, String title, Decision[] choices) {
 		super(g, 1, maxY, 0, 0);
 		this.player = p;
 		this.type = t;
 		this.manditory = manditory;
 		this.choices = choices;
+		this.title = title;
 		cursor = new DecisionCursor(this);
 		cursor.moved();
 	}
@@ -107,10 +112,10 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 		return getElementWidth();
 	}
 	
-	/** The height of this Panel is the height of all the decisions */
+	/** The height of this Panel is the height of all the decisions and the title */
 	@Override
 	public int getHeight(){
-		return getElementHeight() * Math.min(super.getShowedRows(), choices.length);
+		return getElementHeight() * (Math.min(super.getShowedRows(), choices.length) + 1);
 	}
 	
 	/** Overrides super version by adding the x coordinate of this panel to super's result */
@@ -122,7 +127,7 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** Overrides super version by adding the y coordinate of this panel to super's result */
 	@Override
 	public int getYPosition(Decision elm){
-		return super.getYPosition(elm) + y;
+		return super.getYPosition(elm) + y + DECISION_HEIGHT;
 	}
 	
 	/** Returns the decision the cursor is currently hovering *
@@ -148,16 +153,24 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 		g2d.drawRect(x + BORDER_WIDTH/2, y + BORDER_WIDTH/2, 
 				getWidth() - BORDER_WIDTH, getHeight() - BORDER_WIDTH);
 		
+		//Title section
+		g2d.setColor(BACKGROUND.brighter());
+		g2d.fillRect(x, y, getWidth(), DECISION_HEIGHT);
+		
 		g2d.setFont(TEXT_FONT);
 		g2d.setRenderingHint(
 				RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+		//Title
+		g2d.setColor(TEXT_COLOR);
+		g2d.drawString(title, TEXT_X + x, TEXT_Y + y);
+		
 		for(int r = scrollY; r < scrollY + Math.min(super.getShowedRows(), getMatrixHeight()); r++){
 			if(choices[r].isSelectable())
 				g2d.setColor(TEXT_COLOR);
 			else
 				g2d.setColor(TEXT_COLOR.darker());
-			g2d.drawString(choices[r].getMessage(), TEXT_X + x, TEXT_Y + y + (r - scrollY) * DECISION_HEIGHT);
+			g2d.drawString(choices[r].getMessage(), TEXT_X + x, TEXT_Y + y + (r - scrollY + 1) * DECISION_HEIGHT);
 		}
 		
 		//Draw cursor

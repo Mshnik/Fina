@@ -108,8 +108,10 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	 * Fixes the location of the open decisionPanel for the location of the boardCursor,
 	 * sets active toggle and active cursor, and repaints.
 	 */
-	private void fixDecisionPanel(DecisionPanel.Type type, Player p, boolean manditory, Decision[] decisionsArr){
-		decisionPanel = new DecisionPanel(game, p, type, manditory, Math.min(4, decisionsArr.length), decisionsArr);
+	private void fixDecisionPanel(DecisionPanel.Type type, String title, 
+			Player p, boolean manditory, Decision[] decisionsArr){
+		decisionPanel = new DecisionPanel(game, p, type, manditory, 
+				Math.min(4, decisionsArr.length), title, decisionsArr);
 		addToggle(Toggle.DECISION);
 		getFrame().setActiveCursor(decisionPanel.cursor);
 	}
@@ -178,7 +180,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 
 		//Otherwise, convert to array, create panel, set correct location on screen.
 		Decision[] decisionsArr = decisions.toArray(new Decision[decisions.size()]);
-		fixDecisionPanel(DecisionPanel.Type.ACTION_DECISION, game.getCurrentPlayer(), false, decisionsArr);
+		fixDecisionPanel(DecisionPanel.Type.ACTION_DECISION, "Action", game.getCurrentPlayer(), false, decisionsArr);
 		moveDecisionPanel();
 	}
 
@@ -212,7 +214,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	/** Starts a decisionPanel for ending the current player's turn */
 	public void startEndTurnDecision(){
 		Decision[] decisionsArr = {new Decision(0, Game.CANCEL), new Decision(1, Game.END_TURN)};
-		fixDecisionPanel(DecisionPanel.Type.END_OF_TURN_DECISION, game.getCurrentPlayer(), false, decisionsArr);
+		fixDecisionPanel(DecisionPanel.Type.END_OF_TURN_DECISION, "End Turn?", game.getCurrentPlayer(), false, decisionsArr);
 		moveDecisionPanel();
 	}
 
@@ -242,7 +244,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			for(int i = 0; i < a.length; i++){
 				choices[i] = new Decision(i, a[i].name);
 			}
-			fixDecisionPanel(DecisionPanel.Type.NEW_ABILITY_DECISION, c.owner, true, choices);
+			fixDecisionPanel(DecisionPanel.Type.NEW_ABILITY_DECISION, "Choose a New Ability", c.owner, true, choices);
 			centerDecisionPanel();
 		} else{
 			cancelDecision();
@@ -273,7 +275,9 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			decisions.add(new Decision(i++, ok, name + Decision.SEPERATOR +"(" + u.manaCost + ")"));
 		}
 		Decision[] decisionsArr = decisions.toArray(new Decision[decisions.size()]);
-		fixDecisionPanel(DecisionPanel.Type.SUMMON_DECISION, c.owner, false, decisionsArr);
+		fixDecisionPanel(DecisionPanel.Type.SUMMON_DECISION, 
+				"Action > " + (summonType == SummonType.UNIT ? "Summon" : "Build")
+				, c.owner, false, decisionsArr);
 		moveDecisionPanel();
 	}
 
@@ -305,7 +309,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			decisions.add(new Decision(i++, ok, name + Decision.SEPERATOR +"(" + a.manaCost + ")"));
 		}
 		Decision[] decisionsArr = decisions.toArray(new Decision[decisions.size()]);
-		fixDecisionPanel(DecisionPanel.Type.CAST_DECISION, game.getCurrentPlayer(), false, decisionsArr);
+		fixDecisionPanel(DecisionPanel.Type.CAST_DECISION, "Action > Cast", game.getCurrentPlayer(), false, decisionsArr);
 		moveDecisionPanel();
 	}
 
