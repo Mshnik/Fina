@@ -86,13 +86,21 @@ public class KeyboardListener implements KeyListener{
 						break;
 					case SUMMON_DECISION:
 						gp.startSummonSelection((Decision) frame.getActiveCursor().getElm());
+						break;
+					case NEW_ABILITY_DECISION:
+						gp.processNewAbilityDecision();
+						break;
 					default:
 						break;
 					}
 				} else{
-					boolean resetDecision = gp.getDecisionPanel().type == DecisionPanel.Type.SUMMON_DECISION;
-					gp.cancelDecision();
-					if(resetDecision) gp.startActionDecision();
+					if(! gp.getDecisionPanel().manditory){
+						boolean resetDecision = gp.getDecisionPanel().type == DecisionPanel.Type.SUMMON_DECISION;
+						gp.cancelDecision();
+						if(resetDecision) gp.startActionDecision();
+					} else{
+						//TODO - tried to cancel manditory decision.
+					}
 				}
 				break;
 			case SUMMON_SELECTION:

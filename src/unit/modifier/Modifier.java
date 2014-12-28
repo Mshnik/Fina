@@ -122,7 +122,7 @@ public abstract class Modifier implements Stringable{
 			throw new RuntimeException("Can't kill a dummy modifier");
 		unit.removeModifier(this);
 		source.removeGrantedModifier(this);
-		bundle.remove(this);
+		bundle.removeSafe(this);
 	}
 	
 	/** Returns a stat string for InfoPanel painting. Subclass should finish implementation */

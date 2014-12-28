@@ -73,6 +73,9 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 	/** Returns the height of the underlying matrix */
 	public abstract int getMatrixHeight();
 	
+	/** Returns the currently selected elm, the one the cursor is hovering */
+	public abstract T getElm();
+	
 	/** Returns the element at the given indices. Throws IllegalArgumentException if this is OOB */
 	public abstract T getElmAt(int row, int col) throws IllegalArgumentException;
 	

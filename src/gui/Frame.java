@@ -6,6 +6,7 @@ import java.awt.Color;
 import javax.swing.JFrame;
 
 import unit.Unit;
+import unit.ability.Ability;
 import unit.commander.Bhen;
 import unit.dummy.*;
 import game.*;
@@ -110,6 +111,20 @@ public class Frame extends JFrame {
 		infoPanel.setUnit(u);
 	}
 	
+	/** Updates the info panel to show the given ability *
+	 * 
+	 */
+	public void showAbilityStats(Ability a){
+		infoPanel.setAbility(a);
+	}
+	
+	/** Tells the gamepanel to start a abilitydecision for the given player.
+	 * This happens when the commander levelsup
+	 */
+	public void startAbilityDecision(Player p){
+		gamePanel.startNewAbilityDecision(p.getCommander());
+	}
+	
 	/** Returns the current active cursor that is moved by arrow keys.
 	 * Because cursor has many different implementations, casting is needed */
 	@SuppressWarnings("rawtypes")
@@ -181,7 +196,7 @@ public class Frame extends JFrame {
 	    Player p1 = new HumanPlayer(g, Color.green);
 	    new Bhen(p1, g.board.getTileAt(0, 0));
 	    Player p2 = new HumanPlayer(g, Color.magenta);
-	    new DummyCommander(p2, g.board.getTileAt(7, 14));
+	    new DummyCommander(p2, g.board.getTileAt(1, 2));
 
 	    f.setGame(g, 8, 15);
 	    

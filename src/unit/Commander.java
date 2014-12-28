@@ -259,7 +259,14 @@ public abstract class Commander extends MovingUnit implements Summoner{
 		LEVELUP.clone(this, this);
 		setHealth(getHealth() + LEVELUP_HEALTH, this);
 		owner.updateManaPerTurn();
-		owner.game.getFrame().repaint();
+		owner.game.startNewAbilityDecision(owner);
+	}
+	
+	/** Chooses ability index i for this level. Called when the player ends the levelup decision */
+	public void chooseAbility(int i) throws RuntimeException{
+		if(abilityChoices[level -1] != -1)
+			throw new RuntimeException("Can't pick ability for level " + level + " already picked " + i);
+		abilityChoices[level - 1] = i;
 	}
 
 	/** Commanders can't attack, so attack modifications aren't ok. */
@@ -364,6 +371,17 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	/** Returns the abilities this commander has cast this turn */
 	public LinkedList<Ability> getAbilitiesCastThisTurn(){
 		return new LinkedList<Ability>(currentTurnCasts);
+	}
+	
+	/** Returns the ability associated with the given name for this commander, if possible */
+	public Ability getAbilityByName(String name){
+		for(int i = 1; i <= MAX_LEVEL; i++){
+			for(Ability a : getPossibleAbilities(i)){
+				if(a.name.equals(name))
+					return a;
+			}
+		}
+		return null;
 	}
 	
 	@Override

@@ -150,6 +150,11 @@ public class ModifierBundle implements Iterable<Modifier>, Collection<Modifier>{
 	public boolean remove(Object o) {
 		throw new UnsupportedOperationException("Removal not supported by ModifierBundle");
 	}
+	
+	/** Safe removal called during a modifier's kill routine */
+	protected void removeSafe(Modifier m){
+		modifiers.remove(m);
+	}
 
 	@Override
 	public boolean containsAll(Collection<?> c) {

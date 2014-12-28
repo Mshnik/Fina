@@ -162,6 +162,6 @@ public abstract class Ability implements Stringable{
 	
 	@Override
 	public String toStringShort(){
-		return name + " - " + manaCost;
+		return name + ":(" + manaCost + ")";
 	}
 }

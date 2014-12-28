@@ -133,6 +133,13 @@ public class Game implements Runnable, Stringable{
 		return units;
 	}
 	
+	/** Starts a new ability decision for the given player - call during levelup
+	 * 
+	 */
+	public void startNewAbilityDecision(Player p){
+		frame.startAbilityDecision(p);
+	}
+	
 	/** Refreshes all passive abilities on all units in the game */
 	public void refreshPassiveAbilities(){
 		List<Unit> units = getUnits();

@@ -6,6 +6,7 @@ import java.awt.Color;
 
 import unit.Commander;
 import unit.Unit;
+import unit.ability.Ability;
 
 import board.Direction;
 
@@ -45,9 +46,14 @@ public class DecisionCursor extends Cursor<Decision, DecisionPanel> {
 		if(panel.type == DecisionPanel.Type.SUMMON_DECISION){
 			String unitName = getElm().getMessage();
 			unitName = unitName.substring(0, unitName.indexOf(Decision.SEPERATOR));
-			Commander c = panel.game.getCurrentPlayer().getCommander();
+			Commander c = panel.player.getCommander();
 			Unit u = c.getUnitByName(unitName);
 			panel.getFrame().showUnitStats(u);
+		} else if(panel.type == DecisionPanel.Type.NEW_ABILITY_DECISION){
+			String abilityName = getElm().getMessage();
+			Commander c = panel.player.getCommander();
+			Ability a = c.getAbilityByName(abilityName);
+			panel.getFrame().showAbilityStats(a);
 		}
 		
 		panel.getFrame().repaint();

@@ -41,7 +41,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		SUMMON_SELECTION,
 		ATTACK_SELECTION
 	}
-	
+
 	/** Different types of summoning */
 	public enum SummonType{
 		UNIT,
@@ -50,7 +50,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 
 	/** The layers of active toggles. Topmost is the current toggle */
 	private Stack<Toggle> toggle;
-	
+
 	/** The type of the most recent decision to summon. Null if none is currently in progress */
 	private SummonType summonType;
 
@@ -108,17 +108,13 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	 * Fixes the location of the open decisionPanel for the location of the boardCursor,
 	 * sets active toggle and active cursor, and repaints.
 	 */
-	private void fixDecisionPanel(DecisionPanel.Type type, Decision[] decisionsArr){
-		decisionPanel = new DecisionPanel(game, type, Math.min(4, decisionsArr.length), decisionsArr);
-		moveDecisionPanel();
+	private void fixDecisionPanel(DecisionPanel.Type type, Player p, boolean manditory, Decision[] decisionsArr){
+		decisionPanel = new DecisionPanel(game, p, type, manditory, Math.min(4, decisionsArr.length), decisionsArr);
 		addToggle(Toggle.DECISION);
 		getFrame().setActiveCursor(decisionPanel.cursor);
-		repaint();
 	}
 
-	/** Moves the decision panel to accomidate the current location of the boardCursor *
-	 *
-	 */
+	/** Moves the decision panel to accomidate the current location of the boardCursor */
 	private void moveDecisionPanel(){
 		Tile t = boardCursor.getElm();
 		int x = getXPosition(t);
@@ -133,6 +129,17 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		}
 		decisionPanel.setXPosition(x);
 		decisionPanel.setYPosition(y);
+		repaint();
+	}
+
+	/** Moves the decision panel to the center of the screen */
+	private void centerDecisionPanel(){
+		int w = decisionPanel.getWidth();
+		int h = decisionPanel.getHeight();
+
+		decisionPanel.setXPosition( (getWidth() - w) / 2);
+		decisionPanel.setYPosition( (getHeight() - h) / 2);
+		repaint();
 	}
 
 	/** Creates a new Decision Panel for doing things with a unit, 
@@ -171,7 +178,8 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 
 		//Otherwise, convert to array, create panel, set correct location on screen.
 		Decision[] decisionsArr = decisions.toArray(new Decision[decisions.size()]);
-		fixDecisionPanel(DecisionPanel.Type.ACTION_DECISION, decisionsArr);
+		fixDecisionPanel(DecisionPanel.Type.ACTION_DECISION, game.getCurrentPlayer(), false, decisionsArr);
+		moveDecisionPanel();
 	}
 
 	/** Processes the currently selected Actiondecision.
@@ -204,7 +212,8 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	/** Starts a decisionPanel for ending the current player's turn */
 	public void startEndTurnDecision(){
 		Decision[] decisionsArr = {new Decision(0, Game.CANCEL), new Decision(1, Game.END_TURN)};
-		fixDecisionPanel(DecisionPanel.Type.END_OF_TURN_DECISION, decisionsArr);
+		fixDecisionPanel(DecisionPanel.Type.END_OF_TURN_DECISION, game.getCurrentPlayer(), false, decisionsArr);
+		moveDecisionPanel();
 	}
 
 	/** Processes an endOfTurn Decision */
@@ -219,11 +228,40 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		}
 	}
 
+
+	/** Starts  a levelup ability selection decision.
+	 * Assumes c has leveled up but hasn't chosen an ability yet */
+	public void startNewAbilityDecision(Commander c) throws RuntimeException{
+		if(c.getAbility(c.getLevel()) != null)
+			throw new RuntimeException("Can't pick a new ability for " + c 
+					+", already has " + c.getAbility(c.getLevel()));
+
+		Ability[] a = c.getPossibleAbilities(c.getLevel());
+		if(a != null){
+			Decision[] choices = new Decision[a.length];
+			for(int i = 0; i < a.length; i++){
+				choices[i] = new Decision(i, a[i].name);
+			}
+			fixDecisionPanel(DecisionPanel.Type.NEW_ABILITY_DECISION, c.owner, true, choices);
+			centerDecisionPanel();
+		} else{
+			cancelDecision();
+		}
+	}
+
+	/** Processes the levelup new ability decision */
+	public void processNewAbilityDecision(){
+		Commander c = getDecisionPanel().player.getCommander();
+		int index = getDecisionPanel().getElm().getIndex();
+		c.chooseAbility(index);
+		cancelDecision();
+	}
+
 	/** Returns the type of the current summon decision under way, null otherwise */
 	public SummonType getSummonType(){
 		return summonType;
 	}
-	
+
 	/** Creates a decisionPanel for creating either units or buildings */
 	private void startSummonDecision(Commander c, Map<String, ? extends Unit> creatables){
 		LinkedList<Decision> decisions = new LinkedList<Decision>();
@@ -235,7 +273,8 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			decisions.add(new Decision(i++, ok, name + Decision.SEPERATOR +"(" + u.manaCost + ")"));
 		}
 		Decision[] decisionsArr = decisions.toArray(new Decision[decisions.size()]);
-		fixDecisionPanel(DecisionPanel.Type.SUMMON_DECISION, decisionsArr);
+		fixDecisionPanel(DecisionPanel.Type.SUMMON_DECISION, c.owner, false, decisionsArr);
+		moveDecisionPanel();
 	}
 
 	/** Creates a decisionPanel for summoning new units */
@@ -266,14 +305,15 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			decisions.add(new Decision(i++, ok, name + Decision.SEPERATOR +"(" + a.manaCost + ")"));
 		}
 		Decision[] decisionsArr = decisions.toArray(new Decision[decisions.size()]);
-		fixDecisionPanel(DecisionPanel.Type.CAST_DECISION, decisionsArr);
+		fixDecisionPanel(DecisionPanel.Type.CAST_DECISION, game.getCurrentPlayer(), false, decisionsArr);
+		moveDecisionPanel();
 	}
-	
+
 	/** Processes a casting decision */
 	public void processCastDecision(){
-		
+
 	}
-	
+
 	/** Creates a new summon selector at the current boardCursor position.
 	 * 
 	 */
@@ -419,7 +459,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		game.getFrame().repaint();
 		boardCursor.setElm(attackSelector.attacker.getLocation());
 		locationSelector = null;
-		startActionDecision();
+		if(decisionPanel == null) startActionDecision();
 	}
 
 	/** Returns the current locationSelector, if any */
@@ -479,7 +519,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 				break;
 			}
 		}
-		
+
 		//Draw the cursor
 		boardCursor.paintComponent(g);
 
@@ -488,7 +528,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			decisionPanel.paintComponent(g);
 		}
 	}
-	
+
 	/** Draws the given tile. Doesn't do any unit drawing. */
 	private void drawTile(Graphics2D g2d, Tile t){
 		int x = getXPosition(t);
@@ -503,17 +543,17 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 			g2d.fillRect(x, y, CELL_SIZE, CELL_SIZE);
 		}
 	}
-	
+
 	/** Draws the given unit. Doesn't do any tile drawing. */
 	private void drawUnit(Graphics2D g2d, Unit u){
 		int x = getXPosition(u.getLocation());
 		int y = getYPosition(u.getLocation());
-		
+
 		//Draw unit
 		BufferedImage unitImg =ImageIndex.imageForUnit(u);
 		g2d.drawImage(ImageIndex.tint(unitImg, game.getColorFor(u.owner)), x, y, 
 				CELL_SIZE, CELL_SIZE, null);
-		
+
 		//Draw health bar
 		final int marginX = 4; //Room from left side of tile
 		final int marginY = 4; //Room from BOTTOM side of tile
@@ -522,7 +562,12 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		ImageIndex.drawBar(g2d, barX, barY, CELL_SIZE - marginX * 2, marginY, 
 				null, null, 0, Color.red, u.getMaxHealth(), u.getHealthPercent(), 
 				null, null, null, null, 0);
-		
+
+	}
+
+	/** Returns the currently selected element */
+	public Tile getElm(){
+		return boardCursor.getElm();
 	}
 
 	/** Returns the tile at the given row and col. Ignores scrolling for this. */

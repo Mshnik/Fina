@@ -1,6 +1,7 @@
 package gui.decision;
 
 import game.Game;
+import game.Player;
 import gui.Frame;
 import gui.MatrixPanel;
 import gui.Paintable;
@@ -62,20 +63,29 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** The y coordinate of the top left corner of this panel */
 	private int y;
 	
+	/** True if this is manditory (can't be canceled), false otherwise */
+	public final boolean manditory;
+	
+	/** The player this decision is for */
+	public final Player player;
+	
 	/** The types of decisions that can be made */
 	public enum Type{
 		ACTION_DECISION,
 		SUMMON_DECISION,
 		CAST_DECISION,
+		NEW_ABILITY_DECISION,
 		END_OF_TURN_DECISION
 	}
 	
 	/** The type of this DecisionPanel - what kind of decision it is making */
 	public final Type type;
 	
-	public DecisionPanel(Game g, Type t, int maxY, Decision[] choices) {
+	public DecisionPanel(Game g, Player p, Type t, boolean manditory, int maxY, Decision[] choices) {
 		super(g, 1, maxY, 0, 0);
+		this.player = p;
 		this.type = t;
+		this.manditory = manditory;
 		this.choices = choices;
 		cursor = new DecisionCursor(this);
 		cursor.moved();
@@ -113,6 +123,13 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	@Override
 	public int getYPosition(Decision elm){
 		return super.getYPosition(elm) + y;
+	}
+	
+	/** Returns the decision the cursor is currently hovering *
+	 * 
+	 */
+	public Decision getElm(){
+		return cursor.getElm();
 	}
 	
 	/** Returns the decision message of the decision that is currently selected */
