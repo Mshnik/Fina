@@ -23,10 +23,10 @@ import board.Board;
 public class Game implements Runnable, Stringable{
 
 	/** Text for canceling a decision */
-	public static final String CANCEL = "Cancel";
+	public static final String CANCEL = "No";
 	
 	/** Text for ending a turn */
-	public static final String END_TURN = "End Turn";
+	public static final String END_TURN = "Yes";
 	
 	/** The players currently playing this game */
 	private LinkedList<Player> players;

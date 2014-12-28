@@ -40,6 +40,9 @@ public class InfoPanel extends JPanel{
 	/** Font for drawing standard text */
 	private static final Font SMALL_FONT = new Font(Frame.FONTNAME, Font.BOLD, 16);
 	
+	/** Character for the infinity character */
+	private static final char INF_CHAR = '\u221E';
+	
 	/** The game this InfoPanel is drawing info for */
 	public final Game game;
 	
@@ -128,14 +131,15 @@ public class InfoPanel extends JPanel{
 			}
 			
 			x = xStart;
-			g2d.drawString("Modifiers: ", x, y);
+			String modifierTitle = "Modifiers: ";
+			g2d.drawString(modifierTitle, x, y);
 			String modString = "";
 			for(Modifier m : unit.getModifiers()){
 				if(! (m.name.equals(Commander.LEVELUP_HEALTH_NAME) 
 						|| m.name.equals(Commander.LEVELUP_MANA_NAME)))
 				modString += m.name + " ";
 			}
-			g2d.drawString(modString, x + 145, y);
+			g2d.drawString(modString, x + game.getFrame().getTextWidth(SMALL_FONT, modifierTitle) + 15, y);
 			
 			x = xStart + 2 * xInc;
 			//Draw modifier list along bottom
@@ -202,7 +206,7 @@ public class InfoPanel extends JPanel{
 			y = YMARGIN;
 			if(ability instanceof ModifierAbility){
 				ModifierBundle mod = ((ModifierAbility)ability).getModifiers();
-				String turns = (mod.getTurnsRemaining() == Integer.MAX_VALUE ? '\u221E' + "": mod.getTurnsRemaining())
+				String turns = (mod.getTurnsRemaining() == Integer.MAX_VALUE ? INF_CHAR + "": mod.getTurnsRemaining())
 						+ " Turns Remaining (" 
 						+ (mod.isStackable() ? "" : "Not ") + "Stackable)";
 				g2d.drawString(turns, x, y);

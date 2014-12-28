@@ -123,7 +123,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		if(x < getWidth() / 2){
 			x += GamePanel.CELL_SIZE + 5;
 		} else{
-			x -= (DecisionPanel.DECISION_WIDTH + 5);
+			x -= (decisionPanel.DECISION_WIDTH + 5);
 		}
 		int y = getYPosition(t);
 		if(y > getHeight() / 2){

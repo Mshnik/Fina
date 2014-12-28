@@ -55,7 +55,7 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	public static final int DECISION_HEIGHT = 40;
 	
 	/** The drawing width of an Decision */
-	public static final int DECISION_WIDTH = 120;
+	public final int DECISION_WIDTH;
 	
 	/** A Cursor for this DecisionPanel */
 	public final DecisionCursor cursor;
@@ -92,6 +92,14 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 		this.manditory = manditory;
 		this.choices = choices;
 		this.title = title;
+		
+		//Determine width of panel based on all text 
+		int maxWidth = game.getFrame().getTextWidth(TEXT_FONT, title);
+		for(Decision d : choices){
+			maxWidth = Math.max(maxWidth, game.getFrame().getTextWidth(TEXT_FONT, d.getMessage()));
+		}
+		DECISION_WIDTH = maxWidth  + TEXT_X * 2; //Add margins for either side
+		
 		cursor = new DecisionCursor(this);
 		cursor.moved();
 	}
@@ -212,7 +220,7 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** Returns DecisionPanel.DECISION_WIDTH */
 	@Override
 	public int getElementWidth() {
-		return DECISION_WIDTH + (type == Type.SUMMON_DECISION ? 100 : 0);
+		return DECISION_WIDTH;
 	}
 	
 	@Override

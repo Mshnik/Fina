@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 
 import javax.swing.JFrame;
 
@@ -146,6 +148,13 @@ public class Frame extends JFrame {
 	/** Returns the object responsible for animating things for this frame */
 	public Animator getAnimator(){
 		return animator;
+	}
+	
+	/** Returns the width (in pixels) of the given text using the given font */
+	public int getTextWidth(Font f, String s){
+		FontMetrics m = getGraphics().getFontMetrics(f);
+		int i = m.stringWidth(s);
+		return i;
 	}
 	
 	/** Simple main method to test out Frame features */
