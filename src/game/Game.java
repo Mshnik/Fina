@@ -100,7 +100,7 @@ public class Game implements Runnable, Stringable{
 		if(running)
 			throw new RuntimeException("Can't add " + p + " to " + this 
 					+ " because game is already started");
-		players.add(p);
+		players.add(p);		
 		remainingPlayers.put(p, true);
 		PLAYER_COLORS.put(p, c.darker());
 		return players.size();

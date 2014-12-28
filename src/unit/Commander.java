@@ -66,7 +66,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	public static final int MAX_LEVEL = RESEARCH_REQS.length + 1;
 
 	/** The ratio of manaCost -> research for the owner of the killing unit */
-	public static final double MANA_COST_TO_RESEARCH_RATIO = 3;
+	public static final double MANA_COST_TO_RESEARCH_RATIO = 0.4;
 
 	/** The extra defense (applied first) against ranged units granted to commanders */
 	public static final double RANGED_DEFENSE = 0.5;
