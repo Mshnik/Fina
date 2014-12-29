@@ -84,6 +84,11 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	/** The amount of research towards the next level this commander has accrewed.
 	 * Always in the range [0, RESEARCH_REQS[level-1]] */
 	private int research;
+	
+	/** Research this commander has gained while it is not his turn
+	 * Added to research total at start of turn
+	 */
+	private int outOfTurnResearch;
 
 	/** Abilities this commander has picked. each index is -1 before a commander has reached
 	 * that level
@@ -126,10 +131,13 @@ public abstract class Commander extends MovingUnit implements Summoner{
 		throw new RuntimeException("Can't clone commander " + this);
 	}
 
-	/** Adds clearing currentTurnCasts to super's refresh for turn */
+	/** Adds clearing currentTurnCasts to super's refresh for turn.
+	 * Adds out of turn research to standard research total */
 	@Override
 	public void refreshForTurn(){
 		super.refreshForTurn();
+		addResearch(outOfTurnResearch);
+		outOfTurnResearch = 0;
 		currentTurnCasts.clear();
 	}
 	
@@ -244,16 +252,32 @@ public abstract class Commander extends MovingUnit implements Summoner{
 		return research - getResearchRequirement();
 	}
 
-	/** Adds the given amount of research to research, capping at the requirement.
-	 * Input must be positive (you can only gain research)
+	/** Adds the amount of research to this commander.
+	 * If in turn, adds to standard research and may cause levelup.
+	 * If out of turn, adds to out of turn research and delays levelup until turn.
 	 */
 	public void addResearch(int deltaResearch) throws IllegalArgumentException{
 		if(deltaResearch < 0)
 			throw new IllegalArgumentException("Can't add negative amount of research to " + this);
-
+		if(owner.isMyTurn())
+			addInTurnResearch(deltaResearch);
+		else
+			addOutOfTurnResearch(deltaResearch);
+	}
+	
+	/** Adds the given amount of research to research, capping at the requirement.
+	 * Called when reserach is gained during this commander's turn
+	 * Input must be positive (you can only gain research)
+	 */
+	private void addInTurnResearch(int deltaResearch){
 		research = Math.min(research + deltaResearch, getResearchRequirement());
 		if(research == getResearchRequirement())
 			levelUp();
+	}
+	
+	/** Adds the amount of out of turn research. Called when it is not this commander's turn */
+	private void addOutOfTurnResearch(int deltaResearch){
+		outOfTurnResearch += deltaResearch;
 	}
 
 	/** Called by Player class when this levels up.
