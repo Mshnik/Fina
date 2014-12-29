@@ -8,13 +8,9 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Stack;
 
-import controller.decision.Choice;
-import controller.decision.Decision;
+import controller.decision.*;
 import controller.decision.Decision.DecisionType;
-import controller.selector.AttackSelector;
-import controller.selector.LocationSelector;
-import controller.selector.PathSelector;
-import controller.selector.SummonSelector;
+import controller.selector.*;
 
 import view.gui.Frame;
 import view.gui.panel.GamePanel;
@@ -52,66 +48,67 @@ public class GameController {
 	public static final String BUILD = "Build";
 	/** Text representing casting (Using active abilities) */
 	public static final String CAST = "Cast";
-	
+
 	/** Different possiblities for toggle options */
 	public enum Toggle{
 		NONE,
 		DECISION,
 		PATH_SELECTION,
 		SUMMON_SELECTION,
+		CAST_SELECTION,
 		ATTACK_SELECTION
 	}
 
 	/** The layers of active toggles. Topmost is the current toggle */
 	private Stack<Toggle> toggle;
-	
+
 	/** Different types of summoning */
 	public enum SummonType{
 		UNIT,
 		BUILDING
 	}
-	
+
 	/** The type of the most recent decision to summon. Null if none is currently in progress */
 	private SummonType summonType;
-	
+
 	/** Current decision that is underway. Null if none */
 	private Decision decision;
-	
+
 	/** A hashmap from each player to the color to tint their units */
 	private final HashMap<Player, Color> playerColors;
-	
+
 	/** The Frame that is drawing this Game */
 	public final Frame frame;
-	
+
 	/** The game this is controlling */
 	public final Game game;
-	
+
 	/** The active location selector, if any */
 	private LocationSelector locationSelector;
-	
+
 	public GameController(Game g, Frame f){
 		game = g;
 		game.setGameController(this);
 		frame = f;
 		frame.setController(this);
-		
+
 		playerColors = new HashMap<Player, Color>();
 		toggle = new Stack<Toggle>();
 	}
-	
+
 	/** Returns the gamePanel located within frame */
 	public GamePanel getGamePanel(){
 		return frame.getGamePanel();
 	}
-	
+
 	/** Starts this gameController running.
 	 * Does nothing if currently running or game is already over */
 	public synchronized void start(){
 		if(isRunning() || game.isGameOver()) return;
 		Thread th = new Thread(game);
-	    th.start();
+		th.start();
 	}
-	
+
 	/** Adds this player to the model.game at the end of the player list.
 	 * Throws a runtimeException if the model.game is already underway.
 	 * Returns the number of players after adding p */
@@ -123,34 +120,34 @@ public class GameController {
 		playerColors.put(p, c.darker());
 		return game.getRemainingPlayers().size();
 	}
-	
+
 	/** Starts a new ability decision for the given player - call during levelup
 	 * 
 	 */
 	public void startNewAbilityDecision(Player p){
 		startNewAbilityDecision(p.getCommander());
 	}
-	
+
 	/** Returns iff the game is currently runnign */
 	public boolean isRunning(){
 		return game.isRunning();
 	}
-	
+
 	/** Instructs the Frame to repaint */
 	public void repaint(){
 		frame.repaint();
 	}
-	
+
 	/** Gets the color for the given player */
 	public Color getColorFor(Player p){
 		return playerColors.get(p);
 	}
-	
+
 	/** Called when the model wants to begin the turn for player p */
 	public void startTurnFor(Player p){
 		frame.startTurnFor(p);
 	}
-	
+
 	/** Returns the current Toggle setting.
 	 * Returns Toggle.NONE if there are no current toggles open */
 	public Toggle getToggle(){
@@ -171,7 +168,7 @@ public class GameController {
 	protected Toggle removeTopToggle(){
 		return toggle.pop();
 	}
-	
+
 	/** Cancels the currently selected decision for any decision
 	 * Throws a runtimeException if this was a bad time to cancel because decision wasn't happening.
 	 * This should be called *after* all necessary information is stored from the decision variables */
@@ -185,22 +182,22 @@ public class GameController {
 		frame.setActiveCursor(getGamePanel().boardCursor);
 		repaint();
 	}
-	
+
 	/** Returns the currently active location selector, if any */
 	public LocationSelector getLocationSelector(){
 		return locationSelector;
 	}
-	
+
 	/** Returns the type of the current decision, if any */
 	public DecisionType getDecisionType(){
 		return decision.getType();
 	}
-	
+
 	/** Returns iff the current decision is manditory */
 	public boolean isDecisionManditory(){
 		return decision.isManditory();
 	}
-	
+
 	/** Creates a new Decision Panel for doing things with a model.unit, 
 	 * shown to the side of the current tile (side depending
 	 * on location of current tile)
@@ -353,26 +350,6 @@ public class GameController {
 		startSummonDecision(c, c.getBuildables());
 	}
 
-	/** Creates a getGamePanel().getDecisionPanel() for choosing a spell to cast */
-	public void startCastDecision(){
-		LinkedList<Choice> choices = new LinkedList<Choice>();
-		Commander c = (Commander) getGamePanel().boardCursor.getElm().getOccupyingUnit();
-		LinkedList<Ability> abilities = c.getActiveAbilities();
-		for(Ability a : abilities){
-			choices.add(new Choice(a.manaCost <= c.getMana(), 
-					a.name + Choice.SEPERATOR +"(" + a.manaCost + ")"));
-		}
-		decision = new Decision(DecisionType.CAST_DECISION, false, choices);
-		addToggle(Toggle.DECISION);
-		getGamePanel().fixDecisionPanel("Action > Cast", game.getCurrentPlayer(), decision);
-		getGamePanel().moveDecisionPanel();
-	}
-
-	/** Processes a casting decision */
-	public void processCastDecision(Choice c){
-		throw new UnsupportedOperationException();
-	}
-
 	/** Creates a new summon selector at the current getGamePanel().boardCursor position.
 	 * 
 	 */
@@ -427,6 +404,76 @@ public class GameController {
 		summonType = null;
 		locationSelector =null;
 		getGamePanel().boardCursor.setElm(loc); //Cause info update
+		repaint();
+	}
+
+	/** Creates a getGamePanel().getDecisionPanel() for choosing a spell to cast */
+	public void startCastDecision(){
+		LinkedList<Choice> choices = new LinkedList<Choice>();
+		Commander c = (Commander) getGamePanel().boardCursor.getElm().getOccupyingUnit();
+		LinkedList<Ability> abilities = c.getActiveAbilities();
+		for(Ability a : abilities){
+			choices.add(new Choice(a.manaCost <= c.getMana(), 
+					a.name + Choice.SEPERATOR +"(" + a.manaCost + ")"));
+		}
+		decision = new Decision(DecisionType.CAST_DECISION, false, choices);
+		addToggle(Toggle.DECISION);
+		getGamePanel().fixDecisionPanel("Action > Cast", game.getCurrentPlayer(), decision);
+		getGamePanel().moveDecisionPanel();
+	}
+
+	/** Processes a casting decision */
+	public void startCastSelection(Choice choice){
+		if(! choice.isSelectable()){
+			return;
+		}
+		Tile t = getGamePanel().boardCursor.getElm();
+		if(! t.isOccupied() || ! (t.getOccupyingUnit() instanceof Commander)){
+			return;
+		}
+		String name = choice.getMessage().substring(0, choice.getMessage().indexOf(Choice.SEPERATOR));
+		cancelDecision();
+		Commander c = (Commander)t.getOccupyingUnit();
+		Ability a = c.getAbilityByName(name);
+		if(a != null && c != null){
+			locationSelector = new CastSelector(this, c, a);
+			ArrayList<Tile> cloud = locationSelector.getPossibleMovementsCloud();
+			if(cloud.isEmpty()){
+				locationSelector =null;
+				return; //No possible summoning locations for this model.unit
+			}
+			addToggle(Toggle.CAST_SELECTION);
+			if(a.castDist == 0){
+				processCastSelection(t);
+			} else{
+				Tile t2 = cloud.get(0);
+				getGamePanel().boardCursor.setElm(t2);
+				getGamePanel().fixScrollToShow(t2.getRow(), t2.getCol());
+			}
+		}
+	}
+	
+	/** Cancels the summon selection - deletes it but does nothing.
+	 * Throws a runtimeException if this was a bad time to cancel because summonSelection wasn't happening. */
+	public void cancelCastSelection() throws RuntimeException{
+		Toggle t =removeTopToggle();
+		if(! t.equals(Toggle.CAST_SELECTION))
+			throw new RuntimeException("Can't cancel cast selection, currently toggling " + getToggle());
+		if(locationSelector != null){
+			CastSelector cs = (CastSelector) locationSelector;
+			getGamePanel().boardCursor.setElm(cs.caster.getLocation());
+		}
+		locationSelector =null;
+	}
+
+	public void processCastSelection(Tile loc){
+		CastSelector castSelector = (CastSelector) locationSelector;
+		Toggle t = removeTopToggle();
+		if(! t.equals(Toggle.CAST_SELECTION))
+			throw new RuntimeException("Can't process cast selection, currently toggling " + getToggle());
+		castSelector.toCast.cast(loc);
+		locationSelector =null;
+		getGamePanel().boardCursor.setElm(castSelector.caster.getLocation()); //Cause info update
 		repaint();
 	}
 
@@ -518,5 +565,5 @@ public class GameController {
 			getGamePanel().boardCursor.setElm(attackSelector.attacker.getLocation());
 		}
 	}
-	
+
 }

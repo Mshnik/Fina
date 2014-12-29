@@ -113,7 +113,7 @@ public class HeaderPanel extends JPanel {
 
 		if(Frame.DEBUG){
 			g2d.setColor(Color.black);
-			g2d.drawString(frame.getController().toString(), MARGIN, MARGIN);
+			g2d.drawString(frame.getController().getToggle().toString(), MARGIN, MARGIN);
 		}
 		g2d.setRenderingHint(
 				RenderingHints.KEY_TEXT_ANTIALIASING,

@@ -97,7 +97,9 @@ public abstract class Ability implements Stringable{
 		}
 		else{
 			for(MPoint p : effectCloud){
-				cloud.add(b.getTileAt(origin.add(p)));
+				try{
+					cloud.add(b.getTileAt(origin.add(p)));
+				}catch(IllegalArgumentException e){} //Do nothing - OOB
 			}
 			Collections.sort(cloud);
 

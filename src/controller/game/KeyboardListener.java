@@ -94,6 +94,9 @@ public class KeyboardListener implements KeyListener{
 					case SUMMON_DECISION:
 						gc.startSummonSelection(decision);
 						break;
+					case CAST_DECISION:
+						gc.startCastSelection(decision);
+						break;
 					case NEW_ABILITY_DECISION:
 						gc.processNewAbilityDecision(decision);
 						break;
@@ -121,6 +124,17 @@ public class KeyboardListener implements KeyListener{
 					gc.cancelSummonSelection();
 					if(summoningUnit) gc.startSummonCombatantDecision();
 					else gc.startSummonBuildingDecision();
+				}
+				break;
+			case CAST_SELECTION:
+				if(keyCode == A) {
+					if(! gc.frame.getActiveCursor().canSelect()) return;
+					Tile loc = ((BoardCursor) gc.frame.getActiveCursor()).getElm();
+					gc.processCastSelection(loc);
+				}
+				else{
+					gc.cancelCastSelection();
+					gc.startCastDecision();
 				}
 				break;
 			case ATTACK_SELECTION:

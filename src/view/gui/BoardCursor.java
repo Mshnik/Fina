@@ -2,6 +2,7 @@ package view.gui;
 
 import java.util.ArrayList;
 
+import controller.selector.CastSelector;
 import controller.selector.LocationSelector;
 import controller.selector.PathSelector;
 import view.gui.panel.GamePanel;
@@ -96,9 +97,12 @@ public class BoardCursor extends Cursor<Tile, GamePanel>{
 	@Override
 	protected void moved(){
 		super.moved();
-		if(getPanel().controller.getLocationSelector() != null && getPanel().controller.getLocationSelector() instanceof PathSelector){
-			PathSelector ps = (PathSelector) getPanel().controller.getLocationSelector();
+		LocationSelector ls = getPanel().controller.getLocationSelector();
+		if(ls != null && ls instanceof PathSelector){
+			PathSelector ps = (PathSelector) ls;
 			ps.addToPath(getElm());
+		} else if(ls != null && ls instanceof CastSelector){
+			((CastSelector) ls).refreshEffectCloud();
 		}
 		updateUnitHover();
 	}

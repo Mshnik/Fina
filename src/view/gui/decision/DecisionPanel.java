@@ -194,7 +194,7 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
 			throw new IllegalArgumentException("Can't get decision at col != 0");
 		try{
 			return decision.get(row);
-		} catch(ArrayIndexOutOfBoundsException e){
+		} catch(IndexOutOfBoundsException e){
 			throw new IllegalArgumentException("Can't get decision at row " + row + ": OOB");
 		}
 	}
