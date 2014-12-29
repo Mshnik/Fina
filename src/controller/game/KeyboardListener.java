@@ -105,7 +105,9 @@ public class KeyboardListener implements KeyListener{
 					}
 				} else{
 					if(! gc.isDecisionManditory()){
-						boolean resetDecision = gc.getDecisionType() == Decision.DecisionType.SUMMON_DECISION;
+						boolean resetDecision = 
+								gc.getDecisionType() == Decision.DecisionType.SUMMON_DECISION
+								|| gc.getDecisionType() == Decision.DecisionType.CAST_DECISION;
 						gc.cancelDecision();
 						if(resetDecision) gc.startActionDecision();
 					} else{

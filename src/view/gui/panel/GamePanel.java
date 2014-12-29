@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 import controller.decision.Decision;
 import controller.game.GameController;
+import controller.selector.CastSelector;
 
 import view.gui.*;
 import view.gui.Frame;
@@ -14,6 +15,7 @@ import view.gui.decision.*;
 import model.board.*;
 import model.game.*;
 import model.unit.*;
+import model.unit.ability.Ability;
 
 /** Drawable wrapper for a model.board object */
 public class GamePanel extends MatrixPanel<Tile> implements Paintable{
@@ -26,6 +28,18 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 
 	/** Shading for fog of war - translucent black */
 	protected static final Color FOG_OF_WAR = new Color(0,0,0,0.75f);
+	
+	/** Stroke for drawing effect radii */
+	private static final Stroke RADIUS_STROKE = new BasicStroke(3);
+	
+	/** Color of attack radii */
+	private static final Color ATTACK_COLOR = Color.red;
+	
+	/** Color of summon/build radii */
+	private static final Color SUMMON_COLOR = Color.cyan;
+	
+	/** Color of cast radii */
+	private static final Color CAST_COLOR = Color.magenta;
 	
 	/** The BoardCursor for this GamePanel */
 	public final BoardCursor boardCursor;
@@ -130,20 +144,35 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		//This happens when the action menu is up
 		if(decisionPanel != null 
 				&& controller.getDecisionType() == Decision.DecisionType.ACTION_DECISION){
-			g2d.setStroke(new BasicStroke(3));
+			g2d.setStroke(RADIUS_STROKE);
 			switch(decisionPanel.cursor.getElm().getMessage()){
 			case GameController.FIGHT:
-				g2d.setColor(Color.red);
-				ImageIndex.drawRadial(boardCursor.getElm(), 
-						boardCursor.getElm().getOccupyingUnit().getAttackRange() + 1, this, g2d);
+				g2d.setColor(ATTACK_COLOR);
+				ImageIndex.trace(controller.game.board.getRadialCloud(boardCursor.getElm(), 
+						boardCursor.getElm().getOccupyingUnit().getAttackRange() + 1), 
+						this, g2d);
 				break;
 			case GameController.BUILD:
 			case GameController.SUMMON:
-				g2d.setColor(Color.cyan);
-				ImageIndex.drawRadial(boardCursor.getElm(), 
-						boardCursor.getElm().getOccupyingUnit().getSummonRange(), this, g2d);
+				g2d.setColor(SUMMON_COLOR);
+				ImageIndex.trace(controller.game.board.getRadialCloud(boardCursor.getElm(), 
+						boardCursor.getElm().getOccupyingUnit().getSummonRange()), 
+						this, g2d);
 				break;
 			}
+		}
+		else if(
+			decisionPanel != null && controller.getDecisionType() == Decision.DecisionType.CAST_DECISION
+			|| controller.getLocationSelector() != null && controller.getToggle() == GameController.Toggle.CAST_SELECTION
+			){
+			Ability a = null;
+			if(decisionPanel != null) a = (Ability) decisionPanel.getElm().getVal();
+			else a = ((CastSelector) controller.getLocationSelector()).toCast;
+			
+			g2d.setStroke(RADIUS_STROKE);
+			g2d.setColor(CAST_COLOR);
+			ImageIndex.trace(a.getEffectCloud(boardCursor.getElm()), 
+					this, g2d);
 		}
 
 		//Draw the cursor

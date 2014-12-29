@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
@@ -151,13 +151,11 @@ public class ImageIndex {
 		return img;
 	}
 
-	/** Draws a border around the set of tiles using center and radius.
-	 * Assumes graphic settings such as color, stroke have been set
-	 * Radius is extra tiles around center - radius of 0 is just center */
-	public static void drawRadial(Tile center, int radius, GamePanel gp, Graphics2D g2d){
-		Board b = center.board;
-		ArrayList<Tile> tiles = b.getRadialCloud(center, radius);
+	/** Draws a border around the set of tiles.*/
+	public static void trace(Collection<Tile> tiles, GamePanel gp, Graphics2D g2d){
+		Board b = null;
 		for(Tile t : tiles){
+			if(b == null) b = t.board;
 			for(Direction d : Direction.values()){
 				boolean paint = true;
 				try{

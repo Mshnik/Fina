@@ -267,7 +267,7 @@ public class GameController {
 	/** Starts a getGamePanel().getDecisionPanel() for ending the current player's turn */
 	public void startEndTurnDecision(){
 		decision = new Decision(DecisionType.END_OF_TURN_DECISION, false, 
-				new Choice(GameController.CANCEL), new Choice( GameController.END_TURN));
+				new Choice(true, GameController.CANCEL), new Choice(true, GameController.END_TURN));
 		addToggle(Toggle.DECISION);
 		getGamePanel().fixDecisionPanel("End Turn?", game.getCurrentPlayer(), decision);
 		getGamePanel().moveDecisionPanel();
@@ -296,7 +296,7 @@ public class GameController {
 		if(a != null){
 			decision = new Decision(DecisionType.NEW_ABILITY_DECISION, true);
 			for(Ability ab : a){
-				decision.add(new Choice(ab.name));
+				decision.add(new Choice(true, ab.name, ab));
 			}
 			addToggle(Toggle.DECISION);
 			getGamePanel().fixDecisionPanel("Choose a New Ability", c.owner, decision);
@@ -324,7 +324,7 @@ public class GameController {
 		ArrayList<Unit> units = Unit.sortedList(creatables.values());
 		for(Unit u : units){
 			choices.add(new Choice(u.manaCost <= c.getMana(), 
-					u.name + Choice.SEPERATOR +"(" + u.manaCost + ")"));
+					u.name + Choice.SEPERATOR +"(" + u.manaCost + ")", u));
 		}
 		decision = new Decision(DecisionType.SUMMON_DECISION, false, choices);
 		addToggle(Toggle.DECISION);
@@ -361,7 +361,7 @@ public class GameController {
 		if(! t.isOccupied() || ! t.getOccupyingUnit().canSummon()){
 			return;
 		}
-		String name = choice.getMessage().substring(0, choice.getMessage().indexOf(Choice.SEPERATOR));
+		String name = choice.getShortMessage();
 		cancelDecision();
 		Commander commander = t.getOccupyingUnit().owner.getCommander();
 		Unit toSummon = commander.getUnitByName(name);
@@ -414,7 +414,7 @@ public class GameController {
 		LinkedList<Ability> abilities = c.getActiveAbilities();
 		for(Ability a : abilities){
 			choices.add(new Choice(a.manaCost <= c.getMana(), 
-					a.name + Choice.SEPERATOR +"(" + a.manaCost + ")"));
+					a.name + Choice.SEPERATOR +"(" + a.manaCost + ")", a));
 		}
 		decision = new Decision(DecisionType.CAST_DECISION, false, choices);
 		addToggle(Toggle.DECISION);
@@ -431,7 +431,7 @@ public class GameController {
 		if(! t.isOccupied() || ! (t.getOccupyingUnit() instanceof Commander)){
 			return;
 		}
-		String name = choice.getMessage().substring(0, choice.getMessage().indexOf(Choice.SEPERATOR));
+		String name = choice.getShortMessage();
 		cancelDecision();
 		Commander c = (Commander)t.getOccupyingUnit();
 		Ability a = c.getAbilityByName(name);
