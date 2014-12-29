@@ -4,16 +4,12 @@ package view.gui.decision;
 import java.awt.Color;
 
 import controller.decision.Choice;
-import controller.decision.Decision;
 
 import view.gui.Cursor;
 
 import model.board.Direction;
-import model.unit.Commander;
 import model.unit.Unit;
 import model.unit.ability.Ability;
-
-
 
 /** A default cursor implementation for when no special cursor actions are necessary */
 public class DecisionCursor extends Cursor<Choice, DecisionPanel> {
@@ -47,18 +43,11 @@ public class DecisionCursor extends Cursor<Choice, DecisionPanel> {
 	protected void moved(){
 		super.moved();
 		
-		//Check to be in summon decision - if so, update info on model.unit examining
-		if(panel.controller.getDecisionType() == Decision.DecisionType.SUMMON_DECISION){
-			String unitName = getElm().getMessage();
-			unitName = unitName.substring(0, unitName.indexOf(Choice.SEPERATOR));
-			Commander c = panel.player.getCommander();
-			Unit u = c.getUnitByName(unitName);
-			panel.getFrame().showUnitStats(u);
-		} else if(panel.controller.getDecisionType() == Decision.DecisionType.NEW_ABILITY_DECISION){
-			String abilityName = getElm().getMessage();
-			Commander c = panel.player.getCommander();
-			Ability a = c.getAbilityByName(abilityName);
-			panel.getFrame().showAbilityStats(a);
+		//Check for having linked object. If so, inspect it
+		Object obj = getElm().getVal();
+		if(obj != null){
+			if(obj instanceof Unit) panel.getFrame().showUnitStats((Unit)obj);
+			else if(obj instanceof Ability) panel.getFrame().showAbilityStats((Ability) obj);
 		}
 		
 		panel.getFrame().repaint();
