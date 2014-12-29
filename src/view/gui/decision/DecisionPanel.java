@@ -8,7 +8,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import controller.game.Decision;
+import controller.decision.Choice;
+import controller.decision.Decision;
 import controller.game.GameController;
 
 import view.gui.Frame;
@@ -23,7 +24,7 @@ import model.game.Player;
  * @author MPatashnik
  *
  */
-public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
+public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
 	
 	/***/
 	private static final long serialVersionUID = 1L;
@@ -52,8 +53,8 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** The title of this decisionPanel, to paint at the top */
 	private String title;
 	
-	/** The choices to display on this DecisionPanel */
-	private Decision[] choices;
+	/** The decision to display on this DecisionPanel */
+	private Decision decision;
 	
 	/** The drawing height of a Decision */
 	public static final int DECISION_HEIGHT = 40;
@@ -74,16 +75,16 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	public final Player player;
 	
 	public DecisionPanel(GameController g, Player p,
-			int maxY, String title, Decision[] choices) {
+			int maxY, String title, Decision decision) {
 		super(g, 1, maxY, 0, 0);
 		this.player = p;
-		this.choices = choices;
+		this.decision = decision;
 		this.title = title;
 		
 		//Determine width of panel based on all text 
 		int maxWidth = controller.frame.getTextWidth(TEXT_FONT, title);
-		for(Decision d : choices){
-			maxWidth = Math.max(maxWidth, controller.frame.getTextWidth(TEXT_FONT, d.getMessage()));
+		for(Choice c : decision){
+			maxWidth = Math.max(maxWidth, controller.frame.getTextWidth(TEXT_FONT, c.getMessage()));
 		}
 		DECISION_WIDTH = maxWidth  + TEXT_X * 2; //Add margins for either side
 		
@@ -110,25 +111,25 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** The height of this Panel is the height of all the decisions and the title */
 	@Override
 	public int getHeight(){
-		return getElementHeight() * (Math.min(super.getShowedRows(), choices.length) + 1);
+		return getElementHeight() * (Math.min(super.getShowedRows(), decision.size()) + 1);
 	}
 	
 	/** Overrides super version by adding the x coordinate of this panel to super's result */
 	@Override
-	public int getXPosition(Decision elm){
+	public int getXPosition(Choice elm){
 		return super.getXPosition(elm) + x;
 	}
 	
 	/** Overrides super version by adding the y coordinate of this panel to super's result */
 	@Override
-	public int getYPosition(Decision elm){
+	public int getYPosition(Choice elm){
 		return super.getYPosition(elm) + y + DECISION_HEIGHT;
 	}
 	
 	/** Returns the decision the cursor is currently hovering *
 	 * 
 	 */
-	public Decision getElm(){
+	public Choice getElm(){
 		return cursor.getElm();
 	}
 	
@@ -161,11 +162,11 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 		g2d.drawString(title, TEXT_X + x, TEXT_Y + y);
 		
 		for(int r = scrollY; r < scrollY + Math.min(super.getShowedRows(), getMatrixHeight()); r++){
-			if(choices[r].isSelectable())
+			if(decision.get(r).isSelectable())
 				g2d.setColor(TEXT_COLOR);
 			else
 				g2d.setColor(TEXT_COLOR.darker());
-			g2d.drawString(choices[r].getMessage(), TEXT_X + x, TEXT_Y + y + (r - scrollY + 1) * DECISION_HEIGHT);
+			g2d.drawString(decision.get(r).getMessage(), TEXT_X + x, TEXT_Y + y + (r - scrollY + 1) * DECISION_HEIGHT);
 		}
 		
 		//Draw cursor
@@ -182,17 +183,17 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	/** Returns choices.length, the number of choices this decision panel is showing */
 	@Override
 	public int getMatrixHeight() {
-		return choices.length;
+		return decision.size();
 	}
 
 	/** Returns the action at the given index. Col must be 0 */
 	@Override
-	public Decision getElmAt(int row, int col)
+	public Choice getElmAt(int row, int col)
 			throws IllegalArgumentException {
 		if(col != 0)
 			throw new IllegalArgumentException("Can't get decision at col != 0");
 		try{
-			return choices[row];
+			return decision.get(row);
 		} catch(ArrayIndexOutOfBoundsException e){
 			throw new IllegalArgumentException("Can't get decision at row " + row + ": OOB");
 		}
@@ -213,7 +214,7 @@ public class DecisionPanel extends MatrixPanel<Decision> implements Paintable {
 	@Override
 	public String toString(){
 		String s = "";
-		for(Decision d : choices){
+		for(Choice d : decision){
 			s += d.toString() + ", ";
 		}
 		return s.substring(0, s.length() - 2);

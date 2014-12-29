@@ -1,9 +1,10 @@
 package controller.game;
 
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import controller.decision.Decision;
+import controller.decision.Choice;
 
 import view.gui.BoardCursor;
 import view.gui.Cursor;
@@ -82,7 +83,7 @@ public class KeyboardListener implements KeyListener{
 			case DECISION:
 				if(keyCode == A){
 					if(! gc.frame.getActiveCursor().canSelect()) return;
-					Decision decision = ((DecisionCursor) gc.frame.getActiveCursor()).getElm();
+					Choice decision = ((DecisionCursor) gc.frame.getActiveCursor()).getElm();
 					switch(gc.getDecisionType()){
 					case ACTION_DECISION:
 						gc.processActionDecision(decision);
@@ -101,7 +102,7 @@ public class KeyboardListener implements KeyListener{
 					}
 				} else{
 					if(! gc.isDecisionManditory()){
-						boolean resetDecision = gc.getDecisionType() == GameController.DecisionType.SUMMON_DECISION;
+						boolean resetDecision = gc.getDecisionType() == Decision.DecisionType.SUMMON_DECISION;
 						gc.cancelDecision();
 						if(resetDecision) gc.startActionDecision();
 					} else{

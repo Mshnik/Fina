@@ -1,4 +1,4 @@
-package controller.game;
+package controller.selector;
 
 
 
@@ -8,6 +8,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import controller.game.GameController;
 
 
 import view.gui.Paintable;

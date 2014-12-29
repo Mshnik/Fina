@@ -1,6 +1,8 @@
-package controller.game;
+package controller.selector;
 
 import java.awt.Color;
+
+import controller.game.GameController;
 
 import model.board.Tile;
 import model.unit.Combatant;

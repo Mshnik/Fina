@@ -8,6 +8,14 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Stack;
 
+import controller.decision.Choice;
+import controller.decision.Decision;
+import controller.decision.Decision.DecisionType;
+import controller.selector.AttackSelector;
+import controller.selector.LocationSelector;
+import controller.selector.PathSelector;
+import controller.selector.SummonSelector;
+
 import view.gui.Frame;
 import view.gui.panel.GamePanel;
 
@@ -57,24 +65,6 @@ public class GameController {
 	/** The layers of active toggles. Topmost is the current toggle */
 	private Stack<Toggle> toggle;
 	
-	/** The types of decisions that can be made */
-	public enum DecisionType{
-		ACTION_DECISION,
-		SUMMON_DECISION,
-		CAST_DECISION,
-		NEW_ABILITY_DECISION,
-		END_OF_TURN_DECISION
-	}
-	
-	/** The type of decision currently in progress - what kind of decision it is making. Null if none */
-	private DecisionType decisionType;
-	
-	/** The choices for the current decision in progress. Null if none */
-	private Decision[] decisionChoices;
-	
-	/** True iff the current decision is manditory. false if no decision is underway */
-	private boolean decisionManditory;
-	
 	/** Different types of summoning */
 	public enum SummonType{
 		UNIT,
@@ -83,6 +73,9 @@ public class GameController {
 	
 	/** The type of the most recent decision to summon. Null if none is currently in progress */
 	private SummonType summonType;
+	
+	/** Current decision that is underway. Null if none */
+	private Decision decision;
 	
 	/** A hashmap from each player to the color to tint their units */
 	private final HashMap<Player, Color> playerColors;
@@ -187,9 +180,7 @@ public class GameController {
 		if(! t.equals(Toggle.DECISION))
 			throw new RuntimeException("Can't cancel decision, currently toggling " + getToggle());
 		frame.getAnimator().removeAnimatable(getGamePanel().getDecisionPanel().cursor);
-		decisionType = null;
-		decisionChoices = null;
-		decisionManditory = false;
+		decision = null;
 		frame.getGamePanel().setDecisionPanel(null);
 		frame.setActiveCursor(getGamePanel().boardCursor);
 		repaint();
@@ -202,12 +193,12 @@ public class GameController {
 	
 	/** Returns the type of the current decision, if any */
 	public DecisionType getDecisionType(){
-		return decisionType;
+		return decision.getType();
 	}
 	
 	/** Returns iff the current decision is manditory */
 	public boolean isDecisionManditory(){
-		return decisionManditory;
+		return decision.isManditory();
 	}
 	
 	/** Creates a new Decision Panel for doing things with a model.unit, 
@@ -225,38 +216,35 @@ public class GameController {
 		Unit u = t.getOccupyingUnit();
 
 		//Add choices based on the model.unit on this tile
-		LinkedList<Decision> decisions = new LinkedList<Decision>();
-		int i = 0;
+		LinkedList<Choice> choices = new LinkedList<Choice>();
 		if(u instanceof MovingUnit){
-			decisions.add(new Decision(i++, u.canMove(), MOVE));
+			choices.add(new Choice(u.canMove(), MOVE));
 		}
 		if(u instanceof Combatant){
-			decisions.add(new Decision(i++, u.canFight() && ((Combatant) u).hasFightableTarget(), FIGHT));
+			choices.add(new Choice(u.canFight() && ((Combatant) u).hasFightableTarget(), FIGHT));
 		}
 		if(u instanceof Summoner){
-			decisions.add(new Decision(i++, ((Summoner) u).hasSummonSpace(), SUMMON));
-			decisions.add(new Decision(i++, ((Summoner) u).hasBuildSpace(), BUILD));
+			choices.add(new Choice(((Summoner) u).hasSummonSpace(), SUMMON));
+			choices.add(new Choice(((Summoner) u).hasBuildSpace(), BUILD));
 		}
 		if(u instanceof Commander){
-			decisions.add(new Decision(i++, ((Commander) u).canCast(), CAST));
+			choices.add(new Choice(((Commander) u).canCast(), CAST));
 		}
 
 		//If there are no applicable choices, do nothing
-		if(decisions.isEmpty()) return;
+		if(choices.isEmpty()) return;
 
 		//Otherwise, convert to array, create panel, set correct location on screen.
-		decisionType = DecisionType.ACTION_DECISION;
-		decisionManditory = false;
-		decisionChoices = decisions.toArray(new Decision[decisions.size()]);
+		decision = new Decision(DecisionType.ACTION_DECISION, false, choices);
 		addToggle(Toggle.DECISION);
-		getGamePanel().fixDecisionPanel("Action", game.getCurrentPlayer(), decisionChoices);
+		getGamePanel().fixDecisionPanel("Action", game.getCurrentPlayer(), decision);
 		getGamePanel().moveDecisionPanel();
 	}
 
 	/** Processes the currently selected Actiondecision.
 	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
-	public void processActionDecision(Decision d) throws RuntimeException{
-		String choice = d.getMessage();
+	public void processActionDecision(Choice c) throws RuntimeException{
+		String choice = c.getMessage();
 		cancelDecision();
 		switch(choice){
 		case MOVE:
@@ -281,17 +269,16 @@ public class GameController {
 
 	/** Starts a getGamePanel().getDecisionPanel() for ending the current player's turn */
 	public void startEndTurnDecision(){
-		decisionChoices = new Decision[]{new Decision(0, GameController.CANCEL), new Decision(1, GameController.END_TURN)};
-		decisionType = DecisionType.END_OF_TURN_DECISION;
-		decisionManditory = false;
+		decision = new Decision(DecisionType.END_OF_TURN_DECISION, false, 
+				new Choice(GameController.CANCEL), new Choice( GameController.END_TURN));
 		addToggle(Toggle.DECISION);
-		getGamePanel().fixDecisionPanel("End Turn?", game.getCurrentPlayer(), decisionChoices);
+		getGamePanel().fixDecisionPanel("End Turn?", game.getCurrentPlayer(), decision);
 		getGamePanel().moveDecisionPanel();
 	}
 
 	/** Processes an endOfTurn Decision */
-	public void processEndTurnDecision(Decision d){
-		String m = d.getMessage();
+	public void processEndTurnDecision(Choice c){
+		String m = c.getMessage();
 		cancelDecision();
 		switch(m){
 		case GameController.END_TURN:
@@ -310,25 +297,23 @@ public class GameController {
 
 		Ability[] a = c.getPossibleAbilities(c.getLevel());
 		if(a != null){
-			decisionChoices = new Decision[a.length];
-			decisionType = DecisionType.NEW_ABILITY_DECISION;
-			decisionManditory = true;
-			for(int i = 0; i < a.length; i++){
-				decisionChoices[i] = new Decision(i, a[i].name);
+			decision = new Decision(DecisionType.NEW_ABILITY_DECISION, true);
+			for(Ability ab : a){
+				decision.add(new Choice(ab.name));
 			}
 			addToggle(Toggle.DECISION);
-			getGamePanel().fixDecisionPanel("Choose a New Ability", c.owner, decisionChoices);
+			getGamePanel().fixDecisionPanel("Choose a New Ability", c.owner, decision);
 			getGamePanel().centerDecisionPanel();
 		} 
 		//else do nothing
 	}
 
 	/** Processes the levelup new ability decision */
-	public void processNewAbilityDecision(Decision d){
-		Commander c = getGamePanel().getDecisionPanel().player.getCommander();
-		int index = getGamePanel().getDecisionPanel().getElm().getIndex();
+	public void processNewAbilityDecision(Choice c){
+		Commander com = getGamePanel().getDecisionPanel().player.getCommander();
+		int index = c.getIndex();
 		cancelDecision();
-		c.chooseAbility(index);
+		com.chooseAbility(index);
 	}
 
 	/** Returns the type of the current summon decision under way, null otherwise */
@@ -338,21 +323,17 @@ public class GameController {
 
 	/** Creates a getGamePanel().getDecisionPanel() for creating either units or buildings */
 	private void startSummonDecision(Commander c, Map<String, ? extends Unit> creatables){
-		LinkedList<Decision> decisions = new LinkedList<Decision>();
+		LinkedList<Choice> choices = new LinkedList<Choice>();
 		ArrayList<Unit> units = Unit.sortedList(creatables.values());
-		int i = 0;
 		for(Unit u : units){
-			String name = u.name;
-			boolean ok = u.manaCost <= c.getMana();
-			decisions.add(new Decision(i++, ok, name + Decision.SEPERATOR +"(" + u.manaCost + ")"));
+			choices.add(new Choice(u.manaCost <= c.getMana(), 
+					u.name + Choice.SEPERATOR +"(" + u.manaCost + ")"));
 		}
-		decisionChoices = decisions.toArray(new Decision[decisions.size()]);
-		decisionType = DecisionType.SUMMON_DECISION;
-		decisionManditory = false;
+		decision = new Decision(DecisionType.SUMMON_DECISION, false, choices);
 		addToggle(Toggle.DECISION);
 		getGamePanel().fixDecisionPanel(
 				"Action > " + (summonType == SummonType.UNIT ? "Summon" : "Build")
-				, c.owner, decisionChoices);
+				, c.owner, decision);
 		getGamePanel().moveDecisionPanel();
 	}
 
@@ -374,40 +355,36 @@ public class GameController {
 
 	/** Creates a getGamePanel().getDecisionPanel() for choosing a spell to cast */
 	public void startCastDecision(){
-		LinkedList<Decision> decisions = new LinkedList<Decision>();
+		LinkedList<Choice> choices = new LinkedList<Choice>();
 		Commander c = (Commander) getGamePanel().boardCursor.getElm().getOccupyingUnit();
 		LinkedList<Ability> abilities = c.getActiveAbilities();
-		int i = 0;
 		for(Ability a : abilities){
-			String name = a.name;
-			boolean ok = a.manaCost <= c.getMana();
-			decisions.add(new Decision(i++, ok, name + Decision.SEPERATOR +"(" + a.manaCost + ")"));
+			choices.add(new Choice(a.manaCost <= c.getMana(), 
+					a.name + Choice.SEPERATOR +"(" + a.manaCost + ")"));
 		}
-		decisionChoices = decisions.toArray(new Decision[decisions.size()]);
-		decisionType = DecisionType.CAST_DECISION;
-		decisionManditory = false;
+		decision = new Decision(DecisionType.CAST_DECISION, false, choices);
 		addToggle(Toggle.DECISION);
-		getGamePanel().fixDecisionPanel("Action > Cast", game.getCurrentPlayer(), decisionChoices);
+		getGamePanel().fixDecisionPanel("Action > Cast", game.getCurrentPlayer(), decision);
 		getGamePanel().moveDecisionPanel();
 	}
 
 	/** Processes a casting decision */
-	public void processCastDecision(Decision d){
+	public void processCastDecision(Choice c){
 		throw new UnsupportedOperationException();
 	}
 
 	/** Creates a new summon selector at the current getGamePanel().boardCursor position.
 	 * 
 	 */
-	public void startSummonSelection(Decision decision){
-		if(! decision.isSelectable()){
+	public void startSummonSelection(Choice choice){
+		if(! choice.isSelectable()){
 			return;
 		}
 		Tile t = getGamePanel().boardCursor.getElm();
 		if(! t.isOccupied() || ! t.getOccupyingUnit().canSummon()){
 			return;
 		}
-		String name = decision.getMessage().substring(0, decision.getMessage().indexOf(Decision.SEPERATOR));
+		String name = choice.getMessage().substring(0, choice.getMessage().indexOf(Choice.SEPERATOR));
 		cancelDecision();
 		Commander commander = t.getOccupyingUnit().owner.getCommander();
 		Unit toSummon = commander.getUnitByName(name);

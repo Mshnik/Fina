@@ -2,8 +2,8 @@ package view.gui;
 
 import java.util.ArrayList;
 
-import controller.game.LocationSelector;
-import controller.game.PathSelector;
+import controller.selector.LocationSelector;
+import controller.selector.PathSelector;
 import view.gui.panel.GamePanel;
 import model.board.Direction;
 import model.board.Tile;

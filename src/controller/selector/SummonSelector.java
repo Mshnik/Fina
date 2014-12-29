@@ -1,5 +1,6 @@
-package controller.game;
+package controller.selector;
 
+import controller.game.GameController;
 import model.unit.Unit;
 
 /** A location selector for summoning a new model.unit */

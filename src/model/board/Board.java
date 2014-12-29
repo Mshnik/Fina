@@ -8,8 +8,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 
-import controller.game.PathSelector;
-import controller.game.SummonSelector;
+import controller.selector.PathSelector;
+import controller.selector.SummonSelector;
 
 
 import model.game.Stringable;

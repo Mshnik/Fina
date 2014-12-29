@@ -1,4 +1,4 @@
-package controller.game;
+package controller.selector;
 
 
 
@@ -6,6 +6,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+
+import controller.game.GameController;
 
 import view.gui.Paintable;
 import view.gui.panel.GamePanel;

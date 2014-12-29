@@ -4,7 +4,7 @@ package view.gui.panel;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import controller.game.Decision;
+import controller.decision.Decision;
 import controller.game.GameController;
 
 import view.gui.*;
@@ -61,9 +61,9 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	 * sets active toggle and active cursor, and repaints.
 	 */
 	public void fixDecisionPanel(String title, 
-			Player p, Decision[] decisionsArr){
+			Player p, Decision decision){
 		decisionPanel = new DecisionPanel(controller, p, 
-				Math.min(4, decisionsArr.length), title, decisionsArr);
+				Math.min(4, decision.size()), title, decision);
 		getFrame().setActiveCursor(decisionPanel.cursor);
 	}
 
@@ -129,7 +129,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		//Depending on the decision panel, draw ranges as applicable.
 		//This happens when the action menu is up
 		if(decisionPanel != null 
-				&& controller.getDecisionType() == GameController.DecisionType.ACTION_DECISION){
+				&& controller.getDecisionType() == Decision.DecisionType.ACTION_DECISION){
 			g2d.setStroke(new BasicStroke(3));
 			switch(decisionPanel.cursor.getElm().getMessage()){
 			case GameController.FIGHT:
