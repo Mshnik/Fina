@@ -14,52 +14,12 @@ import view.gui.Frame;
 public class Main {
 	/** Simple main method to test out Frame features */
 	public static void main(String[] args){
-	    Frame f = new Frame(8, 15);
-	    Terrain[][] t = {
-	    		{ Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 	
-	    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
-	    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
-	    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS
-	    		},
-	    		{ Terrain.GRASS, Terrain.MOUNTAIN, Terrain.GRASS, Terrain.GRASS, 	
-		    		  Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
-		    		  Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
-		    		  Terrain.GRASS, Terrain.MOUNTAIN, Terrain.GRASS
-		    	},
-	    		{ Terrain.GRASS, Terrain.GRASS, Terrain.WOODS, Terrain.WOODS, 	
-    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
-    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.WOODS, 
-    				Terrain.WOODS, Terrain.GRASS, Terrain.GRASS
-	    		},
-	    		{ Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.ANCIENT_GROUND, 	
-    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
-    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.ANCIENT_GROUND, 
-    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS
-	    		},
-	    		{ Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.ANCIENT_GROUND, 	
-    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
-    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.ANCIENT_GROUND, 
-    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS
-	    		},
-	    		{ Terrain.GRASS, Terrain.GRASS, Terrain.WOODS, Terrain.WOODS, 	
-    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
-    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.WOODS, 
-    				Terrain.WOODS, Terrain.GRASS, Terrain.GRASS
-	    		},
-	    		{ Terrain.GRASS, Terrain.MOUNTAIN, Terrain.GRASS, Terrain.GRASS, 	
-		    		  Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
-		    		  Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
-		    		  Terrain.GRASS, Terrain.MOUNTAIN, Terrain.GRASS
-		    	},
-	    		{ Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 	
-    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
-    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, Terrain.GRASS, 
-    				Terrain.GRASS, Terrain.GRASS, Terrain.GRASS
-	    		}
-	    };
+			String boardFilename = args.length > 0 ? args[0] : "sample_board.csv";
+			Board board = BoardReader.readBoard("game/boards/" + boardFilename);
+
+	    Frame f = new Frame(board.getHeight(), board.getWidth());
 	    
-	    
-	    Game g = new Game(new Board(t), false);
+	    Game g = new Game(board, false);
 	    GameController gc = new GameController(g, f);
 
 	    Player p1 = new HumanPlayer(g, Color.green);
