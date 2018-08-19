@@ -107,12 +107,16 @@ public class BoardCursor extends Cursor<Tile, GamePanel>{
 		updateUnitHover();
 	}
 	
-	/** Updates info of the model.unit this is on. Call whenever moved or elm set */
+	/**
+	 * Updates info of the model.unit this is on. If no unit, sets terrain instead.
+	 * Call whenever moved or elm set.
+	 */
 	private void updateUnitHover(){
 		if(getElm().isOccupied() && panel.controller.game.getCurrentPlayer().canSee(getElm())){
 			panel.getFrame().getInfoPanel().setUnit(getElm().getOccupyingUnit());
 		}
-		else
-			panel.getFrame().getInfoPanel().setUnit(null);
+		else {
+			panel.getFrame().getInfoPanel().setTerrain(getElm().terrain);
+		}
 	}
 }

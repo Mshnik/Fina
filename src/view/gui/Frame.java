@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import controller.game.GameController;
 import controller.game.KeyboardListener;
 
+import model.board.Terrain;
 import view.gui.panel.GamePanel;
 import view.gui.panel.HeaderPanel;
 import view.gui.panel.InfoPanel;
@@ -76,8 +77,6 @@ public class Frame extends JFrame {
 	
 	/** Sets this Frame to show GamePanel bp. Removes previous gamePanel if any.
 	 * Also triggers a packing and repainting.
-	 * @param rows - the number of rows to draw of g (height of window).
-	 * @param cols - the number of cols to draw of g (width of window).
 	 */
 	public void setController(GameController c){
 		//Removal
@@ -147,6 +146,11 @@ public class Frame extends JFrame {
 	 */
 	public void showAbilityStats(Ability a){
 		infoPanel.setAbility(a);
+	}
+
+	/** Updates the info panel to show the given terrain. */
+	public void showTerrain(Terrain t) {
+		infoPanel.setTerrain(t);
 	}
 	
 	/** Returns the current active cursor that is moved by arrow keys.

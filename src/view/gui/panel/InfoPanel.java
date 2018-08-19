@@ -11,6 +11,7 @@ import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
+import model.board.Terrain;
 import view.gui.Frame;
 import view.gui.ImageIndex;
 
@@ -52,6 +53,9 @@ public class InfoPanel extends JPanel{
 	
 	/** The Ability (if any) this InfoPanel is currently drawing info for */
 	private Ability ability;
+
+	/** The Terrain (if any) this InfoPanel is currently drawing info for */
+	private Terrain terrain;
 	
 	public InfoPanel(Frame f){
 		frame = f;
@@ -73,13 +77,23 @@ public class InfoPanel extends JPanel{
 	public void setUnit(Unit u){
 		unit = u;
 		ability = null;
+		terrain = null;
 		repaint();
 	}
 	
-	/** Sets the model.unit this InfoPanel is to draw info for, and causes a repaint */
+	/** Sets the model.ability this InfoPanel is to draw info for, and causes a repaint */
 	public void setAbility(Ability a){
 		unit = null;
 		ability = a;
+		terrain = null;
+		repaint();
+	}
+
+	/** Sets the model.terrain this InfoPanel is to draw for and causes a repaint */
+	public void setTerrain(Terrain t) {
+		unit = null;
+		ability = null;
+		terrain = t;
 		repaint();
 	}
 	
@@ -102,14 +116,14 @@ public class InfoPanel extends JPanel{
 				RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
 		g2d.setFont(BIG_FONT);
-		
+
+		int xStart = 25;
+		int x = 25;
+		int y = YMARGIN;
+		final int xInc = 225;
+
 		//Unit painting
 		if(unit != null){
-			final int xStart = 25;
-			final int xInc = 225;
-
-			int x = xStart;
-			
 			g2d.drawString(unit.name, x, YMARGIN);
 			g2d.setFont(SMALL_FONT);
 			final int infoFont = SMALL_FONT.getSize();
@@ -119,7 +133,6 @@ public class InfoPanel extends JPanel{
 			
 			g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, infoFont - 3));
 			x += xInc;
-			int y = YMARGIN;
 			Stats stats = unit.getStats();
 			
 			//Insert health at top here
@@ -168,9 +181,6 @@ public class InfoPanel extends JPanel{
 		}
 		//Ability painting
 		else if(ability != null){
-			int x = 25;
-			int y = YMARGIN;
-			final int xInc = 225;
 			g2d.drawString(ability.name, x, y);
 			final int fontSize = SMALL_FONT.getSize();
 			g2d.setFont(SMALL_FONT);
@@ -222,6 +232,10 @@ public class InfoPanel extends JPanel{
 				String s = ((EffectAbility) ability).toStringLong();
 				g2d.drawString(s, x, y);
 			}
+		}
+		// Terrain painting.
+		else if (terrain != null) {
+			g2d.drawString("Terrain: " + terrain.toString(), x, y);
 		}
 	}
 	
