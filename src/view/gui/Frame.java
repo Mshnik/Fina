@@ -19,7 +19,7 @@ import model.unit.Unit;
 import model.unit.ability.Ability;
 
 /** The visual frame that manages showing the model.game */
-public class Frame extends JFrame {
+public final class Frame extends JFrame {
 
 	/***/
 	private static final long serialVersionUID = 1L;
@@ -49,7 +49,7 @@ public class Frame extends JFrame {
 	private InfoPanel infoPanel;
 	
 	/** The animator for this Frame */
-	protected Animator animator;
+	private Animator animator;
 	
 	/** The controller for this game */
 	private GameController controller;

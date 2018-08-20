@@ -10,7 +10,7 @@ import model.unit.Unit;
 
 
 /** A singleton effect ability - causes a change. */
-public class EffectAbility extends Ability {
+public final class EffectAbility extends Ability {
 	
 	/** The effect type of this EffectAbility */
 	public final EffectType type;

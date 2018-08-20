@@ -2,7 +2,7 @@ package controller.decision;
 
 import controller.game.MatrixElement;
 
-public class Choice implements MatrixElement{
+public final class Choice implements MatrixElement{
 	/** The standard seperator character for name to mana cost */
 	public static final char SEPERATOR = ':';
 

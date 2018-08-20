@@ -2,12 +2,13 @@ package model.unit.modifier;
 
 import model.unit.Unit;
 
-/** A modifier that is beyond the simple boundaries of a stat modification
+/**
+ * A modifier that is beyond the simple boundaries of a stat modification
  * Usually works off of the name, so names must be unique and well represented.
  * @author MPatashnik
  *
  */
-public class CustomModifier extends Modifier {
+public final class CustomModifier extends Modifier {
 
 	/** True if this applies to Buildings */
 	public final boolean appliesToBuildings;
@@ -46,7 +47,7 @@ public class CustomModifier extends Modifier {
 	}
 	
 	/** Constructor for cloning instances
-	 * @param model.unit - The model.unit this is modifying.
+	 * @param unit - The model.unit this is modifying.
 	 * @param source - the model.unit this modifier is tied to.
 	 * @param dummy - the modifier to make a copy of
 	 */

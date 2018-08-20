@@ -12,12 +12,12 @@ import model.unit.Unit;
 import model.unit.ability.Ability;
 
 /** A default cursor implementation for when no special cursor actions are necessary */
-public class DecisionCursor extends Cursor<Choice, DecisionPanel> {
+public final class DecisionCursor extends Cursor<Choice, DecisionPanel> {
 
 	/** DecisionCursor Constructor. Starts at index (0,0).
 	 * @param panel			- the panel this is on
 	 */
-	public DecisionCursor(DecisionPanel panel) {
+	DecisionCursor(DecisionPanel panel) {
 		super(panel, panel.getElmAt(0, 0));
 	}
 

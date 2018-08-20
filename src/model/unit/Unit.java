@@ -18,7 +18,8 @@ import model.unit.stat.Stats;
 
 
 
-/** Represents any thing that can be owned by a player.
+/**
+ * Represents any thing that can be owned by a player.
  * Maintains its health and stats, and modifiers.
  * 
  * @author MPatashnik
@@ -183,14 +184,16 @@ public abstract class Unit implements Stringable{
 		return (double)getHealth() / (double)getMaxHealth();
 	}
 
-	/** Sets the current health of this model.unit (alters it by difference)
-	 * @see changeHealth(desired - current, source)
+	/**
+	 * Sets the current health of this model.unit (alters it by difference)
+	 * @see #changeHealth(int, Unit) called with (desired - current, source)
 	 */
 	protected void setHealth(int newHealth, Unit source){
 		changeHealth(newHealth - health, source);
 	}
 
-	/** Alters the current health of this model.unit. Maxes health at maxHealth.
+	/**
+	 * Alters the current health of this model.unit. Maxes health at maxHealth.
 	 * if health <= 0 because of this call, calls died().
 	 * @param deltaHealth - amount to change health by.
 	 * @param source - the model.unit causing this change in health
@@ -207,11 +210,13 @@ public abstract class Unit implements Stringable{
 		return health > 0;
 	}
 
-	/** Called when a change in health causes this to die.
+	/**
+	 * Called when a change in health causes this to die.
 	 * Removes it from its owner and tile, and gives its killer research
 	 * Can be overriden in subclasses to add additional behavior,
-	 * but this method should be called somewhere in that overriden method */
-	protected void died(Unit killer){
+	 * but this method should be called somewhere in that overriden method
+	 */
+	private void died(Unit killer){
 		for(Modifier m : getGrantedModifiers()){
 			m.kill();
 		}
@@ -246,9 +251,10 @@ public abstract class Unit implements Stringable{
 		return (Double)stats.getStat(StatType.MAGIC_DEFENSE);
 	}
 
-
-	/** Returns the Defense of this stats for the given attack type.
-	 * Infinite defense (prevent all of it) for NO_ATTACK type damage, no defense for TRUE damage */
+	/**
+	 * Returns the Defense of this stats for the given attack type.
+	 * Infinite defense (prevent all of it) for NO_ATTACK type damage, no defense for TRUE damage
+	 */
 	public double getDefense(AttackType type){
 		switch(type){
 		case NO_ATTACK: return 1.0;
@@ -259,7 +265,8 @@ public abstract class Unit implements Stringable{
 		}
 	}
 
-	/** Returns the defense for the given attacker. Can be overriden
+	/**
+	 * Returns the defense for the given attacker. Can be overriden
 	 * in subclasses if they have different defense values than the default (against
 	 * the attacker's type
 	 */

@@ -23,7 +23,7 @@ import model.unit.stat.Stat;
 import model.unit.stat.Stats;
 
 
-public class InfoPanel extends JPanel{
+public final class InfoPanel extends JPanel{
 	/***/
 	private static final long serialVersionUID = 1L;
 

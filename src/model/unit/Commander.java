@@ -19,7 +19,8 @@ import model.unit.stat.Stats;
 
 
 
-/** Represents a commander for a player. Each player should have one.
+/**
+ * Represents a commander for a player. Each player should have one.
  * 
  * Commanders have mana and a level to maintain
  * @author MPatashnik
@@ -57,8 +58,10 @@ public abstract class Commander extends MovingUnit implements Summoner{
 			);			
 
 
-	/** The amount of research required to get to the next level for free.
-	 * Index i = cost to get from level i+1 to i+2 (because levels are 1 indexed). */
+	/**
+	 * The amount of research required to get to the next level for free.
+	 * Index i = cost to get from level i+1 to i+2 (because levels are 1 indexed).
+	 */
 	public static final int[] RESEARCH_REQS = {
 		1000, 3000, 6000, 10000
 	};
@@ -103,7 +106,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	 * its owner as a model.unit that player owns,
 	 * Commanders have a manaCost of 0.
 	 * @param owner - the player owner of this model.unit
-	 * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of this.
+	 * @param startingTile - the tile this model.unit begins the model.game on. Also notifies the tile of this.
 	 * @param stats			- the stats of this commander.
 	 * 							Notably, because of restrictions on commander,
 	 * 							the attack, counterattack, and attackType

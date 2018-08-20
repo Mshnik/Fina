@@ -13,8 +13,7 @@ import model.game.Stringable;
 import model.unit.Commander;
 import model.unit.Unit;
 
-
-
+/** Parent class of abilities useable by Commanders. */
 public abstract class Ability implements Stringable{
 
 	/** The commander that owns this ability */

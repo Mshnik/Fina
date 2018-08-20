@@ -6,8 +6,8 @@ import java.util.LinkedList;
 
 import model.unit.Unit;
 
-
-public class ModifierBundle implements Iterable<Modifier>, Collection<Modifier>{
+/** A set of modifiers applied to a single unit */
+public final class ModifierBundle implements Collection<Modifier>{
 
 	private LinkedList<Modifier> modifiers;
 	
@@ -16,7 +16,7 @@ public class ModifierBundle implements Iterable<Modifier>, Collection<Modifier>{
 	 * to this bundle
 	 */
 	public ModifierBundle(Modifier... m){
-		modifiers = new LinkedList<Modifier>();
+		modifiers = new LinkedList<>();
 		for(Modifier mod : m){
 			add(mod);
 		}
@@ -153,7 +153,7 @@ public class ModifierBundle implements Iterable<Modifier>, Collection<Modifier>{
 	}
 	
 	/** Safe removal called during a modifier's kill routine */
-	protected void removeSafe(Modifier m){
+	void removeSafe(Modifier m){
 		modifiers.remove(m);
 	}
 

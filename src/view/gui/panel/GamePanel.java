@@ -18,7 +18,7 @@ import model.unit.*;
 import model.unit.ability.Ability;
 
 /** Drawable wrapper for a model.board object */
-public class GamePanel extends MatrixPanel<Tile> implements Paintable{
+public final class GamePanel extends MatrixPanel<Tile> implements Paintable{
 
 	/***/
 	private static final long serialVersionUID = 1L;
@@ -27,7 +27,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	public static final int CELL_SIZE = 64; 
 
 	/** Shading for fog of war - translucent black */
-	protected static final Color FOG_OF_WAR = new Color(0,0,0,0.75f);
+	private static final Color FOG_OF_WAR = new Color(0,0,0,0.75f);
 	
 	/** Stroke for drawing effect radii */
 	private static final Stroke RADIUS_STROKE = new BasicStroke(3);
@@ -48,7 +48,7 @@ public class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	private DecisionPanel decisionPanel;
 
 	/** Constructor for GamePanel
-	 * @param g - The 
+	 * @param f
 	 * @param maxRows - the maximum number of rows of tiles to show at a time
 	 * @param maxCols - the maximum number of cols of tiles to show at a time
 	 */

@@ -1,12 +1,7 @@
 package model.board;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
@@ -23,7 +18,7 @@ import model.unit.MovingUnit;
  * @author MPatashnik
  *
  */
-public class Board implements Iterable<Tile>, Stringable{
+public final class Board implements Iterable<Tile>, Stringable{
 
 	/** The tiles that make up this model.board. Must be rectangular (non-jagged) */
 	private Tile[][] tiles;
@@ -35,8 +30,9 @@ public class Board implements Iterable<Tile>, Stringable{
 		for(int i = 0; i < terrain.length; i++){
 
 			if(terrain[i].length != terrain[0].length)
-				throw new IllegalArgumentException("Jagged Array passed into model.board constructor " 
-						+ terrain);
+				throw new IllegalArgumentException(
+						"Jagged Array passed into model.board constructor "
+								+ Arrays.deepToString(terrain));
 
 			for(int j = 0; j < terrain[i].length; j++){
 				tiles[i][j] = new Tile(this, i,j,terrain[i][j]);
@@ -147,7 +143,7 @@ public class Board implements Iterable<Tile>, Stringable{
 		PriorityQueue<Tile> frontier = new PriorityQueue<Tile>(1, 
 				new Comparator<Tile>(){
 			@Override
-			/** Use inverse of regular comparison (higher distance first) */
+			/* Use inverse of regular comparison (higher distance first) */
 			public int compare(Tile o1, Tile o2) {
 				return - (o1.dist - o2.dist);
 			}
@@ -186,8 +182,8 @@ public class Board implements Iterable<Tile>, Stringable{
 		return settled;
 	}
 
-	@Override
 	/** Returns an iterator over the tiles in this Board */
+	@Override
 	public Iterator<Tile> iterator() {
 		return new BoardIterator();
 	}
@@ -204,16 +200,17 @@ public class Board implements Iterable<Tile>, Stringable{
 			c = 0;
 		}
 
-		@Override
 		/** Return true iff r < tiles.length && c < tiles[r].length */
+		@Override
 		public boolean hasNext() {
 			return r < tiles.length && c < tiles[r].length;
 		}
 
-		@Override
-		/** Gets the current tile, then advances one to the right.
+		/**
+		 * Gets the current tile, then advances one to the right.
 		 * If this goes off the row, goes to the next row and resets the column counter
 		 */
+		@Override
 		public Tile next() {
 			Tile t = getTileAt(r,c);
 			c++;
@@ -224,8 +221,8 @@ public class Board implements Iterable<Tile>, Stringable{
 			return t;
 		}
 
-		@Override
 		/** Not supported - do not call */
+		@Override
 		public void remove() {
 			throw new RuntimeException("Remove Operation Not Supported in Board Iterators");
 		}
@@ -260,8 +257,5 @@ public class Board implements Iterable<Tile>, Stringable{
 		}
 		return s + "]";
 	}
-
-
-
 }
 

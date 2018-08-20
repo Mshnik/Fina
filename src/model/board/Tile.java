@@ -11,7 +11,7 @@ import model.unit.Unit;
  * @author MPatashnik
  *
  */
-public class Tile implements Comparable<Tile>, MatrixElement, Stringable{
+public final class Tile implements Comparable<Tile>, MatrixElement, Stringable{
 
 	/** The model.board this belongs to */
 	public final Board board;
@@ -29,10 +29,10 @@ public class Tile implements Comparable<Tile>, MatrixElement, Stringable{
 	private Unit occupyingUnit;
 
 	/** A convienence field for pathfinding implementations */
-	public int dist;
+	int dist;
 
 	/** A convienence field for pathfinding implementations */
-	public Tile prev;
+	Tile prev;
 
 	/** Constructor for Tile Class
 	 * @param r - the row of this tile in the model.board matrix it belongs to

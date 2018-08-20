@@ -5,7 +5,7 @@ import java.io.*;
 /** This class enables reading and writing text from/to a file.
  * @author MPatashnik 
  */
-public class TextIO {
+public final class TextIO {
 	
 	/** Constructor: It prevents instantiation of TextIO */
 	private TextIO() {}

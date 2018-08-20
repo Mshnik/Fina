@@ -3,7 +3,7 @@ package controller.decision;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Decision extends ArrayList<Choice>{
+public final class Decision extends ArrayList<Choice>{
 
 	private static final long serialVersionUID = 1L;
 
@@ -55,7 +55,7 @@ public class Decision extends ArrayList<Choice>{
 	@Override
 	public Choice remove(int i){
 		Choice removed = super.remove(i);
-		if(removed != null && removed instanceof Choice) ((Choice) removed).decision = null;
+		if(removed != null) removed.decision = null;
 		return removed;
 	}
 	

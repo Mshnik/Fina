@@ -13,7 +13,7 @@ import model.unit.ability.Ability;
 
 
 /** Unifying model that holds all sub-model classes */
-public class Game implements Runnable, Stringable{
+public final class Game implements Runnable, Stringable{
 
 	/** The controller for this Game. */
 	private GameController controller;
@@ -40,8 +40,8 @@ public class Game implements Runnable, Stringable{
 	public Game(Board b, boolean fog){
 		board = b;
 		fogOfWar = fog;
-		players = new LinkedList<Player>();
-		remainingPlayers = new HashMap<Player, Boolean>();
+		players = new LinkedList<>();
+		remainingPlayers = new HashMap<>();
 		running = false;
 		index = -1;
 	}
@@ -143,7 +143,8 @@ public class Game implements Runnable, Stringable{
 		return fogOfWar;
 	}
 
-	/** @param fogOfWar the fogOfWar to set.
+	/**
+	 * @param fOG the fogOfWar to set.
 	 * Also repaints if this causes a change.
 	 */
 	public void setFogOfWar(boolean fOG) {
@@ -153,7 +154,8 @@ public class Game implements Runnable, Stringable{
 			repaint();
 	}
 
-	/** Returns true if this model.game is ended (one of the termination conditions
+	/**
+	 * Returns true if this model.game is ended (one of the termination conditions
 	 * is true), false otherwise.
 	 * Returns true if there are more than 1 remaining player.
 	 */

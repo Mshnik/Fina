@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * Input class to read a board by filepath into memory.
  * @author Mshnik
  */
-public final class BoardReader {
+final class BoardReader {
   private BoardReader() {}
 
   /** Reads a board from memory at the given csvFilepath. */

@@ -11,7 +11,7 @@ import model.unit.commander.Bhen;
 import model.unit.dummy.DummyCommander;
 import view.gui.Frame;
 
-public class Main {
+public final class Main {
 	/** Simple main method to test out Frame features */
 	public static void main(String[] args){
 			String boardFilename = args.length > 0 ? args[0] : "sample_board.csv";

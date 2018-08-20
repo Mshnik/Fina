@@ -110,7 +110,8 @@ public abstract class Player implements Stringable{
 		return commander.getResearchRequirement();
 	}
 
-	/** Adds the given amount of research to resarch, capping at the requirement.
+	/**
+	 * Adds the given amount of research to resarch, capping at the requirement.
 	 * Input must be positive (you can only gain research)
 	 */
 	public void addResearch(int deltaResearch) throws IllegalArgumentException{
@@ -118,7 +119,8 @@ public abstract class Player implements Stringable{
 	}
 
 	//UNITS
-	/** Returns the units belonging to this player.
+	/**
+	 * Returns the units belonging to this player.
 	 * passed-by-value, so editing this hashSet won't do anything
 	 */
 	public HashSet<Unit> getUnits(){
@@ -135,7 +137,8 @@ public abstract class Player implements Stringable{
 		return commander;
 	}
 
-	/** Adds the given model.unit to this player's units.
+	/**
+	 * Adds the given model.unit to this player's units.
 	 * Call whenever a model.unit is constructed.
 	 * If commander is null and u is a commander, sets commander to u.
 	 * If temple, adds to temples, refreshes buffs.
@@ -206,9 +209,11 @@ public abstract class Player implements Stringable{
 	}
 
 	//TURN
-	/** Called when it becomes this player's turn. Does start of turn processing. 
+	/**
+	 * Called when it becomes this player's turn. Does start of turn processing.
 	 * 		- calls refresh on each model.unit (no particular order).
-	 * Return true if this player can start their turn - commander is alive, false otherwise */
+	 * Return true if this player can start their turn - commander is alive, false otherwise
+	 */
 	protected final boolean turnStart(){
 		try{
 			//Refresh for turn

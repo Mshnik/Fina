@@ -13,8 +13,10 @@ import model.unit.modifier.StatModifier;
 
 import util.Mth;
 
-/** Holder for the stats for a model.unit.
- * Unless otherwise noted, all stats are non-negative. */
+/**
+ * Holder for the stats for a model.unit.
+ * Unless otherwise noted, all stats are non-negative.
+ */
 public class Stats implements Iterable<Stat>{
 
 	/** Base stats for everything, to be overridden as template.
@@ -25,7 +27,7 @@ public class Stats implements Iterable<Stat>{
 	private static final HashMap<StatType, Object> TEMPLATE;
 
 	static{
-		TEMPLATE = new HashMap<StatType, Object>();
+		TEMPLATE = new HashMap<>();
 		//Base -> Null
 		TEMPLATE.put(StatType.MAX_HEALTH, 0);
 		TEMPLATE.put(StatType.MANA_PER_TURN, 0);
@@ -50,17 +52,17 @@ public class Stats implements Iterable<Stat>{
 	 * Input stats must not have no duplicates among type - will overwrite arbitrarily.
 	 */
 	public Stats(Stat... stats) {
-		this.stats = new HashMap<StatType, Object>(TEMPLATE);
+		this.stats = new HashMap<>(TEMPLATE);
 		for(Stat s : stats){
 			this.stats.put(s.name, s.val);
 		}
 	}
 
-	/** Constructor for Stats from a base stats and a collection of modifiers.
+	/**
+	 * Constructor for Stats from a base stats and a collection of modifiers.
 	 */
-	@SuppressWarnings("incomplete-switch")
 	public Stats(Stats base, Collection<Modifier> modifiers) throws IllegalArgumentException{
-		this.stats = new HashMap<StatType, Object>(base.stats);
+		this.stats = new HashMap<>(base.stats);
 		stats.put(StatType.BASE, base);
 
 		//Process modifiers - ignore non stat modifiers
@@ -97,7 +99,7 @@ public class Stats implements Iterable<Stat>{
 	}
 
 	/** Returns true if this is a base (has no base stat), false otherwise */
-	public boolean isBase(){
+	private boolean isBase(){
 		return ! stats.containsKey(StatType.BASE);
 	}
 
@@ -106,6 +108,10 @@ public class Stats implements Iterable<Stat>{
 		return stats.get(type);
 	}
 
+	/**
+	 * Returns a list of stats for the given array of stat types.
+	 * Stats are returned in the same order they are queried in.
+	 */
 	private ArrayList<Stat> getStatsList(StatType[] t){
 		ArrayList<Stat> s = new ArrayList<Stat>();
 		for(StatType p : t){
@@ -114,7 +120,8 @@ public class Stats implements Iterable<Stat>{
 		return s;
 	}
 
-	/** Returns an arrayList of the movement stats:
+	/**
+	 * Returns an arrayList of the movement stats:
 	 * 		- Move total
 	 * 		- Grass cost
 	 * 		- woods cost
@@ -126,7 +133,8 @@ public class Stats implements Iterable<Stat>{
 		return getStatsList(t);
 	}
 
-	/** Returns an arrayList of the attack stats:
+	/**
+	 * Returns an arrayList of the attack stats:
 	 * 		- Attack
 	 * 		- Attack Type
 	 * 		- Attack Range
@@ -139,7 +147,8 @@ public class Stats implements Iterable<Stat>{
 		return getStatsList(t);
 	}
 
-	/** Returns an arrayList of the standard stats:
+	/**
+	 * Returns an arrayList of the standard stats:
 	 * 		- Max Health
 	 * 		- Mana Per Turn
 	 * 		- Vision Range
@@ -151,8 +160,10 @@ public class Stats implements Iterable<Stat>{
 		return getStatsList(t);
 	}
 
-	/** Returns a new Stats with this (if this is a base) as the base
-	 * or this' base if this is non-base, and the given modifiers */
+	/**
+	 * Returns a new Stats with this (if this is a base) as the base
+	 * or this' base if this is non-base, and the given modifiers
+	 */
 	public Stats modifiedWith(Collection<Modifier> modifiers) {
 		if(isBase())
 			return new Stats(this, modifiers);

@@ -10,7 +10,8 @@ import model.unit.stat.Stats;
 
 
 
-/** Represents a model.unit that is able to move around the model.board.
+/**
+ * Represents a model.unit that is able to move around the model.board.
  * 
  * @author MPatashnik
  *
@@ -29,7 +30,7 @@ public abstract class MovingUnit extends Unit{
 	 * @param name - the name of this model.unit
 	 * @param level - the level of this model.unit - the age this belongs to
 	 * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
-	 * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of this.
+	 * @param startingTile - the tile this model.unit begins the model.game on. Also notifies the tile of this.
 	 * @param stats - the base unmodified stats of this model.unit.
 	 */
 	public MovingUnit(Player owner, String name, int level, int manaCost, Tile startingTile, Stats stats)
@@ -94,16 +95,19 @@ public abstract class MovingUnit extends Unit{
 		return getMovementCost(t) <= getMovementCap();
 	}
 
-	/** Processes a pre-move action that may be caused by modifiers.
+	/**
+	 * Processes a pre-move action that may be caused by modifiers.
 	 * Still only called when the move is valid. */
 	public abstract void preMove(LinkedList<Tile> path);
 
-	/** Processes a post-move action that may be caused by modifiers.
+	/**
+	 * Processes a post-move action that may be caused by modifiers.
 	 * Only called when the move is valid.
 	 */
 	public abstract void postMove(LinkedList<Tile> path);
 	
-	/** Attempts to move this model.unit along the given path.
+	/**
+	 * Attempts to move this model.unit along the given path.
 	 * @param path - the path to travel, where the first of path is location, 
 	 * 	last is the desired destination, and whole path is manhattan contiguous.
 	 * @return The tile the movement ended on

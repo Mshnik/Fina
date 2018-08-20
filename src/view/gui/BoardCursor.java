@@ -10,10 +10,10 @@ import model.board.Direction;
 import model.board.Tile;
 
 /** An instance represents the cursor on the GUI */
-public class BoardCursor extends Cursor<Tile, GamePanel>{
+public final class BoardCursor extends Cursor<Tile, GamePanel>{
 
 	/** Constructs a new BoardCursor
-	 * @param b - the Board this cursor is used for
+	 * @param bp - the Board this cursor is used for
 	 */
 	public BoardCursor(GamePanel bp){
 		super(bp, bp.controller.game.board.getTileAt(0, 0));

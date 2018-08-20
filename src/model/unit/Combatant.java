@@ -13,7 +13,8 @@ import model.unit.stat.Stats;
 
 
 
-/** Represents a moving and fighting model.unit
+/**
+ * Represents a moving and fighting model.unit
  * 
  * @author MPatashnik
  *

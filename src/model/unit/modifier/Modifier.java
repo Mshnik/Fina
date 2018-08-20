@@ -55,7 +55,7 @@ public abstract class Modifier implements Stringable{
 	}
 	
 	/** Constructor for cloning instances
-	 * @param model.unit - The model.unit this is modifying.
+	 * @param unit - The model.unit this is modifying.
 	 * @param source - the model.unit this modifier is tied to.
 	 * @param dummy - the unitModifier to make a copy of
 	 */
@@ -74,7 +74,7 @@ public abstract class Modifier implements Stringable{
 	public abstract Modifier clone(Unit unit, Unit source);
 	
 	/** Call when construction of a non-dummy instance is done - adds to affected model.unit */
-	protected void attachToUnit(){
+	void attachToUnit(){
 		if(isDummy() || attached) 
 			throw new RuntimeException("Can't attach a dummy or already attached modifier");
 		boolean ok = unit.addModifier(this);

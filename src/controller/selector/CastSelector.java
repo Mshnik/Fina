@@ -7,19 +7,19 @@ import model.unit.Commander;
 import model.unit.ability.Ability;
 import controller.game.GameController;
 
-public class CastSelector extends LocationSelector {
+public final class CastSelector extends LocationSelector {
 	/** The commander doing the casting */
 	public final Commander caster;
 	
 	/** The cloud of effect range based on the current location of the boardCursor */
-	protected ArrayList<Tile> effectCloud;
+	private ArrayList<Tile> effectCloud;
 	
 	/** The ability this selector is trying to summon */
 	public final Ability toCast;
 	
 	public CastSelector(GameController gc, Commander caster, Ability toCast) {
 		super(gc);
-		effectCloud = new ArrayList<Tile>();
+		effectCloud = new ArrayList<>();
 		this.caster = caster;
 		this.toCast = toCast;
 		refreshPossibilitiesCloud();
@@ -27,7 +27,7 @@ public class CastSelector extends LocationSelector {
 
 	/** Returns the effectCloud for the current location of the boardCursor */
 	public ArrayList<Tile> getEffectCloud(){
-		return new ArrayList<Tile>(effectCloud);
+		return new ArrayList<>(effectCloud);
 	}
 	
 	/** Refreshes the possible cast locations for this castSelector */

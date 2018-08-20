@@ -11,7 +11,7 @@ import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 
-public class Temple extends Building {
+public final class Temple extends Building {
 	
 	/** Buffs, by number of temples other than this (0 indexed) */
 	private static final ModifierBundle[] BUFFS = {

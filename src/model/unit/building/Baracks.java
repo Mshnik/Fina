@@ -13,7 +13,7 @@ import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 
 
-public class Baracks extends Building implements Summoner{
+public final class Baracks extends Building implements Summoner{
 
 	/** The in model.game name of a Baracks */
 	public static final String NAME = "Baracks";

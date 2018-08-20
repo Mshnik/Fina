@@ -3,6 +3,7 @@ package model.unit.modifier;
 import model.unit.Unit;
 import model.unit.stat.StatType;
 
+/** A modifier that alters a unit's stat. */
 public final class StatModifier extends Modifier {
 
 	/** The stat this is modifying */
@@ -48,7 +49,7 @@ public final class StatModifier extends Modifier {
 	}
 	
 	/** Constructor for cloning instances
-	 * @param model.unit - The model.unit this is modifying.
+	 * @param unit - The model.unit this is modifying.
 	 * @param source - the model.unit this modifier is tied to.
 	 * @param dummy - the StatModifier to make a copy of
 	 */

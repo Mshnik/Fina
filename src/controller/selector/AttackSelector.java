@@ -9,7 +9,7 @@ import model.unit.Combatant;
 
 
 /** A selector for choosing a model.unit to attack */
-public class AttackSelector extends LocationSelector {
+public final class AttackSelector extends LocationSelector {
 
 	/** The model.unit that is attacking from this selector */
 	public final Combatant attacker;

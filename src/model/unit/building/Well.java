@@ -8,12 +8,13 @@ import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 
-/** A Well is a building that grants its owner mana per turn
+/**
+ * A Well is a building that grants its owner mana per turn
  * as long as it is controlled.
  * @author MPatashnik
  *
  */
-public class Well extends Building {
+public final class Well extends Building {
 	/** Name of a well in model.game */
 	public static final String NAME = "Well";
 	

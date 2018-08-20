@@ -16,7 +16,7 @@ import model.board.Tile;
 
 
 /** Manager for all keyboard input. Only singleton instance is allowed. */
-public class KeyboardListener implements KeyListener{
+public final class KeyboardListener implements KeyListener{
 
 	/** The up key code */
 	public static final int UP = KeyEvent.VK_UP;

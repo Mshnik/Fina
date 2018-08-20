@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class MPoint{
+public final class MPoint{
 	
 	/** A point representing (0,0) */
 	public static final MPoint ORIGIN = new MPoint(0,0);

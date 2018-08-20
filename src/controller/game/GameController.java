@@ -33,7 +33,7 @@ import model.unit.ability.Ability;
  *	/** The game that this controller wraps
 	public final Game game;
  */
-public class GameController {
+public final class GameController {
 	/** Text for ending a turn */
 	public static final String END_TURN = "Yes";
 	/** Text for canceling a decision */
@@ -159,20 +159,20 @@ public class GameController {
 	}
 
 	/** Sets the current Toggle setting by adding it to the top of the stack */
-	protected void addToggle(Toggle t){
+	private void addToggle(Toggle t){
 		toggle.push(t);
 	}
 
 	/** Removes the top-most Toggle setting. 
 	 * Returns the removed setting for checking purposes */
-	protected Toggle removeTopToggle(){
+	private Toggle removeTopToggle(){
 		return toggle.pop();
 	}
 
 	/** Cancels the currently selected decision for any decision
 	 * Throws a runtimeException if this was a bad time to cancel because decision wasn't happening.
 	 * This should be called *after* all necessary information is stored from the decision variables */
-	public void cancelDecision() throws RuntimeException{
+	void cancelDecision() throws RuntimeException{
 		Toggle t = removeTopToggle();
 		if(! t.equals(Toggle.DECISION))
 			throw new RuntimeException("Can't cancel decision, currently toggling " + getToggle());
@@ -204,7 +204,7 @@ public class GameController {
 	 * If there is no model.unit on the given tile or the model.unit doesn't belong to the current player, does nothing.
 	 * If the model.unit on the tile, populates getGamePanel().getDecisionPanel() with all the possible decisions
 	 */
-	public void startActionDecision(){
+	void startActionDecision(){
 		Tile t = getGamePanel().boardCursor.getElm();
 		if(! getGamePanel().boardCursor.canSelect()) return;
 		if(t.getOccupyingUnit() == null || t.getOccupyingUnit().owner != game.getCurrentPlayer()){
@@ -240,7 +240,7 @@ public class GameController {
 
 	/** Processes the currently selected Actiondecision.
 	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
-	public void processActionDecision(Choice c) throws RuntimeException{
+	void processActionDecision(Choice c) throws RuntimeException{
 		String choice = c.getMessage();
 		cancelDecision();
 		switch(choice){
@@ -265,7 +265,7 @@ public class GameController {
 	}
 
 	/** Starts a getGamePanel().getDecisionPanel() for ending the current player's turn */
-	public void startEndTurnDecision(){
+	void startEndTurnDecision(){
 		decision = new Decision(DecisionType.END_OF_TURN_DECISION, false, 
 				new Choice(true, GameController.CANCEL), new Choice(true, GameController.END_TURN));
 		addToggle(Toggle.DECISION);
@@ -274,7 +274,7 @@ public class GameController {
 	}
 
 	/** Processes an endOfTurn Decision */
-	public void processEndTurnDecision(Choice c){
+	void processEndTurnDecision(Choice c){
 		String m = c.getMessage();
 		cancelDecision();
 		switch(m){
@@ -287,7 +287,7 @@ public class GameController {
 
 	/** Starts  a levelup ability selection decision.
 	 * Assumes c has leveled up but hasn't chosen an ability yet */
-	public void startNewAbilityDecision(Commander c) throws RuntimeException{
+	private void startNewAbilityDecision(Commander c) throws RuntimeException{
 		if(c.getAbility(c.getLevel()) != null)
 			throw new RuntimeException("Can't pick a new ability for " + c 
 					+", already has " + c.getAbility(c.getLevel()));
@@ -306,7 +306,7 @@ public class GameController {
 	}
 
 	/** Processes the levelup new ability decision */
-	public void processNewAbilityDecision(Choice c){
+	void processNewAbilityDecision(Choice c){
 		Commander com = getGamePanel().getDecisionPanel().player.getCommander();
 		int index = c.getIndex();
 		cancelDecision();
@@ -335,7 +335,7 @@ public class GameController {
 	}
 
 	/** Creates a getGamePanel().getDecisionPanel() for summoning new units */
-	public void startSummonCombatantDecision(){
+	void startSummonCombatantDecision(){
 		Player p = game.getCurrentPlayer();
 		Commander c = p.getCommander();
 		summonType = SummonType.UNIT;
@@ -343,7 +343,7 @@ public class GameController {
 	}
 
 	/** Creates a getGamePanel().getDecisionPanel() for summoning new buildings */
-	public void startSummonBuildingDecision(){
+	void startSummonBuildingDecision(){
 		Player p = game.getCurrentPlayer();
 		Commander c = p.getCommander();
 		summonType = SummonType.BUILDING;
@@ -353,7 +353,7 @@ public class GameController {
 	/** Creates a new summon selector at the current getGamePanel().boardCursor position.
 	 * 
 	 */
-	public void startSummonSelection(Choice choice){
+	void startSummonSelection(Choice choice){
 		if(! choice.isSelectable()){
 			return;
 		}
@@ -379,7 +379,7 @@ public class GameController {
 
 	/** Cancels the summon selection - deletes it but does nothing.
 	 * Throws a runtimeException if this was a bad time to cancel because summonSelection wasn't happening. */
-	public void cancelSummonSelection() throws RuntimeException{
+	void cancelSummonSelection() throws RuntimeException{
 		Toggle t =removeTopToggle();
 		if(! t.equals(Toggle.SUMMON_SELECTION))
 			throw new RuntimeException("Can't cancel summon selection, currently toggling " + getToggle());
@@ -395,7 +395,7 @@ public class GameController {
 	 * Do nothing if the path is empty (or length 1 - no movement) - stay in path selection mode.
 	 * Otherwise makes err noise or something. 
 	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
-	public void processSummonSelection(Tile loc) throws RuntimeException{
+	void processSummonSelection(Tile loc) throws RuntimeException{
 		SummonSelector summonSelector = (SummonSelector) locationSelector;
 		Toggle t = removeTopToggle();
 		if(! t.equals(Toggle.SUMMON_SELECTION))
@@ -408,7 +408,7 @@ public class GameController {
 	}
 
 	/** Creates a getGamePanel().getDecisionPanel() for choosing a spell to cast */
-	public void startCastDecision(){
+	void startCastDecision(){
 		LinkedList<Choice> choices = new LinkedList<Choice>();
 		Commander c = (Commander) getGamePanel().boardCursor.getElm().getOccupyingUnit();
 		LinkedList<Ability> abilities = c.getActiveAbilities();
@@ -423,7 +423,7 @@ public class GameController {
 	}
 
 	/** Processes a casting decision */
-	public void startCastSelection(Choice choice){
+	void startCastSelection(Choice choice){
 		if(! choice.isSelectable()){
 			return;
 		}
@@ -466,7 +466,7 @@ public class GameController {
 		locationSelector =null;
 	}
 
-	public void processCastSelection(Tile loc){
+	void processCastSelection(Tile loc){
 		CastSelector castSelector = (CastSelector) locationSelector;
 		Toggle t = removeTopToggle();
 		if(! t.equals(Toggle.CAST_SELECTION))
@@ -479,7 +479,7 @@ public class GameController {
 
 	/** Creates a new pathSelector at the current getGamePanel().boardCursor position.
 	 * Does nothing if the current tile is unoccupied or the model.unit has already moved. */
-	public void startPathSelection(){
+	void startPathSelection(){
 		Tile t = getGamePanel().boardCursor.getElm();
 		if(! t.isOccupied() || ! t.getOccupyingUnit().canMove()) return;
 
@@ -489,7 +489,7 @@ public class GameController {
 
 	/** Cancels the path selection - deletes it but does nothing.
 	 * Throws a runtimeException if this was a bad time to cancel because pathSelection wasn't happening. */
-	public void cancelPathSelection() throws RuntimeException{
+	void cancelPathSelection() throws RuntimeException{
 		Toggle t = removeTopToggle();
 		if(! t.equals(Toggle.PATH_SELECTION))
 			throw new RuntimeException("Can't cancel path selection, currently toggling " + getToggle());
@@ -504,7 +504,7 @@ public class GameController {
 	 * Do nothing if the path is empty (or length 1 - no movement) - stay in path selection mode.
 	 * Otherwise makes err noise or something. 
 	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
-	public void processPathSelection(Tile loc) throws RuntimeException{
+	void processPathSelection(Tile loc) throws RuntimeException{
 		PathSelector pathSelector = (PathSelector) locationSelector;
 		if(loc.isOccupied())
 			return;
@@ -521,7 +521,7 @@ public class GameController {
 
 	/** Starts an attack selection - selects from units within range.
 	 * Assumes model.unit the model.board cursor is currently on is the attacking Combatatant */
-	public void startAttackSelection(){
+	void startAttackSelection(){
 		Tile t = getGamePanel().boardCursor.getElm();
 		if(! t.isOccupied() || ! t.getOccupyingUnit().canFight()) return;
 		Combatant attacker = (Combatant)t.getOccupyingUnit();
@@ -536,7 +536,7 @@ public class GameController {
 
 	/** Cancels the attack selection - deletes it but does nothing.
 	 * Throws a runtimeException if this was a bad time to cancel because attackSelection wasn't happening. */
-	public void cancelAttackSelection() throws RuntimeException{
+	void cancelAttackSelection() throws RuntimeException{
 		Toggle t = removeTopToggle();
 		if(! t.equals(Toggle.ATTACK_SELECTION))
 			throw new RuntimeException("Can't cancel attack selection, currently toggling " + getToggle());
@@ -551,7 +551,7 @@ public class GameController {
 	 * Do nothing if the path is empty (or length 1 - no movement) - stay in attack selection mode.
 	 * Otherwise makes err noise or something. 
 	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
-	public void processAttackSelection(Tile loc) throws RuntimeException{
+	void processAttackSelection(Tile loc) throws RuntimeException{
 		if(! loc.isOccupied()) return;
 		AttackSelector attackSelector = (AttackSelector) locationSelector;
 		Toggle t = removeTopToggle();

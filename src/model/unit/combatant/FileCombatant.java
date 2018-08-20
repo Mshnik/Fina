@@ -29,7 +29,7 @@ import util.TextIO;
  * @author MPatashnik
  *
  */
-public class FileCombatant extends Combatant {
+public final class FileCombatant extends Combatant {
 
 	/** The avaliable combatants read into storage during initialization.
 	 * All Lists is immutable. Outer most list is by age (index = age - 1),

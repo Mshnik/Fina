@@ -24,13 +24,13 @@ import model.unit.MovingUnit;
  * @author MPatashnik
  *
  */
-public class PathSelector extends LocationSelector implements Paintable, Iterable<Tile>{
+public final class PathSelector extends LocationSelector implements Paintable, Iterable<Tile>{
 
 	/** Color for Path Drawing - red */
-	protected static final Color PATH_COLOR = Color.red;
+	private static final Color PATH_COLOR = Color.red;
 	
 	/** Thickness of lines in Path Drawing */
-	protected static final int THICKNESS = 8;
+	private static final int THICKNESS = 8;
 	
 	/** The model.unit this path is moving */
 	public final MovingUnit unit;

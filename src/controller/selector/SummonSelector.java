@@ -4,7 +4,7 @@ import controller.game.GameController;
 import model.unit.Unit;
 
 /** A location selector for summoning a new model.unit */
-public class SummonSelector extends LocationSelector {
+public final class SummonSelector extends LocationSelector {
 
 	/** The model.unit doing the summoning - must be able to summon */
 	public final Unit summoner;

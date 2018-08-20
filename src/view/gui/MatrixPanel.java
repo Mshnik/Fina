@@ -17,7 +17,7 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	/** The GameController this MatrixPanel is drawing something or other for ... Fuck idk. */
-	public final GameController controller;
+	protected final GameController controller;
 	
 	/** Maximum number of columns of elements to visually show */
 	private int maxX;
@@ -38,7 +38,7 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 	 * @param scrollX	- the starting scrolling of cols
 	 * @param scrollY	- the starting scrolling of rows
 	 */
-	public MatrixPanel(GameController controller, int maxX, int maxY, int scrollX, int scrollY){
+	protected MatrixPanel(GameController controller, int maxX, int maxY, int scrollX, int scrollY){
 		this.controller = controller;
 		this.maxX = maxX;
 		this.maxY = maxY;
@@ -58,28 +58,28 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 	}
 	
 	/** Sets the number of rows this panel should show. Causes a repaint */
-	public void setShowedRows(int r){
+	protected void setShowedRows(int r){
 		maxY = r;
 		repaint();
 	}
 	
 	/** Sets the number of rows this panel should show. Causes a repaint */
-	public void setShowedCols(int c){
+	protected void setShowedCols(int c){
 		maxX = c;
 		repaint();
 	}
 	
 	/** Returns the width of the underlying matrix */
-	public abstract int getMatrixWidth();
+	protected abstract int getMatrixWidth();
 	
 	/** Returns the height of the underlying matrix */
-	public abstract int getMatrixHeight();
+	protected abstract int getMatrixHeight();
 	
 	/** Returns the currently selected elm, the one the cursor is hovering */
-	public abstract T getElm();
+	protected abstract T getElm();
 	
 	/** Returns the element at the given indices. Throws IllegalArgumentException if this is OOB */
-	public abstract T getElmAt(int row, int col) throws IllegalArgumentException;
+	protected abstract T getElmAt(int row, int col) throws IllegalArgumentException;
 	
 	/** Fixes the scroll to show the given row and column. Scrolls as little as possible to make this
 	 * change
@@ -115,15 +115,15 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 	}
 	
 	/** Returns the height of a element in the drawing */
-	public abstract int getElementHeight();
+	protected abstract int getElementHeight();
 	
 	/** Returns the width of a element in the drawing */
-	public abstract int getElementWidth();
+	protected abstract int getElementWidth();
 	
 	/** Return the tile in the given direction from this tile.
 	 * If oob, returns null or if direction invalid.
 	 */
-	public T getElmInDirection(T t, Direction d){
+	T getElmInDirection(T t, Direction d){
 		try{
 			switch(d){
 			case DOWN: return getElmAt(t.getRow() + 1, t.getCol());
@@ -145,5 +145,4 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 	/** Subclasses must have custom paint methods */
 	@Override
 	public abstract void paintComponent(Graphics g);
-	
 }

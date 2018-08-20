@@ -19,7 +19,7 @@ import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 
 
-public class Bhen extends Commander {
+public final class Bhen extends Commander {
 
 	/** Stats for maxHealth, defenses, range and visionRange of dummy commander */
 	private static final Stats STATS = new Stats(

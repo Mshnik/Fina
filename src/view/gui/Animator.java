@@ -8,23 +8,24 @@ import java.util.Set;
 
 import javax.swing.Timer;
 
-/** An instance holds the timers for changing the animations of
+/**
+ * An instance holds the timers for changing the animations of
  * Animatable objects with animation updates.
  * @author MPatashnik
  *
  */
-public class Animator {
+public final class Animator {
 
 	/** Animatables to that are animated by this */
 	private Set<Animatable> animates;
 
 	/** Constructor for an Animator */
-	public Animator(){
+	Animator(){
 		animates = Collections.synchronizedSet(new HashSet<Animatable>());
 	}
 
 	/** Adds the given Animatable to this Animator, and starts it animating. */
-	public void addAnimatable(final Animatable a){
+	void addAnimatable(final Animatable a){
 		if(! animates.contains(a)){
 			final Timer t = new Timer(a.getStateLength(), null);
 			t.addActionListener(new ActionListener(){
