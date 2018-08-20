@@ -193,7 +193,7 @@ public class ImageIndex {
 	 * @param BAR_WIDTH - the width of the bar
 	 * @param BAR_HEIGHT - the height of the bar
 	 * @param backColor - the color to draw behind the bar for any unfilled portion. can be null
-	 * @param border - the color to draw the border of the bar. If strokeWidth is 0, this is unused
+	 * @param borderColor - the color to draw the border of the bar. If strokeWidth is 0, this is unused
 	 * @param strokeWidth - the width of the border portion of the bar. Can't be negative.
 	 * @param fillColor - the color of the fill portion of the bar. Can't be null.
 	 * @param maxVal - the value corresponding the the max fullness of this bar
@@ -227,7 +227,7 @@ public class ImageIndex {
 		}
 		g2d.setColor(fillColor);
 		g2d.fillRect(X + strokeWidth/2, Y + strokeWidth/2, 
-				(int)((BAR_WIDTH - strokeWidth/2 - 1) * percentFull), BAR_HEIGHT - strokeWidth);
+				(int)Math.ceil((BAR_WIDTH - strokeWidth/2 - 1) * percentFull), BAR_HEIGHT - strokeWidth);
 
 		if(incrementColor != null){
 			g2d.setColor(incrementColor);
@@ -238,9 +238,10 @@ public class ImageIndex {
 			}
 		}
 		if(text != null){
+			int textWidth = g2d.getFontMetrics(textFont).stringWidth(text);
 			g2d.setColor(textColor);
 			g2d.setFont(textFont);
-			g2d.drawString(text, X + BAR_WIDTH/2 - 10, Y + BAR_HEIGHT/2 + strokeWidth);
+			g2d.drawString(text, X + (BAR_WIDTH - textWidth)/2, Y + BAR_HEIGHT/2 + strokeWidth);
 		}
 	}
 }
