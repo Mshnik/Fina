@@ -29,7 +29,7 @@ public final class DummyCommander extends Commander {
 
 	
 	public DummyCommander(Player owner, Tile startingTile) {
-		super("Dummy", owner, startingTile, STATS);
+		super("Dummy", owner, startingTile, STATS, 1);
 	}
 
 	@Override

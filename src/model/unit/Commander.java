@@ -112,11 +112,12 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	 * 							the attack, counterattack, and attackType
 	 * 							Attributes are unused, because they are either unnecessary 
 	 * 							or calculated elsewhere.
+	 * @param startingLevel - the level this commander starts at.
 	 */
-	public Commander(String name, Player owner, Tile startingTile, Stats stats)
+	public Commander(String name, Player owner, Tile startingTile, Stats stats, int startingLevel)
 			throws RuntimeException, IllegalArgumentException {
 		super(owner, name, 0, 0, startingTile, stats);
-		level = 1;		
+		level = startingLevel;
 		research = 0;
 		currentTurnCasts = new LinkedList<Ability>();
 		setMana(START_MANA);

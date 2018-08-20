@@ -63,7 +63,7 @@ public final class Bhen extends Commander {
 	};
 	
 	public Bhen(Player owner, Tile startingTile) throws RuntimeException, IllegalArgumentException {
-		super("Bhen", owner, startingTile, STATS);
+		super("Bhen", owner, startingTile, STATS, 1);
 	}
 
 	@Override
