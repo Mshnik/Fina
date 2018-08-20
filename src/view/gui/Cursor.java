@@ -15,12 +15,12 @@ import model.board.Direction;
  * in any matrix
  * @param <T> - the type of the elements in the matrix this is choosing from. */
 public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> implements Animatable{
-	
-	/** Color for Cursor Drawing */
-	protected static final Color COLOR = Color.red;
-	
+
 	/** Thickness of lines in Cursor Drawing */
 	protected static final int THICKNESS = 3;
+
+	/** Default color of cursor. */
+	public static final Color DEFAULT_COLOR = Color.red;
 	
 	/** The current animation state this BoardCursor is on.
 	 * An interger in the range [0 ... getStateCount() - 1] */
@@ -31,6 +31,9 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 	
 	/** The Panel this cursor is drawn on. Reference kept to call updates to it */
 	protected final M panel;
+
+	/** Color for this cursor. Defaults to Default color. */
+	private Color color = DEFAULT_COLOR;
 	
 	public Cursor(M panel, T startingElm){
 		this.panel = panel;
@@ -82,17 +85,24 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 		}
 	}
 	
-	/** Called after a move occurs to do painting and the like. Can
-	 * be overriden, but this method should be called first before adding new behavior */
+	/**
+	 * Called after a move occurs to do painting and the like. Can
+	 * be overriden, but this method should be called first before adding new behavior
+	 */
 	protected void moved(){
 		panel.fixScrollToShow(getRow(), getCol());
 	}
-	
-	/** Returns the color of the cursor. Can be overriden in subclasses
-	 * to provide color shifting/etc behavior
+
+	/** Sets the color of this cursor. */
+	public void setColor(Color c) {
+		color = c;
+	}
+
+	/**
+	 * Returns the color of the cursor.
 	 */
 	public Color getColor(){
-		return COLOR;
+		return color;
 	}
 	
 	/** Draw this Cursor as a red set of 4 corner lines */
@@ -100,11 +110,11 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>> 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.setColor(getColor());
-		g2d.setStroke(new BasicStroke(BoardCursor.THICKNESS));
+		g2d.setStroke(new BasicStroke(THICKNESS));
 		
 		//x min, y min, side length
-		int x = getPanel().getXPosition(getElm()) + BoardCursor.THICKNESS/2;
-		int y = getPanel().getYPosition(getElm()) + BoardCursor.THICKNESS/2;
+		int x = getPanel().getXPosition(getElm()) + THICKNESS/2;
+		int y = getPanel().getYPosition(getElm()) + THICKNESS/2;
 		int h = getPanel().getElementHeight();
 		int w = getPanel().getElementWidth();
 		

@@ -1,5 +1,6 @@
 package view.gui;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 import controller.selector.CastSelector;
@@ -12,6 +13,19 @@ import model.board.Tile;
 /** An instance represents the cursor on the GUI */
 public final class BoardCursor extends Cursor<Tile, GamePanel>{
 
+	/** Possible types of selection a BoardCursor can be doing. */
+	public enum SelectType {
+		DEFAULT (Color.red),
+		SUMMON (new Color(25, 203, 208)),
+		CAST (new Color(223, 194, 42));
+
+		private final Color color;
+
+		private SelectType(Color c) {
+			color = c;
+		}
+	}
+
 	/** Constructs a new BoardCursor
 	 * @param bp - the Board this cursor is used for
 	 */
@@ -22,6 +36,11 @@ public final class BoardCursor extends Cursor<Tile, GamePanel>{
 	/** Returns true - selection criteria depends on the application */
 	public boolean canSelect(){
 		return true;
+	}
+
+	/** Sets the current type of selection this BoardCursor is doing. */
+	public void setSelectType(SelectType selectType) {
+		setColor(selectType.color);
 	}
 
 	/** Called internally whenever the cursor will be moved
@@ -92,8 +111,10 @@ public final class BoardCursor extends Cursor<Tile, GamePanel>{
 		updateUnitHover();
 	}
 
-	/** Called internally whenever the cursor is moved
-	 * works with pathSelector */
+	/**
+	 * Called internally whenever the cursor is moved
+	 * works with pathSelector
+	 */
 	@Override
 	protected void moved(){
 		super.moved();

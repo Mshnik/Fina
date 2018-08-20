@@ -93,9 +93,11 @@ public final class KeyboardListener implements KeyListener{
 						break;
 					case SUMMON_DECISION:
 						gc.startSummonSelection(decision);
+						((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.SUMMON);
 						break;
 					case CAST_DECISION:
 						gc.startCastSelection(decision);
+						((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.CAST);
 						break;
 					case NEW_ABILITY_DECISION:
 						gc.processNewAbilityDecision(decision);
@@ -116,6 +118,7 @@ public final class KeyboardListener implements KeyListener{
 				}
 				break;
 			case SUMMON_SELECTION:
+				((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.DEFAULT);
 				if(keyCode == A) {
 					if(! gc.frame.getActiveCursor().canSelect()) return;
 					Tile loc = ((BoardCursor) gc.frame.getActiveCursor()).getElm();
@@ -129,6 +132,7 @@ public final class KeyboardListener implements KeyListener{
 				}
 				break;
 			case CAST_SELECTION:
+				((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.DEFAULT);
 				if(keyCode == A) {
 					if(! gc.frame.getActiveCursor().canSelect()) return;
 					Tile loc = ((BoardCursor) gc.frame.getActiveCursor()).getElm();
@@ -140,6 +144,7 @@ public final class KeyboardListener implements KeyListener{
 				}
 				break;
 			case ATTACK_SELECTION:
+				((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.DEFAULT);
 				if(keyCode == A) {
 					if(! gc.frame.getActiveCursor().canSelect()) return;
 					Tile loc = ((BoardCursor) gc.frame.getActiveCursor()).getElm();
@@ -152,6 +157,7 @@ public final class KeyboardListener implements KeyListener{
 				break;
 				//Path selection - should only be the case after pathSelection already started
 			case PATH_SELECTION:
+				((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.DEFAULT);
 				if(keyCode == A) {
 					if(! gc.frame.getActiveCursor().canSelect()) return;
 					Tile loc = ((BoardCursor) gc.frame.getActiveCursor()).getElm();
@@ -166,10 +172,6 @@ public final class KeyboardListener implements KeyListener{
 				break;
 
 			}
-
-
-
-
 		}
 	}
 
