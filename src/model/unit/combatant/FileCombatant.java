@@ -82,9 +82,9 @@ public final class FileCombatant extends Combatant {
 
 					HashMap<Terrain, Integer> costs = new HashMap<Terrain, Integer>();
 					costs.put(Terrain.GRASS, 1);
-					costs.put(Terrain.ANCIENT_GROUND, 1); //Same as grass cost
-					costs.put(Terrain.WOODS, 1);
-					costs.put(Terrain.MOUNTAIN, 1);
+					costs.put(Terrain.ANCIENT_GROUND, 1); // Same as grass cost.
+					costs.put(Terrain.WOODS, classes.contains(CombatantClass.RANGER) ? 1 : 2); // Cheaper for ranger.
+					costs.put(Terrain.MOUNTAIN, 99999); // No crossing.
 
 					Stats stats = new Stats(
 							new Stat(StatType.MAX_HEALTH, hp),

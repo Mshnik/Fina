@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.swing.JPanel;
 
 import model.board.Terrain;
+import model.unit.stat.StatType;
 import view.gui.Frame;
 import view.gui.ImageIndex;
 
@@ -254,7 +255,7 @@ public final class InfoPanel extends JPanel{
 			} else if(ability instanceof EffectAbility){
 				g2d.drawString("Effects:", x, y);
 				y += fontSize;
-				String s = ((EffectAbility) ability).toStringLong();
+				String s = ability.toStringLong();
 				g2d.drawString(s, x, y);
 			}
 		}
@@ -266,7 +267,12 @@ public final class InfoPanel extends JPanel{
 	
 	private void drawStat(Graphics2D g2d, Stat s, int x, int y){
 		g2d.drawString(s.name.toString(), x, y);
-		String str = s.val.toString();
+		String str;
+		if (s.name == StatType.MOUNTAIN_COST && (Integer) s.val > 100) {
+			str = INF_CHAR + "";
+		} else {
+			str = s.val.toString();
+		}
 		g2d.drawString(str, x + 145, y);
 	}
 }
