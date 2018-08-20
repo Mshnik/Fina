@@ -54,7 +54,17 @@ public enum StatType{
 		
 		return finishedS;
 	}
-	
+
+	/** Returns true iff this stat is an attack-related stat. */
+	public boolean isAttackStat() {
+		return this == ATTACK || this == ATTACK_RANGE;
+	}
+
+	/** Returns true iff this stat is a movement-related stat. */
+	public boolean isMovementStat() {
+		return this == MOVEMENT_TOTAL || this == GRASS_COST || this == WOODS_COST || this == MOUNTAIN_COST;
+	}
+
 	/** Returns the class of the given type */
 	public static Class<?> getClassOfType(StatType t){
 		switch(t){

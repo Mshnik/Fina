@@ -295,7 +295,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	public boolean modifierOk(Modifier m){
 		if(m instanceof StatModifier){
 			StatType s = ((StatModifier) m).modifiedStat;
-			return s != StatType.ATTACK && s != StatType.ATTACK_RANGE;
+			return ! s.isAttackStat();
 		}
 		if(m instanceof CustomModifier){
 			return ((CustomModifier) m).appliesToCommanders;

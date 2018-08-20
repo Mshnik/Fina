@@ -104,9 +104,7 @@ public abstract class Building extends Unit {
 	public boolean modifierOk(Modifier m){
 		if (m instanceof StatModifier){
 			StatType s = ((StatModifier) m).modifiedStat;
-			return s != StatType.ATTACK && s != StatType.ATTACK_RANGE
-					&& s != StatType.MOVEMENT_TOTAL && s != StatType.GRASS_COST && s != StatType.WOODS_COST
-					&& s != StatType.MOUNTAIN_COST;
+			return ! s.isAttackStat() && ! s.isMovementStat();
 		}
 		if (m instanceof CustomModifier){
 			return ((CustomModifier) m).appliesToBuildings;
