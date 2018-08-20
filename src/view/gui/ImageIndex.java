@@ -27,31 +27,33 @@ import model.unit.Unit;
 
 /** Library for lookup of different image resources.
  * Also some drawing functionality */
-public class ImageIndex {
+public final class ImageIndex {
 
 	/** Prevent instantiation of ImageIndex */
 	private ImageIndex(){}
 
 	/** Root Location of image files */
-	public static final String IMAGE_ROOT = "img/";
+	private static final String IMAGE_ROOT = "img/";
 	
 	/** Location of terrain files within image root */
-	public static final String TERRAIN_IMAGE_ROOT = "terrain/";
+	private static final String TERRAIN_IMAGE_ROOT = "terrain/";
 	
 	/** Image root for moving units (people) within image root */
-	public static final String UNIT_IMAGE_ROOT = "unit/";
+	private static final String UNIT_IMAGE_ROOT = "unit/";
 	
 	/** Image root for Building images within image root */
-	public static final String BUILDING_IMAGE_ROOT = "building/";
+	private static final String BUILDING_IMAGE_ROOT = "building/";
 
+	/** The image for margin outside of the board */
+	private static BufferedImage MARGIN;
 	/** The image for grassy terrain */
-	public static BufferedImage GRASS;
+	private static BufferedImage GRASS;
 	/** The image for mountain terrain */
-	public static BufferedImage MOUNTAINS;
+	private static BufferedImage MOUNTAINS;
 	/** The image for woods terrain */
-	public static BufferedImage WOODS;
+	private static BufferedImage WOODS;
 	/** The image for ancient ground terrain */
-	public static BufferedImage ANCIENT_GROUND;
+	private static BufferedImage ANCIENT_GROUND;
 
 	/** The image for sandstone texture */
 	public static BufferedImage SANDSTONE;
@@ -62,13 +64,14 @@ public class ImageIndex {
 	/** Tinted units thus far */
 	private static HashMap<BufferedImage, HashMap<Color, BufferedImage>> tintedUnits;
 
-	/** Static initializer for the Image Class - do all image reading here */
+	/* Static initializer for the Image Class - do all image reading here */
 	static{
 		try {
 			//Assorted other 
 			SANDSTONE = ImageIO.read(new File(IMAGE_ROOT + "sandstone.jpg"));
 
 			//Terrain
+			MARGIN = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "margin.jpg"));
 			GRASS = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "grass.png"));
 			MOUNTAINS = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "mountain.png"));
 			WOODS = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "woods.png"));
@@ -80,6 +83,11 @@ public class ImageIndex {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/** Returns the margin image file for painting outside of the board. */
+	public static BufferedImage margin() {
+		return MARGIN;
 	}
 
 	/** Returns the image file corresponding to the given terrain type */
