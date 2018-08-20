@@ -281,7 +281,12 @@ public abstract class Unit implements Stringable{
 	public LinkedList<Modifier> getModifiers(){
 		return new LinkedList<Modifier>(modifiers);
 	}
-	
+
+	/** Returns true if this unit has a modifier matching the given name, false otherwise. */
+	public boolean hasModifierByName(Modifier modifier) {
+		return getModifierByName(modifier.name) != null;
+	}
+
 	/** Returns the modifier modifying this with the given name, if any. Returns null otherwise */
 	public Modifier getModifierByName(String name){
 		for(Modifier m : modifiers){

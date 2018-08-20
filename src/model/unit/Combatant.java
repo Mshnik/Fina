@@ -10,6 +10,7 @@ import model.game.Player;
 import model.unit.commander.Bhen;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
+import model.unit.modifier.Modifiers;
 import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
@@ -140,7 +141,7 @@ public abstract class Combatant extends MovingUnit {
 	 */
 	@Override
 	public int getMovement() {
-		if (combatantClasses.contains(CombatantClass.ASSASSIN)) {
+		if (hasModifierByName(Modifiers.DISAPPEARANCE)) {
 			return super.getMovement();
 		} else {
 			return canFight() ? super.getMovement() : 0;
