@@ -62,8 +62,8 @@ public abstract class MovingUnit extends Unit{
 	
 	//MOVEMENT
 	/** Returns iff this can move */
-	public boolean canMove(){
-		return movement > 0;
+	public final boolean canMove(){
+		return getMovement() > 0;
 	}
 	
 	/** Returns the amount of movement this can still make this turn */
@@ -71,12 +71,13 @@ public abstract class MovingUnit extends Unit{
 		return movement;
 	}
 
-	/** Returns the total converted movement this model.unit can take in a turn */
+	/** Returns the total converted movement this unit can take in a given turn (not updated for this turn). */
 	public final int getMovementCap(){
 		return (Integer)stats.getStat(StatType.MOVEMENT_TOTAL);
 	}
 
-	/** Returns the movement cost of traveling terrain t, infinity if this model.unit
+	/**
+	 * Returns the movement cost of traveling terrain t, infinity if this unit
 	 * can't travel the given terrain
 	 */
 	public final int getMovementCost(Terrain t){

@@ -130,9 +130,25 @@ public abstract class Combatant extends MovingUnit {
 		}
 		return false;
 	}
-	
+
+	//MOVEMENT
+
+	/**
+	 * Non-assassin Combatants can only move if they can still attack.
+	 * Attacking means unit loses movement. Assassins can move after attacking.
+	 *
+	 */
+	@Override
+	public int getMovement() {
+		if (combatantClasses.contains(CombatantClass.ASSASSIN)) {
+			return super.getMovement();
+		} else {
+			return canFight() ? super.getMovement() : 0;
+		}
+	}
+
 	//FIGHTING
-	/** Returns iff this can fight this turn */
+	/** Returns iff this can still fight this turn */
 	public boolean canFight(){
 		return canFight;
 	}

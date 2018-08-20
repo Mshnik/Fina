@@ -313,7 +313,7 @@ public final class GameController {
 	}
 
 	/** Returns the type of the current summon decision under way, null otherwise */
-	public SummonType getSummonType(){
+	SummonType getSummonType(){
 		return summonType;
 	}
 
@@ -390,10 +390,12 @@ public final class GameController {
 		locationSelector =null;
 	}
 
-	/** Processes the path selection - if ok, deletes it.
+	/**
+	 * Processes the path selection - if ok, deletes it.
 	 * Do nothing if the path is empty (or length 1 - no movement) - stay in path selection mode.
 	 * Otherwise makes err noise or something. 
-	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
+	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening.
+	 */
 	void processSummonSelection(Tile loc) throws RuntimeException{
 		SummonSelector summonSelector = (SummonSelector) locationSelector;
 		Toggle t = removeTopToggle();
@@ -452,9 +454,11 @@ public final class GameController {
 		}
 	}
 	
-	/** Cancels the summon selection - deletes it but does nothing.
-	 * Throws a runtimeException if this was a bad time to cancel because summonSelection wasn't happening. */
-	public void cancelCastSelection() throws RuntimeException{
+	/**
+	 * Cancels the summon selection - deletes it but does nothing.
+	 * Throws a runtimeException if this was a bad time to cancel because summonSelection wasn't happening.
+	 */
+	void cancelCastSelection() throws RuntimeException{
 		Toggle t =removeTopToggle();
 		if(! t.equals(Toggle.CAST_SELECTION))
 			throw new RuntimeException("Can't cancel cast selection, currently toggling " + getToggle());
@@ -476,8 +480,10 @@ public final class GameController {
 		repaint();
 	}
 
-	/** Creates a new pathSelector at the current getGamePanel().boardCursor position.
-	 * Does nothing if the current tile is unoccupied or the model.unit has already moved. */
+	/**
+	 * Creates a new pathSelector at the current getGamePanel().boardCursor position.
+	 * Does nothing if the current tile is unoccupied or the unit has already moved.
+	 */
 	void startPathSelection(){
 		Tile t = getGamePanel().boardCursor.getElm();
 		if(! t.isOccupied() || ! t.getOccupyingUnit().canMove()) return;
@@ -499,10 +505,12 @@ public final class GameController {
 		locationSelector =null;
 	}
 
-	/** Processes the path selection - if ok, deletes it.
+	/**
+	 * Processes the path selection - if ok, deletes it.
 	 * Do nothing if the path is empty (or length 1 - no movement) - stay in path selection mode.
 	 * Otherwise makes err noise or something. 
-	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
+	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening.
+	 */
 	void processPathSelection(Tile loc) throws RuntimeException{
 		PathSelector pathSelector = (PathSelector) locationSelector;
 		if(loc.isOccupied())
@@ -518,9 +526,11 @@ public final class GameController {
 		locationSelector =null;
 	}
 
-	/** Starts an attack selection - selects from units within range.
-	 * Assumes model.unit the model.board cursor is currently on is the attacking Combatatant */
-	void startAttackSelection(){
+	/**
+	 * Starts an attack selection - selects from units within range.
+	 * Assumes model.unit the model.board cursor is currently on is the attacking Combatatant
+	 */
+	private void startAttackSelection(){
 		Tile t = getGamePanel().boardCursor.getElm();
 		if(! t.isOccupied() || ! t.getOccupyingUnit().canFight()) return;
 		Combatant attacker = (Combatant)t.getOccupyingUnit();
@@ -533,8 +543,10 @@ public final class GameController {
 		addToggle(Toggle.ATTACK_SELECTION);
 	}
 
-	/** Cancels the attack selection - deletes it but does nothing.
-	 * Throws a runtimeException if this was a bad time to cancel because attackSelection wasn't happening. */
+	/**
+	 * Cancels the attack selection - deletes it but does nothing.
+	 * Throws a runtimeException if this was a bad time to cancel because attackSelection wasn't happening.
+	 */
 	void cancelAttackSelection() throws RuntimeException{
 		Toggle t = removeTopToggle();
 		if(! t.equals(Toggle.ATTACK_SELECTION))
@@ -546,10 +558,12 @@ public final class GameController {
 		locationSelector =null;
 	}
 
-	/** Processes the attack selection - if ok, deletes it, do fight.
+	/**
+	 * Processes the attack selection - if ok, deletes it, do fight.
 	 * Do nothing if the path is empty (or length 1 - no movement) - stay in attack selection mode.
 	 * Otherwise makes err noise or something. 
-	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening. */
+	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening.
+	 */
 	void processAttackSelection(Tile loc) throws RuntimeException{
 		if(! loc.isOccupied()) return;
 		AttackSelector attackSelector = (AttackSelector) locationSelector;
