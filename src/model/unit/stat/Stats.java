@@ -110,10 +110,14 @@ public class Stats implements Iterable<Stat>{
 	 * Returns a list of stats for the given array of stat types.
 	 * Stats are returned in the same order they are queried in.
 	 */
-	private ArrayList<Stat> getStatsList(StatType[] t){
+	private ArrayList<Stat> getStatsList(StatType[] t, boolean filterOmittableZeroes){
 		ArrayList<Stat> s = new ArrayList<Stat>();
 		for(StatType p : t){
-			s.add(new Stat(p, stats.get(p)));
+			if (! filterOmittableZeroes ||
+					(stats.get(p) instanceof Integer && ((Integer) stats.get(p)) > 0) ||
+					(stats.get(p) instanceof Double && ((Double) stats.get(p)) > 0)) {
+				s.add(new Stat(p, stats.get(p)));
+			}
 		}
 		return s;
 	}
@@ -125,10 +129,10 @@ public class Stats implements Iterable<Stat>{
 	 * 		- woods cost
 	 * 		- mountain cost
 	 */
-	public ArrayList<Stat> getMovementStatsList(){
+	public ArrayList<Stat> getMovementStatsList(boolean filterOmittableZeroes){
 		StatType[] t = {StatType.MOVEMENT_TOTAL, StatType.GRASS_COST, 
 				StatType.WOODS_COST, StatType.MOUNTAIN_COST};
-		return getStatsList(t);
+		return getStatsList(t, filterOmittableZeroes);
 	}
 
 	/**
@@ -136,9 +140,9 @@ public class Stats implements Iterable<Stat>{
 	 * 		- Attack
 	 * 		- Attack Range
 	 */
-	public ArrayList<Stat> getAttackStatsList(){
+	public ArrayList<Stat> getAttackStatsList(boolean filterOmittableZeroes){
 		StatType[] t = {StatType.MIN_ATTACK, StatType.MAX_ATTACK, StatType.ATTACK_RANGE};
-		return getStatsList(t);
+		return getStatsList(t, filterOmittableZeroes);
 	}
 
 	/**
@@ -148,10 +152,10 @@ public class Stats implements Iterable<Stat>{
 	 * 		- Vision Range
 	 * 		- Summon Range
 	 */
-	public ArrayList<Stat> getStandardStatsList(){
+	public ArrayList<Stat> getStandardStatsList(boolean filterOmittableZeroes){
 		StatType[] t = {StatType.MAX_HEALTH, StatType.MANA_PER_TURN, 
 				StatType.VISION_RANGE, StatType.SUMMON_RANGE};
-		return getStatsList(t);
+		return getStatsList(t, filterOmittableZeroes);
 	}
 
 	/**

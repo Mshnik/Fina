@@ -160,12 +160,13 @@ public final class InfoPanel extends JPanel{
 				y += infoFont;
 			}
 			
-			for(Stat s : stats.getStandardStatsList()){
+			for(Stat s : stats.getStandardStatsList(true)){
 				drawStat(g2d, s, x, y);
 				y += infoFont;
 			}
-			
+
 			x = xStart;
+			y = YMARGIN + infoFont * 5;
 			String modifierTitle = "Modifiers: ";
 			g2d.drawString(modifierTitle, x, y);
 			String modString = "";
@@ -179,22 +180,26 @@ public final class InfoPanel extends JPanel{
 			x = xStart + 2 * xInc;
 			//Draw modifier list along bottom
 			y = YMARGIN;
-			for(Stat s : stats.getAttackStatsList()){
+			for(Stat s : stats.getAttackStatsList(true)){
 				drawStat(g2d, s, x, y);
 				y += infoFont;
 			}
 			x += xInc;
 			y = YMARGIN;
-			//Insert movement at top here
-			g2d.drawString("Movement", x, y);
-			
-			String movement = "0";
-			if(unit instanceof MovingUnit){
-				movement = ((MovingUnit) unit).getMovement() + "";
+
+			if (! isMenu) {
+				//Insert movement at top here
+				g2d.drawString("Movement", x, y);
+
+				String movement = "0";
+				if (unit instanceof MovingUnit) {
+					movement = ((MovingUnit) unit).getMovement() + "";
+				}
+				g2d.drawString(movement, x + 145, y);
+				y += infoFont;
 			}
-			g2d.drawString(movement, x + 145, y);
-			y += infoFont;
-			for(Stat s : stats.getMovementStatsList()){
+
+			for(Stat s : stats.getMovementStatsList(true)){
 				drawStat(g2d, s, x, y);
 				y += infoFont;
 			}

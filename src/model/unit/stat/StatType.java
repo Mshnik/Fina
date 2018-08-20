@@ -67,6 +67,28 @@ public enum StatType{
 		return this == MOVEMENT_TOTAL || this == GRASS_COST || this == WOODS_COST || this == MOUNTAIN_COST;
 	}
 
+	/** Returns true iff this stat should be omittied if it is 0, false if it should always be shown. */
+	public boolean omitIfZero() {
+		switch (this) {
+			case BASE:
+			case MAX_HEALTH:
+			case MAX_ATTACK:
+			case ATTACK_RANGE:
+			case MOVEMENT_TOTAL:
+			case VISION_RANGE:
+				return false;
+			case MIN_ATTACK:
+			case MANA_PER_TURN:
+			case SUMMON_RANGE:
+			case GRASS_COST:
+			case WOODS_COST:
+			case MOUNTAIN_COST:
+				return true;
+			default:
+				return false;
+		}
+	}
+
 	/** Returns the class of the given type */
 	public static Class<?> getClassOfType(StatType t){
 		switch(t){
