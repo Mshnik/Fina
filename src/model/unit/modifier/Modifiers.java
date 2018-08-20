@@ -12,7 +12,7 @@ public final class Modifiers {
   /** Modifier that gives life gain after dealing damage. */
   public static final Modifier BORN_TO_FIGHT =
       new CustomModifier("Born to Fight",
-          "After dealing damage, this unit gains [x] health",
+          "After dealing damage, this unit gains some health",
           10,
           Integer.MAX_VALUE,
           true,
@@ -41,7 +41,7 @@ public final class Modifiers {
   /** Modifier that slowly regenerates health. */
   public static final Modifier TOUGHNESS =
       new CustomModifier("Toughness",
-          "This unit gains [x] health each turn",
+          "This unit gains health each turn",
           5,
           Integer.MAX_VALUE,
           true,

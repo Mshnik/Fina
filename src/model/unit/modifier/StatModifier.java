@@ -9,6 +9,7 @@ public final class StatModifier extends Modifier {
 	/** The stat this is modifying */
 	public final StatType modifiedStat;
 
+	/** Types of modifications a stat modifier can apply. */
 	public enum ModificationType{
 		SET,
 		ADD,

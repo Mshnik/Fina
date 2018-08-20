@@ -7,7 +7,9 @@ import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
 import model.game.Stringable;
+import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
+import model.unit.modifier.Modifiers;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
@@ -115,7 +117,8 @@ public abstract class Unit implements Stringable{
 		stats = stats.modifiedWith(modifiers);
 	}
 
-	/** Call at the beginning of every turn.
+	/**
+	 * Call at the beginning of every turn.
 	 *  Can be overridden in subclasses, but those classes should call the super
 	 *  version before doing their own additions.
 	 * 		- ticks down modifiers and re-calculates stats, if necessary.
@@ -129,6 +132,11 @@ public abstract class Unit implements Stringable{
 		if(! deadModifiers.isEmpty()){
 			modifiers.removeAll(deadModifiers);
 			refreshStats();
+		}
+
+		// Start of turn modifiers.
+		for (Modifier m : getModifiersByName(Modifiers.TOUGHNESS)) {
+			changeHealth(((CustomModifier) m).val.intValue(), this);
 		}
 	}
 
