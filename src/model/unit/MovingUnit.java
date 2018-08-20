@@ -21,17 +21,18 @@ public abstract class MovingUnit extends Unit{
 	/** Units of movement remaining this turn. Can't move if this is 0 */
 	private int movement;
 
-	/** Constructor for MovingUnit.
+	/**
+	 * Constructor for MovingUnit.
 	 * Also adds this model.unit to the tile it is on as an occupant, and
 	 * its owner as a model.unit that player owns,
 	 * Subtracts manaCost from the owner, but throws a runtimeException if 
 	 * the owner doesn't have enough mana.
-	 * @param owner - the player owner of this model.unit
-	 * @param name - the name of this model.unit
-	 * @param level - the level of this model.unit - the age this belongs to
-	 * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
-	 * @param startingTile - the tile this model.unit begins the model.game on. Also notifies the tile of this.
-	 * @param stats - the base unmodified stats of this model.unit.
+	 * @param owner - the player owner of this unit
+	 * @param name - the name of this unit
+	 * @param level - the level of this unit - the age this belongs to
+	 * @param manaCost - the cost of summoning this unit. Should be a positive number.
+	 * @param startingTile - the tile this model.unit begins the game on. Also notifies the tile of this.
+	 * @param stats - the base unmodified stats of this unit.
 	 */
 	public MovingUnit(Player owner, String name, int level, int manaCost, Tile startingTile, Stats stats)
 			throws RuntimeException, IllegalArgumentException {
@@ -82,11 +83,11 @@ public abstract class MovingUnit extends Unit{
 	 */
 	public final int getMovementCost(Terrain t){
 		switch(t){
-		case ANCIENT_GROUND:
-		case GRASS:		return (Integer)stats.getStat(StatType.GRASS_COST);
-		case MOUNTAIN:	return (Integer)stats.getStat(StatType.MOUNTAIN_COST);
-		case WOODS:		return (Integer)stats.getStat(StatType.WOODS_COST);
-		default:		return Integer.MAX_VALUE;
+			case ANCIENT_GROUND:
+			case GRASS:		return (Integer)stats.getStat(StatType.GRASS_COST);
+			case MOUNTAIN:	return (Integer)stats.getStat(StatType.MOUNTAIN_COST);
+			case WOODS:		return (Integer)stats.getStat(StatType.WOODS_COST);
+			default:		return Integer.MAX_VALUE;
 		}
 	}
 	

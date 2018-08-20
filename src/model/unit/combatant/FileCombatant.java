@@ -11,6 +11,7 @@ import model.board.Tile;
 import model.game.Player;
 import model.unit.Combatant;
 import model.unit.Unit;
+import model.unit.modifier.Modifiers;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
@@ -83,7 +84,7 @@ public final class FileCombatant extends Combatant {
 					HashMap<Terrain, Integer> costs = new HashMap<Terrain, Integer>();
 					costs.put(Terrain.GRASS, 1);
 					costs.put(Terrain.ANCIENT_GROUND, 1); // Same as grass cost.
-					costs.put(Terrain.WOODS, classes.contains(CombatantClass.RANGER) ? 1 : 2); // Cheaper for ranger.
+					costs.put(Terrain.WOODS, 2);
 					costs.put(Terrain.MOUNTAIN, 99999); // No crossing.
 
 					Stats stats = new Stats(
@@ -98,7 +99,26 @@ public final class FileCombatant extends Combatant {
 							new Stat(StatType.WOODS_COST, costs.get(Terrain.WOODS)),
 							new Stat(StatType.MOUNTAIN_COST, costs.get(Terrain.MOUNTAIN))
 					);
-					units.add(new FileCombatant(name, level, classes, manaCost, stats, img));
+
+					FileCombatant unit = new FileCombatant(name, level, classes, manaCost, stats, img);
+
+					// Default buffs by class and/or level.
+					if (classes.contains(CombatantClass.FIGHTER)) {
+						Modifiers.BORN_TO_FIGHT.clone(unit);
+					}
+					if (classes.contains(CombatantClass.RANGER)) {
+						Modifiers.PATHFINDER.clone(unit);
+						Modifiers.TRAILBLAZER.clone(unit);
+					}
+					if (classes.contains(CombatantClass.ASSASSIN)) {
+						Modifiers.DISAPPEARANCE.clone(unit);
+					}
+					if (classes.contains(CombatantClass.TANK)) {
+						Modifiers.TOUGHNESS.clone(unit);
+					}
+
+					// Add to list.
+					units.add(unit);
 				} catch(NumberFormatException | ArrayIndexOutOfBoundsException e){
 					throw new RuntimeException(e);
 				}

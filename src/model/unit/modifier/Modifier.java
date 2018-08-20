@@ -68,9 +68,16 @@ public abstract class Modifier implements Stringable{
 		remainingTurns = dummy.remainingTurns;
 		clonedFrom = dummy;
 	}
-	
-	/** Clones a copy of this. Should fully produce a clone of this, and do model.unit attaching.
-	 * Must be overriden in subclasses to use their constructors instead */
+
+	/** Calls clone(unit, unit). */
+	public final Modifier clone(Unit unit) {
+		return clone(unit, unit);
+	}
+
+	/**
+	 * Clones a copy of this. Should fully produce a clone of this, and do model.unit attaching.
+	 * Must be overriden in subclasses to use their constructors instead
+	 */
 	public abstract Modifier clone(Unit unit, Unit source);
 	
 	/** Call when construction of a non-dummy instance is done - adds to affected model.unit */
@@ -123,7 +130,9 @@ public abstract class Modifier implements Stringable{
 			throw new RuntimeException("Can't kill a dummy modifier");
 		unit.removeModifier(this);
 		source.removeGrantedModifier(this);
-		bundle.removeSafe(this);
+		if (bundle != null) {
+			bundle.removeSafe(this);
+		}
 	}
 	
 	/** Returns a stat string for InfoPanel painting. Subclass should finish implementation */

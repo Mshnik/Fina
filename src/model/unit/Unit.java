@@ -294,9 +294,11 @@ public abstract class Unit implements Stringable{
 	/** Checks modifier m for applying to this model.unit */
 	public abstract boolean modifierOk(Modifier m);
 
-	/** Adds a new modifier to this model.unit. Also updates stats with the new modifiers,
+	/**
+	 * Adds a new modifier to this model.unit. Also updates stats with the new modifiers,
 	 * from its original base stats. Called by modifier during construction.
-	 * Returns true if the modifier was applied, false otw */
+	 * Returns true if the modifier was applied, false otw
+	 */
 	public boolean addModifier(Modifier m){
 		if(modifierOk(m)){
 			if(! m.stackable){ //Kill all clones before applying this modifier

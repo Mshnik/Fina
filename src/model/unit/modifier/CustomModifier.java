@@ -46,12 +46,13 @@ public final class CustomModifier extends Modifier {
 		this.appliesToCombatants = combatants;
 	}
 	
-	/** Constructor for cloning instances
+	/**
+	 * Constructor for cloning instances
 	 * @param unit - The model.unit this is modifying.
 	 * @param source - the model.unit this modifier is tied to.
 	 * @param dummy - the modifier to make a copy of
 	 */
-	public CustomModifier(Unit unit, Unit source, CustomModifier dummy){
+	private CustomModifier(Unit unit, Unit source, CustomModifier dummy){
 		super(unit, source, dummy);
 		this.description = dummy.description;
 		this.val = dummy.val;
