@@ -80,6 +80,7 @@ public abstract class Unit implements Stringable{
 		if(manaCost > 0 && owner != null && owner.getMana() < manaCost)
 			throw new RuntimeException(owner + " can't afford to summon model.unit with cost " + manaCost);
 		this.owner = owner;
+		this.level = level;
 		this.name = name;
 		this.manaCost = manaCost;
 		this.stats = new Stats(stats, null);
@@ -96,12 +97,7 @@ public abstract class Unit implements Stringable{
 			owner.addUnit(this);
 			if(owner.getLevel() < level)
 				throw new RuntimeException(owner + " can't summon model.unit with higher level than it");
-			this.level = level;
 			owner.getCommander().addMana(Math.min(0,-manaCost));
-			owner.game.refreshPassiveAbilities();
-			
-		} else{
-			this.level = level;
 		}
 	}
 
@@ -275,11 +271,17 @@ public abstract class Unit implements Stringable{
 	}
 
 	//MODIFIERS
-	/** Returns the modifiers currently affecting this model.unit
+	/** Copies personal modifiers from the given unit - useful for using in newly summoned unit. */
+	public void copyPersonalModifiersFrom(Unit source) {
+		source.grantedModifiers.stream().filter(m -> m.unit == source).forEach(m -> m.clone(this));
+	}
+
+	/**
+	 * Returns the modifiers currently affecting this model.unit
 	 * Pass-by-value, so editing the returned set doesn't do anything
 	 */
 	public LinkedList<Modifier> getModifiers(){
-		return new LinkedList<Modifier>(modifiers);
+		return new LinkedList<>(modifiers);
 	}
 
 	/** Returns true if this unit has a modifier matching the given name, false otherwise. */
@@ -321,9 +323,11 @@ public abstract class Unit implements Stringable{
 		}
 	}
 
-	/** Removes the given modifier from this model.unit. Also updates stats with new modifier
+	/**
+	 * Removes the given modifier from this model.unit. Also updates stats with new modifier
 	 * from its original base stats. Called by modifier on death.
-	 * Returns true if the modifier was applied, false otw */
+	 * Returns true if the modifier was applied, false otw
+	 */
 	public boolean removeModifier(Modifier m){
 		if(modifiers.contains(m)){
 			modifiers.remove(m);
@@ -338,7 +342,7 @@ public abstract class Unit implements Stringable{
 	 * Pass-by-value, so editing the returned set doesn't do anything
 	 */
 	public HashSet<Modifier> getGrantedModifiers(){
-		return new HashSet<Modifier>(grantedModifiers);
+		return new HashSet<>(grantedModifiers);
 	}
 
 	/** Adds the given modifier to the modifiers this is granting. Called by modifier on construciton */
