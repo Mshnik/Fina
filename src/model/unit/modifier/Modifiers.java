@@ -1,5 +1,7 @@
 package model.unit.modifier;
 
+import model.unit.stat.StatType;
+
 /**
  * Listing of Modifier instances.
  * @author Mshnik
@@ -8,7 +10,7 @@ public final class Modifiers {
   private Modifiers() {}
 
   /** Modifier that gives life gain after dealing damage. */
-  public static final CustomModifier BORN_TO_FIGHT =
+  public static final Modifier BORN_TO_FIGHT =
       new CustomModifier("Born to Fight",
           "After dealing damage, this unit gains [x] health",
           10,
@@ -19,29 +21,25 @@ public final class Modifiers {
           true);
 
   /** Modifier that reduces movement cost in woods. */
-  public static final CustomModifier PATHFINDER =
-      new CustomModifier("Pathfinder",
-          "Reduces movement cost in woods to [x]",
-          1,
+  public static final Modifier PATHFINDER =
+      new StatModifier("Pathfinder",
           Integer.MAX_VALUE,
           false,
-          false,
-          true,
-          true);
+          StatType.WOODS_COST,
+          StatModifier.ModificationType.SET,
+          1);
 
   /** Modifier that reduces movement cost in woods. */
-  public static final CustomModifier TRAILBLAZER =
-      new CustomModifier("Trailblazer",
-          "Reduces movement cost in mountains to [x]",
-          3,
+  public static final Modifier TRAILBLAZER =
+      new StatModifier("Trailblazer",
           Integer.MAX_VALUE,
           false,
-          false,
-          true,
-          true);
+          StatType.MOUNTAIN_COST,
+          StatModifier.ModificationType.SET,
+          3);
 
   /** Modifier that slowly regenerates health. */
-  public static final CustomModifier TOUGHNESS =
+  public static final Modifier TOUGHNESS =
       new CustomModifier("Toughness",
           "This unit gains [x] health each turn",
           5,
@@ -52,7 +50,7 @@ public final class Modifiers {
           true);
 
   /** Modifier that slowly regenerates health. */
-  public static final CustomModifier DISAPPEARANCE =
+  public static final Modifier DISAPPEARANCE =
       new CustomModifier("Disappearance",
           "This unit can move after attacking",
           null,
