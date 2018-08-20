@@ -9,15 +9,15 @@ Skirmisher,_1.png,2,200,F,130,55,70,--,4,3
 Warrior,_1.png,3,350,t,150,70,80,--,5,3
 Master Fighter,_1.png,4,500,F,170,85,90,--,5,4
 Duelist,_1.png,4,600,F/A,135,70,90,--,5,3
-Outrider,_1.png,3,450,F/R,140,65,80,3,4,5
+Outrider,_1.png,3,450,F/R,140,65,80,1,4,5
 Honor Guard,_1.png,3,450,F/T,200,60,70,--,4,3
-Marksman,_1.png,1,100,R,110,45,55,3,4,3
-Archer,_1.png,2,200,R,125,55,65,3,4,4
-Sharpshooter,_1.png,3,350,R,140,65,80,4,4,5
-Master Ranger,_1.png,4,500,R,155,75,90,4,5,5
-Shade,_1.png,3,450,R/A,130,70,95,4,5,4
+Marksman,_1.png,1,100,R,110,45,55,1,4,3
+Archer,_1.png,2,200,R,125,55,65,2,4,4
+Sharpshooter,_1.png,3,350,R,140,65,80,2,4,5
+Master Ranger,_1.png,4,500,R,155,75,90,3,5,5
+Shade,_1.png,3,450,R/A,130,70,95,2,5,4
 Guardian,_1.png,1,100,T,180,30,40,--,3,2
 Defender,_1.png,2,200,T,220,40,50,--,3,3
 Paladin,_1.png,3,350,T,250,50,60,--,3,3
 Master Tank,_1.png,4,500,T,300,60,70,--,4,3
-Siege Captain,_1.png,4,600,T/R,190,60,70,3,4,4
+Siege Captain,_1.png,4,600,T/R,190,60,70,1,4,4
