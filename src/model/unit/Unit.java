@@ -236,42 +236,9 @@ public abstract class Unit implements Stringable{
 		return (Integer)stats.getStat(StatType.ATTACK);
 	}
 
-	/** Returns the attack type of this model.unit. NO_ATTACK if this is not a combatant. */
-	public AttackType getAttackType(){
-		return (AttackType)stats.getStat(StatType.ATTACK_TYPE);
-	}
-
 	/** Returns the physical defense of this model.unit */
 	public double getPhysicalDefense(){
 		return (Double)stats.getStat(StatType.PHYSICAL_DEFENSE);
-	}
-
-	/** Returns the magic defense of this model.unit */
-	public double getMagicDefense(){
-		return (Double)stats.getStat(StatType.MAGIC_DEFENSE);
-	}
-
-	/**
-	 * Returns the Defense of this stats for the given attack type.
-	 * Infinite defense (prevent all of it) for NO_ATTACK type damage, no defense for TRUE damage
-	 */
-	public double getDefense(AttackType type){
-		switch(type){
-		case NO_ATTACK: return 1.0;
-		case PHYSICAL: return getPhysicalDefense();
-		case MAGIC: return getMagicDefense();
-		case TRUE: return 0.0;
-		default: return 0.0;
-		}
-	}
-
-	/**
-	 * Returns the defense for the given attacker. Can be overriden
-	 * in subclasses if they have different defense values than the default (against
-	 * the attacker's type
-	 */
-	public double getDefenseAgainst(Combatant attacker){
-		return getDefense(attacker.getAttackType());
 	}
 
 	/** Returns true if this is a ranged model.unit (range > 0)

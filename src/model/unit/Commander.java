@@ -186,12 +186,6 @@ public abstract class Commander extends MovingUnit implements Summoner{
 		return false;
 	}
 
-	/** Restricted attackType - has val NO_ATTACK. */
-	@Override
-	public AttackType getAttackType(){
-		return AttackType.NO_ATTACK;
-	}
-
 	/** Returns Commander */
 	@Override
 	public String getIdentifierString(){
@@ -221,13 +215,6 @@ public abstract class Commander extends MovingUnit implements Summoner{
 		int nMana = mana;
 		if(mana < 0) mana = 0;
 		return nMana;
-	}
-
-	/** Commanders get bonus defense against ranged units */
-	@Override
-	public double getDefenseAgainst(Combatant attacker){
-		if(attacker.getAttackRange() == 0) return super.getDefenseAgainst(attacker);
-		return RANGED_DEFENSE + (1 - RANGED_DEFENSE) * super.getDefenseAgainst(attacker);
 	}
 
 	//LEVEL AND RESEARCH
@@ -308,8 +295,7 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	public boolean modifierOk(Modifier m){
 		if(m instanceof StatModifier){
 			StatType s = ((StatModifier) m).modifiedStat;
-			return s != StatType.ATTACK && s != StatType.ATTACK_RANGE &&
-				s != StatType.ATTACK_TYPE;
+			return s != StatType.ATTACK && s != StatType.ATTACK_RANGE;
 		}
 		if(m instanceof CustomModifier){
 			return ((CustomModifier) m).appliesToCommanders;

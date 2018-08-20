@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import model.unit.AttackType;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.StatModifier;
 
@@ -19,7 +18,8 @@ import util.Mth;
  */
 public class Stats implements Iterable<Stat>{
 
-	/** Base stats for everything, to be overridden as template.
+	/**
+	 * Base stats for everything, to be overridden as template.
 	 * Initializes all stats to their base 0-ish vals.
 	 * 
 	 * //TODO - use?
@@ -32,9 +32,7 @@ public class Stats implements Iterable<Stat>{
 		TEMPLATE.put(StatType.MAX_HEALTH, 0);
 		TEMPLATE.put(StatType.MANA_PER_TURN, 0);
 		TEMPLATE.put(StatType.ATTACK, 0);
-		TEMPLATE.put(StatType.ATTACK_TYPE, AttackType.NO_ATTACK);
 		TEMPLATE.put(StatType.PHYSICAL_DEFENSE, 0.0);
-		TEMPLATE.put(StatType.MAGIC_DEFENSE, 0.0);
 		TEMPLATE.put(StatType.ATTACK_RANGE, 0);
 		TEMPLATE.put(StatType.SUMMON_RANGE, 0);
 		TEMPLATE.put(StatType.VISION_RANGE, 0);
@@ -136,14 +134,11 @@ public class Stats implements Iterable<Stat>{
 	/**
 	 * Returns an arrayList of the attack stats:
 	 * 		- Attack
-	 * 		- Attack Type
 	 * 		- Attack Range
-	 * 		- Physical Defense
-	 * 		- Magic Defense
+	 * 		- Defense
 	 */
 	public ArrayList<Stat> getAttackStatsList(){
-		StatType[] t = {StatType.ATTACK, StatType.ATTACK_TYPE, 
-				StatType.ATTACK_RANGE, StatType.PHYSICAL_DEFENSE, StatType.MAGIC_DEFENSE};
+		StatType[] t = {StatType.ATTACK, StatType.ATTACK_RANGE, StatType.PHYSICAL_DEFENSE};
 		return getStatsList(t);
 	}
 

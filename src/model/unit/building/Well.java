@@ -31,7 +31,6 @@ public final class Well extends Building {
 	private static final Stats STATS = new Stats(
 			new Stat(StatType.MAX_HEALTH, 800),
 			new Stat(StatType.MANA_PER_TURN, MANAPT),
-			new Stat(StatType.MAGIC_DEFENSE, 0.15),
 			new Stat(StatType.PHYSICAL_DEFENSE, 0.05)
 	);
 

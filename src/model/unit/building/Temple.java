@@ -22,7 +22,6 @@ public final class Temple extends Building {
 		
 		//2 temples
 		new ModifierBundle(
-		  new StatModifier("Temple Mag Def", Integer.MAX_VALUE, false, StatType.MAGIC_DEFENSE, ModificationType.ADD, 0.05),
 		  new StatModifier("Temple Phys Def", Integer.MAX_VALUE, false, StatType.PHYSICAL_DEFENSE, ModificationType.ADD, 0.05)
 		),
 		
@@ -34,15 +33,13 @@ public final class Temple extends Building {
 		
 		//4 temples
 		new ModifierBundle(
-		  new StatModifier("Temple Range", Integer.MAX_VALUE, false, StatType.ATTACK_RANGE, ModificationType.ADD, 1),
-		  new StatModifier("Temple Type", Integer.MAX_VALUE, false, StatType.ATTACK_TYPE, ModificationType.SET, AttackType.TRUE)
+
 		),
 		
 		//5 temples  
 		new ModifierBundle(
 		  new StatModifier("Temple Ult1",Integer.MAX_VALUE, false, StatType.ATTACK, ModificationType.MULTIPLY, 1.5),
-		  new StatModifier("Temple Ult2",Integer.MAX_VALUE, false, StatType.PHYSICAL_DEFENSE, ModificationType.MULTIPLY, 1.5),
-		  new StatModifier("Temple Ult3",Integer.MAX_VALUE, false, StatType.MAGIC_DEFENSE, ModificationType.MULTIPLY, 1.5)
+		  new StatModifier("Temple Ult2",Integer.MAX_VALUE, false, StatType.PHYSICAL_DEFENSE, ModificationType.MULTIPLY, 1.5)
 		)
 	};
 	
@@ -61,7 +58,6 @@ public final class Temple extends Building {
 	/** Stats for maxHealth, defenses, range and visionRange of baracks */
 	private static final Stats STATS = new Stats(
 			new Stat(StatType.MAX_HEALTH, 1200),
-			new Stat(StatType.MAGIC_DEFENSE, 0.1),
 			new Stat(StatType.PHYSICAL_DEFENSE, 0.1)
 	);
 	

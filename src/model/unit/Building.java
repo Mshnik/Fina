@@ -102,13 +102,13 @@ public abstract class Building extends Unit {
 	/** Modifiers can't add movement or attack */
 	@Override
 	public boolean modifierOk(Modifier m){
-		if(m instanceof StatModifier){
+		if (m instanceof StatModifier){
 			StatType s = ((StatModifier) m).modifiedStat;
-			return s != StatType.ATTACK && s != StatType.ATTACK_RANGE && s != StatType.ATTACK_TYPE
+			return s != StatType.ATTACK && s != StatType.ATTACK_RANGE
 					&& s != StatType.MOVEMENT_TOTAL && s != StatType.GRASS_COST && s != StatType.WOODS_COST
 					&& s != StatType.MOUNTAIN_COST;
 		}
-		if(m instanceof CustomModifier){
+		if (m instanceof CustomModifier){
 			return ((CustomModifier) m).appliesToBuildings;
 		}
 		return false;
@@ -127,11 +127,4 @@ public abstract class Building extends Unit {
 	/** Buildings don't do anything after a fight */
 	@Override
 	public void postCounterFight(Combatant other){}
-
-	/** Restricted attackType - has val NO_ATTACK. */
-	@Override
-	public AttackType getAttackType(){
-		return AttackType.NO_ATTACK;
-	}
-
 }

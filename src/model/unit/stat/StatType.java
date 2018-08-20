@@ -1,7 +1,5 @@
 package model.unit.stat;
 
-import model.unit.AttackType;
-
 /** The different stats that are present in a unitstats */
 public enum StatType{
 	/** The base (pre-modification) stats this was calculated from, if any */
@@ -13,14 +11,9 @@ public enum StatType{
 	MANA_PER_TURN,
 	/** Damage dealt when attacking (Before applying defenses). attack >= 0 */
 	ATTACK,
-	/** Type of damage dealt when attacking. */
-	ATTACK_TYPE,
 	/** Defense against physical damage - percent of physical damage prevented.
 	 * 1 > physicalDefense >= 0 */
 	PHYSICAL_DEFENSE,
-	/** Defense against magic damage - percent of magic damage prevented
-	 * 1 > magicDefense >= 0 */
-	MAGIC_DEFENSE,
 	/** Distance at which another model.unit can be attacked
 	 * Distance is measured using manhattan distance - 1.
 	 * Units with range 0 are melee, others are ranged
@@ -68,26 +61,23 @@ public enum StatType{
 	/** Returns the class of the given type */
 	public static Class<?> getClassOfType(StatType t){
 		switch(t){
-		case ATTACK:
-		case ATTACK_RANGE:
-		case GRASS_COST:
-		case MANA_PER_TURN:
-		case MAX_HEALTH:
-		case MOUNTAIN_COST:
-		case MOVEMENT_TOTAL:
-		case SUMMON_RANGE:
-		case VISION_RANGE:
-		case WOODS_COST:
-			return Integer.class;
-			
-		case MAGIC_DEFENSE:
-		case PHYSICAL_DEFENSE:
-			return Double.class;
-			
-		case ATTACK_TYPE: 	return AttackType.class;
-		case BASE:		 	return Stats.class;
-		
-		default : return null;
+			case ATTACK:
+			case ATTACK_RANGE:
+			case GRASS_COST:
+			case MANA_PER_TURN:
+			case MAX_HEALTH:
+			case MOUNTAIN_COST:
+			case MOVEMENT_TOTAL:
+			case SUMMON_RANGE:
+			case VISION_RANGE:
+			case WOODS_COST:
+				return Integer.class;
+			case PHYSICAL_DEFENSE:
+				return Double.class;
+			case BASE:
+				return Stats.class;
+			default:
+				return null;
 		}
 	}
 	

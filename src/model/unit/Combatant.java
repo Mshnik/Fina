@@ -33,15 +33,15 @@ public abstract class Combatant extends MovingUnit {
 	 * @param name	- the name of this model.unit
 	 * @param level - the level of this model.unit - the age this belongs to
 	 * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
-	 * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of this.
+	 * @param startingTile - the tile this model.unit begins the model.game on. Also notifies the tile of this.
 	 * @param stats - the base unmodified stats of this model.unit.
 	 */
 	public Combatant(Player owner, String name, int level, int manaCost, Tile startingTile, Stats stats) 
 			throws RuntimeException, IllegalArgumentException {
 		super(owner, name, level, manaCost, startingTile, stats);
 
-		if(stats.getStat(StatType.ATTACK_TYPE).equals(AttackType.NO_ATTACK))
-			throw new IllegalArgumentException("Combatant " + this + " can't have attackType NO_ATTACK");
+		if((int) stats.getStat(StatType.ATTACK) <= 0)
+			throw new IllegalArgumentException("Combatant " + this + " can't have non-positive attack.");
 	}
 
 	/** Call at the beginning of every turn.
@@ -129,7 +129,7 @@ public abstract class Combatant extends MovingUnit {
 		if(room > getAttackRange())
 			throw new IllegalArgumentException(this + " can't fight " + other + ", it is too far away.");
 
-		int damage = (int)(getAttack() * (1 - other.getDefenseAgainst(this)));
+		int damage = (int)(getAttack() * (1 - other.getPhysicalDefense()));
 		
 		//True if a counterAttack is happening, false otherwise.
 		boolean counterAttack = other.isAlive() && other.owner.canSee(this) && room <= other.getAttackRange()
@@ -144,7 +144,7 @@ public abstract class Combatant extends MovingUnit {
 		//If other is still alive, can see the first model.unit, 
 		//and this is within range, other counterattacks
 		if(counterAttack){
-			changeHealth(- (int)(other.getAttack() * (1 - getDefenseAgainst((Combatant)other))), other);
+			changeHealth(- (int)(other.getAttack() * (1 - getPhysicalDefense())), other);
 			counterAttack = true;
 		}
 

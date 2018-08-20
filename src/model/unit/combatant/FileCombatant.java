@@ -12,7 +12,6 @@ import java.util.List;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
-import model.unit.AttackType;
 import model.unit.Combatant;
 import model.unit.Unit;
 import model.unit.stat.Stat;
@@ -77,10 +76,8 @@ public final class FileCombatant extends Combatant {
 					String name = comps[1];
 					int hp = Integer.parseInt(comps[2]);
 					double physDef = Double.parseDouble(comps[3]) / 100.0;
-					double magDef = Double.parseDouble(comps[4]) / 100.0;
 					int attack = Integer.parseInt(comps[5]);
-					AttackType atkType = AttackType.fromAbbrevString(comps[6]);
-				
+
 					int moveTotal = Integer.parseInt(comps[7]);
 					HashMap<Terrain, Integer> costs = new HashMap<Terrain, Integer>();
 					costs.put(Terrain.GRASS, Integer.parseInt(comps[8]));
@@ -96,9 +93,7 @@ public final class FileCombatant extends Combatant {
 					Stats stats = new Stats(
 							new Stat(StatType.MAX_HEALTH, hp),
 							new Stat(StatType.PHYSICAL_DEFENSE, physDef),
-							new Stat(StatType.MAGIC_DEFENSE, magDef),
 							new Stat(StatType.ATTACK, attack),
-							new Stat(StatType.ATTACK_TYPE, atkType),
 							new Stat(StatType.ATTACK_RANGE, range),
 							new Stat(StatType.VISION_RANGE, vision),
 							new Stat(StatType.MANA_PER_TURN, manaPerTurn),

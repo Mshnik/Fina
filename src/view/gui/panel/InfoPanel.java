@@ -242,9 +242,6 @@ public final class InfoPanel extends JPanel{
 	private void drawStat(Graphics2D g2d, Stat s, int x, int y){
 		g2d.drawString(s.name.toString(), x, y);
 		String str = s.val.toString();
-		if(s.val instanceof AttackType){
-			str = AttackType.getAbbrevString((AttackType) s.val);
-		}
 		g2d.drawString(str, x + 145, y);
 	}
 }
