@@ -3,11 +3,8 @@ package model.unit.combatant;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import model.board.Terrain;
 import model.board.Tile;
@@ -68,6 +65,12 @@ public final class FileCombatant extends Combatant {
 					String img = comps[1];
 					int level = Integer.parseInt(comps[2]);
 					int manaCost = Integer.parseInt(comps[3]);
+
+					List<CombatantClass> classes =
+							Arrays.stream(comps[4].split("/"))
+								.map(CombatantClass::valueOfShort)
+								.collect(Collectors.toList());
+
 					int hp = Integer.parseInt(comps[5]);
 					int minAttack = Integer.parseInt(comps[6]);
 					int maxAttack = Integer.parseInt(comps[7]);
@@ -95,7 +98,7 @@ public final class FileCombatant extends Combatant {
 							new Stat(StatType.WOODS_COST, costs.get(Terrain.WOODS)),
 							new Stat(StatType.MOUNTAIN_COST, costs.get(Terrain.MOUNTAIN))
 					);
-					units.add(new FileCombatant(name, level, manaCost, stats, img));
+					units.add(new FileCombatant(name, level, classes, manaCost, stats, img));
 				} catch(NumberFormatException | ArrayIndexOutOfBoundsException e){
 					throw new RuntimeException(e);
 				}
@@ -126,7 +129,7 @@ public final class FileCombatant extends Combatant {
 	 * @param dummy      - the FileCombatant to clone
 	 */
 	private FileCombatant(Player owner, Tile startingTile, FileCombatant dummy){
-		super(owner, dummy.name, dummy.getLevel(), dummy.manaCost, startingTile, dummy.getStats());
+		super(owner, dummy.name, dummy.getLevel(), dummy.combatantClasses, dummy.manaCost, startingTile, dummy.getStats());
 		this.img = dummy.img;
 	}
 	
@@ -140,12 +143,13 @@ public final class FileCombatant extends Combatant {
 	 * Creates with null owner, tile.
 	 * @param name			- the name of clones of this
 	 * @param level 		- the level of clones of this
+	 * @param classes   - combatant classes of clones of this
 	 * @param manaCost		- the mana cost for clones of this
 	 * @param stats			- the stats of clones of this
 	 * @param img			- the image to draw for clones of this
 	 */
-	private FileCombatant(String name, int level, int manaCost, Stats stats, String img){
-		super(null, name, level, manaCost, null, stats);
+	private FileCombatant(String name, int level, List<CombatantClass> classes, int manaCost, Stats stats, String img){
+		super(null, name, level, classes, manaCost, null, stats);
 		this.img = img;
 	}
 

@@ -7,6 +7,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 
 import javax.swing.JPanel;
@@ -124,12 +126,22 @@ public final class InfoPanel extends JPanel{
 
 		//Unit painting
 		if(unit != null){
-			g2d.drawString(unit.name, x, YMARGIN);
+			String mainLine = unit.name;
+			if (unit.owner != null) {
+				mainLine += " (" + unit.owner + ")";
+			}
+			g2d.drawString(mainLine, x, YMARGIN);
 			g2d.setFont(SMALL_FONT);
 			final int infoFont = SMALL_FONT.getSize();
-			g2d.drawString("(" + unit.getIdentifierString() + ")", x, YMARGIN + infoFont);
-			if(unit.owner != null)
-				g2d.drawString("Owned by " + unit.owner, x, YMARGIN + infoFont * 2);
+
+			String subString = " " + unit.getIdentifierString() + " ";
+			if (unit instanceof Combatant) {
+				subString += " - " + ((Combatant) unit).combatantClasses.stream()
+						.map(Combatant.CombatantClass::toMidString)
+						.collect(Collectors.joining(", "));
+			}
+
+			g2d.drawString(subString, x, YMARGIN + infoFont);
 			
 			g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, infoFont - 3));
 			x += xInc;
