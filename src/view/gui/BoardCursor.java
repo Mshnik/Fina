@@ -21,7 +21,7 @@ public final class BoardCursor extends Cursor<Tile, GamePanel>{
 
 		private final Color color;
 
-		private SelectType(Color c) {
+		SelectType(Color c) {
 			color = c;
 		}
 	}

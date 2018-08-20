@@ -323,7 +323,7 @@ public final class GameController {
 		ArrayList<Unit> units = Unit.sortedList(creatables.values());
 		for(Unit u : units){
 			choices.add(new Choice(u.manaCost <= c.getMana(), 
-					u.name + Choice.SEPERATOR +"(" + u.manaCost + ")", u));
+					u.name + Choice.SEPERATOR +" (" + u.manaCost + ")", u));
 		}
 		decision = new Decision(DecisionType.SUMMON_DECISION, false, choices);
 		addToggle(Toggle.DECISION);
