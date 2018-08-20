@@ -1,12 +1,7 @@
 package controller.game;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 import controller.decision.*;
 import controller.decision.Decision.DecisionType;
@@ -83,6 +78,9 @@ public final class GameController {
 	/** The game this is controlling */
 	public final Game game;
 
+	/** The random instance used for generating combat damage. */
+	private final Random random;
+
 	/** The active location selector, if any */
 	private LocationSelector locationSelector;
 
@@ -91,9 +89,10 @@ public final class GameController {
 		game.setGameController(this);
 		frame = f;
 		frame.setController(this);
+		random = new Random();
 
-		playerColors = new HashMap<Player, Color>();
-		toggle = new Stack<Toggle>();
+		playerColors = new HashMap<>();
+		toggle = new Stack<>();
 	}
 
 	/** Returns the gamePanel located within frame */
@@ -558,7 +557,7 @@ public final class GameController {
 		if(! t.equals(Toggle.ATTACK_SELECTION))
 			throw new RuntimeException("Can't cancel attack selection, currently toggling " + getToggle());
 		Unit defender = loc.getOccupyingUnit();
-		attackSelector.attacker.fight(defender);
+		attackSelector.attacker.fight(defender, random);
 		locationSelector =null;
 		if(getGamePanel().getDecisionPanel() == null){
 			startActionDecision();

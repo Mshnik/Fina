@@ -30,10 +30,11 @@ public abstract class Unit implements Stringable{
 	/** The name of this model.unit */
 	public final String name;
 
-	/** The level of this model.unit - the age in which it was summoned.
+	/**
+	 * The level of this model.unit.
 	 * If less than the level of the owner, may be eligible for an upgrade
 	 */
-	private final int level;
+	public final int level;
 
 	/** The mana spent to summon this model.unit */
 	public final int manaCost;
@@ -83,8 +84,8 @@ public abstract class Unit implements Stringable{
 		this.manaCost = manaCost;
 		this.stats = new Stats(stats, null);
 		health = getMaxHealth();
-		modifiers = new LinkedList<Modifier>();
-		grantedModifiers = new LinkedList<Modifier>();
+		modifiers = new LinkedList<>();
+		grantedModifiers = new LinkedList<>();
 
 		if(tile != null){
 			location = tile;
@@ -107,9 +108,14 @@ public abstract class Unit implements Stringable{
 	/** Returns a copy of this for the given player, on the given tile */
 	public abstract Unit clone(Player owner, Tile location);
 
-	/** Returns the level of this model.unit */
+	/** Returns the level of this unit */
 	public int getLevel(){
 		return level;
+	}
+
+	/** Returns the mana cost of this unit. */
+	public int getManaCost() {
+		return manaCost;
 	}
 
 	/** Refreshes this' stats with the locally stored modifiers */
@@ -231,9 +237,14 @@ public abstract class Unit implements Stringable{
 		return new Stats(stats, null);
 	}
 
-	/** Returns the attack strength of this model.unit. 0 if this is not a combatant. */
-	public int getAttack(){
-		return (Integer)stats.getStat(StatType.ATTACK);
+	/** Returns the min attack strength of this model.unit. 0 if this is not a combatant. */
+	public int getMinAttack(){
+		return (Integer)stats.getStat(StatType.MIN_ATTACK);
+	}
+
+	/** Returns the max attack strength of this model.unit. 0 if this is not a combatant. */
+	public int getMaxAttack(){
+		return (Integer)stats.getStat(StatType.MAX_ATTACK);
 	}
 
 	/** Returns true if this is a ranged model.unit (range > 0)

@@ -1,6 +1,7 @@
 package model.unit;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import model.board.Tile;
 import model.game.Player;
@@ -40,7 +41,7 @@ public abstract class Combatant extends MovingUnit {
 			throws RuntimeException, IllegalArgumentException {
 		super(owner, name, level, manaCost, startingTile, stats);
 
-		if((int) stats.getStat(StatType.ATTACK) <= 0)
+		if((int) stats.getStat(StatType.MIN_ATTACK) <= 0)
 			throw new IllegalArgumentException("Combatant " + this + " can't have non-positive attack.");
 	}
 
@@ -100,7 +101,8 @@ public abstract class Combatant extends MovingUnit {
 	 */
 	public abstract void postFight(Unit other);
 
-	/** Causes this model.unit to fight the given model.unit.
+	/**
+	 * Causes this model.unit to fight the given model.unit.
 	 * With this as the attacker and other as the defender.
 	 * This will cause the health of the other to change
 	 * @throws RuntimeException if...
@@ -113,7 +115,7 @@ public abstract class Combatant extends MovingUnit {
 	 * 		- this' owner can't see other
 	 * @return true iff other is killed because of this action
 	 **/
-	public final boolean fight(Unit other) throws IllegalArgumentException, RuntimeException{
+	public final boolean fight(Unit other, Random random) throws IllegalArgumentException, RuntimeException{
 		if(! isAlive()) 
 			throw new RuntimeException (this + " can't fight, it is dead.");
 		if(! other.isAlive()) 
@@ -129,7 +131,8 @@ public abstract class Combatant extends MovingUnit {
 		if(room > getAttackRange())
 			throw new IllegalArgumentException(this + " can't fight " + other + ", it is too far away.");
 
-		int damage = getAttack();
+		// Get damage in range [min,max]
+		int damage = random.nextInt(getMaxAttack() + 1 - getMinAttack()) + getMinAttack();
 		
 		//True if a counterAttack is happening, false otherwise.
 		boolean counterAttack = other.isAlive() && other.owner.canSee(this) && room <= other.getAttackRange()
@@ -139,12 +142,16 @@ public abstract class Combatant extends MovingUnit {
 		if(counterAttack) other.preCounterFight(this);
 
 		//This attacks other
-		other.changeHealth(- damage, this);
+		other.changeHealth(-damage, this);
 
 		//If other is still alive, can see the first model.unit, 
 		//and this is within range, other counterattacks
 		if(counterAttack){
-			changeHealth(-other.getAttack(), other);
+			// Get damage in range [min,max]
+			int counterAttackDamage = random.nextInt(getMaxAttack() + 1 - getMinAttack()) + getMinAttack();
+
+			// Change this unit's health
+			changeHealth(-other.getMinAttack(), other);
 			counterAttack = true;
 		}
 

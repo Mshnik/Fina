@@ -20,7 +20,8 @@ import model.unit.stat.Stats;
 
 import util.TextIO;
 
-/** A FileUnit is a combatant read in from file.
+/**
+ * A FileUnit is a combatant read in from file.
  * Full constructors are private,
  * but the class maintains a static collection of units
  * that can be cloned for either player.
@@ -30,69 +31,62 @@ import util.TextIO;
  */
 public final class FileCombatant extends Combatant {
 
-	/** The avaliable combatants read into storage during initialization.
-	 * All Lists is immutable. Outer most list is by age (index = age - 1),
-	 * Inner ordered by increasing mana cost.
+	/**
+	 * The avaliable combatants read into storage during initialization.
 	 */
-	public static final List<List<FileCombatant>> FILE_COMBATANTS;
+	private static final List<FileCombatant> FILE_COMBATANTS;
 
 	/** File containing the units, in csv format */
 	private static final File UNITS_FILE = new File("game/units.csv");
 
-	/** Initializes the combatants available */
+	/* Initializes the combatants available */
 	static{
-		LinkedList<List<FileCombatant>> units = new LinkedList<>();
+		LinkedList<FileCombatant> units = new LinkedList<>();
 		try{
 			String[] unitLines = TextIO.read(UNITS_FILE).split("\\n");
 
-			LinkedList<FileCombatant> currentAgeUnits = null;
-			int currentAge = 0;
-			final Comparator<FileCombatant> manaCostSorter = new Comparator<FileCombatant>(){
-				@Override
-				public int compare(FileCombatant o1, FileCombatant o2) {
-					return o1.manaCost - o2.manaCost;
-				}
-			};
 			for(String line : unitLines){
 				String[] comps = line.split(",");
-				if(comps.length == 0) continue;	//Blank line
-
-				//Check for new age - first element is currentAge + 1. Rest of line can still have a model.unit on it.
-				try{
-					int x = Integer.parseInt(comps[0]);
-					if(x == currentAge + 1){
-						//Sort old age, if any
-						if(currentAgeUnits != null){
-							Collections.sort(currentAgeUnits, manaCostSorter);
-						}
-						
-						currentAgeUnits = new LinkedList<FileCombatant>();
-						units.add(currentAgeUnits);
-						currentAge++;
-					}
-				}catch(NumberFormatException e){}	//Not this line, that's ok.
+				if(comps.length == 0) continue;	//Blank line.
+				if(comps[0].equals("Name")) continue; //Header line.
 
 				try{
-					String name = comps[1];
-					int hp = Integer.parseInt(comps[2]);
-					double physDef = Double.parseDouble(comps[3]) / 100.0;
-					int attack = Integer.parseInt(comps[5]);
+					// Column layout of file:
+					// 0: Name (String)
+					// 1: Image filename (String)
+					// 2: Level (Int 1-4)
+					// 3: Cost (Int)
+					// 4: Type (F/T/A/R with combinations)
+					// 5: Health (Int)
+					// 6: Min Attack (Int)
+					// 7: Max Attack (Int)
+					// 8: Attack Range (Int or --)
+					// 9: Move (Int)
+					// 10: Vision (Int)
 
-					int moveTotal = Integer.parseInt(comps[7]);
+					String name = comps[0];
+					String img = comps[1];
+					int level = Integer.parseInt(comps[2]);
+					int manaCost = Integer.parseInt(comps[3]);
+					int hp = Integer.parseInt(comps[5]);
+					int minAttack = Integer.parseInt(comps[6]);
+					int maxAttack = Integer.parseInt(comps[7]);
+					int range = comps[8].equals("--") ? 0 : Integer.parseInt(comps[8]);
+					int moveTotal = Integer.parseInt(comps[9]);
+					int vision = Integer.parseInt(comps[10]);
+
+					int manaPerTurn = 0;
+
 					HashMap<Terrain, Integer> costs = new HashMap<Terrain, Integer>();
-					costs.put(Terrain.GRASS, Integer.parseInt(comps[8]));
-					costs.put(Terrain.ANCIENT_GROUND, costs.get(Terrain.GRASS)); //Same as grass cost
-					costs.put(Terrain.WOODS, Integer.parseInt(comps[9]));
-					costs.put(Terrain.MOUNTAIN, Integer.parseInt(comps[10]));
-					int range = Integer.parseInt(comps[11]);
-					int vision = Integer.parseInt(comps[12]);
-					int manaCost = Integer.parseInt(comps[13]);
-					int manaPerTurn = Integer.parseInt(comps[14]);
-					String img = comps[15];
+					costs.put(Terrain.GRASS, 1);
+					costs.put(Terrain.ANCIENT_GROUND, 1); //Same as grass cost
+					costs.put(Terrain.WOODS, 1);
+					costs.put(Terrain.MOUNTAIN, 1);
 
 					Stats stats = new Stats(
 							new Stat(StatType.MAX_HEALTH, hp),
-							new Stat(StatType.ATTACK, attack),
+							new Stat(StatType.MIN_ATTACK, minAttack),
+							new Stat(StatType.MAX_ATTACK, maxAttack),
 							new Stat(StatType.ATTACK_RANGE, range),
 							new Stat(StatType.VISION_RANGE, vision),
 							new Stat(StatType.MANA_PER_TURN, manaPerTurn),
@@ -101,30 +95,35 @@ public final class FileCombatant extends Combatant {
 							new Stat(StatType.WOODS_COST, costs.get(Terrain.WOODS)),
 							new Stat(StatType.MOUNTAIN_COST, costs.get(Terrain.MOUNTAIN))
 					);
-					currentAgeUnits.add(new FileCombatant(name, currentAge, manaCost,
-							stats, img));
-				} catch(NumberFormatException | ArrayIndexOutOfBoundsException e){} 
+					units.add(new FileCombatant(name, level, manaCost, stats, img));
+				} catch(NumberFormatException | ArrayIndexOutOfBoundsException e){
+					throw new RuntimeException(e);
+				}
 				// Must be header line, other bad line
 			}
-
 		} catch(IOException e){
 			e.printStackTrace();
 		}
+
+		units.sort(Comparator.comparingInt(Unit::getLevel).thenComparing(Unit::getManaCost));
 		FILE_COMBATANTS = Collections.unmodifiableList(units);
 	}
 
 	/** Returns a list of units for the given age (minus 1 because age is 1 indexed, this is 0 indexed) - returns by value */
 	public static List<FileCombatant> getCombatantsForAge(int age){
 		LinkedList<FileCombatant> combatants = new LinkedList<FileCombatant>();
-		combatants.addAll(FILE_COMBATANTS.get(age -1));
+		FILE_COMBATANTS.stream().filter(c -> c.level == age).forEach(combatants::add);
 		return combatants;
 	}
 
+	/** The image file associated with this FileCombatant */
+	private final String img;
+
 	/** Constructor for FileCombatant that clones the given dummy fileCombatant,
 	 * starting on the given tile.
-	 * @param owner			- the owner of the new FileCombatant
-	 * @param startingTile 	- the tile on which the new FileCombatant is spawned.
-	 * @param dummy			- the FileCombatant to clone
+	 * @param owner      - the owner of the new FileCombatant
+	 * @param startingTile  - the tile on which the new FileCombatant is spawned.
+	 * @param dummy      - the FileCombatant to clone
 	 */
 	private FileCombatant(Player owner, Tile startingTile, FileCombatant dummy){
 		super(owner, dummy.name, dummy.getLevel(), dummy.manaCost, startingTile, dummy.getStats());
@@ -149,10 +148,6 @@ public final class FileCombatant extends Combatant {
 		super(null, name, level, manaCost, null, stats);
 		this.img = img;
 	}
-	
-
-	/** The image file associated with this FileCombatant */
-	public final String img;
 
 	@Override
 	public void preFight(Unit other) {}

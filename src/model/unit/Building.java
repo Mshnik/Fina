@@ -79,7 +79,7 @@ public abstract class Building extends Unit {
 	//RESTRICTIONS
 	/** Restricted attack - has val 0. */
 	@Override
-	public int getAttack(){
+	public int getMinAttack(){
 		return 0;
 	}
 

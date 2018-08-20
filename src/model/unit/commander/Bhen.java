@@ -52,7 +52,7 @@ public final class Bhen extends Commander {
 			MPoint.ORIGIN.radialCloud(1), 
 			new ModifierBundle(
 					new StatModifier(ABILITY_NAMES[1][0], 1, false, StatType.MOVEMENT_TOTAL, ModificationType.ADD, 4),
-					new StatModifier(ABILITY_NAMES[1][0], 1, false, StatType.ATTACK, ModificationType.ADD, 250)
+					new StatModifier(ABILITY_NAMES[1][0], 1, false, StatType.MIN_ATTACK, ModificationType.ADD, 250)
 			)
 	  );
 	

@@ -17,7 +17,7 @@ public final class Temple extends Building {
 	private static final ModifierBundle[] BUFFS = {
 		//1 temple
 		new ModifierBundle(
-				new StatModifier("Temple Attack", Integer.MAX_VALUE, false, StatType.ATTACK, ModificationType.ADD, 50)
+				new StatModifier("Temple Attack", Integer.MAX_VALUE, false, StatType.MIN_ATTACK, ModificationType.ADD, 50)
 				),
 		
 		//2 temples
@@ -37,7 +37,7 @@ public final class Temple extends Building {
 		
 		//5 temples  
 		new ModifierBundle(
-		  new StatModifier("Temple Ult1",Integer.MAX_VALUE, false, StatType.ATTACK, ModificationType.MULTIPLY, 1.5)
+		  new StatModifier("Temple Ult1",Integer.MAX_VALUE, false, StatType.MIN_ATTACK, ModificationType.MULTIPLY, 1.5)
 		)
 	};
 	

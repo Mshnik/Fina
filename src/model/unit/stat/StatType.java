@@ -9,8 +9,10 @@ public enum StatType{
 	MAX_HEALTH,
 	/** The mana generation/cost of this model.unit, if any. Positive is generation */
 	MANA_PER_TURN,
-	/** Damage dealt when attacking (Before applying defenses). attack >= 0 */
-	ATTACK,
+	/** Min damage dealt when attacking. attack >= 0. If a unit's attack == 0, this unit cannot attack. */
+	MIN_ATTACK,
+	/** Max damage dealt when attacking. attack >= 0. If a unit's attack == 0, this unit cannot attack. */
+	MAX_ATTACK,
 	/** Distance at which another model.unit can be attacked
 	 * Distance is measured using manhattan distance - 1.
 	 * Units with range 0 are melee, others are ranged
@@ -57,7 +59,7 @@ public enum StatType{
 
 	/** Returns true iff this stat is an attack-related stat. */
 	public boolean isAttackStat() {
-		return this == ATTACK || this == ATTACK_RANGE;
+		return this == MIN_ATTACK || this == MAX_ATTACK || this == ATTACK_RANGE;
 	}
 
 	/** Returns true iff this stat is a movement-related stat. */
@@ -68,7 +70,8 @@ public enum StatType{
 	/** Returns the class of the given type */
 	public static Class<?> getClassOfType(StatType t){
 		switch(t){
-			case ATTACK:
+			case MIN_ATTACK:
+			case MAX_ATTACK:
 			case ATTACK_RANGE:
 			case GRASS_COST:
 			case MANA_PER_TURN:

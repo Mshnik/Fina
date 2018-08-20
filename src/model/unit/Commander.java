@@ -177,7 +177,12 @@ public abstract class Commander extends MovingUnit implements Summoner{
 	//RESTRICTIONS
 	/** Restricted attack - has val 0. */
 	@Override
-	public int getAttack(){
+	public int getMinAttack(){
+		return 0;
+	}
+
+	@Override
+	public int getMaxAttack(){
 		return 0;
 	}
 
