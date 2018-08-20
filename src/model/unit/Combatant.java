@@ -1,9 +1,6 @@
 package model.unit;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import model.board.Tile;
 import model.game.Player;
@@ -166,14 +163,46 @@ public abstract class Combatant extends MovingUnit {
 		return false;
 	}
 
-	/** Processes a pre-fight action that may be caused by modifiers.
-	 * Still only called when the fight is valid. */
-	public abstract void preFight(Unit other);
+	@Override
+	public void preMove(LinkedList<Tile> path) {}
 
-	/** Processes a post-fight action that may be caused by modifiers.
+	@Override
+	public void postMove(LinkedList<Tile> path) {}
+
+	@Override
+	public void preCounterFight(Combatant other) {}
+
+	@Override
+	public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {
+		if (damageDealt > 0) {
+			for (Modifier m : getModifiersByName(Modifiers.BORN_TO_FIGHT)) {
+				CustomModifier customModifier = (CustomModifier) m;
+				changeHealth(customModifier.val.intValue(), this);
+			}
+		}
+	}
+
+	/**
+	 * Processes a pre-fight action that may be caused by modifiers.
+	 * Still only called when the fight is valid.
+	 */
+	private void preFight(Unit other) {
+
+	}
+
+
+	/**
+	 * Processes a post-fight action that may be caused by modifiers.
 	 * Only called when the fight is valid and this is still alive.
 	 */
-	public abstract void postFight(Unit other);
+	private void postFight(int damageDealt, Unit other, int damageTaken) {
+		if (damageDealt > 0) {
+			for (Modifier m : getModifiersByName(Modifiers.BORN_TO_FIGHT)) {
+				CustomModifier customModifier = (CustomModifier) m;
+				changeHealth(customModifier.val.intValue(), this);
+			}
+		}
+	}
 
 	/**
 	 * Causes this unit to fight the given unit.
@@ -220,9 +249,10 @@ public abstract class Combatant extends MovingUnit {
 
 		//If other is still alive, can see the first unit,
 		//and this is within range, other counterattacks
+		int counterAttackDamage = 0;
 		if(counterAttack){
 			// Get damage in range [min,max]
-			int counterAttackDamage = random.nextInt(getMaxAttack() + 1 - getMinAttack()) + getMinAttack();
+			counterAttackDamage = random.nextInt(getMaxAttack() + 1 - getMinAttack()) + getMinAttack();
 
 			// Change this unit's health
 			changeHealth(- counterAttackDamage, other);
@@ -234,10 +264,10 @@ public abstract class Combatant extends MovingUnit {
 
 		//Calls postFight on units that are still alive, able to counterAttack
 		if(isAlive()){
-			postFight(other);
+			postFight(damage, other, counterAttackDamage);
 		}
 		if(other.isAlive() && counterAttack) {
-			other.postCounterFight(this);
+			other.postCounterFight(counterAttackDamage, this, damage);
 		}
 		
 		boolean otherIsDead = ! other.isAlive();

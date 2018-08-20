@@ -124,5 +124,5 @@ public abstract class Building extends Unit {
 
 	/** Buildings don't do anything after a fight */
 	@Override
-	public void postCounterFight(Combatant other){}
+	public void postCounterFight(int damageDealt, Combatant other, int damageTaken){}
 }

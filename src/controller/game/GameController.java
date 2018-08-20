@@ -391,10 +391,9 @@ public final class GameController {
 	}
 
 	/**
-	 * Processes the path selection - if ok, deletes it.
-	 * Do nothing if the path is empty (or length 1 - no movement) - stay in path selection mode.
-	 * Otherwise makes err noise or something. 
-	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening.
+	 * Processes the summoning selection - if ok, deletes it.
+	 * Creates a new copy of the unit to summon and charges the summoning player the cost.
+	 * Throws a runtimeException if this was a bad time to process because summonSelection wasn't happening.
 	 */
 	void processSummonSelection(Tile loc) throws RuntimeException{
 		SummonSelector summonSelector = (SummonSelector) locationSelector;

@@ -1,11 +1,7 @@
 package model.unit;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import model.board.Terrain;
 import model.board.Tile;
@@ -289,13 +285,18 @@ public abstract class Unit implements Stringable{
 		return getModifierByName(modifier.name) != null;
 	}
 
-	/** Returns the modifier modifying this with the given name, if any. Returns null otherwise */
+	/** Returns the first modifier modifying this with the given name, if any. Returns null otherwise */
 	public Modifier getModifierByName(String name){
 		for(Modifier m : modifiers){
 			if(m.name.equals(name))
 				return m;
 		}
 		return null;
+	}
+
+	/** Returns a list of modifiers modifying this with the given name, if any. Returns an empty list otherwise */
+	public List<Modifier> getModifiersByName(Modifier modifier){
+		return modifiers.stream().filter(m -> m.name.equals(modifier.name)).collect(Collectors.toList());
 	}
 	
 	/** Checks modifier m for applying to this model.unit */
@@ -362,12 +363,14 @@ public abstract class Unit implements Stringable{
 	 * Only called if this will be able to counterAttack. */
 	public abstract void preCounterFight(Combatant other);
 
-	/** Processes a post-counter-fight (this was attacked) 
+	/**
+	 * Processes a post-counter-fight (this was attacked)
 	 * action that may be caused by modifiers.
 	 * Only called when the fight is valid, called after other.postFight()
 	 * Only called if this was able to counterAttack and is still alive.
+	 * damageDealt and damageTaken will be 0 if the respective unit could not deal damage.
 	 */
-	public abstract void postCounterFight(Combatant other);
+	public abstract void postCounterFight(int damageDealt, Combatant other, int damageTaken);
 
 	//DRAWING
 	/** Returns the name of the file that represents this model.unit as an image */

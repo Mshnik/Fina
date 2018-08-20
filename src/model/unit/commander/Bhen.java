@@ -76,7 +76,7 @@ public final class Bhen extends Commander {
 	public void preCounterFight(Combatant other) {}
 
 	@Override
-	public void postCounterFight(Combatant other) {}
+	public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {}
 
 	@Override
 	public String getImgFilename() {

@@ -115,8 +115,10 @@ public abstract class Ability implements Stringable{
 		return effectCloud.size();
 	}
 
-	/** Casts this ability. Returns true if this call is ok and cast happens, throws exception otherwise.
-	 * If this is passive, always cast with the commander's location as its location */
+	/**
+	 * Casts this ability. Returns true if this call is ok and cast happens, throws exception otherwise.
+	 * If this is passive, always cast with the commander's location as its location
+	 */
 	public boolean cast(Tile location) throws RuntimeException{
 		//Check mana
 		if(caster.getMana() < manaCost)

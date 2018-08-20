@@ -173,24 +173,6 @@ public final class FileCombatant extends Combatant {
 		this.img = img;
 	}
 
-	@Override
-	public void preFight(Unit other) {}
-
-	@Override
-	public void postFight(Unit other) {}
-
-	@Override
-	public void preMove(LinkedList<Tile> path) {}
-
-	@Override
-	public void postMove(LinkedList<Tile> path) {}
-
-	@Override
-	public void preCounterFight(Combatant other) {}
-
-	@Override
-	public void postCounterFight(Combatant other) {}
-
 	/** Returns the image file associated with this combatant -- 
 	 * {@code return img} */
 	@Override

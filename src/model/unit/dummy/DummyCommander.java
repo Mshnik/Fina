@@ -56,7 +56,7 @@ public final class DummyCommander extends Commander {
 	}
 
 	@Override
-	public void postCounterFight(Combatant other) {
+	public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {
 		// TODO Auto-generated method stub
 
 	}
