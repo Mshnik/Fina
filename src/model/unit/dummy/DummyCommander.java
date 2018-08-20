@@ -15,11 +15,10 @@ import model.unit.stat.Stats;
 
 public final class DummyCommander extends Commander {
 
-	/** Stats for maxHealth, defenses, range and visionRange of dummy commander */
+	/** Stats for maxHealth, range and visionRange of dummy commander */
 	private static final Stats STATS = new Stats(
 			new Stat(StatType.MAX_HEALTH, Commander.BASE_HEALTH),
 			new Stat(StatType.MANA_PER_TURN, Commander.BASE_MANA_PT),
-			new Stat(StatType.PHYSICAL_DEFENSE, 0.1),
 			new Stat(StatType.SUMMON_RANGE, 2),
 			new Stat(StatType.VISION_RANGE, 3),
 			new Stat(StatType.MOVEMENT_TOTAL, 5),

@@ -129,7 +129,7 @@ public abstract class Combatant extends MovingUnit {
 		if(room > getAttackRange())
 			throw new IllegalArgumentException(this + " can't fight " + other + ", it is too far away.");
 
-		int damage = (int)(getAttack() * (1 - other.getPhysicalDefense()));
+		int damage = getAttack();
 		
 		//True if a counterAttack is happening, false otherwise.
 		boolean counterAttack = other.isAlive() && other.owner.canSee(this) && room <= other.getAttackRange()
@@ -144,7 +144,7 @@ public abstract class Combatant extends MovingUnit {
 		//If other is still alive, can see the first model.unit, 
 		//and this is within range, other counterattacks
 		if(counterAttack){
-			changeHealth(- (int)(other.getAttack() * (1 - getPhysicalDefense())), other);
+			changeHealth(-other.getAttack(), other);
 			counterAttack = true;
 		}
 

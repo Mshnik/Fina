@@ -236,11 +236,6 @@ public abstract class Unit implements Stringable{
 		return (Integer)stats.getStat(StatType.ATTACK);
 	}
 
-	/** Returns the physical defense of this model.unit */
-	public double getPhysicalDefense(){
-		return (Double)stats.getStat(StatType.PHYSICAL_DEFENSE);
-	}
-
 	/** Returns true if this is a ranged model.unit (range > 0)
 	 * false if this is melee (range == 0)
 	 */

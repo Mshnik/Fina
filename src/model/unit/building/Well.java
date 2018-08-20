@@ -30,8 +30,7 @@ public final class Well extends Building {
 	/** Stats for wells */
 	private static final Stats STATS = new Stats(
 			new Stat(StatType.MAX_HEALTH, 800),
-			new Stat(StatType.MANA_PER_TURN, MANAPT),
-			new Stat(StatType.PHYSICAL_DEFENSE, 0.05)
+			new Stat(StatType.MANA_PER_TURN, MANAPT)
 	);
 
 	public Well(Player owner, Tile tile){

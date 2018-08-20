@@ -92,7 +92,6 @@ public final class FileCombatant extends Combatant {
 
 					Stats stats = new Stats(
 							new Stat(StatType.MAX_HEALTH, hp),
-							new Stat(StatType.PHYSICAL_DEFENSE, physDef),
 							new Stat(StatType.ATTACK, attack),
 							new Stat(StatType.ATTACK_RANGE, range),
 							new Stat(StatType.VISION_RANGE, vision),

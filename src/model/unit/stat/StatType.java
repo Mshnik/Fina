@@ -11,9 +11,6 @@ public enum StatType{
 	MANA_PER_TURN,
 	/** Damage dealt when attacking (Before applying defenses). attack >= 0 */
 	ATTACK,
-	/** Defense against physical damage - percent of physical damage prevented.
-	 * 1 > physicalDefense >= 0 */
-	PHYSICAL_DEFENSE,
 	/** Distance at which another model.unit can be attacked
 	 * Distance is measured using manhattan distance - 1.
 	 * Units with range 0 are melee, others are ranged
@@ -72,8 +69,6 @@ public enum StatType{
 			case VISION_RANGE:
 			case WOODS_COST:
 				return Integer.class;
-			case PHYSICAL_DEFENSE:
-				return Double.class;
 			case BASE:
 				return Stats.class;
 			default:

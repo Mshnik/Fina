@@ -32,7 +32,6 @@ public class Stats implements Iterable<Stat>{
 		TEMPLATE.put(StatType.MAX_HEALTH, 0);
 		TEMPLATE.put(StatType.MANA_PER_TURN, 0);
 		TEMPLATE.put(StatType.ATTACK, 0);
-		TEMPLATE.put(StatType.PHYSICAL_DEFENSE, 0.0);
 		TEMPLATE.put(StatType.ATTACK_RANGE, 0);
 		TEMPLATE.put(StatType.SUMMON_RANGE, 0);
 		TEMPLATE.put(StatType.VISION_RANGE, 0);
@@ -135,10 +134,9 @@ public class Stats implements Iterable<Stat>{
 	 * Returns an arrayList of the attack stats:
 	 * 		- Attack
 	 * 		- Attack Range
-	 * 		- Defense
 	 */
 	public ArrayList<Stat> getAttackStatsList(){
-		StatType[] t = {StatType.ATTACK, StatType.ATTACK_RANGE, StatType.PHYSICAL_DEFENSE};
+		StatType[] t = {StatType.ATTACK, StatType.ATTACK_RANGE};
 		return getStatsList(t);
 	}
 
