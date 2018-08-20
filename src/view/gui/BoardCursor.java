@@ -113,7 +113,7 @@ public final class BoardCursor extends Cursor<Tile, GamePanel>{
 	 */
 	private void updateUnitHover(){
 		if(getElm().isOccupied() && panel.controller.game.getCurrentPlayer().canSee(getElm())){
-			panel.getFrame().getInfoPanel().setUnit(getElm().getOccupyingUnit());
+			panel.getFrame().getInfoPanel().setUnit(getElm().getOccupyingUnit(), false);
 		}
 		else {
 			panel.getFrame().getInfoPanel().setTerrain(getElm().terrain);

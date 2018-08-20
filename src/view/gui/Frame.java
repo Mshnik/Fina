@@ -138,7 +138,7 @@ public final class Frame extends JFrame {
 	 * 
 	 */
 	public void showUnitStats(Unit u){
-		infoPanel.setUnit(u);
+		infoPanel.setUnit(u, true);
 	}
 	
 	/** Updates the info panel to show the given ability *

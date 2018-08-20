@@ -58,6 +58,9 @@ public final class InfoPanel extends JPanel{
 
 	/** The Terrain (if any) this InfoPanel is currently drawing info for */
 	private Terrain terrain;
+
+	/** True iff the player is currently looking at a menu, false otherwise (looking at board). */
+	private boolean isMenu;
 	
 	public InfoPanel(Frame f){
 		frame = f;
@@ -75,27 +78,30 @@ public final class InfoPanel extends JPanel{
 		return ability;
 	}
 	
-	/** Sets the model.unit this InfoPanel is to draw info for, and causes a repaint */
-	public void setUnit(Unit u){
+	/** Sets the unit this InfoPanel is to draw info for, and causes a repaint */
+	public void setUnit(Unit u, boolean isMenu){
 		unit = u;
+		this.isMenu = isMenu;
 		ability = null;
 		terrain = null;
 		repaint();
 	}
 	
-	/** Sets the model.ability this InfoPanel is to draw info for, and causes a repaint */
+	/** Sets the ability this InfoPanel is to draw info for, and causes a repaint */
 	public void setAbility(Ability a){
 		unit = null;
 		ability = a;
+		isMenu = true;
 		terrain = null;
 		repaint();
 	}
 
-	/** Sets the model.terrain this InfoPanel is to draw for and causes a repaint */
+	/** Sets the terrain this InfoPanel is to draw for and causes a repaint */
 	public void setTerrain(Terrain t) {
 		unit = null;
 		ability = null;
 		terrain = t;
+		isMenu = false;
 		repaint();
 	}
 	
@@ -148,9 +154,11 @@ public final class InfoPanel extends JPanel{
 			Stats stats = unit.getStats();
 			
 			//Insert health at top here
-			g2d.drawString("Health", x, y);
-			g2d.drawString(unit.getHealth() + "", x + 145, y);
-			y += infoFont;
+			if (! isMenu) {
+				g2d.drawString("Health", x, y);
+				g2d.drawString(unit.getHealth() + "", x + 145, y);
+				y += infoFont;
+			}
 			
 			for(Stat s : stats.getStandardStatsList()){
 				drawStat(g2d, s, x, y);
