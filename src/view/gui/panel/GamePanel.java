@@ -40,7 +40,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	
 	/** Color of cast radii */
 	private static final Color CAST_COLOR = Color.magenta;
-	
+
 	/** The BoardCursor for this GamePanel */
 	public final BoardCursor boardCursor;
 
@@ -53,13 +53,15 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	 * @param maxCols - the maximum number of cols of tiles to show at a time
 	 */
 	public GamePanel(Frame f, int maxRows, int maxCols){
-		super(f.getController(), maxCols, maxRows, 0, 0);
+		super(f.getController(), maxCols, maxRows, 0, 0,
+				Math.max(0, maxCols - f.getController().game.board.getWidth()),
+				Math.max(0, maxRows - f.getController().game.board.getHeight()));
 		boardCursor = new BoardCursor(this);
 		setPreferredSize(new Dimension(getShowedCols() * CELL_SIZE, getShowedRows() * CELL_SIZE));
 	}
 
-	/** Sets the decisionPanel
-	 * 
+	/**
+	 * Sets the decisionPanel
 	 */
 	public void setDecisionPanel(DecisionPanel d){
 		decisionPanel = d;
@@ -70,7 +72,8 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		return decisionPanel;
 	}
 	
-	/** Creates a decisionPanel with the given decisionArray. 
+	/**
+	 * Creates a decisionPanel with the given decisionArray.
 	 * Fixes the location of the open decisionPanel for the location of the boardCursor,
 	 * sets active toggle and active cursor, and repaints.
 	 */
@@ -109,28 +112,44 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable{
 		repaint();
 	}
 
-	/** Returns true if the given model.unit is visible to the current player, false otherwise.
-	 * Helper for painting fog of war and hiding units */
+	/**
+	 * Returns true if the given model.unit is visible to the current player, false otherwise.
+	 * Helper for painting fog of war and hiding units
+	 */
 	private boolean isVisible(Tile t){
 		Game game = controller.game;
 		return ! game.isFogOfWar() || 
 				(game.getCurrentPlayer() != null && game.getCurrentPlayer().canSee(t));
 	}
 
-	@Override
 	/** Paints this boardpanel, for use in the frame it is in. */
+	@Override
 	public void paintComponent(Graphics g){
 		Game game = controller.game;
 		Graphics2D g2d = (Graphics2D)g;
 		//Paint the model.board itself, painting the portion within
 		//[scrollY ... scrollY + maxY - 1], 
 		//[scrollX ... scrollX + maxX - 1]
-		for(int row = scrollY; row < scrollY + getShowedRows(); row ++){
-			for(int col = scrollX; col < scrollX + getShowedCols(); col ++){
-				Tile t = game.board.getTileAt(row, col);
-				drawTile(g2d, t);
-				if(t.isOccupied() && isVisible(t)){
-					drawUnit(g2d, t.getOccupyingUnit());
+
+		int marginRowTop = marginY/2;
+		int marginRowBottom = marginY - marginRowTop;
+		int marginColLeft = marginX/2;
+		int marginColRight = marginX - marginColLeft;
+
+		for(int row = 0; row < getShowedRows(); row ++){
+			for(int col = 0; col < getShowedCols(); col ++){
+				if (row < marginRowTop || row >= (getShowedRows() - marginRowBottom)
+						|| col < marginColLeft || col >= (getShowedCols() - marginColRight)) {
+					g2d.drawImage(ImageIndex.margin(),
+							col * getElementWidth(),
+							row * getElementHeight(),
+							CELL_SIZE, CELL_SIZE, null);
+				} else {
+					Tile t = game.board.getTileAt(row + scrollY - marginRowTop, col + scrollX - marginColLeft);
+					drawTile(g2d, t);
+					if (t.isOccupied() && isVisible(t)) {
+						drawUnit(g2d, t.getOccupyingUnit());
+					}
 				}
 			}
 		}

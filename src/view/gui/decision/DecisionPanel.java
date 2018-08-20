@@ -76,7 +76,7 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
 	
 	public DecisionPanel(GameController g, Player p,
 			int maxY, String title, Decision decision) {
-		super(g, 1, maxY, 0, 0);
+		super(g, 1, maxY, 0, 0, 0, 0);
 		this.player = p;
 		this.decision = decision;
 		this.title = title;

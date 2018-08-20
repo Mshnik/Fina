@@ -17,7 +17,7 @@ public final class Main {
 			String boardFilename = args.length > 0 ? args[0] : "sample_board.csv";
 			Board board = BoardReader.readBoard("game/boards/" + boardFilename);
 
-	    Frame f = new Frame(board.getHeight(), board.getWidth());
+	    Frame f = new Frame(8, 16);
 	    
 	    Game g = new Game(board, false);
 	    GameController gc = new GameController(g, f);

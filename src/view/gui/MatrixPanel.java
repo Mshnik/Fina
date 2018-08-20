@@ -24,7 +24,13 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 	
 	/** Maximum number of rows of tiles to visually show */
 	private int maxY;
-	
+
+	/** Margin in the x direction, in terms of extra cols that have no tiles on them. */
+	protected int marginX;
+
+	/** Margin in the y direction, in terms of extra rows that have no tiles on them. */
+	protected int marginY;
+
 	/** Scroll in the x direction, in terms of # of cols to skip. Used as a scroll delta */
 	protected int scrollX;
 	
@@ -33,18 +39,23 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 	
 	/** Constructor for MatrixPanel
 	 * @param controller - the controller this MatrixPanel is doing something for.
-	 * @param maxX		- the number of cols to paint at a time
-	 * @param maxY		- the number of rows to paint at a time
-	 * @param scrollX	- the starting scrolling of cols
-	 * @param scrollY	- the starting scrolling of rows
+	 * @param maxX    - the number of cols to paint at a time
+	 * @param maxY    - the number of rows to paint at a time
+	 * @param scrollX  - the starting scrolling of cols
+	 * @param scrollY  - the starting scrolling of rows
+	 * @param marginX - the number of cols of margin divided between left and right.
+	 * @param marginY - the number of rows of margin divided between top and bottom.
 	 */
-	protected MatrixPanel(GameController controller, int maxX, int maxY, int scrollX, int scrollY){
+	protected MatrixPanel(GameController controller, int maxX, int maxY, int scrollX, int scrollY, int marginX, int marginY){
 		this.controller = controller;
 		this.maxX = maxX;
 		this.maxY = maxY;
 		
 		this.scrollX = scrollX;
 		this.scrollY = scrollY;
+
+		this.marginX = marginX;
+		this.marginY = marginY;
 	}
 	
 	/** Returns the number of rows this panel is showing currently */
@@ -81,7 +92,8 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 	/** Returns the element at the given indices. Throws IllegalArgumentException if this is OOB */
 	protected abstract T getElmAt(int row, int col) throws IllegalArgumentException;
 	
-	/** Fixes the scroll to show the given row and column. Scrolls as little as possible to make this
+	/**
+	 * Fixes the scroll to show the given row and column. Scrolls as little as possible to make this
 	 * change
 	 * row, col must be in range of matrix this is painting.
 	 */
@@ -106,12 +118,12 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
 	
 	/** Returns the xPosition (graphically) of the top left corner of the given element */
 	public int getXPosition(T t){
-		return (t.getCol() - scrollX) * getElementWidth();
+		return (t.getCol() - scrollX + marginX / 2) * getElementWidth();
 	}
 	
 	/** Returns the yPosition (graphically) of the top left corner of the given tile */
 	public int getYPosition(T t){
-		return (t.getRow() - scrollY) * getElementHeight();
+		return (t.getRow() - scrollY + marginY / 2) * getElementHeight();
 	}
 	
 	/** Returns the height of a element in the drawing */
