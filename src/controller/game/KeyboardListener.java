@@ -157,7 +157,7 @@ public final class KeyboardListener implements KeyListener{
 			case ATTACK_SELECTION:
 				((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.DEFAULT);
 				if(keyCode == A) {
-					gc.startConfirmAttackDecision("Attack?");
+					gc.startConfirmAttackDecision();
 				}
 				else{
 					gc.cancelAttackSelection();

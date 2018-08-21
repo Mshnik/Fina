@@ -566,7 +566,7 @@ public final class GameController {
 	 * Starts a getGamePanel().getDecisionPanel() for confirming an attack decision.
 	 * Creates a combat instance and sets it as the value on both decisions.
 	 */
-	void startConfirmAttackDecision(String title){
+	void startConfirmAttackDecision(){
 		if(! frame.getActiveCursor().canSelect())
 			return;
 		Tile loc = ((BoardCursor) frame.getActiveCursor()).getElm();
@@ -580,7 +580,7 @@ public final class GameController {
 				new Choice(true, GameController.CANCEL, combat),
 				new Choice(true, GameController.CONFIRM, combat));
 		addToggle(Toggle.DECISION);
-		getGamePanel().fixDecisionPanel(title, game.getCurrentPlayer(), decision, false);
+		getGamePanel().fixDecisionPanel("Attack?", game.getCurrentPlayer(), decision, false);
 		getGamePanel().moveDecisionPanel();
 	}
 
