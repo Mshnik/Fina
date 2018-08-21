@@ -242,9 +242,19 @@ public abstract class Unit implements Stringable{
 		return (Integer)stats.getStat(StatType.MIN_ATTACK);
 	}
 
+	/** Returns the min attack of this unit, scaled by its current health percentage. */
+	public final int getMinAttackScaled() {
+		return (int) (getMinAttack() * getHealthPercent());
+	}
+
 	/** Returns the max attack strength of this model.unit. 0 if this is not a combatant. */
 	public int getMaxAttack(){
-		return (Integer)stats.getStat(StatType.MAX_ATTACK);
+		return (int) (Integer)stats.getStat(StatType.MAX_ATTACK);
+	}
+
+	/** Returns the max attack of this unit, scaled by its current health percentage. */
+	public final int getMaxAttackScaled() {
+		return (int) (getMaxAttack() * getHealthPercent());
 	}
 
 	/** Returns true if this is a ranged model.unit (range > 0)

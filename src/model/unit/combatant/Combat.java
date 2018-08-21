@@ -60,12 +60,12 @@ public final class Combat {
 
   /** Returns the minimum damage the attacker could do after scaling by combat classes and account for modifiers. */
   public int getMinAttack() {
-    return (int) (attacker.getMinAttack() * (1 + COMBAT_CLASS_BONUS * getClassBonus()));
+    return Math.max(0, (int) (attacker.getMinAttackScaled() * (1 + COMBAT_CLASS_BONUS * getClassBonus())));
   }
 
   /** Returns the maximum damage the attacker could do after scaling by combat classes and account for modifiers. */
   public int getMaxAttack() {
-    return (int) (attacker.getMaxAttack() * (1 + COMBAT_CLASS_BONUS * getClassBonus()));
+    return Math.max(0, (int) (attacker.getMaxAttackScaled() * (1 + COMBAT_CLASS_BONUS * getClassBonus())));
   }
 
   /** Returns true iff the defender could counterattack if it has health left after the attack. */
@@ -77,13 +77,33 @@ public final class Combat {
   }
 
   /** Returns the minimum damage the defender could do after scaling by combat classes and account for modifiers. */
-  public int getMinCounterAttack() {
-    return (int) (defender.getMinAttack() * (1 - COMBAT_CLASS_BONUS * getClassBonus()));
+  private int getMinCounterAttack() {
+    return Math.max(0, (int) (defender.getMinAttackScaled() * (1 - (COMBAT_CLASS_BONUS * getClassBonus()))));
   }
 
   /** Returns the maximum damage the defender could do after scaling by combat classes and account for modifiers. */
-  public int getMaxCounterAttack() {
-    return (int) (defender.getMaxAttack() * (1 - COMBAT_CLASS_BONUS * getClassBonus()));
+  private int getMaxCounterAttack() {
+    return Math.max(0, (int) (defender.getMaxAttackScaled() * (1 - (COMBAT_CLASS_BONUS * getClassBonus()))));
+  }
+
+  /**
+   * Returns the projected minimum damage the defender could do after scaling by combat classes
+   * and account for modifiers along with change in health
+   * Should only be used for projections, not actual combat.
+   */
+  public int getProjectedMinCounterAttack() {
+    double minProjectedHealthPercentage = ((double)defender.getHealth() - getMaxAttack()) / defender.getMaxHealth();
+    return (int) (defender.getMinAttack() * minProjectedHealthPercentage * (1 - COMBAT_CLASS_BONUS * getClassBonus()));
+  }
+
+  /**
+   * Returns the maximum damage the defender could do after scaling by combat classes
+   * and account for modifiers along with change in health.
+   * Should only be used for projections, not actual combat.
+   */
+  public int getProjectedMaxCounterAttack() {
+    double maxProjectedHealthPercentage = ((double)defender.getHealth() - getMinAttack()) / defender.getMaxHealth();
+    return (int) (defender.getMaxAttack() * maxProjectedHealthPercentage * (1 - COMBAT_CLASS_BONUS * getClassBonus()));
   }
 
   /**
@@ -136,6 +156,8 @@ public final class Combat {
     int counterAttackDamage = 0;
     if(counterAttack){
       // Get damage in range [min,max]
+      int maxCounterAttack = getMaxCounterAttack();
+      int minCounterAttack = getMinCounterAttack();
       counterAttackDamage = random.nextInt(getMaxCounterAttack() + 1 - getMinCounterAttack()) + getMinCounterAttack();
       System.out.println("Counter damage: " + counterAttackDamage);
 

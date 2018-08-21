@@ -342,7 +342,7 @@ public final class InfoPanel extends JPanel{
 			g2d.drawString(willCounterAttack, x, y);
 
 			y += smallFontSizeWithMargin;
-			g2d.drawString(String.format("%d - %d", combat.getMinCounterAttack(), combat.getMaxCounterAttack()), x, y);
+			g2d.drawString(String.format("%d - %d", combat.getProjectedMinCounterAttack(), combat.getProjectedMaxCounterAttack()), x, y);
 		}
 	}
 	
@@ -367,7 +367,7 @@ public final class InfoPanel extends JPanel{
 		g2d.drawString(String.format("%d (%d%%)", unit.getHealth(), (int) (100 * unit.getHealthPercent())), x, y);
 
 		y += MEDIUM_FONT.getSize();
-		g2d.drawString(String.format("%d - %d", unit.getMinAttack(), unit.getMaxAttack()), x, y);
+		g2d.drawString(String.format("%d - %d", unit.getMinAttackScaled(), unit.getMaxAttackScaled()), x, y);
 
 		y += MEDIUM_FONT.getSize();
 		// TODO
