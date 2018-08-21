@@ -7,6 +7,7 @@ import controller.decision.*;
 import controller.decision.Decision.DecisionType;
 import controller.selector.*;
 
+import model.unit.combatant.Combat;
 import view.gui.BoardCursor;
 import view.gui.Frame;
 import view.gui.panel.GamePanel;
@@ -595,7 +596,8 @@ public final class GameController {
 		if(! t.equals(Toggle.ATTACK_SELECTION))
 			throw new RuntimeException("Can't cancel attack selection, currently toggling " + getToggle());
 		Unit defender = loc.getOccupyingUnit();
-		attackSelector.attacker.fight(defender, random);
+		Combat combat = new Combat(attackSelector.attacker, defender);
+		combat.process(random);
 		locationSelector =null;
 		if(getGamePanel().getDecisionPanel() == null){
 			startActionDecision();

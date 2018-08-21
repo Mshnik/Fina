@@ -55,7 +55,7 @@ public final class EffectAbility extends Ability {
 		case REFRESH_ATTACK:
 			if(! (u instanceof Combatant)) return;
 			Combatant c = (Combatant)u;
-			c.refreshAttack();
+			c.setCanFight(true);
 			return;
 		case REFRESH_MOVE:
 			if(! (u instanceof MovingUnit)) return;

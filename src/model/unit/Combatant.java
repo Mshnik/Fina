@@ -12,8 +12,6 @@ import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 
-
-
 /**
  * Represents a moving and fighting unit
  * 
@@ -74,7 +72,7 @@ public abstract class Combatant extends MovingUnit {
 		 * Returns the number of classes in classes that have a bonus against a class in other,
 		 * minus the number of classes in other that have a bonus against a class in classes.
 		 */
-		private static int getBonusLevel(List<CombatantClass> classes, List<CombatantClass> opposingClasses) {
+		public static int getBonusLevel(List<CombatantClass> classes, List<CombatantClass> opposingClasses) {
 			int bonusLevel = 0;
 			for (CombatantClass c : classes) {
 				for (CombatantClass opposingClass : opposingClasses) {
@@ -88,12 +86,6 @@ public abstract class Combatant extends MovingUnit {
 			return bonusLevel;
 		}
 	}
-
-	/**
-	 * Percentage bonus in attack and defense a combatant gets against another when it has a class bonus.
-	 * The bonus is stacked for each level of bonus.
-	 */
-	private static final double COMBAT_CLASS_BONUS = 0.2;
 
 	/** This combatant's classes. Will have length >= 1. */
 	public final List<CombatantClass> combatantClasses;
@@ -135,12 +127,17 @@ public abstract class Combatant extends MovingUnit {
 		super.refreshForTurn();
 		canFight = true;
 	}
-	
-	/** Refreshes just attack. Can be done mid-turn if by effect */
-	public void refreshAttack(){
-		canFight = true;
+
+	/** Sets whether this unit can still attack. */
+	public void setCanFight(boolean canFight) {
+		this.canFight = canFight;
 	}
-	
+
+	/** Returns whether this unit can still attack. */
+	public boolean getCanFight() {
+		return canFight;
+	}
+
 	/** Combatants are ok with any kind of modifier except summon range */
 	@Override
 	public boolean modifierOk(Modifier m){
@@ -210,16 +207,13 @@ public abstract class Combatant extends MovingUnit {
 	 * Processes a pre-fight action that may be caused by modifiers.
 	 * Still only called when the fight is valid.
 	 */
-	private void preFight(Unit other) {
-
-	}
-
+	public void preFight(Unit other) {}
 
 	/**
 	 * Processes a post-fight action that may be caused by modifiers.
 	 * Only called when the fight is valid and this is still alive.
 	 */
-	private void postFight(int damageDealt, Unit other, int damageTaken) {
+	public void postFight(int damageDealt, Unit other, int damageTaken) {
 		if (damageDealt > 0) {
 			for (Modifier m : getModifiersByName(Modifiers.BORN_TO_FIGHT)) {
 				CustomModifier customModifier = (CustomModifier) m;
@@ -227,105 +221,6 @@ public abstract class Combatant extends MovingUnit {
 			}
 		}
 	}
-
-	/**
-	 * Causes this unit to fight the given unit.
-	 * With this as the attacker and other as the defender.
-	 * This will cause the health of the other to change
-	 * @throws RuntimeException if...
-	 * 		- this is dead
-	 * 		- this can't attack currently
-	 * @throws IllegalArgumentException for invalid fight when...
-	 * 		- other is dead
-	 * 		- both units belong to the same player
-	 * 		- other is out of the range of this 
-	 * 		- this' owner can't see other
-	 * @return true iff other is killed because of this action
-	 **/
-	public final boolean fight(Unit other, Random random) throws IllegalArgumentException, RuntimeException{
-		if(! isAlive()) 
-			throw new RuntimeException (this + " can't fight, it is dead.");
-		if(! other.isAlive()) 
-			throw new IllegalArgumentException(other + " can't fight, it is dead.");
-		if(owner == other.owner) 
-			throw new IllegalArgumentException(this + " can't fight " + other + ", they both belong to " + owner);
-		if(! canFight)
-			throw new RuntimeException(this + " can't fight again this turn");
-		if(! owner.canSee(other))
-			throw new IllegalArgumentException(owner + " can't see " + other);
-
-		int room = location.manhattanDistance(other.getLocation()) - 1; //Account for melee = 0 range
-		if(room > getAttackRange())
-			throw new IllegalArgumentException(this + " can't fight " + other + ", it is too far away.");
-
-		System.out.println("Start combat ------");
-
-		// Get damage in range [min,max]
-		int damage = random.nextInt(getMaxAttack() + 1 - getMinAttack()) + getMinAttack();
-		System.out.println("Base damage: " + damage);
-
-		// If other is combatant, scale by bonus levels as needed.
-		if (other instanceof Combatant) {
-			int bonusLevel = CombatantClass.getBonusLevel(combatantClasses, ((Combatant) other).combatantClasses);
-			damage *= 1 + COMBAT_CLASS_BONUS * bonusLevel;
-			System.out.println("Bonus Level: " + bonusLevel);
-			System.out.println("Scaled damage: " + damage);
-		}
-
-		//True if a counterAttack is happening, false otherwise.
-		boolean counterAttack = other.isAlive() && other.owner.canSee(this) && room <= other.getAttackRange()
-								&& damage < other.getHealth() && other instanceof Combatant;
-
-		preFight(other);
-		if(counterAttack) other.preCounterFight(this);
-
-		//This attacks other
-		other.changeHealth(-damage, this);
-
-		//If other is still alive, can see the first unit,
-		//and this is within range, other counterattacks
-		int counterAttackDamage = 0;
-		if(counterAttack){
-			// Get damage in range [min,max]
-			counterAttackDamage = random.nextInt(getMaxAttack() + 1 - getMinAttack()) + getMinAttack();
-			System.out.println("Counter damage: " + counterAttackDamage);
-
-			// Given counter attack is happening, we know other to be a combatant.
-			int bonusLevel = CombatantClass.getBonusLevel(((Combatant) other).combatantClasses, combatantClasses);
-			counterAttackDamage *= 1 + COMBAT_CLASS_BONUS * bonusLevel;
-
-			System.out.println("Bonus Level: " + bonusLevel);
-			System.out.println("Scaled damage: " + counterAttackDamage);
-
-			// Change this unit's health
-			changeHealth(- counterAttackDamage, other);
-			counterAttack = true;
-		}
-
-		//This can't attack this turn again
-		canFight = false;
-
-		//Calls postFight on units that are still alive, able to counterAttack
-		if(isAlive()){
-			postFight(damage, other, counterAttackDamage);
-		}
-		if(other.isAlive() && counterAttack) {
-			other.postCounterFight(counterAttackDamage, this, damage);
-		}
-		
-		boolean otherIsDead = ! other.isAlive();
-		
-		//Check for killing modifiers
-		Modifier mod1 = getModifierByName(Bhen.ABILITY_NAMES[0][0]);
-		if(mod1 != null){
-			addMovement(((CustomModifier)mod1).val.intValue());
-		}
-
-		System.out.println("End combat ------");
-
-		return otherIsDead;
-	}
-	
 	
 	/** Returns Combatant */
 	@Override
