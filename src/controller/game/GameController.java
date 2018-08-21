@@ -199,7 +199,8 @@ public final class GameController {
 		return decision.isManditory();
 	}
 
-	/** Creates a new Decision Panel for doing things with a model.unit, 
+	/**
+	 * Creates a new Decision Panel for doing things with a model.unit,
 	 * shown to the side of the current tile (side depending
 	 * on location of current tile)
 	 * If there is no model.unit on the given tile or the model.unit doesn't belong to the current player, does nothing.
@@ -263,15 +264,6 @@ public final class GameController {
 		default:
 			break;
 		}
-	}
-
-	/** Starts a getGamePanel().getDecisionPanel() for confirming a previous decision. */
-	void startConfirmDecision(String title){
-		decision = new Decision(DecisionType.CONFIRM_ATTACK_DECISION, false,
-				false, new Choice(true, GameController.CANCEL), new Choice(true, GameController.CONFIRM));
-		addToggle(Toggle.DECISION);
-		getGamePanel().fixDecisionPanel(title, game.getCurrentPlayer(), decision, false);
-		getGamePanel().moveDecisionPanel();
 	}
 
 	/** Starts a getGamePanel().getDecisionPanel() for ending the current player's turn */
@@ -570,38 +562,50 @@ public final class GameController {
 		locationSelector =null;
 	}
 
-	/** Processes a confirm attack decision. */
+	/**
+	 * Starts a getGamePanel().getDecisionPanel() for confirming an attack decision.
+	 * Creates a combat instance and sets it as the value on both decisions.
+	 */
+	void startConfirmAttackDecision(String title){
+		if(! frame.getActiveCursor().canSelect())
+			return;
+		Tile loc = ((BoardCursor) frame.getActiveCursor()).getElm();
+		if(! loc.isOccupied()) return;
+		AttackSelector attackSelector = (AttackSelector) locationSelector;
+		Unit defender = loc.getOccupyingUnit();
+		Combat combat = new Combat(attackSelector.attacker, defender);
+
+		decision = new Decision(DecisionType.CONFIRM_ATTACK_DECISION, false,
+				false,
+				new Choice(true, GameController.CANCEL, combat),
+				new Choice(true, GameController.CONFIRM, combat));
+		addToggle(Toggle.DECISION);
+		getGamePanel().fixDecisionPanel(title, game.getCurrentPlayer(), decision, false);
+		getGamePanel().moveDecisionPanel();
+	}
+
+	/**
+	 * Processes a confirm attack decision. If confirmed, process the attack. Expects a combat instance
+	 * to be set as the value for c.
+	 */
 	void processConfirmAttackDecision(Choice c) {
 		String m = c.getMessage();
 		cancelDecision();
 		switch(m){
 			case GameController.CONFIRM:
-				if(! frame.getActiveCursor().canSelect()) return;
-				Tile loc = ((BoardCursor) frame.getActiveCursor()).getElm();
-				processAttackSelection(loc);
-				break;
-		}
-	}
+				Combat combat = (Combat) c.getVal();
 
-	/**
-	 * Processes the attack selection - if ok, deletes it, do fight.
-	 * Do nothing if the path is empty (or length 1 - no movement) - stay in attack selection mode.
-	 * Otherwise makes err noise or something. 
-	 * Throws a runtimeException if this was a bad time to process because pathSelection wasn't happening.
-	 */
-	void processAttackSelection(Tile loc) throws RuntimeException{
-		if(! loc.isOccupied()) return;
-		AttackSelector attackSelector = (AttackSelector) locationSelector;
-		Toggle t = removeTopToggle();
-		if(! t.equals(Toggle.ATTACK_SELECTION))
-			throw new RuntimeException("Can't cancel attack selection, currently toggling " + getToggle());
-		Unit defender = loc.getOccupyingUnit();
-		Combat combat = new Combat(attackSelector.attacker, defender);
-		combat.process(random);
-		locationSelector =null;
-		if(getGamePanel().getDecisionPanel() == null){
-			startActionDecision();
-			getGamePanel().boardCursor.setElm(attackSelector.attacker.getLocation());
+				// Check that we're attacking. If so, process.
+				Toggle t = removeTopToggle();
+				if(! t.equals(Toggle.ATTACK_SELECTION))
+					throw new RuntimeException("Can't cancel attack selection, currently toggling " + getToggle());
+
+				combat.process(random);
+				locationSelector = null;
+				if(getGamePanel().getDecisionPanel() == null){
+					getGamePanel().boardCursor.setElm(combat.attacker.getLocation());
+				}
+				break;
 		}
 	}
 }

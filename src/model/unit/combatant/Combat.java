@@ -23,10 +23,10 @@ public final class Combat {
   private static final double COMBAT_CLASS_BONUS = 0.2;
 
   /** The Combatant that will attack. */
-  private final Combatant attacker;
+  public final Combatant attacker;
 
   /** The defending unit. If it is a combatant, it may counterattack. */
-  private final Unit defender;
+  public final Unit defender;
 
   /** True after process() is called, to prevent double counting combat. */
   private boolean processed;
@@ -135,6 +135,7 @@ public final class Combat {
       attacker.addMovement(((CustomModifier)mod1).val.intValue());
     }
 
+    processed = true;
     System.out.println("End combat ------");
 
     return defenderIsDead;

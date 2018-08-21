@@ -8,6 +8,8 @@ import java.util.List;
 import controller.decision.Decision;
 import controller.decision.Choice;
 
+import controller.selector.AttackSelector;
+import model.unit.Unit;
 import view.gui.BoardCursor;
 import view.gui.Cursor;
 import view.gui.Frame;
@@ -83,8 +85,6 @@ public final class KeyboardListener implements KeyListener{
 					gc.startActionDecision();
 				} else if (keyCode == B){
 					gc.startEndTurnDecision();
-				} else if (keyCode == ESC) {
-					gc.startConfirmDecision("");
 				}
 				break;
 				// Process the decision.
@@ -157,7 +157,7 @@ public final class KeyboardListener implements KeyListener{
 			case ATTACK_SELECTION:
 				((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.DEFAULT);
 				if(keyCode == A) {
-					gc.startConfirmDecision("Attack?");
+					gc.startConfirmAttackDecision("Attack?");
 				}
 				else{
 					gc.cancelAttackSelection();
