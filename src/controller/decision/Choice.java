@@ -7,13 +7,13 @@ public final class Choice implements MatrixElement{
 	public static final char SEPERATOR = ':';
 
 	/** True if this is selectable, false otherwise */
-	private boolean selectable;
+	private final boolean selectable;
 
 	/** The object this choice corresponds to (if any) */
-	private Object val;
+	private final Object val;
 	
 	/** The string drawn and represented by this actionDecision */
-	private String message;
+	private final String message;
 	
 	/** The decision this choice belongs to */
 	protected Decision decision;
@@ -33,16 +33,24 @@ public final class Choice implements MatrixElement{
 		return decision.indexOf(this);
 	}
 
-	/** Returns the index of this Decision in its decisionPanel */
+	/** If vertical, returns the index of this Decision in its decisionPanel. Otherwise returns 0. */
 	@Override
 	public int getRow() {
-		return getIndex();
+		if (decision.verticalLayout) {
+			return getIndex();
+		} else {
+			return 0;
+		}
 	}
 
-	/** Returns 0 */
+	/** If vertical, returns 0. Otherwise returns the index of this in its decisionPanel. */
 	@Override
 	public int getCol() {
-		return 0;
+		if (decision.verticalLayout) {
+			return 0;
+		} else {
+			return getIndex();
+		}
 	}
 
 	/** Returns iff this is selectable */

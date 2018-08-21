@@ -9,28 +9,32 @@ public final class Decision extends ArrayList<Choice>{
 
 	/** The types of decisions that can be made */
 	public enum DecisionType{
+		CONFIRM_PREVIOUS_DECISION,
 		ACTION_DECISION,
 		SUMMON_DECISION,
 		CAST_DECISION,
 		NEW_ABILITY_DECISION,
 		END_OF_TURN_DECISION
 	}
-	
+
+	/** True iff this choice will be layed out vertically, false otherwise. */
+	final boolean verticalLayout;
+
 	/** The type of decision currently in progress - what kind of decision it is making. Null if none */
 	private DecisionType type;
 	
 	/** True iff the current decision is manditory. false if no decision is underway */
 	private boolean manditory;
 	
-	
-	public Decision(DecisionType type, boolean manditory, Collection<Choice> choices){
-		this(type, manditory, choices.toArray(new Choice[choices.size()]));
+	public Decision(DecisionType type, boolean manditory, boolean verticalLayout, Collection<Choice> choices){
+		this(type, manditory, verticalLayout, choices.toArray(new Choice[choices.size()]));
 	}
 	
-	public Decision(DecisionType type, boolean manditory, Choice...choices ){
+	public Decision(DecisionType type, boolean manditory, boolean verticalLayout, Choice... choices){
 		for(Choice c : choices){
 			if(c != null) add(c);
 		}
+		this.verticalLayout = verticalLayout;
 		this.type = type;
 		this.manditory = manditory;
 	}

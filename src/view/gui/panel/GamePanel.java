@@ -78,9 +78,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable{
 	 * sets active toggle and active cursor, and repaints.
 	 */
 	public void fixDecisionPanel(String title, 
-			Player p, Decision decision){
+			Player p, Decision decision, boolean verticalLayout){
 		decisionPanel = new DecisionPanel(controller, p, 
-				Math.min(4, decision.size()), title, decision);
+				Math.min(4, decision.size()), title, decision, verticalLayout);
 		getFrame().setActiveCursor(decisionPanel.cursor);
 	}
 

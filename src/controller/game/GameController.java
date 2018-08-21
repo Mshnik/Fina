@@ -29,8 +29,8 @@ import model.unit.ability.Ability;
 	public final Game game;
  */
 public final class GameController {
-	/** Text for ending a turn */
-	public static final String END_TURN = "Yes";
+	/** Text for confirming a decision */
+	public static final String CONFIRM = "Yes";
 	/** Text for canceling a decision */
 	public static final String CANCEL = "No";
 	/** Text representing moving */
@@ -231,9 +231,9 @@ public final class GameController {
 		if(choices.isEmpty()) return;
 
 		//Otherwise, convert to array, create panel, set correct location on screen.
-		decision = new Decision(DecisionType.ACTION_DECISION, false, choices);
+		decision = new Decision(DecisionType.ACTION_DECISION, false, true, choices);
 		addToggle(Toggle.DECISION);
-		getGamePanel().fixDecisionPanel("Action", game.getCurrentPlayer(), decision);
+		getGamePanel().fixDecisionPanel("Action", game.getCurrentPlayer(), decision, true);
 		getGamePanel().moveDecisionPanel();
 	}
 
@@ -263,12 +263,21 @@ public final class GameController {
 		}
 	}
 
+	/** Starts a getGamePanel().getDecisionPanel() for confirming a previous decision. */
+	void startConfirmDecision(){
+		decision = new Decision(DecisionType.CONFIRM_PREVIOUS_DECISION, false,
+				false, new Choice(true, GameController.CANCEL), new Choice(true, GameController.CONFIRM));
+		addToggle(Toggle.DECISION);
+		getGamePanel().fixDecisionPanel("", game.getCurrentPlayer(), decision, false);
+		getGamePanel().moveDecisionPanel();
+	}
+
 	/** Starts a getGamePanel().getDecisionPanel() for ending the current player's turn */
 	void startEndTurnDecision(){
-		decision = new Decision(DecisionType.END_OF_TURN_DECISION, false, 
-				new Choice(true, GameController.CANCEL), new Choice(true, GameController.END_TURN));
+		decision = new Decision(DecisionType.END_OF_TURN_DECISION, false,
+				true, new Choice(true, GameController.CANCEL), new Choice(true, GameController.CONFIRM));
 		addToggle(Toggle.DECISION);
-		getGamePanel().fixDecisionPanel("End Turn?", game.getCurrentPlayer(), decision);
+		getGamePanel().fixDecisionPanel("End Turn?", game.getCurrentPlayer(), decision, true);
 		getGamePanel().moveDecisionPanel();
 	}
 
@@ -277,7 +286,7 @@ public final class GameController {
 		String m = c.getMessage();
 		cancelDecision();
 		switch(m){
-		case GameController.END_TURN:
+		case GameController.CONFIRM:
 			game.getCurrentPlayer().turnEnd();
 			break;
 		}
@@ -293,12 +302,12 @@ public final class GameController {
 
 		Ability[] a = c.getPossibleAbilities(c.getLevel());
 		if(a != null){
-			decision = new Decision(DecisionType.NEW_ABILITY_DECISION, true);
+			decision = new Decision(DecisionType.NEW_ABILITY_DECISION, true, true);
 			for(Ability ab : a){
 				decision.add(new Choice(true, ab.name, ab));
 			}
 			addToggle(Toggle.DECISION);
-			getGamePanel().fixDecisionPanel("Choose a New Ability", c.owner, decision);
+			getGamePanel().fixDecisionPanel("Choose a New Ability", c.owner, decision, true);
 			getGamePanel().centerDecisionPanel();
 		} 
 		//else do nothing
@@ -325,11 +334,11 @@ public final class GameController {
 			choices.add(new Choice(u.manaCost <= c.getMana(), 
 					u.name + Choice.SEPERATOR +" (" + u.manaCost + ")", u));
 		}
-		decision = new Decision(DecisionType.SUMMON_DECISION, false, choices);
+		decision = new Decision(DecisionType.SUMMON_DECISION, false, true, choices);
 		addToggle(Toggle.DECISION);
 		getGamePanel().fixDecisionPanel(
 				"Action > " + (summonType == SummonType.UNIT ? "Summon" : "Build")
-				, c.owner, decision);
+				, c.owner, decision, true);
 		getGamePanel().moveDecisionPanel();
 	}
 
@@ -418,9 +427,9 @@ public final class GameController {
 			choices.add(new Choice(a.manaCost <= c.getMana(), 
 					a.name + Choice.SEPERATOR +"(" + a.manaCost + ")", a));
 		}
-		decision = new Decision(DecisionType.CAST_DECISION, false, choices);
+		decision = new Decision(DecisionType.CAST_DECISION, false, true, choices);
 		addToggle(Toggle.DECISION);
-		getGamePanel().fixDecisionPanel("Action > Cast", game.getCurrentPlayer(), decision);
+		getGamePanel().fixDecisionPanel("Action > Cast", game.getCurrentPlayer(), decision, true);
 		getGamePanel().moveDecisionPanel();
 	}
 

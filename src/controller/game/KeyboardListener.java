@@ -2,6 +2,8 @@ package controller.game;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Arrays;
+import java.util.List;
 
 import controller.decision.Decision;
 import controller.decision.Choice;
@@ -34,6 +36,10 @@ public final class KeyboardListener implements KeyListener{
 	public static final int START = KeyEvent.VK_ENTER;
 	/** The "esc" (tertiary / strong decline button) key code */
 	public static final int ESC = KeyEvent.VK_ESCAPE;
+
+	/** Keys that should be listend to for events. Others will be ignored. */
+	private static final List<Integer> LISTENED_KEYS =
+			Arrays.asList(A, B, START, ESC);
 
 	/** The singleton instance of keyboardListener to be used by all frames */
 	protected static final KeyboardListener instance = new KeyboardListener();
@@ -69,14 +75,16 @@ public final class KeyboardListener implements KeyListener{
 		}
 
 		//Check different toggles - if non-none, handle
-		if((keyCode == A || keyCode == B)){
+		if(LISTENED_KEYS.contains(e.getKeyCode())){
 			switch(gc.getToggle()){
 				//No toggle currently open. Maybe open one.
 			case NONE:
 				if(keyCode == A){
 					gc.startActionDecision();
-				} else{
+				} else if (keyCode == B){
 					gc.startEndTurnDecision();
+				} else if (keyCode == ESC) {
+					gc.startConfirmDecision();
 				}
 				break;
 				// Process the decision.
@@ -85,25 +93,25 @@ public final class KeyboardListener implements KeyListener{
 					if(! gc.frame.getActiveCursor().canSelect()) return;
 					Choice decision = ((DecisionCursor) gc.frame.getActiveCursor()).getElm();
 					switch(gc.getDecisionType()){
-					case ACTION_DECISION:
-						gc.processActionDecision(decision);
-						break;
-					case END_OF_TURN_DECISION:
-						gc.processEndTurnDecision(decision);
-						break;
-					case SUMMON_DECISION:
-						gc.startSummonSelection(decision);
-						((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.SUMMON);
-						break;
-					case CAST_DECISION:
-						gc.startCastSelection(decision);
-						((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.CAST);
-						break;
-					case NEW_ABILITY_DECISION:
-						gc.processNewAbilityDecision(decision);
-						break;
-					default:
-						break;
+						case ACTION_DECISION:
+							gc.processActionDecision(decision);
+							break;
+						case END_OF_TURN_DECISION:
+							gc.processEndTurnDecision(decision);
+							break;
+						case SUMMON_DECISION:
+							gc.startSummonSelection(decision);
+							((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.SUMMON);
+							break;
+						case CAST_DECISION:
+							gc.startCastSelection(decision);
+							((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.CAST);
+							break;
+						case NEW_ABILITY_DECISION:
+							gc.processNewAbilityDecision(decision);
+							break;
+						default:
+							break;
 					}
 				} else{
 					if(! gc.isDecisionManditory()){

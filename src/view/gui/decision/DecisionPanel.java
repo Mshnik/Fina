@@ -18,11 +18,13 @@ import view.gui.Paintable;
 
 import model.game.Player;
 
- 
-/** Panel on the bottom of the frame that shows text as necessary for
+import javax.swing.*;
+
+
+/**
+ * Panel on the bottom of the frame that shows text as necessary for
  * decisions
  * @author MPatashnik
- *
  */
 public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
 
@@ -74,12 +76,16 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
 	/** The player this decision is for */
 	public final Player player;
 
+	/** True iff this should layout vertically, false for horizontally. */
+	private final boolean verticalLayout;
+
 	public DecisionPanel(GameController g, Player p,
-			int maxY, String title, Decision decision) {
-		super(g, 1, maxY, 0, 0, 0, 0);
+			int elmsToShow, String title, Decision decision, boolean verticalLayout) {
+		super(g, verticalLayout ? 1 : elmsToShow, verticalLayout ? elmsToShow : 1, 0, 0, 0, 0);
 		this.player = p;
 		this.decision = decision;
 		this.title = title;
+		this.verticalLayout = verticalLayout;
 
 		//Determine width of panel based on all text
 		int maxWidth = controller.frame.getTextWidth(TEXT_FONT, title);
@@ -102,16 +108,30 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
 		y = yPos;
 	}
 
-	/** The width of this Panel is the width of a single decision */
+	/**
+	 * If vertical, The width of this Panel is the width of a single decision. Otherwise
+	 * it is the width of the number of decisions.
+	 */
 	@Override
 	public int getWidth(){
-		return getElementWidth();
+		if (verticalLayout) {
+			return getElementWidth();
+		} else {
+			return super.getShowedCols() * getElementWidth();
+		}
 	}
 
-	/** The height of this Panel is the height of all the decisions and the title */
+	/**
+	 * If vertical, The height of this Panel is the height of all the decisions and the title.
+	 * Otherwise it is the height of the title and a single decision.
+	 */
 	@Override
 	public int getHeight(){
-		return getElementHeight() * (Math.min(super.getShowedRows(), decision.size()) + 1);
+		if (verticalLayout) {
+			return getElementHeight() * (Math.min(super.getShowedRows(), decision.size()) + (title.isEmpty() ? 0 : 1));
+		} else {
+			return getElementHeight() * (title.isEmpty() ? 1 : 2);
+		}
 	}
 
 	/** Overrides super version by adding the x coordinate of this panel to super's result */
@@ -120,10 +140,14 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
 		return super.getXPosition(elm) + x;
 	}
 
-	/** Overrides super version by adding the y coordinate of this panel to super's result */
+	/**
+	 * Overrides super version by adding the y coordinate of this panel to super's result.
+	 * Adds height for the title if it is non-empty.
+	 */
 	@Override
 	public int getYPosition(Choice elm){
-		return super.getYPosition(elm) + y + DECISION_HEIGHT;
+		return super.getYPosition(elm) + y +
+				(title.isEmpty() ? 0 : DECISION_HEIGHT);
 	}
 
 	/** Returns the decision the cursor is currently hovering *
@@ -149,53 +173,85 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
 		g2d.drawRect(x + BORDER_WIDTH/2, y + BORDER_WIDTH/2,
 				getWidth() - BORDER_WIDTH, getHeight() - BORDER_WIDTH);
 
-		//Title section
-		g2d.setColor(BACKGROUND.brighter());
-		g2d.fillRect(x, y, getWidth(), DECISION_HEIGHT);
-
 		g2d.setFont(TEXT_FONT);
 		g2d.setRenderingHint(
 				RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-		//Title
-		g2d.setColor(TEXT_COLOR);
-		g2d.drawString(title, TEXT_X + x, TEXT_Y + y);
 
-		for(int r = scrollY; r < scrollY + Math.min(super.getShowedRows(), getMatrixHeight()); r++){
-			if(decision.get(r).isSelectable())
-				g2d.setColor(TEXT_COLOR);
-			else
-				g2d.setColor(TEXT_COLOR.darker());
-			g2d.drawString(decision.get(r).getMessage(), TEXT_X + x, TEXT_Y + y + (r - scrollY + 1) * DECISION_HEIGHT);
+		if (! title.isEmpty()) {
+			//Title section
+			g2d.setColor(BACKGROUND.brighter());
+			g2d.fillRect(x, y, getWidth(), DECISION_HEIGHT);
+
+			//Title
+			g2d.setColor(TEXT_COLOR);
+			g2d.drawString(title, TEXT_X + x, TEXT_Y + y);
+		}
+		int titleHeight = title.isEmpty() ? 0 : DECISION_HEIGHT;
+
+		if (verticalLayout) {
+			for (int r = scrollY; r < scrollY + Math.min(super.getShowedRows(), getMatrixHeight()); r++) {
+				if (decision.get(r).isSelectable())
+					g2d.setColor(TEXT_COLOR);
+				else
+					g2d.setColor(TEXT_COLOR.darker());
+				g2d.drawString(decision.get(r).getMessage(), TEXT_X + x, TEXT_Y + y + (r - scrollY) * DECISION_HEIGHT + titleHeight);
+			}
+		} else {
+			for (int c = scrollX; c < scrollX + Math.min(super.getShowedCols(), getMatrixWidth()); c++) {
+				if (decision.get(c).isSelectable())
+					g2d.setColor(TEXT_COLOR);
+				else
+					g2d.setColor(TEXT_COLOR.darker());
+				g2d.drawString(decision.get(c).getMessage(), TEXT_X + x + (c - scrollX) * DECISION_WIDTH, TEXT_Y + y + titleHeight);
+			}
 		}
 
 		//Draw cursor
 		cursor.paintComponent(g);
 	}
 
-	/** DecisionPanels are of a 1 dimensional array, so the height is 1 */
+	/** If vertical, the width is 1. Otherwise it is the number of decisions. */
 	@Override
 	public int getMatrixWidth() {
-		return 1;
+		if (verticalLayout) {
+			return 1;
+		} else {
+			return decision.size();
+		}
 	}
 
 
-	/** Returns choices.length, the number of choices this decision panel is showing */
+	/** If vertical the height is the number of decisions, otheriwse it is 1. */
 	@Override
 	public int getMatrixHeight() {
-		return decision.size();
+		if (verticalLayout) {
+			return decision.size();
+		} else {
+			return 1;
+		}
 	}
 
 	/** Returns the action at the given index. Col must be 0 */
 	@Override
 	public Choice getElmAt(int row, int col)
 			throws IllegalArgumentException {
-		if(col != 0)
-			throw new IllegalArgumentException("Can't get decision at col != 0");
-		try{
-			return decision.get(row);
-		} catch(IndexOutOfBoundsException e){
-			throw new IllegalArgumentException("Can't get decision at row " + row + ": OOB");
+		if (verticalLayout) {
+			if (col != 0)
+				throw new IllegalArgumentException("Can't get decision at col != 0");
+			try {
+				return decision.get(row);
+			} catch (IndexOutOfBoundsException e) {
+				throw new IllegalArgumentException("Can't get decision at row " + row + ": OOB");
+			}
+		} else {
+			if (row != 0)
+				throw new IllegalArgumentException("Can't get decision at row != 0");
+			try {
+				return decision.get(col);
+			} catch (IndexOutOfBoundsException e) {
+				throw new IllegalArgumentException("Can't get decision at col " + col + ": OOB");
+			}
 		}
 	}
 
