@@ -156,8 +156,6 @@ public final class Combat {
     int counterAttackDamage = 0;
     if(counterAttack){
       // Get damage in range [min,max]
-      int maxCounterAttack = getMaxCounterAttack();
-      int minCounterAttack = getMinCounterAttack();
       counterAttackDamage = random.nextInt(getMaxCounterAttack() + 1 - getMinCounterAttack()) + getMinCounterAttack();
       System.out.println("Counter damage: " + counterAttackDamage);
 
