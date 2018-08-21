@@ -28,6 +28,10 @@ public final class Combat {
   /** The defending unit. If it is a combatant, it may counterattack. */
   public final Unit defender;
 
+  /** Number of squares between attacker and defender's locations, accounting for melee. */
+  private final int dist;
+
+
   /** True after process() is called, to prevent double counting combat. */
   private boolean processed;
 
@@ -38,6 +42,48 @@ public final class Combat {
   public Combat(Combatant attacker, Unit defender) {
     this.attacker = attacker;
     this.defender = defender;
+
+    //Account for melee = 0 range
+    dist = attacker.getLocation().manhattanDistance(defender.getLocation()) - 1;
+  }
+
+  /** Returns the class bonus for the attacker (the defender is the opposite).
+   * If the defender is not a combatant, this will always be 0.
+   */
+  public int getClassBonus() {
+    if (defender instanceof Combatant) {
+      return Combatant.CombatantClass.getBonusLevel(attacker.combatantClasses, ((Combatant) defender).combatantClasses);
+    } else {
+      return 0;
+    }
+  }
+
+  /** Returns the minimum damage the attacker could do after scaling by combat classes and account for modifiers. */
+  public int getMinAttack() {
+    return (int) (attacker.getMinAttack() * (1 + COMBAT_CLASS_BONUS * getClassBonus()));
+  }
+
+  /** Returns the maximum damage the attacker could do after scaling by combat classes and account for modifiers. */
+  public int getMaxAttack() {
+    return (int) (attacker.getMaxAttack() * (1 + COMBAT_CLASS_BONUS * getClassBonus()));
+  }
+
+  /** Returns true iff the defender could counterattack if it has health left after the attack. */
+  public boolean defenderCouldCounterAttack() {
+    return defender.isAlive()
+        && defender.owner.canSee(attacker)
+        && dist <= defender.getAttackRange()
+        && defender instanceof Combatant;
+  }
+
+  /** Returns the minimum damage the defender could do after scaling by combat classes and account for modifiers. */
+  public int getMinCounterAttack() {
+    return (int) (defender.getMinAttack() * (1 - COMBAT_CLASS_BONUS * getClassBonus()));
+  }
+
+  /** Returns the maximum damage the defender could do after scaling by combat classes and account for modifiers. */
+  public int getMaxCounterAttack() {
+    return (int) (defender.getMaxAttack() * (1 - COMBAT_CLASS_BONUS * getClassBonus()));
   }
 
   /**
@@ -67,33 +113,22 @@ public final class Combat {
       throw new RuntimeException(attacker + " can't fight again this turn");
     if(! attacker.owner.canSee(defender))
       throw new IllegalArgumentException(attacker.owner + " can't see " + defender);
-
-    int room = attacker.getLocation().manhattanDistance(defender.getLocation()) - 1; //Account for melee = 0 range
-    if(room > attacker.getAttackRange())
+    if(dist > attacker.getAttackRange())
       throw new IllegalArgumentException(this + " can't fight " + defender + ", it is too far away.");
 
     System.out.println("Start combat ------");
 
     // Get damage in range [min,max]
-    int damage = random.nextInt(attacker.getMaxAttack() + 1 - attacker.getMinAttack()) + attacker.getMinAttack();
-    System.out.println("Base damage: " + damage);
+    int damage = random.nextInt(getMaxAttack() + 1 - getMinAttack()) + getMinAttack();
+    System.out.println("damage: " + damage);
 
-    // If defender is combatant, scale by bonus levels as needed.
-    if (defender instanceof Combatant) {
-      int bonusLevel = Combatant.CombatantClass.getBonusLevel(attacker.combatantClasses, ((Combatant) defender).combatantClasses);
-      damage *= 1 + COMBAT_CLASS_BONUS * bonusLevel;
-      System.out.println("Bonus Level: " + bonusLevel);
-      System.out.println("Scaled damage: " + damage);
-    }
-
-    //True if a counterAttack is happening, false defenderwise.
-    boolean counterAttack = defender.isAlive() && defender.owner.canSee(attacker) && room <= defender.getAttackRange()
-        && damage < defender.getHealth() && defender instanceof Combatant;
+    //True if a counterAttack is happening, false otherwise.
+    boolean counterAttack = defenderCouldCounterAttack() && damage < defender.getHealth();
 
     attacker.preFight(defender);
     if(counterAttack) defender.preCounterFight(attacker);
 
-    //This attacks defender
+    //attacker attacks defender
     defender.changeHealth(-damage, attacker);
 
     //If defender is still alive, can see the first unit,
@@ -101,15 +136,8 @@ public final class Combat {
     int counterAttackDamage = 0;
     if(counterAttack){
       // Get damage in range [min,max]
-      counterAttackDamage = random.nextInt(attacker.getMaxAttack() + 1 - attacker.getMinAttack()) + attacker.getMinAttack();
+      counterAttackDamage = random.nextInt(getMaxCounterAttack() + 1 - getMinCounterAttack()) + getMinCounterAttack();
       System.out.println("Counter damage: " + counterAttackDamage);
-
-      // Given counter attack is happening, we know defender to be a combatant.
-      int bonusLevel = Combatant.CombatantClass.getBonusLevel(((Combatant) defender).combatantClasses, attacker.combatantClasses);
-      counterAttackDamage *= 1 + COMBAT_CLASS_BONUS * bonusLevel;
-
-      System.out.println("Bonus Level: " + bonusLevel);
-      System.out.println("Scaled damage: " + counterAttackDamage);
 
       // Change this unit's health
       attacker.changeHealth(- counterAttackDamage, defender);

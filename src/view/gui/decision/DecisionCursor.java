@@ -5,6 +5,7 @@ import java.awt.Color;
 
 import controller.decision.Choice;
 
+import model.unit.combatant.Combat;
 import view.gui.Cursor;
 
 import model.board.Direction;
@@ -45,6 +46,7 @@ public final class DecisionCursor extends Cursor<Choice, DecisionPanel> {
 		if(obj != null){
 			if(obj instanceof Unit) panel.getFrame().showUnitStats((Unit)obj);
 			else if(obj instanceof Ability) panel.getFrame().showAbilityStats((Ability) obj);
+			else if(obj instanceof Combat) panel.getFrame().showCombatStats((Combat) obj);
 		}
 		
 		panel.getFrame().repaint();

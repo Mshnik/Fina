@@ -7,13 +7,13 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 
 import javax.swing.JPanel;
 
 import model.board.Terrain;
+import model.unit.combatant.Combat;
 import model.unit.stat.StatType;
 import view.gui.Frame;
 import view.gui.ImageIndex;
@@ -35,7 +35,10 @@ public final class InfoPanel extends JPanel{
 
 	/** The color of the border surrounding the headerPanel */
 	protected static final Color BORDER_COLOR = new Color(74, 47, 12);
-	
+
+	/** Distance (in pixels) between the left of the InfoPanel and the left of the bars */
+	private static final int XMARGIN = 25;
+
 	/** Distance (in pixels) between the top of the InfoPanel and the top of the bars */
 	private static final int YMARGIN = 32;
 	
@@ -43,8 +46,11 @@ public final class InfoPanel extends JPanel{
 	private static final Font BIG_FONT = new Font(Frame.FONTNAME, Font.BOLD, 20);
 	
 	/** Font for drawing standard text */
-	private static final Font SMALL_FONT = new Font(Frame.FONTNAME, Font.BOLD, 16);
-	
+	private static final Font MEDIUM_FONT = new Font(Frame.FONTNAME, Font.BOLD, 16);
+
+	/** Font for drawing small text */
+	private static final Font SMALL_FONT = new Font(Frame.FONTNAME, Font.BOLD, 13);
+
 	/** Character for the infinity character */
 	private static final char INF_CHAR = '\u221E';
 	
@@ -59,6 +65,9 @@ public final class InfoPanel extends JPanel{
 
 	/** The Terrain (if any) this InfoPanel is currently drawing info for */
 	private Terrain terrain;
+
+	/** The Combat (if any) this InfoPanel is currently drawing info for */
+	private Combat combat;
 
 	/** True iff the player is currently looking at a menu, false otherwise (looking at board). */
 	private boolean isMenu;
@@ -85,6 +94,7 @@ public final class InfoPanel extends JPanel{
 		this.isMenu = isMenu;
 		ability = null;
 		terrain = null;
+		combat = null;
 		repaint();
 	}
 	
@@ -94,6 +104,7 @@ public final class InfoPanel extends JPanel{
 		ability = a;
 		isMenu = true;
 		terrain = null;
+		combat = null;
 		repaint();
 	}
 
@@ -102,7 +113,17 @@ public final class InfoPanel extends JPanel{
 		unit = null;
 		ability = null;
 		terrain = t;
+		combat = null;
 		isMenu = false;
+		repaint();
+	}
+
+	public void setCombat(Combat c) {
+		unit = null;
+		ability = null;
+		terrain = null;
+		combat = c;
+		isMenu = true;
 		repaint();
 	}
 	
@@ -126,8 +147,7 @@ public final class InfoPanel extends JPanel{
 				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
 		g2d.setFont(BIG_FONT);
 
-		int xStart = 25;
-		int x = 25;
+		int x = XMARGIN;
 		int y = YMARGIN;
 		final int xInc = 225;
 
@@ -138,8 +158,8 @@ public final class InfoPanel extends JPanel{
 				mainLine += " (" + unit.owner + ")";
 			}
 			g2d.drawString(mainLine, x, YMARGIN);
-			g2d.setFont(SMALL_FONT);
-			final int infoFont = SMALL_FONT.getSize();
+			g2d.setFont(MEDIUM_FONT);
+			final int infoFont = MEDIUM_FONT.getSize();
 
 			String subString = " " + unit.getIdentifierString() + " ";
 			if (unit instanceof Combatant) {
@@ -150,7 +170,7 @@ public final class InfoPanel extends JPanel{
 
 			g2d.drawString(subString, x, YMARGIN + infoFont);
 			
-			g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, infoFont - 3));
+			g2d.setFont(SMALL_FONT);
 			x += xInc;
 			Stats stats = unit.getStats();
 			
@@ -166,7 +186,7 @@ public final class InfoPanel extends JPanel{
 				y += infoFont;
 			}
 
-			x = xStart;
+			x = XMARGIN;
 			y = YMARGIN + infoFont * 5;
 			String modifierTitle = "Modifiers: ";
 			g2d.drawString(modifierTitle, x, y);
@@ -176,9 +196,9 @@ public final class InfoPanel extends JPanel{
 						|| m.name.equals(Commander.LEVELUP_MANA_NAME)))
 				modString += m.name + " ";
 			}
-			g2d.drawString(modString, x + frame.getTextWidth(SMALL_FONT, modifierTitle) + 15, y);
+			g2d.drawString(modString, x + frame.getTextWidth(MEDIUM_FONT, modifierTitle) + 15, y);
 			
-			x = xStart + 2 * xInc;
+			x = XMARGIN + 2 * xInc;
 			//Draw modifier list along bottom
 			y = YMARGIN;
 			for(Stat s : stats.getAttackStatsList(true)){
@@ -208,8 +228,8 @@ public final class InfoPanel extends JPanel{
 		//Ability painting
 		else if(ability != null){
 			g2d.drawString(ability.name, x, y);
-			final int fontSize = SMALL_FONT.getSize();
-			g2d.setFont(SMALL_FONT);
+			final int fontSize = MEDIUM_FONT.getSize();
+			g2d.setFont(MEDIUM_FONT);
 			
 			y += fontSize;
 			if(ability.manaCost > 0){
@@ -263,6 +283,67 @@ public final class InfoPanel extends JPanel{
 		else if (terrain != null) {
 			g2d.drawString("Terrain: " + terrain.toString(), x, y);
 		}
+		// Combat painting.
+		else if (combat != null) {
+			g2d.drawString("Combat", x,y);
+
+			final int smallFontSizeWithMargin = SMALL_FONT.getSize() + 3;
+
+			x += g.getFontMetrics().stringWidth("Combat") + XMARGIN;
+			y += BIG_FONT.getSize();
+
+			g2d.setFont(SMALL_FONT);
+			g2d.drawString("Health (%)",x,y);
+
+			y += smallFontSizeWithMargin;
+			g2d.drawString("Attack",x,y);
+
+			y += smallFontSizeWithMargin;
+			g2d.drawString("Modifiers", x, y);
+
+			drawCombatColumn(g2d, combat.attacker, xInc);
+			drawCombatColumn(g2d, combat.defender, xInc * 2);
+
+			x = xInc * 3;
+			y = YMARGIN;
+			g2d.setFont(MEDIUM_FONT);
+			g2d.drawString("Results", x, y);
+
+			g2d.setFont(SMALL_FONT);
+			y += MEDIUM_FONT.getSize();
+			g2d.drawString("Class Bonus",x,y);
+
+			y += smallFontSizeWithMargin;
+			g2d.drawString("Final Attack",x,y);
+
+			y += smallFontSizeWithMargin;
+			g2d.drawString("Will Counterattack",x,y);
+
+			y += smallFontSizeWithMargin;
+			g2d.drawString("Final Counterattack",x,y);
+
+			x = xInc * 4;
+			y = YMARGIN;
+
+			y += MEDIUM_FONT.getSize();
+			int classBonus = combat.getClassBonus();
+			g2d.drawString(classBonus > 0 ? "+" + classBonus : "" + classBonus, x, y);
+
+			y += smallFontSizeWithMargin;
+			g2d.drawString(String.format("%d - %d", combat.getMinAttack(), combat.getMaxAttack()), x, y);
+
+			y += smallFontSizeWithMargin;
+			String willCounterAttack;
+			if (combat.defenderCouldCounterAttack()) {
+				willCounterAttack = combat.getMaxAttack() >= combat.defender.getHealth() ? "Maybe" : "Yes";
+			} else {
+				willCounterAttack = "No";
+			}
+			g2d.drawString(willCounterAttack, x, y);
+
+			y += smallFontSizeWithMargin;
+			g2d.drawString(String.format("%d - %d", combat.getMinCounterAttack(), combat.getMaxCounterAttack()), x, y);
+		}
 	}
 	
 	private void drawStat(Graphics2D g2d, Stat s, int x, int y){
@@ -274,5 +355,22 @@ public final class InfoPanel extends JPanel{
 			str = s.val.toString();
 		}
 		g2d.drawString(str, x + 145, y);
+	}
+
+	private void drawCombatColumn(Graphics2D g2d, Unit unit, int x) {
+		int y = YMARGIN;
+		g2d.setFont(MEDIUM_FONT);
+		g2d.drawString(unit.name + " (" + unit.owner + ")", x, y);
+
+		y += BIG_FONT.getSize();
+		g2d.setFont(SMALL_FONT);
+		g2d.drawString(String.format("%d (%d%%)", unit.getHealth(), (int) (100 * unit.getHealthPercent())), x, y);
+
+		y += MEDIUM_FONT.getSize();
+		g2d.drawString(String.format("%d - %d", unit.getMinAttack(), unit.getMaxAttack()), x, y);
+
+		y += MEDIUM_FONT.getSize();
+		// TODO
+		g2d.drawString("TODO", x, y);
 	}
 }

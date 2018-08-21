@@ -10,6 +10,7 @@ import controller.game.GameController;
 import controller.game.KeyboardListener;
 
 import model.board.Terrain;
+import model.unit.combatant.Combat;
 import view.gui.panel.GamePanel;
 import view.gui.panel.HeaderPanel;
 import view.gui.panel.InfoPanel;
@@ -151,6 +152,11 @@ public final class Frame extends JFrame {
 	/** Updates the info panel to show the given terrain. */
 	public void showTerrain(Terrain t) {
 		infoPanel.setTerrain(t);
+	}
+
+	/** Updates the info panel to show the given Combat. */
+	public void showCombatStats(Combat c) {
+		infoPanel.setCombat(c);
 	}
 	
 	/** Returns the current active cursor that is moved by arrow keys.
