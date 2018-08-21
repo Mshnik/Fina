@@ -7,6 +7,7 @@ import controller.decision.*;
 import controller.decision.Decision.DecisionType;
 import controller.selector.*;
 
+import view.gui.BoardCursor;
 import view.gui.Frame;
 import view.gui.panel.GamePanel;
 
@@ -264,11 +265,11 @@ public final class GameController {
 	}
 
 	/** Starts a getGamePanel().getDecisionPanel() for confirming a previous decision. */
-	void startConfirmDecision(){
-		decision = new Decision(DecisionType.CONFIRM_PREVIOUS_DECISION, false,
+	void startConfirmDecision(String title){
+		decision = new Decision(DecisionType.CONFIRM_ATTACK_DECISION, false,
 				false, new Choice(true, GameController.CANCEL), new Choice(true, GameController.CONFIRM));
 		addToggle(Toggle.DECISION);
-		getGamePanel().fixDecisionPanel("", game.getCurrentPlayer(), decision, false);
+		getGamePanel().fixDecisionPanel(title, game.getCurrentPlayer(), decision, false);
 		getGamePanel().moveDecisionPanel();
 	}
 
@@ -566,6 +567,19 @@ public final class GameController {
 			getGamePanel().boardCursor.setElm(as.attacker.getLocation());
 		}
 		locationSelector =null;
+	}
+
+	/** Processes a confirm attack decision. */
+	void processConfirmAttackDecision(Choice c) {
+		String m = c.getMessage();
+		cancelDecision();
+		switch(m){
+			case GameController.CONFIRM:
+				if(! frame.getActiveCursor().canSelect()) return;
+				Tile loc = ((BoardCursor) frame.getActiveCursor()).getElm();
+				processAttackSelection(loc);
+				break;
+		}
 	}
 
 	/**

@@ -84,7 +84,7 @@ public final class KeyboardListener implements KeyListener{
 				} else if (keyCode == B){
 					gc.startEndTurnDecision();
 				} else if (keyCode == ESC) {
-					gc.startConfirmDecision();
+					gc.startConfirmDecision("");
 				}
 				break;
 				// Process the decision.
@@ -93,6 +93,9 @@ public final class KeyboardListener implements KeyListener{
 					if(! gc.frame.getActiveCursor().canSelect()) return;
 					Choice decision = ((DecisionCursor) gc.frame.getActiveCursor()).getElm();
 					switch(gc.getDecisionType()){
+						case CONFIRM_ATTACK_DECISION:
+							gc.processConfirmAttackDecision(decision);
+							break;
 						case ACTION_DECISION:
 							gc.processActionDecision(decision);
 							break;
@@ -154,9 +157,7 @@ public final class KeyboardListener implements KeyListener{
 			case ATTACK_SELECTION:
 				((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.DEFAULT);
 				if(keyCode == A) {
-					if(! gc.frame.getActiveCursor().canSelect()) return;
-					Tile loc = ((BoardCursor) gc.frame.getActiveCursor()).getElm();
-					gc.processAttackSelection(loc);
+					gc.startConfirmDecision("Attack?");
 				}
 				else{
 					gc.cancelAttackSelection();

@@ -9,7 +9,7 @@ public final class Decision extends ArrayList<Choice>{
 
 	/** The types of decisions that can be made */
 	public enum DecisionType{
-		CONFIRM_PREVIOUS_DECISION,
+		CONFIRM_ATTACK_DECISION,
 		ACTION_DECISION,
 		SUMMON_DECISION,
 		CAST_DECISION,
