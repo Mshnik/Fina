@@ -56,7 +56,7 @@ public abstract class Combatant extends MovingUnit {
 		}
 
 		/** Returns true iff this class has a bonus against the given other class. */
-		public boolean hasBonusAgainstClass(CombatantClass other) {
+		private boolean hasBonusAgainstClass(CombatantClass other) {
 			switch (this) {
 				case FIGHTER:
 					return other == RANGER;
@@ -69,7 +69,31 @@ public abstract class Combatant extends MovingUnit {
 			}
 			return false;
 		}
+
+		/**
+		 * Returns the number of classes in classes that have a bonus against a class in other,
+		 * minus the number of classes in other that have a bonus against a class in classes.
+		 */
+		private static int getBonusLevel(List<CombatantClass> classes, List<CombatantClass> opposingClasses) {
+			int bonusLevel = 0;
+			for (CombatantClass c : classes) {
+				for (CombatantClass opposingClass : opposingClasses) {
+					if (c.hasBonusAgainstClass(opposingClass)) {
+						bonusLevel ++;
+					} else if (opposingClass.hasBonusAgainstClass(c)) {
+						bonusLevel --;
+					}
+				}
+			}
+			return bonusLevel;
+		}
 	}
+
+	/**
+	 * Percentage bonus in attack and defense a combatant gets against another when it has a class bonus.
+	 * The bonus is stacked for each level of bonus.
+	 */
+	private static final double COMBAT_CLASS_BONUS = 0.2;
 
 	/** This combatant's classes. Will have length >= 1. */
 	public final List<CombatantClass> combatantClasses;
@@ -234,9 +258,20 @@ public abstract class Combatant extends MovingUnit {
 		if(room > getAttackRange())
 			throw new IllegalArgumentException(this + " can't fight " + other + ", it is too far away.");
 
+		System.out.println("Start combat ------");
+
 		// Get damage in range [min,max]
 		int damage = random.nextInt(getMaxAttack() + 1 - getMinAttack()) + getMinAttack();
-		
+		System.out.println("Base damage: " + damage);
+
+		// If other is combatant, scale by bonus levels as needed.
+		if (other instanceof Combatant) {
+			int bonusLevel = CombatantClass.getBonusLevel(combatantClasses, ((Combatant) other).combatantClasses);
+			damage *= 1 + COMBAT_CLASS_BONUS * bonusLevel;
+			System.out.println("Bonus Level: " + bonusLevel);
+			System.out.println("Scaled damage: " + damage);
+		}
+
 		//True if a counterAttack is happening, false otherwise.
 		boolean counterAttack = other.isAlive() && other.owner.canSee(this) && room <= other.getAttackRange()
 								&& damage < other.getHealth() && other instanceof Combatant;
@@ -253,6 +288,14 @@ public abstract class Combatant extends MovingUnit {
 		if(counterAttack){
 			// Get damage in range [min,max]
 			counterAttackDamage = random.nextInt(getMaxAttack() + 1 - getMinAttack()) + getMinAttack();
+			System.out.println("Counter damage: " + counterAttackDamage);
+
+			// Given counter attack is happening, we know other to be a combatant.
+			int bonusLevel = CombatantClass.getBonusLevel(((Combatant) other).combatantClasses, combatantClasses);
+			counterAttackDamage *= 1 + COMBAT_CLASS_BONUS * bonusLevel;
+
+			System.out.println("Bonus Level: " + bonusLevel);
+			System.out.println("Scaled damage: " + counterAttackDamage);
 
 			// Change this unit's health
 			changeHealth(- counterAttackDamage, other);
@@ -277,7 +320,9 @@ public abstract class Combatant extends MovingUnit {
 		if(mod1 != null){
 			addMovement(((CustomModifier)mod1).val.intValue());
 		}
-		
+
+		System.out.println("End combat ------");
+
 		return otherIsDead;
 	}
 	
