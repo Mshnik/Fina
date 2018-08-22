@@ -4,6 +4,7 @@ import model.board.MPoint;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A set of points representing a cloud for use when selecting an ability target or
@@ -46,8 +47,16 @@ public abstract class Cloud {
   }
 
   /** Returns the set of points in this cloud. */
-  public Set<MPoint> getPoints() {
+  public  Set<MPoint> getPoints() {
     return Collections.unmodifiableSet(points);
+  }
+
+  /** Returns a cloud translated to have the new center point. */
+  public Cloud translate(MPoint center) {
+    return new TranslatedCloud(
+        points.stream().map(p -> p.add(center)).collect(Collectors.toSet()),
+        cloudType,
+        level);
   }
 
   /** Returns true iff this cloud contains the given point. */
@@ -66,4 +75,22 @@ public abstract class Cloud {
   /** Returns a Cloud that is the same type as this with the given level delta. */
   public abstract Cloud changeLevel(int levelDelta);
 
+  /**
+   * Represents a cloud post-translation. Can't be level changed.
+   * @author Mshnik
+   */
+  private static class TranslatedCloud extends Cloud {
+
+    /**
+     * Constructs a new cloud. Up to the constructor to enforce that the points set is correct.
+     */
+    protected TranslatedCloud(Set<MPoint> points, CloudType cloudType, int level) {
+      super(points, cloudType, level);
+    }
+
+    @Override
+    public Cloud changeLevel(int levelDelta) {
+      throw new RuntimeException("Can't level change translated cloud.");
+    }
+  }
 }

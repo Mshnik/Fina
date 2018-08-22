@@ -49,7 +49,7 @@ public final class Bhen extends Commander {
 	
 	/** Enrage Ability */
 	private final Ability ENRAGE = new ModifierAbility(ABILITY_NAMES[1][0], 200, this, 1, true, true, false, 
-			MPoint.ORIGIN.radialCloud(1), 
+			MPoint.ORIGIN.radialCloud(1).getPoints(),
 			new ModifierBundle(
 					new StatModifier(ABILITY_NAMES[1][0], 1, false, StatType.MOVEMENT_TOTAL, ModificationType.ADD, 4),
 					new StatModifier(ABILITY_NAMES[1][0], 1, false, StatType.MIN_ATTACK, ModificationType.ADD, 250)

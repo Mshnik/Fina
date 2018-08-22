@@ -1,7 +1,9 @@
 package model.board;
 
+import model.util.Cloud;
+import model.util.Clouds;
+
 import java.awt.Point;
-import java.util.HashSet;
 import java.util.Objects;
 
 public final class MPoint{
@@ -46,19 +48,8 @@ public final class MPoint{
 	}
 
 	/** Returns a radial cloud centered at this */
-	public HashSet<MPoint> radialCloud(int radius){
-		HashSet<MPoint> cloud = new HashSet<MPoint>();
-		cloud.add(this);
-		for(int r = radius; r > 0; r--){
-			for(int i = 0; i < r; i++){
-				cloud.add(add(new MPoint(- r + i, i)));
-				cloud.add(add(new MPoint(i, r - i)));
-				cloud.add(add(new MPoint(r - i, - i)));
-				cloud.add(add(new MPoint(- i, -r + i)));
-
-			}
-		}
-		return cloud;
+	public Cloud radialCloud(int radius){
+		return Clouds.getCloud(Cloud.CloudType.CIRCLE, radius).translate(this);
 	}
 
 	/** Two points are equal if they have the same row and col */

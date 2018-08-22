@@ -98,7 +98,7 @@ public final class Board implements Iterable<Tile>, Stringable{
 	 */
 	public ArrayList<Tile> getRadialCloud(Tile center, int radius){
 		ArrayList<Tile> tiles = new ArrayList<Tile>();
-		for(MPoint p : center.getPoint().radialCloud(radius)){
+		for(MPoint p : center.getPoint().radialCloud(radius).getPoints()){
 			try{
 				tiles.add(getTileAt(p));
 			}catch(IllegalArgumentException e){}//OOB Tile - do nothing
