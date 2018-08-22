@@ -2,6 +2,7 @@ package model.util;
 
 import model.board.MPoint;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -42,6 +43,11 @@ public abstract class Cloud {
     this.points = points;
     this.cloudType = cloudType;
     this.level = level;
+  }
+
+  /** Returns the set of points in this cloud. */
+  public Set<MPoint> getPoints() {
+    return Collections.unmodifiableSet(points);
   }
 
   /** Returns true iff this cloud contains the given point. */
