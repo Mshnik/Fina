@@ -26,7 +26,7 @@ public final class DummyCommander extends Commander {
           new Stat(StatType.MOUNTAIN_COST, 9999));
 
   public DummyCommander(Player owner, Tile startingTile) {
-    super("Dummy", owner, startingTile, STATS, 1);
+    super("Dummy", "mario.png", owner, startingTile, STATS, 1);
   }
 
   @Override
@@ -54,12 +54,6 @@ public final class DummyCommander extends Commander {
   public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {
     // TODO Auto-generated method stub
 
-  }
-
-  @Override
-  public String getImgFilename() {
-    // TODO Auto-generated method stub
-    return "mario.png";
   }
 
   @Override

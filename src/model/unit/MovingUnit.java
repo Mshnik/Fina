@@ -25,6 +25,7 @@ public abstract class MovingUnit extends Unit {
    *
    * @param owner - the player owner of this unit
    * @param name - the name of this unit
+   * @param imageFilename - The image to draw when drawing this unit.
    * @param level - the level of this unit - the age this belongs to
    * @param manaCost - the cost of summoning this unit. Should be a positive number.
    * @param startingTile - the tile this model.unit begins the game on. Also notifies the tile of
@@ -32,9 +33,15 @@ public abstract class MovingUnit extends Unit {
    * @param stats - the base unmodified stats of this unit.
    */
   public MovingUnit(
-      Player owner, String name, int level, int manaCost, Tile startingTile, Stats stats)
+      Player owner,
+      String name,
+      String imageFilename,
+      int level,
+      int manaCost,
+      Tile startingTile,
+      Stats stats)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, level, manaCost, startingTile, stats);
+    super(owner, name, imageFilename, level, manaCost, startingTile, stats);
   }
 
   /**

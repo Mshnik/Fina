@@ -25,6 +25,9 @@ public abstract class Unit implements Stringable {
   /** The name of this model.unit */
   public final String name;
 
+  /** The image to use when drawing this. */
+  private final String imageFilename;
+
   /**
    * The level of this model.unit. If less than the level of the owner, may be eligible for an
    * upgrade
@@ -63,13 +66,21 @@ public abstract class Unit implements Stringable {
    *
    * @param owner - the player owner of this model.unit
    * @param name - the name of this model.unit. Can be generic, multiple units can share a name
+   * @param imageFilename
    * @param level - the level of this model.unit - the age this belongs to
    * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
    * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
    *     this.
    * @param stats - the base unmodified stats of this model.unit.
    */
-  public Unit(Player owner, String name, int level, int manaCost, Tile tile, Stats stats)
+  public Unit(
+      Player owner,
+      String name,
+      String imageFilename,
+      int level,
+      int manaCost,
+      Tile tile,
+      Stats stats)
       throws IllegalArgumentException, RuntimeException {
     if (manaCost < 0)
       throw new IllegalArgumentException("manaCosts should be provided as positive ints");
@@ -79,6 +90,7 @@ public abstract class Unit implements Stringable {
     this.owner = owner;
     this.level = level;
     this.name = name;
+    this.imageFilename = imageFilename;
     this.manaCost = manaCost;
     this.stats = new Stats(stats, null);
     health = getMaxHealth();
@@ -402,7 +414,9 @@ public abstract class Unit implements Stringable {
 
   // DRAWING
   /** Returns the name of the file that represents this model.unit as an image */
-  public abstract String getImgFilename();
+  public String getImgFilename() {
+    return imageFilename;
+  }
 
   /**
    * Returns a simple string describing this type of model.unit Either Commander, Building, or

@@ -77,7 +77,7 @@ public final class Bhen extends Commander {
   public final Ability[][] ABILITIES = {{BATTLE_FURY}, {ENRAGE}};
 
   public Bhen(Player owner, Tile startingTile) throws RuntimeException, IllegalArgumentException {
-    super("Bhen", owner, startingTile, STATS, 1);
+    super("Bhen", "link.png", owner, startingTile, STATS, 1);
   }
 
   @Override
@@ -91,11 +91,6 @@ public final class Bhen extends Commander {
 
   @Override
   public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {}
-
-  @Override
-  public String getImgFilename() {
-    return "link.png";
-  }
 
   @Override
   public Ability[] getPossibleAbilities(int level) {

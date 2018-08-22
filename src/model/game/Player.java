@@ -8,7 +8,6 @@ import model.unit.building.AllUnitModifierBuilding;
 import model.unit.building.StartOfTurnEffectBuilding;
 import model.unit.building.Temple;
 import model.util.Cloud;
-import model.util.Clouds;
 
 import java.awt.*;
 import java.util.ArrayList;

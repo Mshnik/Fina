@@ -76,18 +76,13 @@ public final class Temple extends Building {
   private static final Stats STATS = new Stats(new Stat(StatType.MAX_HEALTH, 1200));
 
   public Temple(Player owner, Tile tile) throws RuntimeException, IllegalArgumentException {
-    super(owner, NAME, LEVEL, COST, tile, STATS);
+    super(owner, NAME, "temple.png", LEVEL, COST, tile, STATS);
   }
 
   /** Creates a new Temple for the given owner, on the given location */
   @Override
   public Unit clone(Player owner, Tile location) {
     return new Temple(owner, location);
-  }
-
-  @Override
-  public String getImgFilename() {
-    return "temple.png";
   }
 
   /** Returns the index of this in its owners' temples */

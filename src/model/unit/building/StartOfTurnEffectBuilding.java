@@ -30,7 +30,7 @@ public final class StartOfTurnEffectBuilding extends Building {
   /** The value of the StartOfTurnEffect for this building. */
   public final int value;
 
-  /** The cloud the effect is applied to, if any.  */
+  /** The cloud the effect is applied to, if any. */
   public final Cloud cloud;
 
   /**
@@ -41,6 +41,7 @@ public final class StartOfTurnEffectBuilding extends Building {
    *
    * @param owner - the player owner of this model.unit
    * @param name - the name of this model.unit.
+   * @param imageFilename - the image to draw when drawing this unit.
    * @param level - the level of this model.unit - the age this belongs to
    * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
    * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
@@ -48,12 +49,13 @@ public final class StartOfTurnEffectBuilding extends Building {
    * @param stats - the base unmodified stats of this model.unit. stats that remain used are
    * @param startOfTurnEffect - the effect this building grants
    * @param value - the magnitude of the effect this building grants.
-   * @param untranslatedCloud - the effect cloud of the effect this building grants. May be null if not used.
-   *                          Should be centered on (0,0).
+   * @param untranslatedCloud - the effect cloud of the effect this building grants. May be null if
+   *     not used. Should be centered on (0,0).
    */
   public StartOfTurnEffectBuilding(
       Player owner,
       String name,
+      String imageFilename,
       int level,
       int manaCost,
       Tile tile,
@@ -62,7 +64,7 @@ public final class StartOfTurnEffectBuilding extends Building {
       int value,
       Cloud untranslatedCloud)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, level, manaCost, tile, stats);
+    super(owner, name, imageFilename, level, manaCost, tile, stats);
     this.startOfTurnEffect = startOfTurnEffect;
     this.value = value;
     this.cloud = untranslatedCloud;
@@ -71,11 +73,15 @@ public final class StartOfTurnEffectBuilding extends Building {
   @Override
   public Unit clone(Player owner, Tile location) {
     return new StartOfTurnEffectBuilding(
-        owner, name, level, manaCost, location, getStats(), startOfTurnEffect, value, cloud);
-  }
-
-  @Override
-  public String getImgFilename() {
-    return null;
+        owner,
+        name,
+        getImgFilename(),
+        level,
+        manaCost,
+        location,
+        getStats(),
+        startOfTurnEffect,
+        value,
+        cloud);
   }
 }

@@ -93,7 +93,7 @@ public final class FileCombatant extends Combatant {
                   new Stat(StatType.WOODS_COST, costs.get(Terrain.WOODS)),
                   new Stat(StatType.MOUNTAIN_COST, costs.get(Terrain.MOUNTAIN)));
 
-          FileCombatant unit = new FileCombatant(name, level, classes, manaCost, stats, img);
+          FileCombatant unit = new FileCombatant(name, img, level, classes, manaCost, stats);
 
           // Default buffs by class and/or level.
           if (classes.contains(CombatantClass.FIGHTER)) {
@@ -135,9 +135,6 @@ public final class FileCombatant extends Combatant {
     return combatants;
   }
 
-  /** The image file associated with this FileCombatant */
-  private final String img;
-
   /**
    * Constructor for FileCombatant that clones the given dummy fileCombatant, starting on the given
    * tile.
@@ -150,12 +147,12 @@ public final class FileCombatant extends Combatant {
     super(
         owner,
         dummy.name,
+        dummy.getImgFilename(),
         dummy.getLevel(),
         dummy.combatantClasses,
         dummy.manaCost,
         startingTile,
         dummy.getStats());
-    this.img = dummy.img;
   }
 
   /** Clones this model.unit for the given player */
@@ -169,21 +166,19 @@ public final class FileCombatant extends Combatant {
    * tile.
    *
    * @param name - the name of clones of this
+   * @param imageFilename - the image to draw for clones of this
    * @param level - the level of clones of this
    * @param classes - combatant classes of clones of this
    * @param manaCost - the mana cost for clones of this
    * @param stats - the stats of clones of this
-   * @param img - the image to draw for clones of this
    */
   private FileCombatant(
-      String name, int level, List<CombatantClass> classes, int manaCost, Stats stats, String img) {
-    super(null, name, level, classes, manaCost, null, stats);
-    this.img = img;
-  }
-
-  /** Returns the image file associated with this combatant -- {@code return img} */
-  @Override
-  public String getImgFilename() {
-    return img;
+      String name,
+      String imageFilename,
+      int level,
+      List<CombatantClass> classes,
+      int manaCost,
+      Stats stats) {
+    super(null, name, imageFilename, level, classes, manaCost, null, stats);
   }
 }

@@ -31,13 +31,7 @@ public final class Well extends Building {
       new Stats(new Stat(StatType.MAX_HEALTH, 800), new Stat(StatType.MANA_PER_TURN, MANAPT));
 
   public Well(Player owner, Tile tile) {
-    super(owner, NAME, LEVEL, COST, tile, STATS);
-  }
-
-  /** Wells are drawn as well.png" */
-  @Override
-  public String getImgFilename() {
-    return "well.png";
+    super(owner, NAME, "well.png", LEVEL, COST, tile, STATS);
   }
 
   /** Returns a new well for the given owner, location */

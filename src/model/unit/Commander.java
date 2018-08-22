@@ -113,6 +113,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
    * its owner as a model.unit that player owns, Commanders have a manaCost of 0.
    *
    * @param owner - the player owner of this model.unit
+   * @param imageFilename - the image to draw when drawing this unit.
    * @param startingTile - the tile this model.unit begins the model.game on. Also notifies the tile
    *     of this.
    * @param stats - the stats of this commander. Notably, because of restrictions on commander, the
@@ -120,9 +121,15 @@ public abstract class Commander extends MovingUnit implements Summoner {
    *     unnecessary or calculated elsewhere.
    * @param startingLevel - the level this commander starts at.
    */
-  public Commander(String name, Player owner, Tile startingTile, Stats stats, int startingLevel)
+  public Commander(
+      String name,
+      String imageFilename,
+      Player owner,
+      Tile startingTile,
+      Stats stats,
+      int startingLevel)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, 0, 0, startingTile, stats);
+    super(owner, name, imageFilename, 0, 0, startingTile, stats);
     level = startingLevel;
     research = 0;
     currentTurnCasts = new LinkedList<Ability>();
