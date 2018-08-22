@@ -4,6 +4,7 @@ import model.unit.stat.StatType;
 
 /**
  * Listing of Modifier instances.
+ *
  * @author Mshnik
  */
 public final class Modifiers {
@@ -11,7 +12,8 @@ public final class Modifiers {
 
   /** Modifier that gives life gain after dealing damage. */
   public static final Modifier BORN_TO_FIGHT =
-      new CustomModifier("Born to Fight",
+      new CustomModifier(
+          "Born to Fight",
           "After dealing damage, this unit gains some health",
           10,
           Integer.MAX_VALUE,
@@ -22,7 +24,8 @@ public final class Modifiers {
 
   /** Modifier that reduces movement cost in woods. */
   public static final Modifier PATHFINDER =
-      new StatModifier("Pathfinder",
+      new StatModifier(
+          "Pathfinder",
           Integer.MAX_VALUE,
           false,
           StatType.WOODS_COST,
@@ -31,7 +34,8 @@ public final class Modifiers {
 
   /** Modifier that reduces movement cost in woods. */
   public static final Modifier TRAILBLAZER =
-      new StatModifier("Trailblazer",
+      new StatModifier(
+          "Trailblazer",
           Integer.MAX_VALUE,
           false,
           StatType.MOUNTAIN_COST,
@@ -40,7 +44,8 @@ public final class Modifiers {
 
   /** Modifier that slowly regenerates health. */
   public static final Modifier TOUGHNESS =
-      new CustomModifier("Toughness",
+      new CustomModifier(
+          "Toughness",
           "This unit gains health each turn",
           5,
           Integer.MAX_VALUE,
@@ -51,7 +56,8 @@ public final class Modifiers {
 
   /** Modifier that slowly regenerates health. */
   public static final Modifier DISAPPEARANCE =
-      new CustomModifier("Disappearance",
+      new CustomModifier(
+          "Disappearance",
           "This unit can move after attacking",
           null,
           Integer.MAX_VALUE,

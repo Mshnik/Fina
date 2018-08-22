@@ -9,6 +9,7 @@ import java.util.*;
 
 /**
  * Listing of clouds loaded into memory.
+ *
  * @author Mshnik
  */
 public final class Clouds {
@@ -36,10 +37,11 @@ public final class Clouds {
 
         Cloud.CloudType type = Cloud.CloudType.valueOf(components[0].toUpperCase());
         int level = Integer.parseInt(components[1]);
-        String matrixString = components[4].replaceAll(" ","");
+        String matrixString = components[4].replaceAll(" ", "");
 
         if (CLOUDS_MAP.get(type).containsKey(level)) {
-          throw new RuntimeException("Already have cloud for type,level: " + CLOUDS_MAP.get(type).get(level));
+          throw new RuntimeException(
+              "Already have cloud for type,level: " + CLOUDS_MAP.get(type).get(level));
         }
         CLOUDS_MAP.get(type).put(level, new FileCloud(parseCloudMatrix(matrixString), type, level));
       }
@@ -55,20 +57,21 @@ public final class Clouds {
   }
 
   /**
-   * Parses a matrix string of the form [[01010][101][0c]]... to a set of points.
-   * 0 is point not in cloud, 1 is point in cloud, c is center of cloud.
+   * Parses a matrix string of the form [[01010][101][0c]]... to a set of points. 0 is point not in
+   * cloud, 1 is point in cloud, c is center of cloud.
    */
   private static Set<MPoint> parseCloudMatrix(String cloudMatrixString) {
     int centerRow = -1;
     int centerCol = -1;
 
-    String[] rows = cloudMatrixString.toLowerCase().replaceAll("\\[\\[|\\]\\]","").split("\\]\\[");
+    String[] rows = cloudMatrixString.toLowerCase().replaceAll("\\[\\[|\\]\\]", "").split("\\]\\[");
 
-    for (int row = 0; row < rows.length; row ++) {
+    for (int row = 0; row < rows.length; row++) {
       for (int col = 0; col < rows[row].length(); col++) {
         if (rows[row].charAt(col) == 'c') {
           if (centerRow != -1 && centerCol != -1) {
-            throw new RuntimeException("Can't set center twice, was already " + centerRow + ", " + centerCol);
+            throw new RuntimeException(
+                "Can't set center twice, was already " + centerRow + ", " + centerCol);
           }
           centerRow = row;
           centerCol = col;
@@ -78,7 +81,7 @@ public final class Clouds {
 
     HashSet<MPoint> set = new HashSet<>();
     set.add(MPoint.ORIGIN);
-    for (int row = 0; row < rows.length; row ++) {
+    for (int row = 0; row < rows.length; row++) {
       for (int col = 0; col < rows[row].length(); col++) {
         if (rows[row].charAt(col) == '1') {
           set.add(new MPoint(row - centerRow, col - centerCol));
@@ -91,12 +94,12 @@ public final class Clouds {
 
   /** Return a cloud for the given type and level, or throw if it doesn't exist. */
   public static Cloud getCloud(Cloud.CloudType cloudType, int level) {
-    if (! CLOUDS_MAP.containsKey(cloudType)) {
+    if (!CLOUDS_MAP.containsKey(cloudType)) {
       throw new RuntimeException("Invalid cloudType " + cloudType);
     }
 
     Map<Integer, Cloud> clouds = CLOUDS_MAP.get(cloudType);
-    if (! clouds.containsKey(level)) {
+    if (!clouds.containsKey(level)) {
       throw new RuntimeException("Invalid level " + level);
     }
     return clouds.get(level);
@@ -105,9 +108,7 @@ public final class Clouds {
   /** Cloud read from file. */
   private static final class FileCloud extends Cloud {
 
-    /**
-     * Constructs a new cloud from file.
-     */
+    /** Constructs a new cloud from file. */
     private FileCloud(Set<MPoint> points, CloudType cloudType, int level) {
       super(points, cloudType, level);
     }

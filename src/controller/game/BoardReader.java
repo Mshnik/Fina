@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 /**
  * Input class to read a board by filepath into memory.
+ *
  * @author Mshnik
  */
 final class BoardReader {
@@ -21,7 +22,7 @@ final class BoardReader {
   static Board readBoard(String csvFilepath) {
     List<String> fileLines;
     try {
-       fileLines = Files.readAllLines(Paths.get(csvFilepath));
+      fileLines = Files.readAllLines(Paths.get(csvFilepath));
     } catch (IOException e) {
       throw new RuntimeException("Error reading file", e);
     }
@@ -31,10 +32,11 @@ final class BoardReader {
 
     int row = 0;
     for (String line : fileLines) {
-      terrainArr[row] = Arrays.stream(line.split(","))
-          .map(Terrain::valueOfShort)
-          .collect(Collectors.toList())
-          .toArray(new Terrain[0]);
+      terrainArr[row] =
+          Arrays.stream(line.split(","))
+              .map(Terrain::valueOfShort)
+              .collect(Collectors.toList())
+              .toArray(new Terrain[0]);
       row++;
     }
 

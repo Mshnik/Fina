@@ -1,8 +1,3 @@
-/** Standard buildings available for building
- * 
- */
-/**
- * @author MPatashnik
- *
- */
+/** Standard buildings available for building */
+/** @author MPatashnik */
 package model.unit.building;

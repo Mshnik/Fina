@@ -7,9 +7,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * A set of points representing a cloud for use when selecting an ability target or
- * any cloud selection. The "center" of the cloud (the point of selection and rotation)
- * is always at (0,0), even if this point is not in the cloud.
+ * A set of points representing a cloud for use when selecting an ability target or any cloud
+ * selection. The "center" of the cloud (the point of selection and rotation) is always at (0,0),
+ * even if this point is not in the cloud.
+ *
  * @author Mshnik
  */
 public abstract class Cloud {
@@ -47,16 +48,14 @@ public abstract class Cloud {
   }
 
   /** Returns the set of points in this cloud. */
-  public  Set<MPoint> getPoints() {
+  public Set<MPoint> getPoints() {
     return Collections.unmodifiableSet(points);
   }
 
   /** Returns a cloud translated to have the new center point. */
   public Cloud translate(MPoint center) {
     return new TranslatedCloud(
-        points.stream().map(p -> p.add(center)).collect(Collectors.toSet()),
-        cloudType,
-        level);
+        points.stream().map(p -> p.add(center)).collect(Collectors.toSet()), cloudType, level);
   }
 
   /** Returns true iff this cloud contains the given point. */
@@ -77,13 +76,12 @@ public abstract class Cloud {
 
   /**
    * Represents a cloud post-translation. Can't be level changed.
+   *
    * @author Mshnik
    */
   private static class TranslatedCloud extends Cloud {
 
-    /**
-     * Constructs a new cloud. Up to the constructor to enforce that the points set is correct.
-     */
+    /** Constructs a new cloud. Up to the constructor to enforce that the points set is correct. */
     protected TranslatedCloud(Set<MPoint> points, CloudType cloudType, int level) {
       super(points, cloudType, level);
     }
