@@ -1,13 +1,20 @@
 package model.game;
 
 import model.board.Tile;
+import model.unit.Combatant;
 import model.unit.Commander;
 import model.unit.Unit;
+import model.unit.building.AllUnitModifierBuilding;
+import model.unit.building.StartOfTurnEffectBuilding;
 import model.unit.building.Temple;
+import model.util.Cloud;
+import model.util.Clouds;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * An instance is a player (not the commander piece). Extended to be either human controlled or AI.
@@ -28,6 +35,9 @@ public abstract class Player implements Stringable {
   /** The commander belonging to this player */
   private Commander commander;
 
+  /** The AllUnitModifierBuildings this player controls, if any. */
+  private Set<AllUnitModifierBuilding> allUnitModifierBuildings;
+
   /** The temples this player controls, if any. Max length 5 */
   private ArrayList<Temple> temples;
 
@@ -47,6 +57,7 @@ public abstract class Player implements Stringable {
     game = g;
     this.index = g.getController().addPlayer(this, c);
     units = new HashSet<Unit>();
+    allUnitModifierBuildings = new HashSet<>();
     temples = new ArrayList<Temple>();
     visionCloud = new HashSet<Tile>();
   }
@@ -126,8 +137,16 @@ public abstract class Player implements Stringable {
    * Returns the units belonging to this player. passed-by-value, so editing this hashSet won't do
    * anything
    */
-  public HashSet<Unit> getUnits() {
-    return new HashSet<Unit>(units);
+  public Set<Unit> getUnits() {
+    return new HashSet<>(units);
+  }
+
+  /** Returns the units belonging to this player in the given location cloud. */
+  public Set<Unit> getUnitsInCloud(Cloud cloud) {
+    return units
+        .stream()
+        .filter(u -> cloud.contains(u.getLocation().getPoint()))
+        .collect(Collectors.toSet());
   }
 
   /** Returns the index of the given temple, or -1 if this is not a temple owned by this */
@@ -149,16 +168,29 @@ public abstract class Player implements Stringable {
    */
   public void addUnit(Unit u) throws IllegalArgumentException {
     units.add(u);
+    // Check that we don't have two commanders.
     if (u instanceof Commander) {
       if (commander == null) commander = (Commander) u;
       else throw new IllegalArgumentException("Can't set " + u + " to commander for " + this);
     }
+    // If temple, re-index stuff.
     if (u instanceof Temple) {
       if (temples.size() >= Temple.MAX_TEMPLES)
         throw new IllegalArgumentException(
             this + " can't construct another temple, already has max");
       Temple t = (Temple) u;
       temples.add(t);
+    }
+    // If all unit modifier building, apply new modifiers to all units.
+    // Otherwise, apply modifiers from existing all unit modifier buildings to new unit.
+    if (u instanceof AllUnitModifierBuilding) {
+      for (Unit u2 : units) {
+        ((AllUnitModifierBuilding) u).applyModifiersTo(u2);
+      }
+    } else {
+      for (AllUnitModifierBuilding allUnitModifierBuilding : allUnitModifierBuildings) {
+        allUnitModifierBuilding.applyModifiersTo(u);
+      }
     }
     refreshTempleBuffs();
     refreshVisionCloud();
@@ -220,15 +252,43 @@ public abstract class Player implements Stringable {
    * each model.unit (no particular order). Return true if this player can start their turn -
    * commander is alive, false otherwise
    */
-  protected final boolean turnStart() {
+  final boolean turnStart() {
     try {
       // Refresh for turn
       for (Unit u : units) {
         u.refreshForTurn();
       }
-      // Add mana Perturn
+      // Add base mana per turn
       updateManaPerTurn();
       commander.addMana(manaPerTurn);
+
+      // Process start of turn buildings.
+      for (Unit u : units) {
+        if (u instanceof StartOfTurnEffectBuilding) {
+          StartOfTurnEffectBuilding.StartOfTurnEffect effect =
+              ((StartOfTurnEffectBuilding) u).startOfTurnEffect;
+          int value = ((StartOfTurnEffectBuilding) u).value;
+
+          switch (effect) {
+            case MANA_GENERATION:
+              commander.addMana(value);
+              break;
+            case RESEARCH_GAIN:
+              commander.addResearch(value);
+              break;
+            case HEAL_COMBATANT:
+              Cloud cloud = ((StartOfTurnEffectBuilding) u).cloud;
+              for (Unit u2 : getUnitsInCloud(cloud.translate(u.getLocation().getPoint()))) {
+                if (u2 instanceof Combatant) {
+                  u2.changeHealth(value, u);
+                }
+              }
+              break;
+            default:
+              throw new RuntimeException("Unknown effect type: " + effect);
+          }
+        }
+      }
 
       // If mana < 0, force player to choose units to sacrifice instead.
       if (commander.getMana() < 0) {
