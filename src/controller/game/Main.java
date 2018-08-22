@@ -18,7 +18,7 @@ public final class Main {
 
     Frame f = new Frame(8, 16);
 
-    Game g = new Game(board, false);
+    Game g = new Game(board, Game.FogOfWar.NONE);
     GameController gc = new GameController(g, f);
 
     Player p1 = new HumanPlayer(g, Color.green);

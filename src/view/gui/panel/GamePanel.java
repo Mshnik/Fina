@@ -121,7 +121,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
    */
   private boolean isVisible(Tile t) {
     Game game = controller.game;
-    return !game.isFogOfWar()
+    return !game.isFogOfWar().active
         || (game.getCurrentPlayer() != null && game.getCurrentPlayer().canSee(t));
   }
 

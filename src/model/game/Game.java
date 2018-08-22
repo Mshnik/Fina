@@ -31,13 +31,29 @@ public final class Game implements Runnable, Stringable {
   /** The model.board that represents this model.game */
   public final Board board;
 
-  /** True if this model.game currently has fog of war, false otherwise */
-  private boolean fogOfWar;
+  /** Different fog of war modes a game can have. */
+  public enum FogOfWar {
+    NONE(false),
+    REGULAR(true);
+
+    /**
+     * True iff squares the player can't see should be greyed out.
+     * Show terrain, but don't show units.
+     */
+    public final boolean active;
+
+    FogOfWar(boolean active) {
+      this.active = active;
+    }
+  }
+
+  /** The fog of war for this game */
+  private FogOfWar fogOfWar;
 
   /** True if this model.game is currently running, false otherwise */
   private boolean running;
 
-  public Game(Board b, boolean fog) {
+  public Game(Board b, FogOfWar fog) {
     board = b;
     fogOfWar = fog;
     players = new LinkedList<>();
@@ -135,14 +151,14 @@ public final class Game implements Runnable, Stringable {
     return index;
   }
 
-  /** @return if there is fogOfWar in this model.game */
-  public boolean isFogOfWar() {
+  /** @return the fogOfWar in this model.game */
+  public FogOfWar isFogOfWar() {
     return fogOfWar;
   }
 
   /** @param fOG the fogOfWar to set. Also repaints if this causes a change. */
-  public void setFogOfWar(boolean fOG) {
-    boolean oldFog = fogOfWar;
+  public void setFogOfWar(FogOfWar fOG) {
+    FogOfWar oldFog = fogOfWar;
     fogOfWar = fOG;
     if (oldFog != fOG) repaint();
   }
@@ -211,7 +227,7 @@ public final class Game implements Runnable, Stringable {
     for (Player p : players) {
       s += p.toStringLong() + (remainingPlayers.get(p) ? "=Alive" : "=Dead") + " ";
     }
-    s += "Fog Of War=" + (fogOfWar ? "On" : "Off") + board.toStringLong();
+    s += "Fog Of War=" + (fogOfWar.active ? "On" : "Off") + board.toStringLong();
     return s;
   }
 }
