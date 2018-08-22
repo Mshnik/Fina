@@ -1,0 +1,19 @@
+Type,Size,Name,Matrix Length,Cloud,Rotates
+Plus,0,Plus-0,1,[[c]],No
+Cross,0,Cross-0,1,[[c]],No
+Circle,0,Circle-0,1,[[c]],No
+Wall,0,Wall-0,1,[[c]],Yes
+Cone,0,Cone-0,1,[[c]],Yes
+Square,0,Square-0,1,[[c]],No
+Plus,1,Plus-1,3,[  [010]  [1c1]  [010]],No
+Cross,1,Cross-1,3,[  [101]  [0c0]  [101]],No
+Circle,1,Circle-1,3,[  [010]  [1c1]  [010]],No
+Wall,1,Wall-1,3,[  [010]  [0c0]  [010]],Yes
+Cone,1,Cone-1,3,[  [001]  [0c1]  [001]],Yes
+Square,1,Square-1,3,[  [111]  [1c1]  [111]],No
+Plus,2,Plus-2,5,[  [00100]  [00100]  [11c11]  [00100]  [00100]],No
+Cross,2,Cross-2,5,[  [10001]  [01010]  [00c00]  [01010]  [10001]],No
+Circle,2,Circle-2,5,[  [00100]  [01110]  [11c11]  [01110]  [00100]],No
+Wall,2,Wall-2,5,[  [00100]  [00100]  [00c00]  [00100]  [00100]],Yes
+Cone,2,Cone-2,5,[  [00001]  [00011]  [00c11]  [00011]  [00001]],Yes
+Square,2,Square-2,5,[  [11111]  [11111]  [11c11]  [11111]  [11111]],No

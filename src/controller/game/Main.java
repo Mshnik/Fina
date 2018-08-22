@@ -9,6 +9,8 @@ import model.game.HumanPlayer;
 import model.game.Player;
 import model.unit.commander.Bhen;
 import model.unit.dummy.DummyCommander;
+import model.util.Cloud;
+import model.util.Clouds;
 import view.gui.Frame;
 
 public final class Main {
@@ -27,6 +29,8 @@ public final class Main {
 	    Player p2 = new HumanPlayer(g, Color.magenta);
 	    new DummyCommander(p2, g.board.getTileAt(1, 2));
 
-	    gc.start();
+		Clouds.getCloud(Cloud.CloudType.CIRCLE, 1);
+
+		gc.start();
 	}
 }
