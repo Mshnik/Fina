@@ -21,15 +21,13 @@ public final class Main {
 
 	    Frame f = new Frame(8, 16);
 	    
-	    Game g = new Game(board, true);
+	    Game g = new Game(board, false);
 	    GameController gc = new GameController(g, f);
 
 	    Player p1 = new HumanPlayer(g, Color.green);
 	    new Bhen(p1, g.board.getTileAt(0, 0));
 	    Player p2 = new HumanPlayer(g, Color.magenta);
 	    new DummyCommander(p2, g.board.getTileAt(1, 2));
-
-		Clouds.getCloud(Cloud.CloudType.CIRCLE, 1);
 
 		gc.start();
 	}
