@@ -35,6 +35,9 @@ public abstract class Commander extends MovingUnit implements Summoner {
   /** Base starting level of mana per turn for lvl1 commanders */
   public static final int BASE_MANA_PT = 500;
 
+  /** Base starting level of actions per turn for lvl1 commander */
+  public static final int BASE_ACTIONS_PT = 2;
+
   /** Amount of health gained per level */
   public static final int LEVELUP_HEALTH = 200;
 

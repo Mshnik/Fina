@@ -11,6 +11,8 @@ public enum StatType {
   MAX_HEALTH,
   /** The mana generation/cost of this model.unit, if any. Positive is generation */
   MANA_PER_TURN,
+  /** The number of actions per turn this unit gives to its player, if any. Usually 0. */
+  ACTIONS_PER_TURN,
   /**
    * Min damage dealt when attacking. attack >= 0. If a unit's attack == 0, this unit cannot attack.
    */
@@ -86,6 +88,7 @@ public enum StatType {
       case MOVEMENT_TOTAL:
       case VISION_RANGE:
         return false;
+      case ACTIONS_PER_TURN:
       case MIN_ATTACK:
       case MANA_PER_TURN:
       case SUMMON_RANGE:
@@ -106,6 +109,7 @@ public enum StatType {
       case ATTACK_RANGE:
       case GRASS_COST:
       case MANA_PER_TURN:
+      case ACTIONS_PER_TURN:
       case MAX_HEALTH:
       case MOUNTAIN_COST:
       case MOVEMENT_TOTAL:
