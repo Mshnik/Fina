@@ -7,7 +7,10 @@ import controller.selector.*;
 import model.board.Tile;
 import model.game.Game;
 import model.game.Player;
-import model.unit.*;
+import model.unit.Combatant;
+import model.unit.Commander;
+import model.unit.MovingUnit;
+import model.unit.Unit;
 import model.unit.ability.Ability;
 import model.unit.combatant.Combat;
 import view.gui.BoardCursor;
@@ -32,12 +35,14 @@ public final class GameController {
   public static final String MOVE = "Move";
   /** Text representing fighting */
   public static final String FIGHT = "Attack";
+  /** Text representing commander actions (summon/build/cast) */
+  public static final String COMMANDER_ACTION = "Cast";
   /** Text representing summoning */
   public static final String SUMMON = "Summon";
   /** Text representing building (building summoning) */
   public static final String BUILD = "Build";
   /** Text representing casting (Using active abilities) */
-  public static final String CAST = "Cast";
+  public static final String CAST = "Magic";
 
   /** Different possiblities for toggle options */
   public enum Toggle {
@@ -217,12 +222,10 @@ public final class GameController {
     if (u instanceof Combatant) {
       choices.add(new Choice(u.canFight() && ((Combatant) u).hasFightableTarget(), FIGHT));
     }
-    if (u instanceof Summoner) {
-      choices.add(new Choice(((Summoner) u).hasSummonSpace(), SUMMON));
-      choices.add(new Choice(((Summoner) u).hasBuildSpace(), BUILD));
-    }
     if (u instanceof Commander) {
-      choices.add(new Choice(((Commander) u).canCast(), CAST));
+      int actionsRemaining = u.owner.getCommanderActionsRemaining();
+      choices.add(
+          new Choice(actionsRemaining > 0, COMMANDER_ACTION + " (" + actionsRemaining + ")"));
     }
 
     // If there are no applicable choices, do nothing
@@ -236,30 +239,74 @@ public final class GameController {
   }
 
   /**
-   * Processes the currently selected Actiondecision. Throws a runtimeException if this was a bad
-   * time to process because pathSelection wasn't happening.
+   * Processes the currently selected Action decision. Throws a runtimeException if an unknown
+   * switch case is encountered.
    */
   void processActionDecision(Choice c) throws RuntimeException {
-    String choice = c.getMessage();
+    String choice = c.getMessage().replaceAll(" \\([0-9]*\\)", "");
     cancelDecision();
     switch (choice) {
       case MOVE:
         startPathSelection();
         break;
+      case COMMANDER_ACTION:
+        startCommanderActionDecision();
+        break;
+      case FIGHT:
+        startAttackSelection();
+        break;
+      default:
+        throw new RuntimeException("Don't know how to handle this choice " + choice);
+    }
+  }
+
+  /**
+   * Starts a getGamePanel().getDecisionPanel() for performing a commander action. Throws a runtime
+   * exception if the current element isn't the player's commander.
+   */
+  void startCommanderActionDecision() {
+    Tile t = getGamePanel().boardCursor.getElm();
+    if (!(t.getOccupyingUnit() instanceof Commander)) {
+      throw new RuntimeException("Expected cursor to be on player's commander.");
+    }
+    Commander u = (Commander) t.getOccupyingUnit();
+
+    // Add choices based on the model.unit on this tile
+    LinkedList<Choice> choices = new LinkedList<>();
+    choices.add(new Choice(u.hasSummonSpace(), SUMMON));
+    choices.add(new Choice(u.hasBuildSpace(), BUILD));
+    choices.add(new Choice(u.canCast(), CAST));
+
+    // If there are no applicable choices, do nothing
+    if (choices.isEmpty()) return;
+
+    // Otherwise, convert to array, create panel, set correct location on screen.
+    decision = new Decision(DecisionType.COMMANDER_ACTION_DECISION, false, true, choices);
+    addToggle(Toggle.DECISION);
+    getGamePanel()
+        .fixDecisionPanel("Action > " + COMMANDER_ACTION, game.getCurrentPlayer(), decision, true);
+    getGamePanel().moveDecisionPanel();
+  }
+
+  /**
+   * Processes the currently selected CommanderAction decision. Throws a runtimeException if an
+   * unknown switch case is encountered.
+   */
+  void processCommanderActionDecision(Choice c) throws RuntimeException {
+    String choice = c.getMessage();
+    cancelDecision();
+    switch (choice) {
       case SUMMON:
         startSummonCombatantDecision();
         break;
       case BUILD:
         startSummonBuildingDecision();
         break;
-      case FIGHT:
-        startAttackSelection();
-        break;
       case CAST:
         startCastDecision();
         break;
       default:
-        break;
+        throw new RuntimeException("Don't know how to handle this choice " + choice);
     }
   }
 
@@ -336,7 +383,10 @@ public final class GameController {
     addToggle(Toggle.DECISION);
     getGamePanel()
         .fixDecisionPanel(
-            "Action > " + (summonType == SummonType.UNIT ? "Summon" : "Build"),
+            "Action > "
+                + COMMANDER_ACTION
+                + " > "
+                + (summonType == SummonType.UNIT ? "Summon" : "Build"),
             c.owner,
             decision,
             true);
@@ -436,7 +486,9 @@ public final class GameController {
     }
     decision = new Decision(DecisionType.CAST_DECISION, false, true, choices);
     addToggle(Toggle.DECISION);
-    getGamePanel().fixDecisionPanel("Action > Cast", game.getCurrentPlayer(), decision, true);
+    getGamePanel()
+        .fixDecisionPanel(
+            "Action > " + COMMANDER_ACTION + " > " + CAST, game.getCurrentPlayer(), decision, true);
     getGamePanel().moveDecisionPanel();
   }
 

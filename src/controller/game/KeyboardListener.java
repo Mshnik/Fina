@@ -93,6 +93,9 @@ public final class KeyboardListener implements KeyListener {
               case ACTION_DECISION:
                 gc.processActionDecision(decision);
                 break;
+              case COMMANDER_ACTION_DECISION:
+                gc.processCommanderActionDecision(decision);
+                break;
               case END_OF_TURN_DECISION:
                 gc.processEndTurnDecision(decision);
                 break;
@@ -114,11 +117,16 @@ public final class KeyboardListener implements KeyListener {
             }
           } else {
             if (!gc.isDecisionManditory()) {
-              boolean resetDecision =
-                  gc.getDecisionType() == Decision.DecisionType.SUMMON_DECISION
-                      || gc.getDecisionType() == Decision.DecisionType.CAST_DECISION;
-              gc.cancelDecision();
-              if (resetDecision) gc.startActionDecision();
+              if (gc.getDecisionType() == Decision.DecisionType.SUMMON_DECISION
+                  || gc.getDecisionType() == Decision.DecisionType.CAST_DECISION) {
+                gc.cancelDecision();
+                gc.startCommanderActionDecision();
+              } else if (gc.getDecisionType() == Decision.DecisionType.COMMANDER_ACTION_DECISION) {
+                gc.cancelDecision();
+                gc.startActionDecision();
+              } else {
+                gc.cancelDecision();
+              }
             } else {
               // TODO - tried to cancel manditory decision.
             }
