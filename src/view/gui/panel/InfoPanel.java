@@ -352,7 +352,11 @@ public final class InfoPanel extends JPanel {
   }
 
   private void drawStat(Graphics2D g2d, Stat s, int x, int y) {
-    g2d.drawString(s.name.toString(), x, y);
+    if (s.name == StatType.COMMANDER_ACTIONS_PER_TURN) {
+      g2d.drawString("Actions per Turn", x, y);
+    } else {
+      g2d.drawString(s.name.toString(), x, y);
+    }
     String str;
     if (s.name == StatType.MOUNTAIN_COST && (Integer) s.val > 100) {
       str = INF_CHAR + "";
