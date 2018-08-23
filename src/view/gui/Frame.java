@@ -2,6 +2,10 @@ package view.gui;
 
 import controller.game.GameController;
 import controller.game.KeyboardListener;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import javax.swing.JFrame;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;
@@ -9,9 +13,6 @@ import model.unit.combatant.Combat;
 import view.gui.panel.GamePanel;
 import view.gui.panel.HeaderPanel;
 import view.gui.panel.InfoPanel;
-
-import javax.swing.*;
-import java.awt.*;
 
 /** The visual frame that manages showing the model.game */
 public final class Frame extends JFrame {

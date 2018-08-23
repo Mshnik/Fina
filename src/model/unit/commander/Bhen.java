@@ -1,5 +1,6 @@
 package model.unit.commander;
 
+import java.util.LinkedList;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.Combatant;
@@ -14,8 +15,6 @@ import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 import model.util.MPoint;
-
-import java.util.LinkedList;
 
 public final class Bhen extends Commander {
 

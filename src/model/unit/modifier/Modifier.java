@@ -1,9 +1,8 @@
 package model.unit.modifier;
 
+import java.util.Collection;
 import model.game.Stringable;
 import model.unit.Unit;
-
-import java.util.Collection;
 
 /** A Modifier for a model.unit - a buff or nerf, etc. */
 public abstract class Modifier implements Stringable {

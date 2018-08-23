@@ -1,10 +1,14 @@
 package model.unit.stat;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.StatModifier;
 import util.Mth;
-
-import java.util.*;
 
 /** Holder for the stats for a model.unit. Unless otherwise noted, all stats are non-negative. */
 public class Stats implements Iterable<Stat> {

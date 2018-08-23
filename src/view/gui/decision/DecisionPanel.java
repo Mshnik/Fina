@@ -3,12 +3,16 @@ package view.gui.decision;
 import controller.decision.Choice;
 import controller.decision.Decision;
 import controller.game.GameController;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import model.game.Player;
 import view.gui.Frame;
 import view.gui.MatrixPanel;
 import view.gui.Paintable;
-
-import java.awt.*;
 
 /**
  * Panel on the bottom of the frame that shows text as necessary for decisions

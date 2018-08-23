@@ -3,12 +3,11 @@ package view.gui;
 import controller.selector.CastSelector;
 import controller.selector.LocationSelector;
 import controller.selector.PathSelector;
+import java.awt.Color;
+import java.util.ArrayList;
 import model.board.Direction;
 import model.board.Tile;
 import view.gui.panel.GamePanel;
-
-import java.awt.*;
-import java.util.ArrayList;
 
 /** An instance represents the cursor on the GUI */
 public final class BoardCursor extends Cursor<Tile, GamePanel> {

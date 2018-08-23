@@ -1,5 +1,14 @@
 package model.unit.combatant;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
@@ -10,11 +19,6 @@ import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 import util.TextIO;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * A FileUnit is a combatant read in from file. Full constructors are private, but the class

@@ -1,5 +1,16 @@
 package view.gui;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import javax.imageio.ImageIO;
 import model.board.Board;
 import model.board.Direction;
 import model.board.Terrain;
@@ -8,15 +19,6 @@ import model.unit.Building;
 import model.unit.MovingUnit;
 import model.unit.Unit;
 import view.gui.panel.GamePanel;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
 
 /** Library for lookup of different image resources. Also some drawing functionality */
 public final class ImageIndex {

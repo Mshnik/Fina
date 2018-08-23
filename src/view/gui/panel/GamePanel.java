@@ -3,19 +3,26 @@ package view.gui.panel;
 import controller.decision.Decision;
 import controller.game.GameController;
 import controller.selector.CastSelector;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
+import java.awt.image.BufferedImage;
+import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Game;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;
-import view.gui.*;
+import view.gui.BoardCursor;
 import view.gui.Frame;
+import view.gui.ImageIndex;
+import view.gui.MatrixPanel;
+import view.gui.Paintable;
 import view.gui.decision.DecisionPanel;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.stream.Collectors;
 
 /** Drawable wrapper for a model.board object */
 public final class GamePanel extends MatrixPanel<Tile> implements Paintable {

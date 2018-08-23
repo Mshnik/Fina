@@ -1,12 +1,11 @@
 package model.unit.combatant;
 
+import java.util.Random;
 import model.unit.Combatant;
 import model.unit.Unit;
 import model.unit.commander.Bhen;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
-
-import java.util.Random;
 
 /**
  * A class that describes a prospective combat between two given units and can process it. Used to

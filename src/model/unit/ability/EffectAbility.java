@@ -1,12 +1,11 @@
 package model.unit.ability;
 
+import java.util.Set;
 import model.unit.Combatant;
 import model.unit.Commander;
 import model.unit.MovingUnit;
 import model.unit.Unit;
 import model.util.MPoint;
-
-import java.util.Set;
 
 /** A singleton effect ability - causes a change. */
 public final class EffectAbility extends Ability {

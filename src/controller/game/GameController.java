@@ -3,7 +3,19 @@ package controller.game;
 import controller.decision.Choice;
 import controller.decision.Decision;
 import controller.decision.Decision.DecisionType;
-import controller.selector.*;
+import controller.selector.AttackSelector;
+import controller.selector.CastSelector;
+import controller.selector.LocationSelector;
+import controller.selector.PathSelector;
+import controller.selector.SummonSelector;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Random;
+import java.util.Stack;
 import model.board.Tile;
 import model.game.Game;
 import model.game.Player;
@@ -16,9 +28,6 @@ import model.unit.combatant.Combat;
 import view.gui.BoardCursor;
 import view.gui.Frame;
 import view.gui.panel.GamePanel;
-
-import java.awt.*;
-import java.util.*;
 
 /**
  * Overall controlling class that unites all classes. Should be run in its own thread, because some

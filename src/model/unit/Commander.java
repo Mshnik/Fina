@@ -1,5 +1,9 @@
 package model.unit;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
@@ -11,11 +15,6 @@ import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * Represents a commander for a player. Each player should have one.

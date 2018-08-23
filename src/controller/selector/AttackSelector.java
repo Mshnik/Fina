@@ -1,10 +1,9 @@
 package controller.selector;
 
 import controller.game.GameController;
+import java.awt.Color;
 import model.board.Tile;
 import model.unit.Combatant;
-
-import java.awt.*;
 
 /** A selector for choosing a model.unit to attack */
 public final class AttackSelector extends LocationSelector {

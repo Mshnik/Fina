@@ -1,13 +1,12 @@
 package view.gui.decision;
 
 import controller.decision.Choice;
+import java.awt.Color;
 import model.board.Direction;
 import model.unit.Unit;
 import model.unit.ability.Ability;
 import model.unit.combatant.Combat;
 import view.gui.Cursor;
-
-import java.awt.*;
 
 /** A default cursor implementation for when no special cursor actions are necessary */
 public final class DecisionCursor extends Cursor<Choice, DecisionPanel> {

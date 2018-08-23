@@ -1,5 +1,9 @@
 package model.unit;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.modifier.CustomModifier;
@@ -8,11 +12,6 @@ import model.unit.modifier.Modifiers;
 import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Represents a moving and fighting unit

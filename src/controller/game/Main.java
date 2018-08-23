@@ -1,5 +1,6 @@
 package controller.game;
 
+import java.awt.Color;
 import model.board.Board;
 import model.game.Game;
 import model.game.HumanPlayer;
@@ -7,8 +8,6 @@ import model.game.Player;
 import model.unit.commander.Bhen;
 import model.unit.dummy.DummyCommander;
 import view.gui.Frame;
-
-import java.awt.*;
 
 public final class Main {
   /** Simple main method to test out Frame features */

@@ -1,12 +1,13 @@
 package controller.selector;
 
 import controller.game.GameController;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.util.ArrayList;
 import model.board.Tile;
 import view.gui.Paintable;
 import view.gui.panel.GamePanel;
-
-import java.awt.*;
-import java.util.ArrayList;
 
 /** An instance represents a selector for any location with a given criteria */
 public abstract class LocationSelector implements Paintable {

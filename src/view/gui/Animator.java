@@ -1,11 +1,11 @@
 package view.gui;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.Timer;
 
 /**
  * An instance holds the timers for changing the animations of Animatable objects with animation

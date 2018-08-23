@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/** Represents a cloud created via formula for a given side length.
- * This allows it to be expanded or contracted.
- * Translating, reflecting, or rotating a cloud removes this functionality.
+/**
+ * Represents a cloud created via formula for a given side length. This allows it to be expanded or
+ * contracted. Translating, reflecting, or rotating a cloud removes this functionality.
  */
 public final class ExpandableCloud extends Cloud {
 
@@ -18,10 +18,10 @@ public final class ExpandableCloud extends Cloud {
       Set<MPoint> createCloud(int size) {
         Set<MPoint> set = createInitialSet();
         for (int i = 1; i <= size; i++) {
-          set.add(new MPoint(i,0));
-          set.add(new MPoint(-i,0));
-          set.add(new MPoint(0,i));
-          set.add(new MPoint(0,-i));
+          set.add(new MPoint(i, 0));
+          set.add(new MPoint(-i, 0));
+          set.add(new MPoint(0, i));
+          set.add(new MPoint(0, -i));
         }
         return set;
       }
@@ -31,10 +31,10 @@ public final class ExpandableCloud extends Cloud {
       Set<MPoint> createCloud(int size) {
         Set<MPoint> set = createInitialSet();
         for (int i = 1; i <= size; i++) {
-          set.add(new MPoint(i,i));
-          set.add(new MPoint(-i,i));
-          set.add(new MPoint(-i,-i));
-          set.add(new MPoint(i,-i));
+          set.add(new MPoint(i, i));
+          set.add(new MPoint(-i, i));
+          set.add(new MPoint(-i, -i));
+          set.add(new MPoint(i, -i));
         }
         return set;
       }
@@ -58,8 +58,8 @@ public final class ExpandableCloud extends Cloud {
       Set<MPoint> createCloud(int size) {
         Set<MPoint> set = createInitialSet();
         for (int i = 1; i <= size; i++) {
-          set.add(new MPoint(i,0));
-          set.add(new MPoint(-i,0));
+          set.add(new MPoint(i, 0));
+          set.add(new MPoint(-i, 0));
         }
         return set;
       }
@@ -103,10 +103,11 @@ public final class ExpandableCloud extends Cloud {
   }
 
   /** Map of clouds created so far. */
-  private static final Map<ExpandableCloudType, Map<Integer, ExpandableCloud>> CLOUDS = new HashMap<>();
+  private static final Map<ExpandableCloudType, Map<Integer, ExpandableCloud>> CLOUDS =
+      new HashMap<>();
 
   /* Setup default clouds map. */
-  static  {
+  static {
     for (ExpandableCloudType type : ExpandableCloudType.values()) {
       CLOUDS.put(type, new HashMap<>());
     }
@@ -131,11 +132,8 @@ public final class ExpandableCloud extends Cloud {
   /** The type of this cloud. */
   private final ExpandableCloudType type;
 
-  /**
-   * Constructs a new cloud. Up to the constructor to enforce that the points set is correct.
-   */
-  private ExpandableCloud(Set<MPoint> points, int size,
-      ExpandableCloudType type) {
+  /** Constructs a new cloud. Up to the constructor to enforce that the points set is correct. */
+  private ExpandableCloud(Set<MPoint> points, int size, ExpandableCloudType type) {
     super(points);
     this.size = size;
     this.type = type;

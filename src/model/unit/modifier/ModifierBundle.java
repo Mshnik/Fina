@@ -1,10 +1,9 @@
 package model.unit.modifier;
 
-import model.unit.Unit;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import model.unit.Unit;
 
 /** A set of modifiers applied to a single unit */
 public final class ModifierBundle implements Collection<Modifier> {

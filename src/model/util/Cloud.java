@@ -32,8 +32,7 @@ public class Cloud {
 
   /** Returns a cloud translated to have the new center point. */
   public Cloud translate(MPoint center) {
-    return new Cloud(
-        points.stream().map(p -> p.add(center)).collect(Collectors.toSet()));
+    return new Cloud(points.stream().map(p -> p.add(center)).collect(Collectors.toSet()));
   }
 
   /** Returns a cloud reflected over y=x by reversing coordinates. */
@@ -42,9 +41,12 @@ public class Cloud {
         points.stream().map(p -> new MPoint(p.col, p.row)).collect(Collectors.toSet()));
   }
 
-  /** Returns a cloud rotated 90 degrees clockwise about (0,0). */
-  public Cloud rotate() {
-    // TODO
-    return null;
+  /** Returns a cloud rotated 90 degrees clockwise/counter clockwise about (0,0). */
+  public Cloud rotate(boolean clockwise) {
+    return new Cloud(
+        points
+            .stream()
+            .map(p -> clockwise ? new MPoint(p.col, -p.row) : new MPoint(-p.col, p.row))
+            .collect(Collectors.toSet()));
   }
 }

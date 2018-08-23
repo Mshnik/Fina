@@ -1,5 +1,6 @@
 package model.unit.dummy;
 
+import java.util.LinkedList;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.Combatant;
@@ -8,8 +9,6 @@ import model.unit.ability.Ability;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
-
-import java.util.LinkedList;
 
 public final class DummyCommander extends Commander {
 

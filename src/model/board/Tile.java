@@ -1,11 +1,10 @@
 package model.board;
 
 import controller.game.MatrixElement;
+import java.util.Set;
 import model.game.Stringable;
 import model.unit.Unit;
 import model.util.MPoint;
-
-import java.util.Set;
 
 /**
  * A Tile is a single square in the model.board. Maintains information about its location, what kind

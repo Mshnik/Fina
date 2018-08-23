@@ -1,5 +1,14 @@
 package view.gui.panel;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.stream.Collectors;
+import javax.swing.JPanel;
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.Combatant;
@@ -17,10 +26,6 @@ import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 import view.gui.Frame;
 import view.gui.ImageIndex;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.stream.Collectors;
 
 public final class InfoPanel extends JPanel {
   /** */

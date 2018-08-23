@@ -1,16 +1,15 @@
 package model.unit.ability;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import model.board.Board;
 import model.board.Tile;
 import model.game.Stringable;
 import model.unit.Commander;
 import model.unit.Unit;
 import model.util.MPoint;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 /** Parent class of abilities useable by Commanders. */
 public abstract class Ability implements Stringable {

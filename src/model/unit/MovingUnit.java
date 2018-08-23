@@ -1,12 +1,11 @@
 package model.unit;
 
+import java.util.LinkedList;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
-
-import java.util.LinkedList;
 
 /**
  * Represents a model.unit that is able to move around the model.board.

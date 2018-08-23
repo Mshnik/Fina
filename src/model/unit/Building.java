@@ -1,5 +1,7 @@
 package model.unit;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
@@ -11,9 +13,6 @@ import model.unit.modifier.Modifier;
 import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
-
-import java.util.HashMap;
-import java.util.LinkedList;
 
 /** Represents a Building on the model.board, controllable by a player */
 public abstract class Building extends Unit {

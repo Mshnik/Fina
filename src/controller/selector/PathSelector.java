@@ -1,14 +1,16 @@
 package controller.selector;
 
 import controller.game.GameController;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.util.Iterator;
+import java.util.LinkedList;
 import model.board.Tile;
 import model.unit.MovingUnit;
 import view.gui.Paintable;
 import view.gui.panel.GamePanel;
-
-import java.awt.*;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 /**
  * An instance represents and draws the path on the model.board when the player is moving a
