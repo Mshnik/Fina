@@ -1,6 +1,6 @@
 package model.game;
 
-import model.board.Direction;
+import model.board.Terrain;
 import model.board.Tile;
 import model.unit.Combatant;
 import model.unit.Commander;
@@ -249,25 +249,67 @@ public abstract class Player implements Stringable {
       // Calculate ray-based vision.
       MPoint center = u.getLocation().getPoint();
       for (int radius = 1; radius <= u.getVisionRange(); radius++) {
-        addVisionPoint(center.add(radius,0));
-        addVisionPoint(center.add(-radius,0));
-        addVisionPoint(center.add(0,radius));
-        addVisionPoint(center.add(0,-radius));
+        boolean radiusIsOne = radius == 1;
+        addVisionPoint(center, center.add(radius, 0), radiusIsOne);
+        addVisionPoint(center, center.add(-radius, 0), radiusIsOne);
+        addVisionPoint(center, center.add(0, radius), radiusIsOne);
+        addVisionPoint(center, center.add(0, -radius), radiusIsOne);
         for (int i = 1; i < radius; i++) {
-          addVisionPoint(center.add(radius-i,i));
-          addVisionPoint(center.add(-radius+i,-i));
-          addVisionPoint(center.add(-i,radius-i));
-          addVisionPoint(center.add(i,-radius+i));
+          addVisionPoint(center, center.add(radius - i, i), false);
+          addVisionPoint(center, center.add(-radius + i, -i), false);
+          addVisionPoint(center, center.add(-i, radius - i), false);
+          addVisionPoint(center, center.add(i, -radius + i), false);
         }
       }
     }
   }
 
-  /** Helper for refreshVisionCloud - adds the tile at the given point if its in bounds. */
-  private void addVisionPoint(MPoint point) {
+  /**
+   * Helper for refreshVisionCloud - adds the tile at the given point if:
+   * <li>it is in bounds.
+   * <li>It is a woods and a unit is directly adjacent to it
+   */
+  private void addVisionPoint(MPoint origin, MPoint point, boolean unitIsAdjacent) {
+    Tile tile;
     try {
-      visionCloud.add(game.board.getTileAt(point));
-    } catch (IllegalArgumentException e) {}
+      tile = game.board.getTileAt(point);
+    } catch (IllegalArgumentException e) {
+      // OOB - can't see.
+      return;
+    }
+
+    Cloud lineCloud = origin.getLineCloudTo(point);
+    if (tile.terrain != Terrain.MOUNTAIN) {
+      Tile originTile = game.board.getTileAt(origin);
+
+      Set<Tile> occupiedMountainRange =
+          originTile.terrain == Terrain.MOUNTAIN
+              ? game.board.getContiguousMountainRange(originTile)
+              : new HashSet<>();
+
+      if (lineCloud
+          .getPoints()
+          .stream()
+          .filter(p -> !occupiedMountainRange.contains(game.board.getTileAt(p)))
+          .map(p -> game.board.getTileAt(p).terrain)
+          .anyMatch(t -> t == Terrain.MOUNTAIN)) {
+        // Can't see past mountains.
+        return;
+      }
+    }
+
+    switch (tile.terrain) {
+      case GRASS:
+      case ANCIENT_GROUND:
+      case MOUNTAIN:
+        visionCloud.add(tile);
+        break;
+      case WOODS:
+        if (unitIsAdjacent) {
+          visionCloud.add(tile);
+        }
+        break;
+    }
   }
 
   // TURN

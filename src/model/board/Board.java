@@ -98,6 +98,37 @@ public final class Board implements Iterable<Tile>, Stringable {
     return neighbors;
   }
 
+  /** Returns a set of tiles that are a contiguous mountain range. Diagonals do not count. */
+  public Set<Tile> getContiguousMountainRange(Tile center) {
+    if (center.terrain != Terrain.MOUNTAIN) {
+      throw new RuntimeException("Must start on mountain to get range");
+    }
+    if (center.mountainRange != null) {
+      return center.mountainRange;
+    }
+
+    Set<Tile> set = new HashSet<>();
+    LinkedList<Tile> exploreQueue = new LinkedList<>();
+    exploreQueue.add(center);
+
+    while (!exploreQueue.isEmpty()) {
+      Tile t = exploreQueue.poll();
+      set.add(t);
+      for (Direction d : Direction.values()) {
+        Tile neighbor = getTileInDirection(t, d);
+        if (neighbor != null && neighbor.terrain == Terrain.MOUNTAIN && !set.contains(neighbor)) {
+          exploreQueue.add(neighbor);
+        }
+      }
+    }
+    set = Collections.unmodifiableSet(set);
+    // Store references to this computation for later.
+    for (Tile t : set) {
+      t.mountainRange = set;
+    }
+    return set;
+  }
+
   /**
    * Return a set of tiles of radius radius centered at the given tile center. A radius of 0 will
    * return a set containing only center. Doesn't check terrain or current occupants at all.

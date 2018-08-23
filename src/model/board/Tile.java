@@ -5,6 +5,8 @@ import model.game.Stringable;
 import model.unit.Unit;
 import model.util.MPoint;
 
+import java.util.Set;
+
 /**
  * A Tile is a single square in the model.board. Maintains information about its location, what kind
  * of tile it is, and what units are on it.
@@ -35,6 +37,12 @@ public final class Tile implements Comparable<Tile>, MatrixElement, Stringable {
 
   /** A convienence field for pathfinding implementations */
   Tile prev;
+
+  /**
+   * The mountain range this tile belongs to, if any. Computed lazily, as needed. Should only be
+   * used for mountains.
+   */
+  Set<Tile> mountainRange;
 
   /**
    * Constructor for Tile Class
