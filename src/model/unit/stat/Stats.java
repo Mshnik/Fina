@@ -22,7 +22,7 @@ public class Stats implements Iterable<Stat> {
     // Base -> Null
     TEMPLATE.put(StatType.MAX_HEALTH, 0);
     TEMPLATE.put(StatType.MANA_PER_TURN, 0);
-    TEMPLATE.put(StatType.ACTIONS_PER_TURN, 0);
+    TEMPLATE.put(StatType.COMMANDER_ACTIONS_PER_TURN, 0);
     TEMPLATE.put(StatType.MIN_ATTACK, 0);
     TEMPLATE.put(StatType.MAX_ATTACK, 0);
     TEMPLATE.put(StatType.ATTACK_RANGE, 0);
@@ -140,7 +140,7 @@ public class Stats implements Iterable<Stat> {
     StatType[] t = {
       StatType.MAX_HEALTH,
       StatType.MANA_PER_TURN,
-      StatType.ACTIONS_PER_TURN,
+      StatType.COMMANDER_ACTIONS_PER_TURN,
       StatType.VISION_RANGE,
       StatType.SUMMON_RANGE
     };

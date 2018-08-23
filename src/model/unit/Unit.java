@@ -297,8 +297,8 @@ public abstract class Unit implements Stringable {
   }
 
   /** Returns the actions per turn this model.unit costs/generates */
-  public int getActionsPerTurn() {
-    return (Integer) stats.getStat(StatType.ACTIONS_PER_TURN);
+  public int getCommanderActionsPerTurn() {
+    return (Integer) stats.getStat(StatType.COMMANDER_ACTIONS_PER_TURN);
   }
 
   // MODIFIERS

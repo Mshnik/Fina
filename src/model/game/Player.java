@@ -46,10 +46,10 @@ public abstract class Player implements Stringable {
   private HashSet<Tile> visionCloud;
 
   /** The sum of all actions per turn generations/costs this player owns */
-  private int actionsPerTurn;
+  private int commanderActionsPerTurn;
 
   /** The number of actions remaining this turn. Reset at start of turn. */
-  private int actionsRemaining;
+  private int commanderActionsRemaining;
 
   /** The sum of all the mana per turn generation/costs this player owns */
   private int manaPerTurn;
@@ -111,22 +111,17 @@ public abstract class Player implements Stringable {
     }
   }
 
-  /** Returns the number of actions this player has per turn (total). */
-  public int getActionsPerTurn() {
-    return actionsPerTurn;
-  }
-
   /** Return the number of actions this player has remaining on this turn. */
-  public int getActionsRemaining() {
-    return actionsRemaining;
+  public int getCommanderActionsRemaining() {
+    return commanderActionsRemaining;
   }
 
-  /** Spends one action remaining. Throws if there were already zero. */
-  public void spendAction() {
-    if (actionsRemaining <= 0) {
-      throw new RuntimeException("Can't spend action, already have none left");
+  /** Spends one commander action remaining. Throws if there were already zero. */
+  public void spendCommanderAction() {
+    if (commanderActionsRemaining <= 0) {
+      throw new RuntimeException("Can't spend commander action, already have none left");
     }
-    actionsRemaining--;
+    commanderActionsRemaining--;
   }
 
   /**
@@ -134,13 +129,13 @@ public abstract class Player implements Stringable {
    * of every turn. If this results in a change, also updates the number of current actions this
    * player has.
    */
-  public void updateActionsPerTurn() {
-    int oldActionsPerTurn = actionsPerTurn;
-    actionsPerTurn = 0;
+  private void updateCommanderActionsPerTurn() {
+    int oldActionsPerTurn = commanderActionsPerTurn;
+    commanderActionsPerTurn = 0;
     for (Unit u : units) {
-      actionsPerTurn += u.getActionsPerTurn();
+      commanderActionsPerTurn += u.getCommanderActionsPerTurn();
     }
-    actionsRemaining += actionsPerTurn - oldActionsPerTurn;
+    commanderActionsRemaining += commanderActionsPerTurn - oldActionsPerTurn;
   }
 
   /** Returns the current level (not exp) of this player */
@@ -234,7 +229,7 @@ public abstract class Player implements Stringable {
     refreshTempleBuffs();
     refreshVisionCloud();
     updateManaPerTurn();
-    updateActionsPerTurn();
+    updateCommanderActionsPerTurn();
   }
 
   /**
@@ -368,8 +363,8 @@ public abstract class Player implements Stringable {
       commander.addMana(manaPerTurn);
 
       // Add actions
-      updateActionsPerTurn();
-      actionsRemaining = actionsPerTurn;
+      updateCommanderActionsPerTurn();
+      commanderActionsRemaining = commanderActionsPerTurn;
 
       // Process start of turn buildings.
       for (Unit u : units) {
