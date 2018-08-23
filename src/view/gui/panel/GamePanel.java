@@ -10,7 +10,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
-import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Game;
@@ -212,22 +211,6 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
     if (decisionPanel != null) {
       decisionPanel.paintComponent(g);
     }
-
-    g2d.setColor(Color.WHITE);
-    ImageIndex.trace(
-        controller
-            .game
-            .getCurrentPlayer()
-            .getCommander()
-            .getLocation()
-            .getPoint()
-            .getLineCloudTo(boardCursor.getElm().getPoint())
-            .getPoints()
-            .stream()
-            .map(game.board::getTileAt)
-            .collect(Collectors.toSet()),
-        this,
-        g2d);
   }
 
   /** Draws the given tile. Doesn't do any model.unit drawing. */
