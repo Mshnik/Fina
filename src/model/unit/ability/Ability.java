@@ -1,11 +1,11 @@
 package model.unit.ability;
 
 import model.board.Board;
-import model.board.MPoint;
 import model.board.Tile;
 import model.game.Stringable;
 import model.unit.Commander;
 import model.unit.Unit;
+import model.util.MPoint;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,10 +1,10 @@
 package model.unit.ability;
 
-import model.board.MPoint;
 import model.unit.Combatant;
 import model.unit.Commander;
 import model.unit.MovingUnit;
 import model.unit.Unit;
+import model.util.MPoint;
 
 import java.util.Set;
 

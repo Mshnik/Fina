@@ -1,7 +1,4 @@
-package model.board;
-
-import model.util.Cloud;
-import model.util.Clouds;
+package model.util;
 
 import java.awt.*;
 import java.util.Objects;

@@ -2,7 +2,6 @@ package view.gui;
 
 import controller.game.GameController;
 import controller.game.KeyboardListener;
-import model.board.Terrain;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;

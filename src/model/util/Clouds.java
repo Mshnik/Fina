@@ -1,6 +1,5 @@
 package model.util;
 
-import model.board.MPoint;
 import util.TextIO;
 
 import java.io.File;

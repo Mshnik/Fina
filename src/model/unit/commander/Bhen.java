@@ -1,6 +1,5 @@
 package model.unit.commander;
 
-import model.board.MPoint;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.Combatant;
@@ -14,6 +13,7 @@ import model.unit.modifier.StatModifier.ModificationType;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
+import model.util.MPoint;
 
 import java.util.LinkedList;
 

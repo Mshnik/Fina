@@ -3,6 +3,7 @@ package model.board;
 import controller.game.MatrixElement;
 import model.game.Stringable;
 import model.unit.Unit;
+import model.util.MPoint;
 
 /**
  * A Tile is a single square in the model.board. Maintains information about its location, what kind

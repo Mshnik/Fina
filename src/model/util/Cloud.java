@@ -1,7 +1,5 @@
 package model.util;
 
-import model.board.MPoint;
-
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;

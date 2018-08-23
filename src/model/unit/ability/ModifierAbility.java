@@ -1,10 +1,10 @@
 package model.unit.ability;
 
-import model.board.MPoint;
 import model.unit.Commander;
 import model.unit.Unit;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.ModifierBundle;
+import model.util.MPoint;
 
 import java.util.Set;
 
