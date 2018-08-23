@@ -1,5 +1,6 @@
 package model.game;
 
+import model.board.Direction;
 import model.board.Tile;
 import model.unit.Combatant;
 import model.unit.Commander;
@@ -8,6 +9,7 @@ import model.unit.building.AllUnitModifierBuilding;
 import model.unit.building.StartOfTurnEffectBuilding;
 import model.unit.building.Temple;
 import model.util.Cloud;
+import model.util.MPoint;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -241,8 +243,31 @@ public abstract class Player implements Stringable {
   public void refreshVisionCloud() {
     visionCloud.clear();
     for (Unit u : units) {
-      visionCloud.addAll(game.board.getRadialCloud(u.getLocation(), u.getVisionRange()));
+      // Always have vision of a unit's location.
+      visionCloud.add(u.getLocation());
+
+      // Calculate ray-based vision.
+      MPoint center = u.getLocation().getPoint();
+      for (int radius = 1; radius <= u.getVisionRange(); radius++) {
+        addVisionPoint(center.add(radius,0));
+        addVisionPoint(center.add(-radius,0));
+        addVisionPoint(center.add(0,radius));
+        addVisionPoint(center.add(0,-radius));
+        for (int i = 1; i < radius; i++) {
+          addVisionPoint(center.add(radius-i,i));
+          addVisionPoint(center.add(-radius+i,-i));
+          addVisionPoint(center.add(-i,radius-i));
+          addVisionPoint(center.add(i,-radius+i));
+        }
+      }
     }
+  }
+
+  /** Helper for refreshVisionCloud - adds the tile at the given point if its in bounds. */
+  private void addVisionPoint(MPoint point) {
+    try {
+      visionCloud.add(game.board.getTileAt(point));
+    } catch (IllegalArgumentException e) {}
   }
 
   // TURN

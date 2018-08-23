@@ -47,6 +47,11 @@ public final class MPoint {
     col = p.x;
   }
 
+  /** Creates a new point from adding the row and col to this. */
+  public MPoint add(int r, int c) {
+    return new MPoint(row + r, col + c);
+  }
+
   /** Creates a new point from adding the row and col components of p to this */
   public MPoint add(MPoint p) {
     return new MPoint(row + p.row, col + p.col);
