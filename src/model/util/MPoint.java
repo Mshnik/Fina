@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
+import model.util.ExpandableCloud.ExpandableCloudType;
 
 public final class MPoint {
 
@@ -59,14 +60,14 @@ public final class MPoint {
 
   /** Returns a radial cloud centered at this */
   public Cloud radialCloud(int radius) {
-    return Clouds.getCloud(Cloud.CloudType.CIRCLE, radius).translate(this);
+    return ExpandableCloud.create(ExpandableCloudType.CIRCLE, radius).translate(this);
   }
 
   /** Returns a line cloud from this to the given MPoint. */
   public Cloud getLineCloudTo(MPoint other) {
     // Check for single point line
     if (other.equals(this)) {
-      return new Cloud.LineCloud(Collections.singleton(this));
+      return new Cloud(Collections.singleton(this));
     }
 
     // Check for vertical line
@@ -78,7 +79,7 @@ public final class MPoint {
         points.add(new MPoint(r, col));
       }
 
-      return new Cloud.LineCloud(points);
+      return new Cloud(points);
     }
 
     return createLineCloud(col, other.col, row, other.row);
@@ -88,7 +89,7 @@ public final class MPoint {
    * Creates a line cloud corresponding to going from the starting x0,y0 to the given x1,y1. Taken
    * and modified from https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
    */
-  private static Cloud.LineCloud createLineCloud(int x0, int x1, int y0, int y1) {
+  private static Cloud createLineCloud(int x0, int x1, int y0, int y1) {
     // If more y change than x, flip coordinates, then flip back at the end.
     boolean needsFlip = Math.abs(x1 - x0) <= Math.abs(y1 - y0);
     if (needsFlip) {
@@ -114,7 +115,7 @@ public final class MPoint {
         error -= 1.0;
       }
     }
-    Cloud.LineCloud lineCloud = new Cloud.LineCloud(points);
+    Cloud lineCloud = new Cloud(points);
     // Flip result back if needed.
     if (needsFlip) {
       return lineCloud.reflect();
