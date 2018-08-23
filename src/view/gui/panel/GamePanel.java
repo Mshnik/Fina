@@ -15,6 +15,7 @@ import view.gui.decision.DecisionPanel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.stream.Collectors;
 
 /** Drawable wrapper for a model.board object */
 public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
@@ -204,6 +205,22 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
     if (decisionPanel != null) {
       decisionPanel.paintComponent(g);
     }
+
+    g2d.setColor(Color.WHITE);
+    ImageIndex.trace(
+        controller
+            .game
+            .getCurrentPlayer()
+            .getCommander()
+            .getLocation()
+            .getPoint()
+            .getLineCloudTo(boardCursor.getElm().getPoint())
+            .getPoints()
+            .stream()
+            .map(game.board::getTileAt)
+            .collect(Collectors.toSet()),
+        this,
+        g2d);
   }
 
   /** Draws the given tile. Doesn't do any model.unit drawing. */

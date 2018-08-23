@@ -20,7 +20,8 @@ public abstract class Cloud {
     CIRCLE(false),
     WALL(true),
     CONE(true),
-    SQUARE(false);
+    SQUARE(false),
+    LINE(false);
 
     private final boolean rotatable;
 
@@ -30,7 +31,7 @@ public abstract class Cloud {
   }
 
   /** The points in this cloud. May or may not contain (0,0). */
-  private final Set<MPoint> points;
+  final Set<MPoint> points;
 
   /** The type of this cloud. Points in this cloud will make up the shape of the type. */
   protected final CloudType cloudType;
@@ -73,14 +74,39 @@ public abstract class Cloud {
   public abstract Cloud changeLevel(int levelDelta);
 
   /**
-   * Represents a cloud post-translation. Can't be level changed.
+   * Represents a cloud that has all tiles along a line segment by an expansion of Bresenham's
+   * algorithm.
    *
    * @author Mshnik
    */
-  private static class TranslatedCloud extends Cloud {
+  static final class LineCloud extends Cloud {
 
     /** Constructs a new cloud. Up to the constructor to enforce that the points set is correct. */
-    protected TranslatedCloud(Set<MPoint> points, CloudType cloudType, int level) {
+    LineCloud(Set<MPoint> points) {
+      super(points, CloudType.LINE, -1);
+    }
+
+    /** Returns a cloud reflected over y=x by reversing coordinates. */
+    LineCloud reflect() {
+      return new LineCloud(
+          points.stream().map(p -> new MPoint(p.col, p.row)).collect(Collectors.toSet()));
+    }
+
+    @Override
+    public Cloud changeLevel(int levelDelta) {
+      throw new RuntimeException("Can't level change line cloud.");
+    }
+  }
+
+  /**
+   * Represents a cloud post-translation. Can't be level changed or rotated.
+   *
+   * @author Mshnik
+   */
+  private static final class TranslatedCloud extends Cloud {
+
+    /** Constructs a new cloud. Up to the constructor to enforce that the points set is correct. */
+    TranslatedCloud(Set<MPoint> points, CloudType cloudType, int level) {
       super(points, cloudType, level);
     }
 
