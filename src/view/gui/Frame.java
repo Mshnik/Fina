@@ -135,11 +135,6 @@ public final class Frame extends JFrame {
     infoPanel.setAbility(a);
   }
 
-  /** Updates the info panel to show the given terrain. */
-  public void showTerrain(Terrain t) {
-    infoPanel.setTerrain(t);
-  }
-
   /** Updates the info panel to show the given Combat. */
   public void showCombatStats(Combat c) {
     infoPanel.setCombat(c);

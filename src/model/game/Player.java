@@ -221,7 +221,7 @@ public abstract class Player implements Stringable {
   // VISION
   /** Return true iff this player's vision contains tile T */
   public boolean canSee(Tile t) {
-    return !game.isFogOfWar().active || visionCloud.contains(t);
+    return !game.getFogOfWar().active || visionCloud.contains(t);
   }
 
   /** Return true iff the tile u occupies is in this Player's vision */

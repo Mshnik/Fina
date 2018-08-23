@@ -3,6 +3,7 @@ package view.gui.panel;
 import controller.decision.Decision;
 import controller.game.GameController;
 import controller.selector.CastSelector;
+import model.board.Terrain;
 import model.board.Tile;
 import model.game.Game;
 import model.game.Player;
@@ -115,16 +116,6 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
     repaint();
   }
 
-  /**
-   * Returns true if the given model.unit is visible to the current player, false otherwise. Helper
-   * for painting fog of war and hiding units
-   */
-  private boolean isVisible(Tile t) {
-    Game game = controller.game;
-    return !game.isFogOfWar().active
-        || (game.getCurrentPlayer() != null && game.getCurrentPlayer().canSee(t));
-  }
-
   /** Paints this boardpanel, for use in the frame it is in. */
   @Override
   public void paintComponent(Graphics g) {
@@ -156,7 +147,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
           Tile t =
               game.board.getTileAt(row + scrollY - marginRowTop, col + scrollX - marginColLeft);
           drawTile(g2d, t);
-          if (t.isOccupied() && isVisible(t)) {
+          if (t.isOccupied() && game.isVisible(t)) {
             drawUnit(g2d, t.getOccupyingUnit());
           }
         }
@@ -220,10 +211,16 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
     int x = getXPosition(t);
     int y = getYPosition(t);
     // Draw terrain
-    g2d.drawImage(ImageIndex.imageForTile(t), x, y, CELL_SIZE, CELL_SIZE, null);
+    if (controller.game.getFogOfWar().hideAncientGround
+        && t.terrain == Terrain.ANCIENT_GROUND
+        && !controller.game.isVisible(t)) {
+      g2d.drawImage(ImageIndex.imageForTerrain(Terrain.GRASS), x, y, CELL_SIZE, CELL_SIZE, null);
+    } else {
+      g2d.drawImage(ImageIndex.imageForTerrain(t.terrain), x, y, CELL_SIZE, CELL_SIZE, null);
+    }
 
     // If the player can't see this tile, shade darkly.
-    if (!isVisible(t)) {
+    if (!controller.game.isVisible(t)) {
       g2d.setColor(FOG_OF_WAR);
       g2d.fillRect(x, y, CELL_SIZE, CELL_SIZE);
     }

@@ -1,6 +1,7 @@
 package view.gui.panel;
 
 import model.board.Terrain;
+import model.board.Tile;
 import model.unit.Combatant;
 import model.unit.Commander;
 import model.unit.MovingUnit;
@@ -58,8 +59,8 @@ public final class InfoPanel extends JPanel {
   /** The Ability (if any) this InfoPanel is currently drawing info for */
   private Ability ability;
 
-  /** The Terrain (if any) this InfoPanel is currently drawing info for */
-  private Terrain terrain;
+  /** The Tile (if any) this InfoPanel is currently drawing info for the terrain */
+  private Tile tile;
 
   /** The Combat (if any) this InfoPanel is currently drawing info for */
   private Combat combat;
@@ -88,7 +89,7 @@ public final class InfoPanel extends JPanel {
     unit = u;
     this.isMenu = isMenu;
     ability = null;
-    terrain = null;
+    tile = null;
     combat = null;
     repaint();
   }
@@ -98,16 +99,16 @@ public final class InfoPanel extends JPanel {
     unit = null;
     ability = a;
     isMenu = true;
-    terrain = null;
+    tile = null;
     combat = null;
     repaint();
   }
 
-  /** Sets the terrain this InfoPanel is to draw for and causes a repaint */
-  public void setTerrain(Terrain t) {
+  /** Sets the tile this InfoPanel is to draw for and causes a repaint */
+  public void setTile(Tile t) {
     unit = null;
     ability = null;
-    terrain = t;
+    tile = t;
     combat = null;
     isMenu = false;
     repaint();
@@ -116,7 +117,7 @@ public final class InfoPanel extends JPanel {
   public void setCombat(Combat c) {
     unit = null;
     ability = null;
-    terrain = null;
+    tile = null;
     combat = c;
     isMenu = true;
     repaint();
@@ -272,8 +273,15 @@ public final class InfoPanel extends JPanel {
       }
     }
     // Terrain painting.
-    else if (terrain != null) {
-      g2d.drawString("Terrain: " + terrain.toString(), x, y);
+    else if (tile != null) {
+      // Check for hiding ancient ground
+      if (frame.getController().game.getFogOfWar().hideAncientGround
+          && tile.terrain == Terrain.ANCIENT_GROUND
+          && !frame.getController().game.isVisible(tile)) {
+        g2d.drawString("Terrain: " + Terrain.GRASS.toString(), x, y);
+      } else {
+        g2d.drawString("Terrain: " + tile.terrain.toString(), x, y);
+      }
     }
     // Combat painting.
     else if (combat != null) {

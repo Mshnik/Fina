@@ -2,6 +2,7 @@ package view.gui;
 
 import model.board.Board;
 import model.board.Direction;
+import model.board.Terrain;
 import model.board.Tile;
 import model.unit.Building;
 import model.unit.MovingUnit;
@@ -82,8 +83,8 @@ public final class ImageIndex {
   }
 
   /** Returns the image file corresponding to the given terrain type */
-  public static BufferedImage imageForTile(Tile t) {
-    switch (t.terrain) {
+  public static BufferedImage imageForTerrain(Terrain t) {
+    switch (t) {
       case GRASS:
         return GRASS;
       case MOUNTAIN:

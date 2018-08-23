@@ -2,6 +2,7 @@ package model.game;
 
 import controller.game.GameController;
 import model.board.Board;
+import model.board.Tile;
 import model.unit.Commander;
 import model.unit.Unit;
 import model.unit.ability.Ability;
@@ -33,17 +34,22 @@ public final class Game implements Runnable, Stringable {
 
   /** Different fog of war modes a game can have. */
   public enum FogOfWar {
-    NONE(false),
-    REGULAR(true);
+    NONE(false, false),
+    REGULAR(true, false),
+    HIDE_ANCIENT_GROUND(true, true);
 
     /**
-     * True iff squares the player can't see should be greyed out.
-     * Show terrain, but don't show units.
+     * True iff squares the player can't see should be greyed out. Show terrain, but don't show
+     * units.
      */
     public final boolean active;
 
-    FogOfWar(boolean active) {
+    /** True iff ancient ground the player can't see should be painted as grass. */
+    public final boolean hideAncientGround;
+
+    FogOfWar(boolean active, boolean hideAncientGround) {
       this.active = active;
+      this.hideAncientGround = hideAncientGround;
     }
   }
 
@@ -152,7 +158,7 @@ public final class Game implements Runnable, Stringable {
   }
 
   /** @return the fogOfWar in this model.game */
-  public FogOfWar isFogOfWar() {
+  public FogOfWar getFogOfWar() {
     return fogOfWar;
   }
 
@@ -161,6 +167,14 @@ public final class Game implements Runnable, Stringable {
     FogOfWar oldFog = fogOfWar;
     fogOfWar = fOG;
     if (oldFog != fOG) repaint();
+  }
+
+  /**
+   * Returns true if the given tile is visible to the current player, false otherwise. Helper for
+   * painting fog of war and hiding units
+   */
+  public boolean isVisible(Tile t) {
+    return !getFogOfWar().active || (getCurrentPlayer() != null && getCurrentPlayer().canSee(t));
   }
 
   /**
