@@ -45,6 +45,12 @@ public abstract class Player implements Stringable {
   /** The Tiles in the model.board this player has vision of */
   private HashSet<Tile> visionCloud;
 
+  /** The sum of all actions per turn generations/costs this player owns */
+  private int actionsPerTurn;
+
+  /** The number of actions remaining this turn. Reset at start of turn. */
+  private int actionsRemaining;
+
   /** The sum of all the mana per turn generation/costs this player owns */
   private int manaPerTurn;
 
@@ -103,6 +109,38 @@ public abstract class Player implements Stringable {
     for (Unit u : units) {
       manaPerTurn += u.getManaPerTurn();
     }
+  }
+
+  /** Returns the number of actions this player has per turn (total). */
+  public int getActionsPerTurn() {
+    return actionsPerTurn;
+  }
+
+  /** Return the number of actions this player has remaining on this turn. */
+  public int getActionsRemaining() {
+    return actionsRemaining;
+  }
+
+  /** Spends one action remaining. Throws if there were already zero. */
+  public void spendAction() {
+    if (actionsRemaining <= 0) {
+      throw new RuntimeException("Can't spend action, already have none left");
+    }
+    actionsRemaining--;
+  }
+
+  /**
+   * Updates the number of actions per turn this player has. Should be called at least at the start
+   * of every turn. If this results in a change, also updates the number of current actions this
+   * player has.
+   */
+  public void updateActionsPerTurn() {
+    int oldActionsPerTurn = actionsPerTurn;
+    actionsPerTurn = 0;
+    for (Unit u : units) {
+      actionsPerTurn += u.getActionsPerTurn();
+    }
+    actionsRemaining += actionsPerTurn - oldActionsPerTurn;
   }
 
   /** Returns the current level (not exp) of this player */
@@ -196,6 +234,7 @@ public abstract class Player implements Stringable {
     refreshTempleBuffs();
     refreshVisionCloud();
     updateManaPerTurn();
+    updateActionsPerTurn();
   }
 
   /**
@@ -327,6 +366,10 @@ public abstract class Player implements Stringable {
       // Add base mana per turn
       updateManaPerTurn();
       commander.addMana(manaPerTurn);
+
+      // Add actions
+      updateActionsPerTurn();
+      actionsRemaining = actionsPerTurn;
 
       // Process start of turn buildings.
       for (Unit u : units) {

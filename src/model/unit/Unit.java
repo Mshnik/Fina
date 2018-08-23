@@ -296,6 +296,11 @@ public abstract class Unit implements Stringable {
     return (Integer) stats.getStat(StatType.MANA_PER_TURN);
   }
 
+  /** Returns the actions per turn this model.unit costs/generates */
+  public int getActionsPerTurn() {
+    return (Integer) stats.getStat(StatType.ACTIONS_PER_TURN);
+  }
+
   // MODIFIERS
   /** Copies personal modifiers from the given unit - useful for using in newly summoned unit. */
   public void copyPersonalModifiersFrom(Unit source) {

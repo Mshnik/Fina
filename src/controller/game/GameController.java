@@ -412,6 +412,9 @@ public final class GameController {
     if (!t.equals(Toggle.SUMMON_SELECTION))
       throw new RuntimeException(
           "Can't cancel summon selection, currently toggling " + getToggle());
+    if (game.getCurrentPlayer() != null) {
+      game.getCurrentPlayer().spendAction();
+    }
     Unit summonedUnit = summonSelector.toSummon.clone(summonSelector.summoner.owner, loc);
     summonedUnit.copyPersonalModifiersFrom(summonSelector.toSummon);
     game.refreshPassiveAbilities();
@@ -488,6 +491,9 @@ public final class GameController {
     Toggle t = removeTopToggle();
     if (!t.equals(Toggle.CAST_SELECTION))
       throw new RuntimeException("Can't process cast selection, currently toggling " + getToggle());
+    if (game.getCurrentPlayer() != null) {
+      game.getCurrentPlayer().spendAction();
+    }
     castSelector.toCast.cast(loc);
     locationSelector = null;
     getGamePanel().boardCursor.setElm(castSelector.caster.getLocation()); // Cause info update
