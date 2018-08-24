@@ -20,6 +20,7 @@ import model.unit.ability.EffectAbility;
 import model.unit.ability.ModifierAbility;
 import model.unit.combatant.Combat;
 import model.unit.modifier.Modifier;
+import model.unit.modifier.Modifier.StackMode;
 import model.unit.modifier.ModifierBundle;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
@@ -263,7 +264,7 @@ public final class InfoPanel extends JPanel {
         String turns =
             (mod.getTurnsRemaining() == Integer.MAX_VALUE ? INF_CHAR + "" : mod.getTurnsRemaining())
                 + " Turns Remaining ("
-                + (mod.isStackable() ? "" : "Not ")
+                + (mod.getStackMode() == StackMode.NONE_DO_NOT_APPLY ? "Not " : "")
                 + "Stackable)";
         g2d.drawString(turns, x, y);
         for (Modifier m : mod.getModifiers()) {

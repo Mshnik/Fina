@@ -22,8 +22,19 @@ public abstract class Modifier implements Stringable {
   /** The remaining turns for this Modifier. If 0, on its last turn. */
   private int remainingTurns;
 
-  /** True iff a model.unit is allowed to have multiple modifiers by this name */
-  public final boolean stackable;
+  public enum StackMode {
+    /** No stacking - do not apply new modifier if unit already has one. */
+    NONE_DO_NOT_APPLY,
+    /** No stacking - extend duration to max of old,new durations if unit already has one. */
+    DURATION_MAX,
+    /** No stacking - add durations if unit already has one. */
+    DURATION_ADD,
+    /** Stackable - unit has both modifications concurrently. */
+    STACKABLE,
+  }
+
+  /** The stacking mode of this modifier. */
+  public final StackMode stacking;
 
   /** True once this has been attached to a model.unit */
   private boolean attached;
@@ -37,16 +48,23 @@ public abstract class Modifier implements Stringable {
    * @param name - the name of this modifier
    * @param turns - the total duration of this modifier (turns after this one). Can be
    *     Integer.MAX_VAL - interpreted as forever rather than the actual val
-   * @param stackable - true iff a model.unit can have multiple copies of this modifier
+   * @param stacking - the stack mode of this Modifier that determines how it interacts with
+   *     modifiers of the same name.
    */
-  public Modifier(String name, int turns, boolean stackable) {
+  public Modifier(String name, int turns, StackMode stacking) {
     this.name = name;
     unit = null;
     remainingTurns = turns;
     source = null;
     attached = false;
-    this.stackable = stackable;
+    this.stacking = stacking;
     clonedFrom = null;
+
+    if (turns == Integer.MAX_VALUE
+        && (stacking == StackMode.DURATION_ADD || stacking == StackMode.DURATION_MAX)) {
+      throw new RuntimeException(
+          "Infinite duration modifiers can't have duration add or duration max");
+    }
   }
 
   /**
@@ -61,7 +79,7 @@ public abstract class Modifier implements Stringable {
     this.name = dummy.name;
     this.unit = unit;
     this.source = source;
-    this.stackable = dummy.stackable;
+    this.stacking = dummy.stacking;
     remainingTurns = dummy.remainingTurns;
     clonedFrom = dummy;
   }
@@ -106,6 +124,11 @@ public abstract class Modifier implements Stringable {
   /** Returns the remaining turns of this modifier */
   public int getRemainingTurns() {
     return remainingTurns;
+  }
+
+  /** Alters the remaining turns by the given delta. */
+  public void changeRemainingTurns(int delta) {
+    remainingTurns += delta;
   }
 
   /**

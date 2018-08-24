@@ -1,5 +1,6 @@
 package model.unit.modifier;
 
+import model.unit.modifier.Modifier.StackMode;
 import model.unit.stat.StatType;
 
 /**
@@ -17,7 +18,7 @@ public final class Modifiers {
           "After dealing damage, this unit gains some health",
           10,
           Integer.MAX_VALUE,
-          true,
+          StackMode.STACKABLE,
           false,
           false,
           true);
@@ -29,7 +30,7 @@ public final class Modifiers {
           "This unit deals more damage to commanders",
           10,
           Integer.MAX_VALUE,
-          true,
+          StackMode.STACKABLE,
           false,
           false,
           true);
@@ -39,7 +40,7 @@ public final class Modifiers {
       new StatModifier(
           "Pathfinder",
           Integer.MAX_VALUE,
-          false,
+          StackMode.STACKABLE,
           StatType.WOODS_COST,
           StatModifier.ModificationType.SET,
           1);
@@ -49,7 +50,7 @@ public final class Modifiers {
       new StatModifier(
           "Trailblazer",
           Integer.MAX_VALUE,
-          false,
+          StackMode.STACKABLE,
           StatType.MOUNTAIN_COST,
           StatModifier.ModificationType.SET,
           3);
@@ -61,7 +62,7 @@ public final class Modifiers {
           "This unit gains health each turn",
           5,
           Integer.MAX_VALUE,
-          true,
+          StackMode.STACKABLE,
           true,
           true,
           true);
@@ -73,7 +74,7 @@ public final class Modifiers {
           "This unit can move after attacking",
           null,
           Integer.MAX_VALUE,
-          false,
+          StackMode.STACKABLE,
           false,
           false,
           true);

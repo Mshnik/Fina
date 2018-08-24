@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import model.unit.Unit;
+import model.unit.modifier.Modifier.StackMode;
 
 /** A set of modifiers applied to a single unit */
 public final class ModifierBundle implements Collection<Modifier> {
@@ -40,7 +41,7 @@ public final class ModifierBundle implements Collection<Modifier> {
   public boolean add(Modifier m) throws IllegalArgumentException {
     if (!modifiers.isEmpty()) {
       Modifier base = modifiers.get(0);
-      if (m.stackable != base.stackable || m.getRemainingTurns() != base.getRemainingTurns())
+      if (m.stacking != base.stacking || m.getRemainingTurns() != base.getRemainingTurns())
         throw new IllegalArgumentException(m + " incompatible with " + this);
     }
     modifiers.add(m);
@@ -115,8 +116,8 @@ public final class ModifierBundle implements Collection<Modifier> {
   }
 
   /** Returns true iff modifiers in this bundle. Hopefully constant throughout. */
-  public boolean isStackable() {
-    return modifiers.get(0).stackable;
+  public StackMode getStackMode() {
+    return modifiers.get(0).stacking;
   }
 
   /** Returns the toStrings of the modifiers in this bundle */

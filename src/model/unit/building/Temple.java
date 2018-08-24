@@ -4,6 +4,7 @@ import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.modifier.Modifier;
+import model.unit.modifier.Modifier.StackMode;
 import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.StatModifier;
 import model.unit.modifier.StatModifier.ModificationType;
@@ -20,7 +21,7 @@ public final class Temple extends Building<Void> {
         new StatModifier(
             "Temple Attack",
             Integer.MAX_VALUE,
-            false,
+            StackMode.NONE_DO_NOT_APPLY,
             StatType.MIN_ATTACK,
             ModificationType.ADD,
             50)),
@@ -33,14 +34,14 @@ public final class Temple extends Building<Void> {
         new StatModifier(
             "Temple Vision",
             Integer.MAX_VALUE,
-            false,
+            StackMode.NONE_DO_NOT_APPLY,
             StatType.VISION_RANGE,
             ModificationType.ADD,
             2),
         new StatModifier(
             "Temple Movement",
             Integer.MAX_VALUE,
-            false,
+            StackMode.NONE_DO_NOT_APPLY,
             StatType.MOVEMENT_TOTAL,
             ModificationType.ADD,
             2)),
@@ -53,7 +54,7 @@ public final class Temple extends Building<Void> {
         new StatModifier(
             "Temple Ult1",
             Integer.MAX_VALUE,
-            false,
+            StackMode.NONE_DO_NOT_APPLY,
             StatType.MIN_ATTACK,
             ModificationType.MULTIPLY,
             1.5))

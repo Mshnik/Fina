@@ -33,7 +33,7 @@ public final class CustomModifier extends Modifier {
    * @param val - the magnitude of the modifier, as needed
    * @param turns - the total duration of this modifier (turns after this one). Can be
    *     Integer.MAX_VAL - interpreted as forever rather than the actual val
-   * @param stackable - true iff this is stackable
+   * @param stackable - stack mode of this modifier.
    * @param buildings - true iff this modifier can apply to buildings
    * @param commanders - true iff this modifier can apply to commanders
    * @param combatants - true iff this modifier can apply to combatants
@@ -43,7 +43,7 @@ public final class CustomModifier extends Modifier {
       String description,
       Number val,
       int turns,
-      boolean stackable,
+      StackMode stackable,
       boolean buildings,
       boolean commanders,
       boolean combatants) {

@@ -16,6 +16,7 @@ import model.unit.combatant.Combatant;
 import model.unit.combatant.FileCombatant;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
+import model.unit.modifier.Modifier.StackMode;
 import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
@@ -59,14 +60,14 @@ public abstract class Commander extends MovingUnit implements Summoner {
           new StatModifier(
               LEVELUP_MANA_NAME,
               Integer.MAX_VALUE,
-              true,
+              StackMode.STACKABLE,
               StatType.MANA_PER_TURN,
               StatModifier.ModificationType.ADD,
               LEVELUP_MANAPT),
           new StatModifier(
               LEVELUP_HEALTH_NAME,
               Integer.MAX_VALUE,
-              true,
+              StackMode.STACKABLE,
               StatType.MAX_HEALTH,
               StatModifier.ModificationType.ADD,
               LEVELUP_HEALTH));

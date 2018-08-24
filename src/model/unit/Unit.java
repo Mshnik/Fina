@@ -366,20 +366,48 @@ public abstract class Unit implements Stringable {
    * applied, false otw
    */
   public boolean addModifier(Modifier m) {
-    if (modifierOk(m)) {
-      if (!m.stackable) { // Kill all clones before applying this modifier
-        while (true) {
-          Modifier clone = m.cloneInCollection(modifiers);
-          if (clone == null) break;
-          clone.kill();
-        }
-      }
-      modifiers.add(m);
-      refreshStats();
-      return true;
-    } else {
+    // Check if modifier is allowed. If not, don't apply and return false.
+    if (! modifierOk(m)) {
       return false;
     }
+      // Handle stacking mode.
+    Modifier clone = m.cloneInCollection(modifiers);
+    switch (m.stacking) {
+        case NONE_DO_NOT_APPLY:
+          // No stacking - if there is a clone, can't apply this.
+          if (clone != null) {
+            return false;
+          }
+          modifiers.add(m);
+          refreshStats();
+          return true;
+        case DURATION_MAX:
+          // Max stacking - if no clone, apply.
+          // Otherwise apply only if duration > other duration.
+          if (clone == null || m.getRemainingTurns() > clone.getRemainingTurns()) {
+            modifiers.add(m);
+            refreshStats();
+            return true;
+          } else {
+            return false;
+          }
+        case DURATION_ADD:
+          // Add stacking 0 if no clone, apply.
+          // Otherwise alter old modifier's turns and count that as applying this one.
+          if (clone == null) {
+            modifiers.add(m);
+            refreshStats();
+          } else {
+            clone.changeRemainingTurns(m.getRemainingTurns());
+          }
+          return true;
+        case STACKABLE:
+          modifiers.add(m);
+          refreshStats();
+          return true;
+        default:
+          throw new RuntimeException("Unsupported stacking type " + m.stacking);
+      }
   }
 
   /**

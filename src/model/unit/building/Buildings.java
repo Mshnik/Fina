@@ -12,6 +12,7 @@ import model.unit.building.PlayerModifierBuilding.PlayerModifierEffect;
 import model.unit.building.PlayerModifierBuilding.PlayerModifierEffectType;
 import model.unit.building.StartOfTurnEffectBuilding.StartOfTurnEffect;
 import model.unit.building.StartOfTurnEffectBuilding.StartOfTurnEffectType;
+import model.unit.modifier.Modifier.StackMode;
 import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.StatModifier;
 import model.unit.modifier.StatModifier.ModificationType;
@@ -206,14 +207,14 @@ public final class Buildings {
                 new StatModifier(
                     "Strengthened Min Atk - Armory",
                     Integer.MAX_VALUE,
-                    true,
+                    StackMode.STACKABLE,
                     StatType.MIN_ATTACK,
                     ModificationType.ADD,
                     3),
                 new StatModifier(
                     "Strengthened Max Atk - Armory",
                     Integer.MAX_VALUE,
-                    true,
+                    StackMode.STACKABLE,
                     StatType.MAX_ATTACK,
                     ModificationType.ADD,
                     3)),
@@ -221,21 +222,21 @@ public final class Buildings {
                 new StatModifier(
                     "Strengthened Min Atk - Armory",
                     Integer.MAX_VALUE,
-                    true,
+                    StackMode.STACKABLE,
                     StatType.MIN_ATTACK,
                     ModificationType.ADD,
                     3),
                 new StatModifier(
                     "Strengthened Max Atk - Armory",
                     Integer.MAX_VALUE,
-                    true,
+                    StackMode.STACKABLE,
                     StatType.MAX_ATTACK,
                     ModificationType.ADD,
                     3),
                 new StatModifier(
                     "Toughness - Armory",
                     Integer.MAX_VALUE,
-                    true,
+                    StackMode.STACKABLE,
                     StatType.DAMAGE_REDUCTION,
                     ModificationType.ADD,
                     3)));
@@ -245,14 +246,14 @@ public final class Buildings {
                 new StatModifier(
                     "Farsight - Armory",
                     Integer.MAX_VALUE,
-                    true,
+                    StackMode.STACKABLE,
                     StatType.VISION_RANGE,
                     ModificationType.ADD,
                     2),
                 new StatModifier(
                     "Quickness - Armory",
                     Integer.MAX_VALUE,
-                    true,
+                    StackMode.STACKABLE,
                     StatType.MOVEMENT_TOTAL,
                     ModificationType.ADD,
                     1)),
@@ -260,14 +261,14 @@ public final class Buildings {
                 new StatModifier(
                     "Farsight - Armory",
                     Integer.MAX_VALUE,
-                    true,
+                    StackMode.STACKABLE,
                     StatType.VISION_RANGE,
                     ModificationType.ADD,
                     3),
                 new StatModifier(
                     "Quickness - Armory",
                     Integer.MAX_VALUE,
-                    true,
+                    StackMode.STACKABLE,
                     StatType.MOVEMENT_TOTAL,
                     ModificationType.ADD,
                     2)));

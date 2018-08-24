@@ -3,10 +3,11 @@ package model.unit.commander;
 import java.util.LinkedList;
 import model.board.Tile;
 import model.game.Player;
-import model.unit.combatant.Combatant;
 import model.unit.ability.Ability;
 import model.unit.ability.ModifierAbility;
+import model.unit.combatant.Combatant;
 import model.unit.modifier.CustomModifier;
+import model.unit.modifier.Modifier.StackMode;
 import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.StatModifier;
 import model.unit.modifier.StatModifier.ModificationType;
@@ -50,7 +51,7 @@ public final class Bhen extends Commander {
                   "Units gain 2 movement after killing another model.unit",
                   2,
                   Integer.MAX_VALUE,
-                  false,
+                  StackMode.STACKABLE,
                   false,
                   false,
                   true)));
@@ -68,9 +69,19 @@ public final class Bhen extends Commander {
           MPoint.ORIGIN.radialCloud(1).getPoints(),
           new ModifierBundle(
               new StatModifier(
-                  ABILITY_NAMES[1][0], 1, false, StatType.MOVEMENT_TOTAL, ModificationType.ADD, 4),
+                  ABILITY_NAMES[1][0],
+                  1,
+                  StackMode.STACKABLE,
+                  StatType.MOVEMENT_TOTAL,
+                  ModificationType.ADD,
+                  4),
               new StatModifier(
-                  ABILITY_NAMES[1][0], 1, false, StatType.MIN_ATTACK, ModificationType.ADD, 250)));
+                  ABILITY_NAMES[1][0],
+                  1,
+                  StackMode.STACKABLE,
+                  StatType.MIN_ATTACK,
+                  ModificationType.ADD,
+                  250)));
 
   /** Ability Choices */
   public final Ability[][] ABILITIES = {{BATTLE_FURY}, {ENRAGE}};
