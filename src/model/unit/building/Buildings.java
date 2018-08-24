@@ -1,5 +1,7 @@
 package model.unit.building;
 
+import static model.unit.modifier.Modifiers.EAGLE_EYE;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -136,6 +138,9 @@ public final class Buildings {
               break;
             default:
               throw new RuntimeException("Got unknown building type: " + buildingType);
+          }
+          if (hasEagleEye) {
+            EAGLE_EYE.clone(building);
           }
 
           buildings.add(building);

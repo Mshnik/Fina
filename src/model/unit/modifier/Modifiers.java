@@ -35,6 +35,17 @@ public final class Modifiers {
           false,
           true);
 
+  /** Modifier that allows a unit to see into woods and past mountains. */
+  public static final Modifier EAGLE_EYE =
+      new CustomModifier("Eagle Eye",
+          "This unit can see into woods and past mountains.",
+          null,
+          Integer.MAX_VALUE,
+          StackMode.STACKABLE,
+          true,
+          true,
+          true);
+
   /** Modifier that reduces movement cost in woods. */
   public static final Modifier PATHFINDER =
       new StatModifier(
