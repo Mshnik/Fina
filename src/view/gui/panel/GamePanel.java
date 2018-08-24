@@ -204,8 +204,10 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
       ImageIndex.trace(a.getEffectCloud(boardCursor.getElm()), this, g2d);
     }
 
-    // Draw the cursor
-    boardCursor.paintComponent(g);
+    // Draw the cursor if it's not hidden.
+    if (!boardCursor.hide) {
+      boardCursor.paintComponent(g);
+    }
 
     // Draw the decisionPanel
     if (decisionPanel != null) {

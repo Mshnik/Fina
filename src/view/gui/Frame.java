@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;
@@ -120,8 +121,16 @@ public final class Frame extends JFrame {
     return controller;
   }
 
+  /** Shows an alert asking the given player to confirm before starting turn.
+   * Only needed when fog of war is on. */
+  public void showPlayerChangeAlert(Player p) {
+    gamePanel.boardCursor.hide = true;
+    JOptionPane.showMessageDialog(this, "Player " + p.index +"'s Turn.");
+  }
+
   /** Starts the turn for player p, making graphic updates as necessary */
   public void startTurnFor(Player p) {
+    gamePanel.boardCursor.hide = false;
     gamePanel.boardCursor.setElm(p.getCommander().getLocation());
     gamePanel.boardCursor.moved();
   }

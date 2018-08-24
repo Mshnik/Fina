@@ -25,6 +25,9 @@ public final class BoardCursor extends Cursor<Tile, GamePanel> {
     }
   }
 
+  /** True if this should be hidden. Default false. Used during turn transitions. */
+  public boolean hide;
+
   /**
    * Constructs a new BoardCursor
    *
@@ -32,6 +35,7 @@ public final class BoardCursor extends Cursor<Tile, GamePanel> {
    */
   public BoardCursor(GamePanel bp) {
     super(bp, bp.controller.game.board.getTileAt(0, 0));
+    hide = false;
   }
 
   /** Returns true - selection criteria depends on the application */

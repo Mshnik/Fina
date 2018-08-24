@@ -55,12 +55,19 @@ public final class Game implements Runnable, Stringable {
   /** The fog of war for this game */
   private FogOfWar fogOfWar;
 
+  /**
+   * True if we are currently in between turns and should hide everything. Only used during fog of
+   * war.
+   */
+  private boolean betweenTurnsFog;
+
   /** True if this model.game is currently running, false otherwise */
   private boolean running;
 
   public Game(Board b, FogOfWar fog) {
     board = b;
     fogOfWar = fog;
+    betweenTurnsFog = false;
     players = new LinkedList<>();
     remainingPlayers = new HashMap<>();
     running = false;
@@ -173,7 +180,8 @@ public final class Game implements Runnable, Stringable {
    * painting fog of war and hiding units
    */
   public boolean isVisible(Tile t) {
-    return !getFogOfWar().active || (getCurrentPlayer() != null && getCurrentPlayer().canSee(t));
+    return !getFogOfWar().active
+        || (!betweenTurnsFog && getCurrentPlayer() != null && getCurrentPlayer().canSee(t));
   }
 
   /**
@@ -195,6 +203,7 @@ public final class Game implements Runnable, Stringable {
   private void nextTurn() throws RuntimeException {
     if (!running)
       throw new RuntimeException("Can't take turn for player - " + this + " isn't started");
+    betweenTurnsFog = false;
     Player p = getCurrentPlayer();
     boolean ok = p.turnStart();
     if (ok) {
@@ -209,6 +218,13 @@ public final class Game implements Runnable, Stringable {
     players.remove(0);
     players.add(p);
     index = (index + 1) % players.size();
+
+    // If fog, pause and wait for transfer of computer.
+    if (getFogOfWar().active) {
+      betweenTurnsFog = true;
+      Player nextTurnPlayer = getCurrentPlayer();
+      controller.frame.showPlayerChangeAlert(nextTurnPlayer);
+    }
   }
 
   @Override
