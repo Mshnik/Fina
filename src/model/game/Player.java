@@ -1,5 +1,10 @@
 package model.game;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.Unit;
@@ -12,12 +17,6 @@ import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.util.Cloud;
 import model.util.MPoint;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * An instance is a player (not the commander piece). Extended to be either human controlled or AI.
@@ -55,6 +54,9 @@ public abstract class Player implements Stringable {
 
   /** The sum of all the mana per turn generation/costs this player owns */
   private int manaPerTurn;
+
+  /** The sum of all passive research generation this player owns. */
+  private int researchPerTurn;
 
   /**
    * Constructor for Player class with just model.game.
@@ -170,12 +172,24 @@ public abstract class Player implements Stringable {
     return commander.getResearchRequirement();
   }
 
+  /** Returns the researchPerTurn this player generates */
+  public int getResearchPerTurn() {
+    return researchPerTurn;
+  }
+
   /**
-   * Adds the given amount of research to resarch, capping at the requirement. Input must be
-   * positive (you can only gain research)
+   * Updates the research per turn for this player. Should be called at start of turn and when a
+   * unit is built.
    */
-  public void addResearch(int deltaResearch) throws IllegalArgumentException {
-    commander.addResearch(deltaResearch);
+  private void updateResearchPerTurn() {
+    researchPerTurn = 0;
+    for (Unit u : units) {
+      if (u instanceof PlayerModifierBuilding
+          && ((PlayerModifierBuilding) u).getEffect().effectType
+              == PlayerModifierEffectType.RESEARCH_GENERATION) {
+        researchPerTurn += ((PlayerModifierBuilding) u).getEffect().value;
+      }
+    }
   }
 
   // UNITS
@@ -233,6 +247,7 @@ public abstract class Player implements Stringable {
       for (Unit u2 : units) {
         ((AllUnitModifierBuilding) u).applyModifiersTo(u2);
       }
+      allUnitModifierBuildings.add((AllUnitModifierBuilding) u);
     } else {
       for (AllUnitModifierBuilding allUnitModifierBuilding : allUnitModifierBuildings) {
         allUnitModifierBuilding.applyModifiersTo(u);
@@ -241,6 +256,7 @@ public abstract class Player implements Stringable {
     refreshTempleBuffs();
     refreshVisionCloud();
     updateManaPerTurn();
+    updateResearchPerTurn();
     updateCommanderActionsPerTurn();
   }
 
@@ -257,6 +273,8 @@ public abstract class Player implements Stringable {
     refreshTempleBuffs();
     refreshVisionCloud();
     updateManaPerTurn();
+    updateResearchPerTurn();
+    updateCommanderActionsPerTurn();
   }
 
   /** Refreshes all temples buffs on all units */
@@ -373,6 +391,10 @@ public abstract class Player implements Stringable {
       // Add base mana per turn
       updateManaPerTurn();
       commander.addMana(manaPerTurn);
+
+      // Add research per turn
+      updateResearchPerTurn();
+      commander.addResearch(researchPerTurn);
 
       // Add actions
       updateCommanderActionsPerTurn();
