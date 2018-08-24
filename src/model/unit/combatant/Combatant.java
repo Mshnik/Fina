@@ -65,13 +65,13 @@ public abstract class Combatant extends MovingUnit {
     private boolean hasBonusAgainstClass(CombatantClass other) {
       switch (this) {
         case FIGHTER:
-          return other == RANGER;
-        case RANGER:
-          return other == ASSASSIN;
-        case ASSASSIN:
           return other == TANK;
-        case TANK:
+        case RANGER:
           return other == FIGHTER;
+        case ASSASSIN:
+          return other == RANGER;
+        case TANK:
+          return other == ASSASSIN;
       }
       return false;
     }
