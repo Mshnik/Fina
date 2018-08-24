@@ -53,7 +53,7 @@ public final class Game implements Runnable, Stringable {
   }
 
   /** The fog of war for this game */
-  private FogOfWar fogOfWar;
+  private final FogOfWar fogOfWar;
 
   /**
    * True if we are currently in between turns and should hide everything. Only used during fog of
@@ -166,13 +166,6 @@ public final class Game implements Runnable, Stringable {
   /** @return the fogOfWar in this model.game */
   public FogOfWar getFogOfWar() {
     return fogOfWar;
-  }
-
-  /** @param fOG the fogOfWar to set. Also repaints if this causes a change. */
-  public void setFogOfWar(FogOfWar fOG) {
-    FogOfWar oldFog = fogOfWar;
-    fogOfWar = fOG;
-    if (oldFog != fOG) repaint();
   }
 
   /**
