@@ -106,18 +106,25 @@ public abstract class Unit implements Stringable {
     grantedModifiers = new LinkedList<>();
   }
 
+  /** Returns the mana cost of the given player summoning a copy of this, including scaling. */
+  public int getManaCostWithScalingForPlayer(Player p) {
+    return manaCost
+        + (int) p.getUnits().stream().filter(u -> u.name.equals(name)).count()
+        * manaCostScaling;
+  }
+
   /** Returns a copy of this for the given player, on the given tile */
   public final Unit clone(Player owner, Tile location) {
+    int cost = getManaCostWithScalingForPlayer(owner);
+    if (cost > 0 && owner.getMana() < cost)
+      throw new RuntimeException(owner + " can't afford to summon model.unit with cost " + cost);
     Unit u = createClone(owner);
     u.location = location;
     location.addOccupyingUnit(u);
     owner.addUnit(u);
-    if (manaCost > 0 && owner.getMana() < manaCost)
-      throw new RuntimeException(
-          owner + " can't afford to summon model.unit with cost " + manaCost);
     if (owner.getLevel() < u.level)
       throw new RuntimeException(owner + " can't summon model.unit with higher level than it");
-    owner.getCommander().addMana(Math.min(0, -u.manaCost));
+    owner.getCommander().addMana(Math.min(0, -cost));
     return u;
   }
 

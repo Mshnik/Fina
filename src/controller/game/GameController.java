@@ -386,7 +386,9 @@ public final class GameController {
     for (Unit u : units) {
       choices.add(
           new Choice(
-              u.manaCost <= c.getMana(), u.name + Choice.SEPERATOR + " (" + u.manaCost + ")", u));
+              u.manaCost <= c.getMana(),
+              u.name + Choice.SEPERATOR + " (" + u.getManaCostWithScalingForPlayer(c.owner) + ")",
+              u));
     }
     decision = new Decision(DecisionType.SUMMON_DECISION, false, true, choices);
     addToggle(Toggle.DECISION);
