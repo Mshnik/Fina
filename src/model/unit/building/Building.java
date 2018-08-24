@@ -88,7 +88,7 @@ public abstract class Building<E> extends Unit {
     return false;
   }
 
-  /** Buildings can only occupy Ancient Ground */
+  /** Buildings can occupy any terrain in their valid terrain. */
   public boolean canOccupy(Terrain t) {
     return validTerrain.contains(t);
   }

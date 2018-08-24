@@ -7,7 +7,7 @@ import model.game.HumanPlayer;
 import model.game.Player;
 import model.unit.building.Buildings;
 import model.unit.combatant.FileCombatant;
-import model.unit.dummy.DummyCommander;
+import model.unit.commander.DummyCommander;
 import view.gui.Frame;
 
 public final class Main {
@@ -27,7 +27,7 @@ public final class Main {
     GameController gc = new GameController(g, f);
 
     Player p1 = new HumanPlayer(g, Color.green);
-    new DummyCommander(p1, g.board.getTileAt(0, 0), 4);
+    new DummyCommander(p1, g.board.getTileAt(3, 6), 4);
     Player p2 = new HumanPlayer(g, Color.magenta);
     new DummyCommander(p2, g.board.getTileAt(1, 2), 4);
 
