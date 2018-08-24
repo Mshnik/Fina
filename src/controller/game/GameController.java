@@ -418,14 +418,14 @@ public final class GameController {
     startSummonDecision(c, c.getBuildables());
   }
 
-  /** Creates a new summon selector at the current getGamePanel().boardCursor position. */
-  void startSummonSelection(Choice choice) {
+  /** Creates a new summon selector at the current getGamePanel().boardCursor position. Returns true iff a summoning decision was started. */
+  boolean startSummonSelection(Choice choice) {
     if (!choice.isSelectable()) {
-      return;
+      return false;
     }
     Tile t = getGamePanel().boardCursor.getElm();
     if (!t.isOccupied() || !t.getOccupyingUnit().canSummon()) {
-      return;
+      return false;
     }
     String name = choice.getShortMessage();
     cancelDecision();
@@ -435,12 +435,13 @@ public final class GameController {
     ArrayList<Tile> cloud = locationSelector.getPossibleMovementsCloud();
     if (cloud.isEmpty()) {
       locationSelector = null;
-      return; // No possible summoning locations for this model.unit
+      return false; // No possible summoning locations for this model.unit
     }
     Tile t2 = cloud.get(0);
     getGamePanel().boardCursor.setElm(t2);
     getGamePanel().fixScrollToShow(t2.getRow(), t2.getCol());
     addToggle(Toggle.SUMMON_SELECTION);
+    return true;
   }
 
   /**

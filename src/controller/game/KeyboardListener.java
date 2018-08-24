@@ -99,9 +99,14 @@ public final class KeyboardListener implements KeyListener {
                 gc.processEndTurnDecision(decision);
                 break;
               case SUMMON_DECISION:
-                gc.startSummonSelection(decision);
-                ((BoardCursor) gc.frame.getActiveCursor())
-                    .setSelectType(BoardCursor.SelectType.SUMMON);
+                boolean startedDecision = gc.startSummonSelection(decision);
+                if (startedDecision) {
+                  ((BoardCursor) gc.frame.getActiveCursor())
+                      .setSelectType(BoardCursor.SelectType.SUMMON);
+                 } else {
+                  throw new RuntimeException("No valid space to summon - "
+                      + "shouldn't have been able to pick this");
+                }
                 break;
               case CAST_DECISION:
                 gc.startCastSelection(decision);
