@@ -94,9 +94,6 @@ public abstract class Unit implements Stringable {
       throws IllegalArgumentException, RuntimeException {
     if (manaCost < 0)
       throw new IllegalArgumentException("manaCosts should be provided as positive ints");
-    if (manaCost > 0 && owner != null && owner.getMana() < manaCost)
-      throw new RuntimeException(
-          owner + " can't afford to summon model.unit with cost " + manaCost);
     this.owner = owner;
     this.level = level;
     this.name = name;
@@ -115,6 +112,9 @@ public abstract class Unit implements Stringable {
     u.location = location;
     location.addOccupyingUnit(u);
     owner.addUnit(u);
+    if (manaCost > 0 && owner.getMana() < manaCost)
+      throw new RuntimeException(
+          owner + " can't afford to summon model.unit with cost " + manaCost);
     if (owner.getLevel() < u.level)
       throw new RuntimeException(owner + " can't summon model.unit with higher level than it");
     owner.getCommander().addMana(Math.min(0, -u.manaCost));
