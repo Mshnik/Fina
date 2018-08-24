@@ -19,6 +19,7 @@ import model.unit.ability.Ability;
 import view.gui.BoardCursor;
 import view.gui.Frame;
 import view.gui.ImageIndex;
+import view.gui.ImageIndex.DrawingBarSegment;
 import view.gui.MatrixPanel;
 import view.gui.Paintable;
 import view.gui.decision.DecisionPanel;
@@ -264,9 +265,8 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
         null,
         null,
         0,
-        Color.red,
         u.getMaxHealth(),
-        u.getHealthPercent(),
+        DrawingBarSegment.listOf(Color.red, u.getHealthPercent()),
         null,
         null,
         null,

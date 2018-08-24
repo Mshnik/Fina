@@ -8,8 +8,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import javax.imageio.ImageIO;
 import model.board.Board;
 import model.board.Direction;
@@ -211,6 +213,40 @@ public final class ImageIndex {
   }
 
   /**
+   * A segment for using in {@link #drawBar(Graphics2D, int, int, int, int, Color, Color, int, int,
+   * List, String, Color, Font, Color, int)}.
+   */
+  public static final class DrawingBarSegment {
+    private final Color color;
+    private final double percentFull;
+
+    private DrawingBarSegment(Color color, double percentFull) {
+      this.color = color;
+      this.percentFull = percentFull;
+    }
+
+    private double getPercentFull() {
+      return percentFull;
+    }
+
+    /** Returns a list of one drawing bar segment. */
+    public static List<DrawingBarSegment> listOf(Color color1, double percentFull1) {
+      ArrayList<DrawingBarSegment> list = new ArrayList<>();
+      list.add(new DrawingBarSegment(color1, percentFull1));
+      return list;
+    }
+
+    /** Returns a list of two drawing bar segments. */
+    public static List<DrawingBarSegment> listOf(
+        Color color1, double percentFull1, Color color2, double percentFull2) {
+      ArrayList<DrawingBarSegment> list = new ArrayList<>();
+      list.add(new DrawingBarSegment(color1, percentFull1));
+      list.add(new DrawingBarSegment(color2, percentFull2));
+      return list;
+    }
+  }
+
+  /**
    * Draws a bar with the border and fill colors, full the given amount, etc etc etc.
    *
    * @param g2d - the graphics object to use for drawing. Can't be null
@@ -222,9 +258,9 @@ public final class ImageIndex {
    * @param borderColor - the color to draw the border of the bar. If strokeWidth is 0, this is
    *     unused
    * @param strokeWidth - the width of the border portion of the bar. Can't be negative.
-   * @param fillColor - the color of the fill portion of the bar. Can't be null.
+   * @param segments - the color and percentages of the fill portion of the bar. Total percent
+   *     should be in [0,1].
    * @param maxVal - the value corresponding the the max fullness of this bar
-   * @param percentFull - the percent of this bar to fill - in the range [0, 1].
    * @param text - text to draw. Set to empty to draw nothing.
    * @param textColor - color to draw the text. If text is null or empty, unused.
    * @param textFont - the font to use for text drawing. If text is null or empty, unused
@@ -242,24 +278,20 @@ public final class ImageIndex {
       Color backColor,
       Color borderColor,
       int strokeWidth,
-      Color fillColor,
       int maxVal,
-      double percentFull,
+      List<DrawingBarSegment> segments,
       String text,
       Color textColor,
       Font textFont,
       Color incrementColor,
       int incrementVal) {
     if (strokeWidth < 0) throw new IllegalArgumentException("Bar Border Can't have negative width");
-    if (percentFull < 0 || percentFull > 1)
-      throw new IllegalArgumentException(
-          "Can't fill a bar an illegal Percent full: " + percentFull);
 
-    if (strokeWidth > 0) {
-      g2d.setStroke(new BasicStroke(strokeWidth));
-      g2d.setColor(borderColor);
-      g2d.drawRect(X, Y, BAR_WIDTH, BAR_HEIGHT);
-    }
+    double totalPercent = segments.stream().mapToDouble(DrawingBarSegment::getPercentFull).sum();
+    if (totalPercent < 0 || totalPercent > 1)
+      throw new IllegalArgumentException(
+          "Can't fill a bar an illegal Percent full: " + totalPercent);
+
     if (backColor != null) {
       g2d.setColor(backColor);
       g2d.fillRect(
@@ -268,13 +300,18 @@ public final class ImageIndex {
           BAR_WIDTH - strokeWidth / 2 - 1,
           BAR_HEIGHT - strokeWidth);
     }
-    g2d.setColor(fillColor);
-    g2d.fillRect(
-        X + strokeWidth / 2,
-        Y + strokeWidth / 2,
-        (int) Math.ceil((BAR_WIDTH - strokeWidth / 2 - 1) * percentFull),
-        BAR_HEIGHT - strokeWidth);
-
+    int startBarX = X + strokeWidth / 2;
+    for (DrawingBarSegment segment : segments) {
+      int width = (int) Math.ceil((BAR_WIDTH - strokeWidth / 2 - 1) * segment.percentFull);
+      g2d.setColor(segment.color);
+      g2d.fillRect(startBarX, Y + strokeWidth / 2, width, BAR_HEIGHT - strokeWidth);
+      startBarX += width;
+    }
+    if (strokeWidth > 0) {
+      g2d.setStroke(new BasicStroke(strokeWidth));
+      g2d.setColor(borderColor);
+      g2d.drawRect(X, Y, BAR_WIDTH, BAR_HEIGHT);
+    }
     if (incrementColor != null) {
       g2d.setColor(incrementColor);
       g2d.setStroke(new BasicStroke(2));

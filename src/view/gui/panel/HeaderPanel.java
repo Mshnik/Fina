@@ -8,11 +8,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.HashMap;
+import java.util.List;
 import javax.swing.JPanel;
 import model.game.Game;
 import model.game.Player;
 import view.gui.Frame;
 import view.gui.ImageIndex;
+import view.gui.ImageIndex.DrawingBarSegment;
 
 /**
  * The panel at the top of the frame that shows basic information and the current player's turn
@@ -70,10 +72,13 @@ public final class HeaderPanel extends JPanel {
   private static final Color LEVEL = Color.WHITE;
 
   /** The border color for the exp bar */
-  private static final Color EXP_BORDER = new Color(201, 186, 18);
+  private static final Color EXP_BORDER = new Color(135, 121, 17);
 
   /** The filled in color for the exp bar */
-  private static final Color EXP_FILL = new Color(255, 237, 43);
+  private static final Color EXP_FILL = new Color(208, 189, 26);
+
+  /** The filled in color for the exp per turn cap in the exp bar */
+  private static final Color EXP_PER_TURN_FILL = new Color(255, 237, 43);
 
   /** The "max" mana (highest mana value seen thus far for the given players) */
   private HashMap<Player, Integer> maxMana;
@@ -130,9 +135,8 @@ public final class HeaderPanel extends JPanel {
           barStartX,
           barWidth,
           HEALTH_BORDER,
-          HEALTH_FILL,
           p.getMaxHealth(),
-          (double) p.getHealth() / (double) p.getMaxHealth(),
+          DrawingBarSegment.listOf(HEALTH_FILL, (double) p.getHealth() / (double) p.getMaxHealth()),
           p.getHealth() + "/" + p.getMaxHealth(),
           f);
       barStartX += barWidth + X_MARGIN;
@@ -142,36 +146,22 @@ public final class HeaderPanel extends JPanel {
         maxMana.put(p, p.getMana() + p.getManaPerTurn());
       }
 
-      // Mana bar - bit of custom work because of manaPerTurn
+      // Mana bar.
       drawBar(
           g2d,
           barStartX,
           barWidth,
           MANA_BORDER,
-          MANA_FILL,
           maxMana.get(p),
-          (double) p.getMana() / (double) maxMana.get(p),
-          "",
+          DrawingBarSegment.listOf(
+              MANA_FILL,
+              (double) p.getMana() / (double) maxMana.get(p),
+              MANA_PER_TURN_FILL,
+              Math.min(
+                  (double) (maxMana.get(p) - p.getMana()) / (double) maxMana.get(p),
+                  (double) p.getManaPerTurn() / (double) maxMana.get(p))),
+          p.getMana() + " (" + (p.getManaPerTurn() >= 0 ? "+" : "-") + p.getManaPerTurn() + ")",
           f);
-
-      double pManaPT =
-          Math.min(
-              (double) (maxMana.get(p) - p.getMana()) / (double) maxMana.get(p),
-              (double) p.getManaPerTurn() / (double) maxMana.get(p));
-      g2d.setColor(MANA_PER_TURN_FILL);
-      g2d.fillRect(
-          barStartX
-              + STROKE / 2
-              + (int)
-                  Math.ceil((barWidth - STROKE) * (double) p.getMana() / (double) maxMana.get(p)),
-          MARGIN + STROKE / 2,
-          (int) Math.ceil((barWidth - STROKE) * pManaPT),
-          HEIGHT - MARGIN * 2 - STROKE);
-      g2d.setColor(TEXT_COLOR);
-      String manaText =
-          p.getMana() + " (" + (p.getManaPerTurn() >= 0 ? "+" : "-") + p.getManaPerTurn() + ")";
-      int manaTextWidth = g2d.getFontMetrics().stringWidth(manaText);
-      g2d.drawString(manaText, barStartX + (barWidth - manaTextWidth) / 2, HEIGHT / 2 + STROKE);
 
       // research bar
       barStartX += barWidth + X_MARGIN;
@@ -184,10 +174,17 @@ public final class HeaderPanel extends JPanel {
           LEVEL_START,
           barWidth,
           EXP_BORDER,
-          EXP_FILL,
           p.getResearchRequirement(),
-          (double) p.getResearch() / p.getResearchRequirement(),
-          (int) (p.getResearch()) + "/" + p.getResearchRequirement(),
+          DrawingBarSegment.listOf(
+              EXP_FILL,
+              (double) p.getResearch() / p.getResearchRequirement(),
+              EXP_PER_TURN_FILL,
+              Math.min(p.getResearchPerTurn(), p.getResearchRemaining())
+                  / (double) p.getResearchRequirement()),
+          p.getResearch()
+              + (p.getResearchPerTurn() > 0 ? " ( +" + p.getResearchPerTurn() + ") " : "")
+              + "/"
+              + p.getResearchRequirement(),
           f);
 
       // Draw level on top of bar
@@ -211,9 +208,8 @@ public final class HeaderPanel extends JPanel {
    * @param X - the x coordinate of the top left corner
    * @param width - the width of the bar to draw.
    * @param border - the color with which to draw the border.
-   * @param fill - the color with which to fill.
+   * @param segments - the segments to fill.
    * @param maxVal - the value the full bar currently corresponds to
-   * @param percentFull - the percentage to fill
    * @param text - the text to draw.
    */
   private void drawBar(
@@ -221,9 +217,8 @@ public final class HeaderPanel extends JPanel {
       final int X,
       final int width,
       Color border,
-      Color fill,
       int maxVal,
-      double percentFull,
+      List<DrawingBarSegment> segments,
       String text,
       Font f) {
     ImageIndex.drawBar(
@@ -235,9 +230,8 @@ public final class HeaderPanel extends JPanel {
         BACK_COLOR,
         border,
         STROKE,
-        fill,
         maxVal,
-        percentFull,
+        segments,
         text,
         TEXT_COLOR,
         f,
