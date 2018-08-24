@@ -5,13 +5,18 @@ import model.board.Board;
 import model.game.Game;
 import model.game.HumanPlayer;
 import model.game.Player;
-import model.unit.commander.Bhen;
+import model.unit.building.Buildings;
+import model.unit.combatant.FileCombatant;
 import model.unit.dummy.DummyCommander;
 import view.gui.Frame;
 
 public final class Main {
   /** Simple main method to test out Frame features */
   public static void main(String[] args) {
+    // Force unit and building loading.
+    FileCombatant.getCombatantsForAge(1);
+    Buildings.getBuildingsForLevel(1);
+
     String boardFilename = args.length > 0 ? args[0] : "sample_board.csv";
     Board board = BoardReader.readBoard("game/boards/" + boardFilename);
 

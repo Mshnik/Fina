@@ -39,7 +39,7 @@ public final class Buildings {
       String[] buildingLines = TextIO.read(BUILDINGS_FILE).split("\\n");
       for (String line : buildingLines) {
         String[] comps = line.split(",");
-        if (comps.length == 0) continue; // Blank line.
+        if (comps.length == 0 || comps[0].isEmpty()) continue; // Blank line.
         if (comps[0].equals("Name")) continue; // Header line.
 
         try {
@@ -50,7 +50,7 @@ public final class Buildings {
           int costScaling = Integer.parseInt(comps[4]);
           int health = Integer.parseInt(comps[6]);
 
-          String[] visionComps = comps[7].split(", ");
+          String[] visionComps = comps[7].split("\\+");
           int vision = Integer.parseInt(visionComps[0]);
           boolean hasEagleEye = visionComps.length >= 2 && visionComps[1].equals("Eagle Eye");
 
@@ -59,7 +59,7 @@ public final class Buildings {
                   new Stat(StatType.MAX_HEALTH, health), new Stat(StatType.VISION_RANGE, vision));
 
           List<Terrain> validTerrain =
-              Arrays.stream(comps[8].split(", "))
+              Arrays.stream(comps[8].split("-"))
                   .map(s -> Terrain.valueOf(s.toUpperCase()))
                   .collect(Collectors.toList());
           String buildingType = comps[9];
@@ -117,9 +117,9 @@ public final class Buildings {
                       allUnitModifierEffects.ancientGroundEffect);
               break;
             case "PlayerModifierBuilding":
-              EffectPair<StartOfTurnEffect> startOfTurnEffectEffects = getStartOfTurnEffects(name);
+              EffectPair<PlayerModifierEffect> playerModifierEffects = getPlayerModifierEffects(name);
               building =
-                  new StartOfTurnEffectBuilding(
+                  new PlayerModifierBuilding(
                       null,
                       name,
                       imageFilename,
@@ -128,8 +128,8 @@ public final class Buildings {
                       costScaling,
                       null,
                       stats,
-                      startOfTurnEffectEffects.nonAncientGroundEffect,
-                      startOfTurnEffectEffects.ancientGroundEffect);
+                      playerModifierEffects.nonAncientGroundEffect,
+                      playerModifierEffects.ancientGroundEffect);
               break;
             default:
               throw new RuntimeException("Got unknown building type: " + buildingType);
