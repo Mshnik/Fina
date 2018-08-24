@@ -30,7 +30,7 @@ public final class Baracks extends Building implements Summoner {
           new Stat(StatType.VISION_RANGE, 1));
 
   public Baracks(Player owner, Tile tile) throws RuntimeException, IllegalArgumentException {
-    super(owner, NAME, "tower.png", LEVEL, COST, tile, STATS);
+    super(owner, NAME, "tower.png", LEVEL, COST, COST, tile, STATS);
   }
 
   /** Baracks are able to summon new units */

@@ -40,7 +40,7 @@ public abstract class MovingUnit extends Unit {
       Tile startingTile,
       Stats stats)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, imageFilename, level, manaCost, startingTile, stats);
+    super(owner, name, imageFilename, level, manaCost, 0, startingTile, stats);
   }
 
   /**

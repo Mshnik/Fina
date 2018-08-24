@@ -44,6 +44,7 @@ public final class StartOfTurnEffectBuilding extends Building {
    * @param imageFilename - the image to draw when drawing this unit.
    * @param level - the level of this model.unit - the age this belongs to
    * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
+   * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond the first. Should be a non-negative number.
    * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
    *     this.
    * @param stats - the base unmodified stats of this model.unit. stats that remain used are
@@ -52,19 +53,20 @@ public final class StartOfTurnEffectBuilding extends Building {
    * @param untranslatedCloud - the effect cloud of the effect this building grants. May be null if
    *     not used. Should be centered on (0,0).
    */
-  public StartOfTurnEffectBuilding(
+  StartOfTurnEffectBuilding(
       Player owner,
       String name,
       String imageFilename,
       int level,
       int manaCost,
+      int manaCostScaling,
       Tile tile,
       Stats stats,
       StartOfTurnEffect startOfTurnEffect,
       int value,
       Cloud untranslatedCloud)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, imageFilename, level, manaCost, tile, stats);
+    super(owner, name, imageFilename, level, manaCost, manaCostScaling, tile, stats);
     this.startOfTurnEffect = startOfTurnEffect;
     this.value = value;
     this.cloud = untranslatedCloud;
@@ -78,6 +80,7 @@ public final class StartOfTurnEffectBuilding extends Building {
         getImgFilename(),
         level,
         manaCost,
+        manaCostScaling,
         location,
         getStats(),
         startOfTurnEffect,

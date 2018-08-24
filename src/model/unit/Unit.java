@@ -42,6 +42,9 @@ public abstract class Unit implements Stringable {
   /** The mana spent to summon this model.unit */
   public final int manaCost;
 
+  /** The additional mana cost to summon each copy of this unit past the first. */
+  public final int manaCostScaling;
+
   /** The player that owns this model.unit */
   public final Player owner;
 
@@ -68,12 +71,12 @@ public abstract class Unit implements Stringable {
    * owner as a model.unit that player owns, Subtracts manaCost from the owner, but throws a
    * runtimeException if the owner doesn't have enough mana. Tile and owner can be null in a dummy
    * (not on model.board) instance
-   *
-   * @param owner - the player owner of this model.unit
+   *  @param owner - the player owner of this model.unit
    * @param name - the name of this model.unit. Can be generic, multiple units can share a name
-   * @param imageFilename
+   * @param imageFilename - the image to use to represent this unit.
    * @param level - the level of this model.unit - the age this belongs to
    * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
+   * @param manaCostScaling - the additional cost to pay for each copy of this unit beyond the first.
    * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
    *     this.
    * @param stats - the base unmodified stats of this model.unit.
@@ -84,7 +87,7 @@ public abstract class Unit implements Stringable {
       String imageFilename,
       int level,
       int manaCost,
-      Tile tile,
+      int manaCostScaling, Tile tile,
       Stats stats)
       throws IllegalArgumentException, RuntimeException {
     if (manaCost < 0)
@@ -97,6 +100,7 @@ public abstract class Unit implements Stringable {
     this.name = name;
     this.imageFilename = imageFilename;
     this.manaCost = manaCost;
+    this.manaCostScaling = manaCostScaling;
     this.stats = new Stats(stats, null);
     health = getMaxHealth();
     modifiers = new LinkedList<>();
@@ -126,6 +130,11 @@ public abstract class Unit implements Stringable {
   /** Returns the mana cost of this unit. */
   public int getManaCost() {
     return manaCost;
+  }
+
+  /** Returns the mana cost scaling of this unit. */
+  public int getManaCostScaling() {
+    return manaCostScaling;
   }
 
   /** Refreshes this' stats with the locally stored modifiers */

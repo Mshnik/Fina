@@ -57,6 +57,7 @@ public abstract class Building extends Unit {
    * @param imageFilename - the image to draw when drawing this unit.
    * @param level - the level of this model.unit - the age this belongs to
    * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
+   * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond the first. Should be non-negative.
    * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
    *     this.
    * @param stats - the base unmodified stats of this model.unit. stats that remain used are
@@ -67,10 +68,11 @@ public abstract class Building extends Unit {
       String imageFilename,
       int level,
       int manaCost,
+      int manaCostScaling,
       Tile tile,
       Stats stats)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, imageFilename, level, manaCost, tile, stats);
+    super(owner, name, imageFilename, level, manaCost, manaCostScaling, tile, stats);
     if (tile != null && tile.terrain != Terrain.ANCIENT_GROUND) {
       throw new IllegalArgumentException("Can't construct building on non Ancient Ground terrain");
     }
