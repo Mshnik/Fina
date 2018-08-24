@@ -1,7 +1,6 @@
 package model.unit.combatant;
 
 import java.util.Random;
-import model.unit.Combatant;
 import model.unit.Unit;
 import model.unit.commander.Bhen;
 import model.unit.modifier.CustomModifier;

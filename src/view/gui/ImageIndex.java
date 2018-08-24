@@ -15,7 +15,7 @@ import model.board.Board;
 import model.board.Direction;
 import model.board.Terrain;
 import model.board.Tile;
-import model.unit.Building;
+import model.unit.building.Building;
 import model.unit.MovingUnit;
 import model.unit.Unit;
 import view.gui.panel.GamePanel;

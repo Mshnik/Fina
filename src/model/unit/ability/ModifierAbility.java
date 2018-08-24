@@ -1,7 +1,7 @@
 package model.unit.ability;
 
 import java.util.Set;
-import model.unit.Commander;
+import model.unit.commander.Commander;
 import model.unit.Unit;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.ModifierBundle;

@@ -3,7 +3,6 @@ package model.unit.building;
 import java.util.ArrayList;
 import model.board.Tile;
 import model.game.Player;
-import model.unit.Building;
 import model.unit.Summoner;
 import model.unit.Unit;
 import model.unit.stat.Stats;

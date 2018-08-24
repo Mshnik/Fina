@@ -1,4 +1,4 @@
-package model.unit;
+package model.unit.combatant;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import model.board.Tile;
 import model.game.Player;
+import model.unit.MovingUnit;
+import model.unit.Unit;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.Modifiers;

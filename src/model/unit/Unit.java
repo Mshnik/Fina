@@ -12,6 +12,8 @@ import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
 import model.game.Stringable;
+import model.unit.combatant.Combatant;
+import model.unit.commander.Commander;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.Modifiers;

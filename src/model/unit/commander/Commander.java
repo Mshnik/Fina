@@ -1,14 +1,18 @@
-package model.unit;
+package model.unit.commander;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
+import model.unit.MovingUnit;
+import model.unit.Summoner;
+import model.unit.Unit;
 import model.unit.ability.Ability;
+import model.unit.building.Building;
 import model.unit.building.Buildings;
+import model.unit.combatant.Combatant;
 import model.unit.combatant.FileCombatant;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;

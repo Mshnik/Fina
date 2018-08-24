@@ -7,7 +7,7 @@ import java.util.Set;
 import model.board.Board;
 import model.board.Tile;
 import model.game.Stringable;
-import model.unit.Commander;
+import model.unit.commander.Commander;
 import model.unit.Unit;
 import model.util.MPoint;
 

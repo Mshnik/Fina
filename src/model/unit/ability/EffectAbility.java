@@ -1,8 +1,8 @@
 package model.unit.ability;
 
 import java.util.Set;
-import model.unit.Combatant;
-import model.unit.Commander;
+import model.unit.combatant.Combatant;
+import model.unit.commander.Commander;
 import model.unit.MovingUnit;
 import model.unit.Unit;
 import model.util.MPoint;

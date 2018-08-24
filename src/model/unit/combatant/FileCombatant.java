@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
-import model.unit.Combatant;
 import model.unit.Unit;
 import model.unit.modifier.Modifiers;
 import model.unit.stat.Stat;

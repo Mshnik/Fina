@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import model.board.Board;
 import model.board.Tile;
-import model.unit.Commander;
+import model.unit.commander.Commander;
 import model.unit.Unit;
 import model.unit.ability.Ability;
 

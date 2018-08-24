@@ -2,7 +2,6 @@ package model.unit.building;
 
 import model.board.Tile;
 import model.game.Player;
-import model.unit.Building;
 import model.unit.Unit;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.ModifierBundle;

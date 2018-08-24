@@ -1,10 +1,10 @@
-package model.unit;
+package model.unit.building;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
+import model.unit.combatant.Combatant;
+import model.unit.Unit;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.StatModifier;
