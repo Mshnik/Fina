@@ -270,14 +270,14 @@ public final class Buildings {
                     1)),
             new ModifierBundle(
                 new StatModifier(
-                    "Farsight - Comms Towe",
+                    "Farsight - Comms Tower",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
                     StatType.VISION_RANGE,
                     ModificationType.ADD,
                     3),
                 new StatModifier(
-                    "Quickness - Comms Towe",
+                    "Quickness - Comms Tower",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
                     StatType.MOVEMENT_TOTAL,
