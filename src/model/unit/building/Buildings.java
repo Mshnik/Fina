@@ -69,7 +69,7 @@ public final class Buildings {
           Building building;
           switch (buildingType) {
             case "Temple":
-              building = new Temple(null, null);
+              building = new Temple(null);
               break;
             case "NoEffectBuilding":
               building =
@@ -81,7 +81,6 @@ public final class Buildings {
                       baseCost,
                       costScaling,
                       validTerrain,
-                      null,
                       stats);
               break;
             case "SummonerBuilding":
@@ -95,7 +94,6 @@ public final class Buildings {
                       baseCost,
                       costScaling,
                       validTerrain,
-                      null,
                       stats,
                       summoningRadii.nonAncientGroundEffect,
                       summoningRadii.ancientGroundEffect);
@@ -111,7 +109,6 @@ public final class Buildings {
                       baseCost,
                       costScaling,
                       validTerrain,
-                      null,
                       stats,
                       startOfTurnEffects.nonAncientGroundEffect,
                       startOfTurnEffects.ancientGroundEffect);
@@ -127,7 +124,6 @@ public final class Buildings {
                       baseCost,
                       costScaling,
                       validTerrain,
-                      null,
                       stats,
                       allUnitModifierEffects.nonAncientGroundEffect,
                       allUnitModifierEffects.ancientGroundEffect);
@@ -144,7 +140,6 @@ public final class Buildings {
                       baseCost,
                       costScaling,
                       validTerrain,
-                      null,
                       stats,
                       playerModifierEffects.nonAncientGroundEffect,
                       playerModifierEffects.ancientGroundEffect);
@@ -196,14 +191,6 @@ public final class Buildings {
   /** Helper to get StartOfTurnEffects by building name. Throws for unknown name. */
   private static EffectPair<StartOfTurnEffect> getStartOfTurnEffects(String buildingName) {
     switch (buildingName) {
-      case "Well":
-        return EffectPair.of(
-            new StartOfTurnEffect(StartOfTurnEffectType.MANA_GENERATION, 30, null),
-            new StartOfTurnEffect(StartOfTurnEffectType.MANA_GENERATION, 100, null));
-      case "Library":
-        return EffectPair.of(
-            new StartOfTurnEffect(StartOfTurnEffectType.RESEARCH_GAIN, 5, null),
-            new StartOfTurnEffect(StartOfTurnEffectType.RESEARCH_GAIN, 15, null));
       case "Fountain":
         return EffectPair.of(
             new StartOfTurnEffect(
@@ -309,6 +296,14 @@ public final class Buildings {
   /** Helper to get PlayerModifier effects for the given building name. Throws for unknown name. */
   private static EffectPair<PlayerModifierEffect> getPlayerModifierEffects(String buildingName) {
     switch (buildingName) {
+      case "Well":
+        return EffectPair.of(
+            new PlayerModifierEffect(PlayerModifierEffectType.MANA_GENERATION, 30),
+            new PlayerModifierEffect(PlayerModifierEffectType.MANA_GENERATION, 100));
+      case "Library":
+        return EffectPair.of(
+            new PlayerModifierEffect(PlayerModifierEffectType.RESEARCH_GENERATION, 5),
+            new PlayerModifierEffect(PlayerModifierEffectType.RESEARCH_GENERATION, 15));
       case "Laboratory":
         return EffectPair.of(
             null, new PlayerModifierEffect(PlayerModifierEffectType.CAST_CLOUD_BOOST, 1));

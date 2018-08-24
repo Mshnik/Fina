@@ -37,7 +37,8 @@ public final class Modifiers {
 
   /** Modifier that allows a unit to see into woods and past mountains. */
   public static final Modifier EAGLE_EYE =
-      new CustomModifier("Eagle Eye",
+      new CustomModifier(
+          "Eagle Eye",
           "This unit can see into woods and past mountains.",
           null,
           Integer.MAX_VALUE,

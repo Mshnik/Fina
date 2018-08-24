@@ -3,7 +3,6 @@ package model.unit.building;
 import java.util.Collections;
 import java.util.List;
 import model.board.Terrain;
-import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.combatant.Combatant;
@@ -36,8 +35,6 @@ public abstract class Building<E> extends Unit {
    * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond
    *     the first. Should be non-negative.
    * @param validTerrain - types of terrain this building can be built on.
-   * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
-   *     this.
    * @param stats - the base unmodified stats of this model.unit. stats that remain used are
    */
   public Building(
@@ -48,15 +45,10 @@ public abstract class Building<E> extends Unit {
       int manaCost,
       int manaCostScaling,
       List<Terrain> validTerrain,
-      Tile tile,
       Stats stats)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, imageFilename, level, manaCost, manaCostScaling, tile, stats);
+    super(owner, name, imageFilename, level, manaCost, manaCostScaling, stats);
     this.validTerrain = Collections.unmodifiableList(validTerrain);
-    if (tile != null && !validTerrain.contains(tile.terrain)) {
-      throw new IllegalArgumentException(
-          "Can't construct building on " + tile.terrain + ", valid types are " + validTerrain);
-    }
   }
 
   /**

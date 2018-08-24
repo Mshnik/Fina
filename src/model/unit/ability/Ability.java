@@ -7,8 +7,8 @@ import java.util.Set;
 import model.board.Board;
 import model.board.Tile;
 import model.game.Stringable;
-import model.unit.commander.Commander;
 import model.unit.Unit;
+import model.unit.commander.Commander;
 import model.util.MPoint;
 
 /** Parent class of abilities useable by Commanders. */

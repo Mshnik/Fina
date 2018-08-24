@@ -100,7 +100,12 @@ public final class Tile implements Comparable<Tile>, MatrixElement, Stringable {
     if (occupyingUnit != null)
       throw new RuntimeException(
           "Can't add model.unit to " + this + ", already occupied by " + occupyingUnit);
-    if (u == null) throw new IllegalArgumentException("Can't add a null model.unit to " + this);
+    if (u == null) {
+      throw new IllegalArgumentException("Can't add a null model.unit to " + this);
+    }
+    if (!u.canOccupy(terrain)) {
+      throw new RuntimeException("Unit can't occupy " + terrain);
+    }
     occupyingUnit = u;
   }
 

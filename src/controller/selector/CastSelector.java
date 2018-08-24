@@ -3,8 +3,8 @@ package controller.selector;
 import controller.game.GameController;
 import java.util.ArrayList;
 import model.board.Tile;
-import model.unit.commander.Commander;
 import model.unit.ability.Ability;
+import model.unit.commander.Commander;
 
 public final class CastSelector extends LocationSelector {
   /** The commander doing the casting */

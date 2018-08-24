@@ -1,6 +1,6 @@
 Name,Image Filename,Level,Cost,Cost Scaling,Type,Health,Vision,Valid Terrain,Building Type,Regular Effect,Ancient Ground Effect
-Well,temple.png,1,300,150,Utility,150,0,Grass-Woods-Ancient_Ground,StartOfTurnEffectBuilding,+ 30 bonus mana gen / turn,+ 100 bonus mana gen / turn
-Library,temple.png,1,100,300,Utility,200,0,Grass-Woods-Ancient_Ground,StartOfTurnEffectBuilding,+ 5 exp / turn,+ 15 exp / turn
+Well,temple.png,1,300,150,Utility,150,0,Grass-Woods-Ancient_Ground,PlayerModifierBuilding,+ 30 bonus mana gen / turn,+ 100 bonus mana gen / turn
+Library,temple.png,1,100,300,Utility,200,0,Grass-Woods-Ancient_Ground,PlayerModifierBuilding,+ 5 exp / turn,+ 15 exp / turn
 Blockade,temple.png,1,50,0,Defensive,70,0,Grass-Woods-Ancient_Ground,NoEffectBuilding,-,-
 Portal,temple.png,1,250,100,Offensive,100,0,Grass-Woods-Ancient_Ground,SummonerBuilding,Summon radius 1,Summon radius 3
 ,,,,,,,,,,,

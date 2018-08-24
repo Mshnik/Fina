@@ -2,7 +2,6 @@ package model.unit.building;
 
 import java.util.List;
 import model.board.Terrain;
-import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.building.StartOfTurnEffectBuilding.StartOfTurnEffect;
@@ -18,10 +17,6 @@ public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect>
 
   /** Types of effects that can occur at start of each turn. */
   public enum StartOfTurnEffectType {
-    /** Gain value extra mana per turn (cloud is null) */
-    MANA_GENERATION,
-    /** Gain value extra research per turn (cloud is null) */
-    RESEARCH_GAIN,
     /** Heal all combatants in range by value health per turn */
     HEAL_COMBATANT
   }
@@ -37,7 +32,7 @@ public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect>
     /** The cloud the effect is applied to, if any. */
     public final Cloud cloud;
 
-    public StartOfTurnEffect(StartOfTurnEffectType type, int value, Cloud cloud) {
+    StartOfTurnEffect(StartOfTurnEffectType type, int value, Cloud cloud) {
       this.type = type;
       this.value = value;
       this.cloud = cloud;
@@ -64,8 +59,6 @@ public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect>
    * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond
    *     the first. Should be a non-negative number.
    * @param validTerrain - types of terrain this can be built on.
-   * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
-   *     this.
    * @param stats - the base unmodified stats of this model.unit. stats that remain used are
    * @param nonAncientGroundEffect - the effect this building grants if not built on ancient ground
    * @param ancientGroundEffect - the effect this building grants if built on ancient ground
@@ -78,12 +71,11 @@ public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect>
       int manaCost,
       int manaCostScaling,
       List<Terrain> validTerrain,
-      Tile tile,
       Stats stats,
       StartOfTurnEffect nonAncientGroundEffect,
       StartOfTurnEffect ancientGroundEffect)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, tile, stats);
+    super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, stats);
     this.nonAncientGroundEffect = nonAncientGroundEffect;
     this.ancientGroundEffect = ancientGroundEffect;
   }
@@ -96,7 +88,7 @@ public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect>
   }
 
   @Override
-  public Unit clone(Player owner, Tile location) {
+  protected Unit createClone(Player owner) {
     return new StartOfTurnEffectBuilding(
         owner,
         name,
@@ -105,7 +97,6 @@ public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect>
         manaCost,
         manaCostScaling,
         getValidTerrain(),
-        location,
         getStats(),
         nonAncientGroundEffect,
         ancientGroundEffect);

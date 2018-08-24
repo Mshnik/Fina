@@ -2,7 +2,6 @@ package model.unit.building;
 
 import java.util.Collections;
 import model.board.Terrain;
-import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.modifier.Modifier;
@@ -77,7 +76,7 @@ public final class Temple extends Building<Void> {
   /** Stats for maxHealth, defenses, range and visionRange of baracks */
   private static final Stats STATS = new Stats(new Stat(StatType.MAX_HEALTH, 1200));
 
-  public Temple(Player owner, Tile tile) throws RuntimeException, IllegalArgumentException {
+  public Temple(Player owner) throws RuntimeException, IllegalArgumentException {
     super(
         owner,
         NAME,
@@ -86,14 +85,13 @@ public final class Temple extends Building<Void> {
         COST,
         COST,
         Collections.singletonList(Terrain.ANCIENT_GROUND),
-        tile,
         STATS);
   }
 
   /** Creates a new Temple for the given owner, on the given location */
   @Override
-  public Unit clone(Player owner, Tile location) {
-    return new Temple(owner, location);
+  protected Unit createClone(Player owner) {
+    return new Temple(owner);
   }
 
   /** Returns the index of this in its owners' temples */

@@ -137,7 +137,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
       Stats stats,
       int startingLevel)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, imageFilename, 0, 0, startingTile, stats);
+    super(owner, name, imageFilename, 0, 0, stats);
     level = startingLevel;
     research = 0;
     currentTurnCasts = new LinkedList<Ability>();
@@ -148,11 +148,14 @@ public abstract class Commander extends MovingUnit implements Summoner {
     for (int i = 1; i < MAX_LEVEL; i++) { // leave abilityChoices[0] = 0
       abilityChoices[i] = -1;
     }
+    location = startingTile;
+    location.addOccupyingUnit(this);
+    owner.addUnit(this);
   }
 
   /** Throws a runtime exception - commanders are not clonable */
   @Override
-  public Unit clone(Player owner, Tile t) {
+  protected Unit createClone(Player owner) {
     throw new RuntimeException("Can't clone commander " + this);
   }
 

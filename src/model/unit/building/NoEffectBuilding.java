@@ -2,7 +2,6 @@ package model.unit.building;
 
 import java.util.List;
 import model.board.Terrain;
-import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.stat.Stats;
@@ -24,8 +23,6 @@ public final class NoEffectBuilding extends Building<Void> {
    * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond
    *     the first. Should be non-negative.
    * @param validTerrain - types of terrain this can be built on.
-   * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
-   *     this.
    * @param stats - the base unmodified stats of this model.unit. stats that remain used are
    */
   NoEffectBuilding(
@@ -36,10 +33,9 @@ public final class NoEffectBuilding extends Building<Void> {
       int manaCost,
       int manaCostScaling,
       List<Terrain> validTerrain,
-      Tile tile,
       Stats stats)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, tile, stats);
+    super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, stats);
   }
 
   @Override
@@ -48,7 +44,7 @@ public final class NoEffectBuilding extends Building<Void> {
   }
 
   @Override
-  public Unit clone(Player owner, Tile location) {
+  protected Unit createClone(Player owner) {
     return new NoEffectBuilding(
         owner,
         name,
@@ -57,7 +53,6 @@ public final class NoEffectBuilding extends Building<Void> {
         manaCost,
         manaCostScaling,
         getValidTerrain(),
-        location,
         getStats());
   }
 }

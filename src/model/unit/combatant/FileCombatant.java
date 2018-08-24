@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import model.board.Terrain;
-import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.modifier.Modifiers;
@@ -143,10 +142,9 @@ public final class FileCombatant extends Combatant {
    * tile.
    *
    * @param owner - the owner of the new FileCombatant
-   * @param startingTile - the tile on which the new FileCombatant is spawned.
    * @param dummy - the FileCombatant to clone
    */
-  private FileCombatant(Player owner, Tile startingTile, FileCombatant dummy) {
+  private FileCombatant(Player owner, FileCombatant dummy) {
     super(
         owner,
         dummy.name,
@@ -154,14 +152,13 @@ public final class FileCombatant extends Combatant {
         dummy.getLevel(),
         dummy.combatantClasses,
         dummy.manaCost,
-        startingTile,
         dummy.getStats());
   }
 
   /** Clones this model.unit for the given player */
   @Override
-  public Unit clone(Player owner, Tile t) {
-    return new FileCombatant(owner, t, this);
+  protected Unit createClone(Player owner) {
+    return new FileCombatant(owner, this);
   }
 
   /**
@@ -182,6 +179,6 @@ public final class FileCombatant extends Combatant {
       List<CombatantClass> classes,
       int manaCost,
       Stats stats) {
-    super(null, name, imageFilename, level, classes, manaCost, null, stats);
+    super(null, name, imageFilename, level, classes, manaCost, stats);
   }
 }

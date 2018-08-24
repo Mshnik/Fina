@@ -112,8 +112,6 @@ public abstract class Combatant extends MovingUnit {
    * @param imageFilename - the image to draw when drawing this unit.
    * @param level - the level of this unit - the age this belongs to
    * @param manaCost - the cost of summoning this unit. Should be a positive number.
-   * @param startingTile - the tile this unit begins the model.game on. Also notifies the tile of
-   *     this.
    * @param stats - the base unmodified stats of this unit.
    */
   public Combatant(
@@ -123,10 +121,9 @@ public abstract class Combatant extends MovingUnit {
       int level,
       List<CombatantClass> classes,
       int manaCost,
-      Tile startingTile,
       Stats stats)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, imageFilename, level, manaCost, startingTile, stats);
+    super(owner, name, imageFilename, level, manaCost, stats);
 
     combatantClasses = Collections.unmodifiableList(classes);
 

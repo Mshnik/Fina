@@ -36,8 +36,6 @@ public final class SummonerBuilding extends Building<Integer> implements Summone
    * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond
    *     the first. Should be a non-negative number.
    * @param validTerrain - types of terrain this can be built on.
-   * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
-   *     this.
    * @param stats - the base unmodified stats of this model.unit. stats that remain used are
    * @param nonAncientGroundSummonRadius - summon radius for this if this is on ancient ground.
    * @param ancientGroundSummonRadius - summon radius for this if this is on ancient ground.
@@ -50,12 +48,11 @@ public final class SummonerBuilding extends Building<Integer> implements Summone
       int manaCost,
       int manaCostScaling,
       List<Terrain> validTerrain,
-      Tile tile,
       Stats stats,
       int nonAncientGroundSummonRadius,
       int ancientGroundSummonRadius)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, tile, stats);
+    super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, stats);
     this.nonAncientGroundSummonRadius = nonAncientGroundSummonRadius;
     this.ancientGroundSummonRadius = ancientGroundSummonRadius;
   }
@@ -91,7 +88,7 @@ public final class SummonerBuilding extends Building<Integer> implements Summone
   }
 
   @Override
-  public Unit clone(Player owner, Tile location) {
+  protected Unit createClone(Player owner) {
     return new SummonerBuilding(
         owner,
         name,
@@ -100,7 +97,6 @@ public final class SummonerBuilding extends Building<Integer> implements Summone
         manaCost,
         manaCostScaling,
         getValidTerrain(),
-        location,
         getStats(),
         nonAncientGroundSummonRadius,
         ancientGroundSummonRadius);

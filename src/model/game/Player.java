@@ -7,12 +7,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
-import model.unit.combatant.Combatant;
-import model.unit.commander.Commander;
 import model.unit.Unit;
 import model.unit.building.AllUnitModifierBuilding;
+import model.unit.building.PlayerModifierBuilding;
+import model.unit.building.PlayerModifierBuilding.PlayerModifierEffectType;
 import model.unit.building.StartOfTurnEffectBuilding;
 import model.unit.building.Temple;
+import model.unit.combatant.Combatant;
+import model.unit.commander.Commander;
 import model.util.Cloud;
 import model.util.MPoint;
 
@@ -107,6 +109,11 @@ public abstract class Player implements Stringable {
     manaPerTurn = 0;
     for (Unit u : units) {
       manaPerTurn += u.getManaPerTurn();
+      if (u instanceof PlayerModifierBuilding
+          && ((PlayerModifierBuilding) u).getEffect().effectType
+              == PlayerModifierEffectType.MANA_GENERATION) {
+        manaPerTurn += ((PlayerModifierBuilding) u).getEffect().value;
+      }
     }
   }
 
@@ -372,12 +379,6 @@ public abstract class Player implements Stringable {
               ((StartOfTurnEffectBuilding) u).getEffect();
 
           switch (effect.type) {
-            case MANA_GENERATION:
-              commander.addMana(effect.value);
-              break;
-            case RESEARCH_GAIN:
-              commander.addResearch(effect.value);
-              break;
             case HEAL_COMBATANT:
               for (Unit u2 : getUnitsInCloud(effect.cloud.translate(u.getLocation().getPoint()))) {
                 if (u2 instanceof Combatant) {

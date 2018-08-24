@@ -73,14 +73,14 @@ public abstract class Unit implements Stringable {
    * owner as a model.unit that player owns, Subtracts manaCost from the owner, but throws a
    * runtimeException if the owner doesn't have enough mana. Tile and owner can be null in a dummy
    * (not on model.board) instance
-   *  @param owner - the player owner of this model.unit
+   *
+   * @param owner - the player owner of this model.unit
    * @param name - the name of this model.unit. Can be generic, multiple units can share a name
    * @param imageFilename - the image to use to represent this unit.
    * @param level - the level of this model.unit - the age this belongs to
    * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
-   * @param manaCostScaling - the additional cost to pay for each copy of this unit beyond the first.
-   * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
-   *     this.
+   * @param manaCostScaling - the additional cost to pay for each copy of this unit beyond the
+   *     first.
    * @param stats - the base unmodified stats of this model.unit.
    */
   public Unit(
@@ -89,7 +89,7 @@ public abstract class Unit implements Stringable {
       String imageFilename,
       int level,
       int manaCost,
-      int manaCostScaling, Tile tile,
+      int manaCostScaling,
       Stats stats)
       throws IllegalArgumentException, RuntimeException {
     if (manaCost < 0)
@@ -107,22 +107,22 @@ public abstract class Unit implements Stringable {
     health = getMaxHealth();
     modifiers = new LinkedList<>();
     grantedModifiers = new LinkedList<>();
-
-    if (tile != null) {
-      location = tile;
-      location.addOccupyingUnit(this);
-    }
-
-    if (owner != null) {
-      owner.addUnit(this);
-      if (owner.getLevel() < level)
-        throw new RuntimeException(owner + " can't summon model.unit with higher level than it");
-      owner.getCommander().addMana(Math.min(0, -manaCost));
-    }
   }
 
   /** Returns a copy of this for the given player, on the given tile */
-  public abstract Unit clone(Player owner, Tile location);
+  public final Unit clone(Player owner, Tile location) {
+    Unit u = createClone(owner);
+    u.location = location;
+    location.addOccupyingUnit(u);
+    owner.addUnit(u);
+    if (owner.getLevel() < u.level)
+      throw new RuntimeException(owner + " can't summon model.unit with higher level than it");
+    owner.getCommander().addMana(Math.min(0, -u.manaCost));
+    return u;
+  }
+
+  /** Create a copy of this for the given player. Used internally in clone. */
+  protected abstract Unit createClone(Player owner);
 
   /** Returns the level of this unit */
   public int getLevel() {
@@ -367,47 +367,47 @@ public abstract class Unit implements Stringable {
    */
   public boolean addModifier(Modifier m) {
     // Check if modifier is allowed. If not, don't apply and return false.
-    if (! modifierOk(m)) {
+    if (!modifierOk(m)) {
       return false;
     }
-      // Handle stacking mode.
+    // Handle stacking mode.
     Modifier clone = m.cloneInCollection(modifiers);
     switch (m.stacking) {
-        case NONE_DO_NOT_APPLY:
-          // No stacking - if there is a clone, can't apply this.
-          if (clone != null) {
-            return false;
-          }
+      case NONE_DO_NOT_APPLY:
+        // No stacking - if there is a clone, can't apply this.
+        if (clone != null) {
+          return false;
+        }
+        modifiers.add(m);
+        refreshStats();
+        return true;
+      case DURATION_MAX:
+        // Max stacking - if no clone, apply.
+        // Otherwise apply only if duration > other duration.
+        if (clone == null || m.getRemainingTurns() > clone.getRemainingTurns()) {
           modifiers.add(m);
           refreshStats();
           return true;
-        case DURATION_MAX:
-          // Max stacking - if no clone, apply.
-          // Otherwise apply only if duration > other duration.
-          if (clone == null || m.getRemainingTurns() > clone.getRemainingTurns()) {
-            modifiers.add(m);
-            refreshStats();
-            return true;
-          } else {
-            return false;
-          }
-        case DURATION_ADD:
-          // Add stacking 0 if no clone, apply.
-          // Otherwise alter old modifier's turns and count that as applying this one.
-          if (clone == null) {
-            modifiers.add(m);
-            refreshStats();
-          } else {
-            clone.changeRemainingTurns(m.getRemainingTurns());
-          }
-          return true;
-        case STACKABLE:
+        } else {
+          return false;
+        }
+      case DURATION_ADD:
+        // Add stacking 0 if no clone, apply.
+        // Otherwise alter old modifier's turns and count that as applying this one.
+        if (clone == null) {
           modifiers.add(m);
           refreshStats();
-          return true;
-        default:
-          throw new RuntimeException("Unsupported stacking type " + m.stacking);
-      }
+        } else {
+          clone.changeRemainingTurns(m.getRemainingTurns());
+        }
+        return true;
+      case STACKABLE:
+        modifiers.add(m);
+        refreshStats();
+        return true;
+      default:
+        throw new RuntimeException("Unsupported stacking type " + m.stacking);
+    }
   }
 
   /**

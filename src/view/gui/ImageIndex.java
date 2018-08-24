@@ -15,9 +15,9 @@ import model.board.Board;
 import model.board.Direction;
 import model.board.Terrain;
 import model.board.Tile;
-import model.unit.building.Building;
 import model.unit.MovingUnit;
 import model.unit.Unit;
+import model.unit.building.Building;
 import view.gui.panel.GamePanel;
 
 /** Library for lookup of different image resources. Also some drawing functionality */

@@ -2,7 +2,6 @@ package model.unit.building;
 
 import java.util.List;
 import model.board.Terrain;
-import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.building.PlayerModifierBuilding.PlayerModifierEffect;
@@ -13,6 +12,10 @@ public final class PlayerModifierBuilding extends Building<PlayerModifierEffect>
 
   /** Types of effects that can occur at start of each turn. */
   public enum PlayerModifierEffectType {
+    /** Bonus mana generation. */
+    MANA_GENERATION,
+    /** Bonus research. */
+    RESEARCH_GENERATION,
     /** Percent discount on Summoning. */
     SUMMON_DISCOUNT,
     /** Percent discount on Building. */
@@ -24,10 +27,10 @@ public final class PlayerModifierBuilding extends Building<PlayerModifierEffect>
   }
 
   public static final class PlayerModifierEffect {
-    private final PlayerModifierEffectType effectType;
-    private final int value;
+    public final PlayerModifierEffectType effectType;
+    public final int value;
 
-    public PlayerModifierEffect(PlayerModifierEffectType effectType, int value) {
+    PlayerModifierEffect(PlayerModifierEffectType effectType, int value) {
       this.effectType = effectType;
       this.value = value;
     }
@@ -53,8 +56,6 @@ public final class PlayerModifierBuilding extends Building<PlayerModifierEffect>
    * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond
    *     the first. Should be non-negative.
    * @param validTerrain - types of terrain this can be built on.
-   * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
-   *     this.
    * @param stats - the base unmodified stats of this model.unit. stats that remain used are
    * @param nonAncientGroundEffect - the effect this gives if this isn't on ancient ground.
    * @param ancientGroundEffect - the effect this gives if this is on ancient ground.
@@ -67,12 +68,11 @@ public final class PlayerModifierBuilding extends Building<PlayerModifierEffect>
       int manaCost,
       int manaCostScaling,
       List<Terrain> validTerrain,
-      Tile tile,
       Stats stats,
       PlayerModifierEffect nonAncientGroundEffect,
       PlayerModifierEffect ancientGroundEffect)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, tile, stats);
+    super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, stats);
     this.nonAncientGroundEffect = nonAncientGroundEffect;
     this.ancientGroundEffect = ancientGroundEffect;
   }
@@ -85,7 +85,7 @@ public final class PlayerModifierBuilding extends Building<PlayerModifierEffect>
   }
 
   @Override
-  public Unit clone(Player owner, Tile location) {
+  protected Unit createClone(Player owner) {
     return new PlayerModifierBuilding(
         owner,
         name,
@@ -94,7 +94,6 @@ public final class PlayerModifierBuilding extends Building<PlayerModifierEffect>
         manaCost,
         manaCostScaling,
         getValidTerrain(),
-        location,
         getStats(),
         nonAncientGroundEffect,
         ancientGroundEffect);
