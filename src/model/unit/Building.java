@@ -5,9 +5,6 @@ import java.util.LinkedList;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
-import model.unit.building.Baracks;
-import model.unit.building.Temple;
-import model.unit.building.Well;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.StatModifier;
@@ -16,35 +13,6 @@ import model.unit.stat.Stats;
 
 /** Represents a Building on the model.board, controllable by a player */
 public abstract class Building extends Unit {
-
-  /** Index of available buildings, from level -> available buildings - Well - Baracks - Temple */
-  private static final HashMap<Integer, LinkedList<Building>> BUILDINGS;
-
-  static {
-
-    // All available buildings start here
-    Building[] rawBuildings = {
-      new Well(null, null), new Baracks(null, null), new Temple(null, null)
-    };
-
-    // Put by level
-    BUILDINGS = new HashMap<Integer, LinkedList<Building>>();
-    for (Building b : rawBuildings) {
-      if (BUILDINGS.containsKey(b.getLevel())) BUILDINGS.get(b.getLevel()).add(b);
-      else {
-        LinkedList<Building> e = new LinkedList<Building>();
-        e.add(b);
-        BUILDINGS.put(b.getLevel(), e);
-      }
-    }
-  }
-
-  /** Returns a copy of the building index - all available buildings for the given level */
-  public static LinkedList<Building> getBuildings(int level) {
-    LinkedList<Building> buildings = BUILDINGS.get(level);
-    if (buildings == null) return new LinkedList<Building>();
-    else return new LinkedList<Building>(buildings);
-  }
 
   /**
    * Constructor for Building. Also adds this model.unit to the tile it is on as an occupant, and

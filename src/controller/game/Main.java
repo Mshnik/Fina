@@ -21,7 +21,7 @@ public final class Main {
     GameController gc = new GameController(g, f);
 
     Player p1 = new HumanPlayer(g, Color.green);
-    new Bhen(p1, g.board.getTileAt(0, 0));
+    new DummyCommander(p1, g.board.getTileAt(0, 0));
     Player p2 = new HumanPlayer(g, Color.magenta);
     new DummyCommander(p2, g.board.getTileAt(1, 2));
 

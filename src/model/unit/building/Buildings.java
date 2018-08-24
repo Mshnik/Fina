@@ -77,4 +77,9 @@ public final class Buildings {
 
     BUILDINGS = Collections.unmodifiableList(buildings);
   }
+
+  /** Returns a list of all buildings for the given level. */
+  public static List<Building> getBuildingsForLevel(int level) {
+    return BUILDINGS.stream().filter(b -> b.level == level).collect(Collectors.toList());
+  }
 }

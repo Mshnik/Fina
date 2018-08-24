@@ -8,6 +8,7 @@ import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.ability.Ability;
+import model.unit.building.Buildings;
 import model.unit.combatant.FileCombatant;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
@@ -192,7 +193,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
   public boolean hasBuildSpace() {
     ArrayList<Tile> tiles = owner.game.board.getRadialCloud(location, getSummonRange());
     for (Tile t : tiles) {
-      if (!t.isOccupied() && t.terrain == Terrain.ANCIENT_GROUND) return true;
+      if (!t.isOccupied()) return true;
     }
     return false;
   }
@@ -356,7 +357,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
   public Map<String, Building> getBuildables() {
     HashMap<String, Building> units = new HashMap<String, Building>();
     for (int i = 0; i <= getLevel(); i++) {
-      for (Building b : Building.getBuildings(i)) {
+      for (Building b : Buildings.getBuildingsForLevel(i)) {
         units.put(b.name, b);
       }
     }
