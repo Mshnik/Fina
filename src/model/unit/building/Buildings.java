@@ -255,14 +255,14 @@ public final class Buildings {
         return EffectPair.of(
             new ModifierBundle(
                 new StatModifier(
-                    "Farsight - Armory",
+                    "Farsight - Comms Tower",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
                     StatType.VISION_RANGE,
                     ModificationType.ADD,
                     2),
                 new StatModifier(
-                    "Quickness - Armory",
+                    "Quickness - Comms Towe",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
                     StatType.MOVEMENT_TOTAL,
@@ -270,14 +270,14 @@ public final class Buildings {
                     1)),
             new ModifierBundle(
                 new StatModifier(
-                    "Farsight - Armory",
+                    "Farsight - Comms Towe",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
                     StatType.VISION_RANGE,
                     ModificationType.ADD,
                     3),
                 new StatModifier(
-                    "Quickness - Armory",
+                    "Quickness - Comms Towe",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
                     StatType.MOVEMENT_TOTAL,
@@ -312,6 +312,12 @@ public final class Buildings {
                 PlayerModifierEffectType.RESEARCH_GENERATION, 5, nonAncientGroundDescription),
             new PlayerModifierEffect(
                 PlayerModifierEffectType.RESEARCH_GENERATION, 15, ancientGroundDescription));
+      case "Dojo":
+        return EffectPair.of(
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.BONUS_ACTIONS, 1, nonAncientGroundDescription),
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.BONUS_ACTIONS, 2, ancientGroundDescription));
       case "Laboratory":
         return EffectPair.of(
             null,

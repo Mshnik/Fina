@@ -5,7 +5,7 @@ Blockade,temple.png,1,50,0,Defensive,75,0,Grass-Woods-Ancient_Ground,NoEffectBui
 Portal,temple.png,1,250,100,Offensive,75,0,Grass-Woods-Ancient_Ground,SummonerBuilding,Summon radius 1,Summon radius 3
 ,,,,,,,,,,,
 Watchtower,temple.png,2,80,20,Utility,125,2+Eagle Eye,Grass-Woods-Mountain-Ancient_Ground,NoEffectBuilding,--,--
-Dojo,temple.png,2,450,650,Utility,100,0,Grass-Woods-Ancient_Ground,NoEffectBuilding,+ 1 action/turn,+ 2 actions/turn
+Dojo,temple.png,2,450,650,Utility,100,0,Grass-Woods-Ancient_Ground,PlayerModifierBuilding,+ 1 action/turn,+ 2 actions/turn
 ,temple.png,2,300,150,Utility,75,0,Ancient_Ground,Temple,--,"All unit buffs, Varies by # of temples: 1: +2 vision 2: Strengthened +5 Toughness +5 3: +2 move 4: Tenacity 20 5: Strengthed +20 Toughness +10"
 Fountain,temple.png,2,450,200,Defensive,150,0,Grass-Woods-Ancient_Ground,StartOfTurnEffectBuilding,Start of turn heal units in radius 1 by 15 health,Start of turn heal units in radius 2 by 25 health
 Armory,temple.png,2,500,500,Offensive,125,0,Grass-Woods-Ancient_Ground,AllUnitModifierBuilding,All units Strengthened 3,"All units Strengthened 3, Toughness 3"

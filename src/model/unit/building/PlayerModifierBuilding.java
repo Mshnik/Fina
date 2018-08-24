@@ -19,6 +19,8 @@ public final class PlayerModifierBuilding extends Building<PlayerModifierEffect>
     MANA_GENERATION,
     /** Bonus research. */
     RESEARCH_GENERATION,
+    /** Bonus actions each turn. */
+    BONUS_ACTIONS,
     /** Percent discount on Summoning. */
     SUMMON_DISCOUNT,
     /** Percent discount on Building. */
