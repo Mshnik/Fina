@@ -74,7 +74,15 @@ public final class Buildings {
             case "NoEffectBuilding":
               building =
                   new NoEffectBuilding(
-                      null, name, imageFilename, level, baseCost, costScaling, null, stats);
+                      null,
+                      name,
+                      imageFilename,
+                      level,
+                      baseCost,
+                      costScaling,
+                      validTerrain,
+                      null,
+                      stats);
               break;
             case "SummonerBuilding":
               EffectPair<Integer> summoningRadii = getSummoningRadii(name);
@@ -86,6 +94,7 @@ public final class Buildings {
                       level,
                       baseCost,
                       costScaling,
+                      validTerrain,
                       null,
                       stats,
                       summoningRadii.nonAncientGroundEffect,
@@ -101,6 +110,7 @@ public final class Buildings {
                       level,
                       baseCost,
                       costScaling,
+                      validTerrain,
                       null,
                       stats,
                       startOfTurnEffects.nonAncientGroundEffect,
@@ -116,13 +126,15 @@ public final class Buildings {
                       level,
                       baseCost,
                       costScaling,
+                      validTerrain,
                       null,
                       stats,
                       allUnitModifierEffects.nonAncientGroundEffect,
                       allUnitModifierEffects.ancientGroundEffect);
               break;
             case "PlayerModifierBuilding":
-              EffectPair<PlayerModifierEffect> playerModifierEffects = getPlayerModifierEffects(name);
+              EffectPair<PlayerModifierEffect> playerModifierEffects =
+                  getPlayerModifierEffects(name);
               building =
                   new PlayerModifierBuilding(
                       null,
@@ -131,6 +143,7 @@ public final class Buildings {
                       level,
                       baseCost,
                       costScaling,
+                      validTerrain,
                       null,
                       stats,
                       playerModifierEffects.nonAncientGroundEffect,

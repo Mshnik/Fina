@@ -1,10 +1,12 @@
 package model.unit.building;
 
+import java.util.Collections;
+import java.util.List;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
-import model.unit.combatant.Combatant;
 import model.unit.Unit;
+import model.unit.combatant.Combatant;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.StatModifier;
@@ -12,10 +14,13 @@ import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 
 /**
- * Represents a Building on the model.board, controllable by a player.
- * E is the effect type for this building. May be Void for none.
+ * Represents a Building on the model.board, controllable by a player. E is the effect type for this
+ * building. May be Void for none.
  */
 public abstract class Building<E> extends Unit {
+
+  /** Types of terrain this building can be built on. */
+  private final List<Terrain> validTerrain;
 
   /**
    * Constructor for Building. Also adds this model.unit to the tile it is on as an occupant, and
@@ -28,7 +33,9 @@ public abstract class Building<E> extends Unit {
    * @param imageFilename - the image to draw when drawing this unit.
    * @param level - the level of this model.unit - the age this belongs to
    * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
-   * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond the first. Should be non-negative.
+   * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond
+   *     the first. Should be non-negative.
+   * @param validTerrain - types of terrain this building can be built on.
    * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
    *     this.
    * @param stats - the base unmodified stats of this model.unit. stats that remain used are
@@ -40,19 +47,28 @@ public abstract class Building<E> extends Unit {
       int level,
       int manaCost,
       int manaCostScaling,
+      List<Terrain> validTerrain,
       Tile tile,
       Stats stats)
       throws RuntimeException, IllegalArgumentException {
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, tile, stats);
-    if (tile != null && tile.terrain != Terrain.ANCIENT_GROUND) {
-      throw new IllegalArgumentException("Can't construct building on non Ancient Ground terrain");
+    this.validTerrain = Collections.unmodifiableList(validTerrain);
+    if (tile != null && !validTerrain.contains(tile.terrain)) {
+      throw new IllegalArgumentException(
+          "Can't construct building on " + tile.terrain + ", valid types are " + validTerrain);
     }
   }
 
-  /** Return the effect this building gives. May vary based on the tile this is built on or other
+  /**
+   * Return the effect this building gives. May vary based on the tile this is built on or other
    * buildings its player owns.
    */
   public abstract E getEffect();
+
+  /** Returns the types of terrain this can be built on. */
+  public List<Terrain> getValidTerrain() {
+    return validTerrain;
+  }
 
   // RESTRICTIONS
   /** Restricted attack - has val 0. */
@@ -74,7 +90,7 @@ public abstract class Building<E> extends Unit {
 
   /** Buildings can only occupy Ancient Ground */
   public boolean canOccupy(Terrain t) {
-    return t.equals(Terrain.ANCIENT_GROUND);
+    return validTerrain.contains(t);
   }
 
   /** Modifiers can't add movement or attack */

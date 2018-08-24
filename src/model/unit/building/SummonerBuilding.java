@@ -1,6 +1,7 @@
 package model.unit.building;
 
 import java.util.ArrayList;
+import java.util.List;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
@@ -34,6 +35,7 @@ public final class SummonerBuilding extends Building<Integer> implements Summone
    * @param manaCost - the cost of summoning this model.unit. Should be a positive number. * @param
    * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond
    *     the first. Should be a non-negative number.
+   * @param validTerrain - types of terrain this can be built on.
    * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
    *     this.
    * @param stats - the base unmodified stats of this model.unit. stats that remain used are
@@ -47,12 +49,13 @@ public final class SummonerBuilding extends Building<Integer> implements Summone
       int level,
       int manaCost,
       int manaCostScaling,
+      List<Terrain> validTerrain,
       Tile tile,
       Stats stats,
       int nonAncientGroundSummonRadius,
       int ancientGroundSummonRadius)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, imageFilename, level, manaCost, manaCostScaling, tile, stats);
+    super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, tile, stats);
     this.nonAncientGroundSummonRadius = nonAncientGroundSummonRadius;
     this.ancientGroundSummonRadius = ancientGroundSummonRadius;
   }
@@ -96,6 +99,7 @@ public final class SummonerBuilding extends Building<Integer> implements Summone
         level,
         manaCost,
         manaCostScaling,
+        getValidTerrain(),
         location,
         getStats(),
         nonAncientGroundSummonRadius,

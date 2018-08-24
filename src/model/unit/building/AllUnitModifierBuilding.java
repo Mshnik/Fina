@@ -1,5 +1,6 @@
 package model.unit.building;
 
+import java.util.List;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
@@ -32,13 +33,16 @@ public final class AllUnitModifierBuilding extends Building<ModifierBundle> {
    * @param imageFilename - the image to draw when drawing this unit.
    * @param level - the level of this model.unit - the age this belongs to
    * @param manaCost - the cost of summoning this model.unit. Should be a positive number. * @param
-   * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond the
-*     first. Should be a non-negative number.
+   * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond
+   *     the first. Should be a non-negative number.
+   * @param validTerrain - types of terrain this can be built on.
    * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
-*     this.
+   *     this.
    * @param stats - the base unmodified stats of this model.unit. stats that remain used are
-   * @param nonAncientGroundModifierBundle - the bundle of modifiers to give to all units if this isn't on ancient ground.
-   * @param ancientGroundModifierBundle - the bundle of modifiers to give to all units if this is on ancient ground.
+   * @param nonAncientGroundModifierBundle - the bundle of modifiers to give to all units if this
+   *     isn't on ancient ground.
+   * @param ancientGroundModifierBundle - the bundle of modifiers to give to all units if this is on
+   *     ancient ground.
    */
   AllUnitModifierBuilding(
       Player owner,
@@ -47,11 +51,13 @@ public final class AllUnitModifierBuilding extends Building<ModifierBundle> {
       int level,
       int manaCost,
       int manaCostScaling,
+      List<Terrain> validTerrain,
       Tile tile,
-      Stats stats, ModifierBundle nonAncientGroundModifierBundle,
+      Stats stats,
+      ModifierBundle nonAncientGroundModifierBundle,
       ModifierBundle ancientGroundModifierBundle)
       throws RuntimeException, IllegalArgumentException {
-    super(owner, name, imageFilename, level, manaCost, manaCostScaling, tile, stats);
+    super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, tile, stats);
     this.nonAncientGroundModifierBundle = nonAncientGroundModifierBundle;
     this.ancientGroundModifierBundle = ancientGroundModifierBundle;
   }
@@ -77,6 +83,7 @@ public final class AllUnitModifierBuilding extends Building<ModifierBundle> {
         level,
         manaCost,
         manaCostScaling,
+        getValidTerrain(),
         location,
         getStats(),
         new ModifierBundle(nonAncientGroundModifierBundle),

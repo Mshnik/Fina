@@ -1,5 +1,7 @@
 package model.unit.building;
 
+import java.util.Collections;
+import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
@@ -76,7 +78,16 @@ public final class Temple extends Building<Void> {
   private static final Stats STATS = new Stats(new Stat(StatType.MAX_HEALTH, 1200));
 
   public Temple(Player owner, Tile tile) throws RuntimeException, IllegalArgumentException {
-    super(owner, NAME, "temple.png", LEVEL, COST, COST, tile, STATS);
+    super(
+        owner,
+        NAME,
+        "temple.png",
+        LEVEL,
+        COST,
+        COST,
+        Collections.singletonList(Terrain.ANCIENT_GROUND),
+        tile,
+        STATS);
   }
 
   /** Creates a new Temple for the given owner, on the given location */

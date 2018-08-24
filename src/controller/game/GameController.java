@@ -19,12 +19,12 @@ import java.util.Stack;
 import model.board.Tile;
 import model.game.Game;
 import model.game.Player;
-import model.unit.combatant.Combatant;
-import model.unit.commander.Commander;
 import model.unit.MovingUnit;
 import model.unit.Unit;
 import model.unit.ability.Ability;
 import model.unit.combatant.Combat;
+import model.unit.combatant.Combatant;
+import model.unit.commander.Commander;
 import view.gui.BoardCursor;
 import view.gui.Frame;
 import view.gui.panel.GamePanel;
@@ -418,7 +418,10 @@ public final class GameController {
     startSummonDecision(c, c.getBuildables());
   }
 
-  /** Creates a new summon selector at the current getGamePanel().boardCursor position. Returns true iff a summoning decision was started. */
+  /**
+   * Creates a new summon selector at the current getGamePanel().boardCursor position. Returns true
+   * iff a summoning decision was started.
+   */
   boolean startSummonSelection(Choice choice) {
     if (!choice.isSelectable()) {
       return false;
