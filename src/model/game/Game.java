@@ -99,6 +99,7 @@ public final class Game implements Runnable, Stringable {
         repaint();
         nextTurn();
       }
+      controller.frame.showGameOverAlert(getRemainingPlayers().get(0));
     } finally {
       running = false;
     }
@@ -183,8 +184,12 @@ public final class Game implements Runnable, Stringable {
    */
   public boolean isGameOver() {
     int i = 0;
-    for (Boolean b : remainingPlayers.values()) {
-      if (b) i++;
+    for (Player p : remainingPlayers.keySet()) {
+      if (remainingPlayers.get(p) && p.isAlive()) {
+        i++;
+      } else {
+        remainingPlayers.put(p, false);
+      }
     }
     return i <= 1;
   }

@@ -121,11 +121,18 @@ public final class Frame extends JFrame {
     return controller;
   }
 
-  /** Shows an alert asking the given player to confirm before starting turn.
-   * Only needed when fog of war is on. */
+  /** Shows an alert saying that the game is over. */
+  public void showGameOverAlert(Player winner) {
+    JOptionPane.showMessageDialog(this, "Player " + winner.index + " wins!");
+  }
+
+  /**
+   * Shows an alert asking the given player to confirm before starting turn. Only needed when fog of
+   * war is on.
+   */
   public void showPlayerChangeAlert(Player p) {
     gamePanel.boardCursor.hide = true;
-    JOptionPane.showMessageDialog(this, "Player " + p.index +"'s Turn.");
+    JOptionPane.showMessageDialog(this, "Player " + p.index + "'s Turn.");
   }
 
   /** Starts the turn for player p, making graphic updates as necessary */

@@ -25,9 +25,9 @@ public final class Bhen extends Commander {
           new Stat(StatType.MAX_HEALTH, Commander.BASE_HEALTH),
           new Stat(StatType.MANA_PER_TURN, Commander.BASE_MANA_PT),
           new Stat(StatType.COMMANDER_ACTIONS_PER_TURN, 2),
-          new Stat(StatType.SUMMON_RANGE, 2),
-          new Stat(StatType.VISION_RANGE, 3),
-          new Stat(StatType.MOVEMENT_TOTAL, 4),
+          new Stat(StatType.SUMMON_RANGE, 1),
+          new Stat(StatType.VISION_RANGE, 2),
+          new Stat(StatType.MOVEMENT_TOTAL, 2),
           new Stat(StatType.GRASS_COST, 1),
           new Stat(StatType.WOODS_COST, 2),
           new Stat(StatType.MOUNTAIN_COST, 9999));

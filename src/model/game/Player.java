@@ -84,6 +84,11 @@ public abstract class Player implements Stringable {
   }
 
   // HEALTH AND MANA
+  /** Returns true if this player is alive. */
+  public boolean isAlive() {
+    return commander != null && getHealth() > 0;
+  }
+
   /** Returns the current health for this player (the health of the commander) */
   public int getHealth() {
     return commander.getHealth();

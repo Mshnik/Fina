@@ -15,10 +15,10 @@ public final class DummyCommander extends Commander {
   /** Stats for maxHealth, range and visionRange of dummy commander */
   private static final Stats STATS =
       new Stats(
-          new Stat(StatType.MAX_HEALTH, Commander.BASE_HEALTH),
+          new Stat(StatType.MAX_HEALTH, 1),
           new Stat(StatType.MANA_PER_TURN, 200),
           new Stat(StatType.COMMANDER_ACTIONS_PER_TURN, Commander.BASE_ACTIONS_PT),
-          new Stat(StatType.SUMMON_RANGE, 2),
+          new Stat(StatType.SUMMON_RANGE, 1),
           new Stat(StatType.VISION_RANGE, 2),
           new Stat(StatType.MOVEMENT_TOTAL, 2),
           new Stat(StatType.GRASS_COST, 1),
@@ -27,12 +27,6 @@ public final class DummyCommander extends Commander {
 
   public DummyCommander(Player owner, int startingLevel) {
     super("Dummy", "mario.png", owner, STATS, startingLevel);
-  }
-
-  @Override
-  public void refreshForTurn() {
-    super.refreshForTurn();
-    setHealth(getHealth() + 50, this);
   }
 
   @Override
