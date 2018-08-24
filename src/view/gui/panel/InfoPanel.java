@@ -175,7 +175,11 @@ public final class InfoPanel extends JPanel {
     }
     g2d.drawString(mainLine, x, YMARGIN);
     g2d.setFont(MEDIUM_FONT);
-    final int infoFont = MEDIUM_FONT.getSize();
+    final int infoFont = (int) (MEDIUM_FONT.getSize() * 1.25);
+    y += infoFont;
+
+    g2d.drawString(" Level " + (unit instanceof Commander ? unit.owner.getLevel() : unit.level), x, y);
+    y += infoFont;
 
     String subString = " " + unit.getIdentifierString() + " ";
     if (unit instanceof Combatant) {
@@ -187,11 +191,11 @@ public final class InfoPanel extends JPanel {
                   .map(Combatant.CombatantClass::toMidString)
                   .collect(Collectors.joining(", "));
     }
-
-    g2d.drawString(subString, x, YMARGIN + infoFont);
+    g2d.drawString(subString, x, y);
 
     g2d.setFont(SMALL_FONT);
     x += xInc;
+    y = YMARGIN;
     Stats stats = unit.getStats();
 
     // Insert health at top here
@@ -207,7 +211,7 @@ public final class InfoPanel extends JPanel {
     }
 
     x = XMARGIN;
-    y = YMARGIN + infoFont * 5;
+    y = YMARGIN + infoFont * 4;
     String modifierTitle = "Modifiers: ";
     g2d.drawString(modifierTitle, x, y);
     String modString = "";
