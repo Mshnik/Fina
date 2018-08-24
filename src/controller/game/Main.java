@@ -27,9 +27,9 @@ public final class Main {
     GameController gc = new GameController(g, f);
 
     Player p1 = new HumanPlayer(g, Color.green);
-    new DummyCommander(p1, 4);
+    new DummyCommander(p1, 3);
     Player p2 = new HumanPlayer(g, Color.magenta);
-    new DummyCommander(p2, 4);
+    new DummyCommander(p2, 3);
 
     gc.start();
   }

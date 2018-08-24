@@ -1,5 +1,14 @@
 package view.gui.panel;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.stream.Collectors;
+import javax.swing.JPanel;
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.MovingUnit;
@@ -7,7 +16,11 @@ import model.unit.Unit;
 import model.unit.ability.Ability;
 import model.unit.ability.EffectAbility;
 import model.unit.ability.ModifierAbility;
-import model.unit.building.*;
+import model.unit.building.AllUnitModifierBuilding;
+import model.unit.building.Building;
+import model.unit.building.PlayerModifierBuilding;
+import model.unit.building.StartOfTurnEffectBuilding;
+import model.unit.building.SummonerBuilding;
 import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
@@ -19,11 +32,6 @@ import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 import view.gui.Frame;
 import view.gui.ImageIndex;
-import java.util.List;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.stream.Collectors;
 
 public final class InfoPanel extends JPanel {
   /** */
@@ -204,8 +212,7 @@ public final class InfoPanel extends JPanel {
     g2d.drawString(modifierTitle, x, y);
     String modString = "";
     for (Modifier m : unit.getModifiers()) {
-      if (!(m.name.equals(Commander.LEVELUP_HEALTH_NAME)
-          || m.name.equals(Commander.LEVELUP_MANA_NAME))) modString += m.name + " ";
+      if (!m.name.contains(Commander.LEVEL_UP_MODIFIER_PREFIX)) modString += m.name + " ";
     }
     g2d.drawString(modString, x + frame.getTextWidth(MEDIUM_FONT, modifierTitle) + 15, y);
 
@@ -278,14 +285,16 @@ public final class InfoPanel extends JPanel {
   }
 
   /** Draws a building's effect at the given x,y. */
-  private void drawBuildingEffect(Graphics2D g2d, Building<?> building, Object effect, int x, int y) {
+  private void drawBuildingEffect(
+      Graphics2D g2d, Building<?> building, Object effect, int x, int y) {
     if (effect == null) {
-      g2d.drawString("None",x,y);
+      g2d.drawString("None", x, y);
       return;
     }
 
-    if (building instanceof PlayerModifierBuilding || building instanceof StartOfTurnEffectBuilding) {
-      g2d.drawString(effect.toString(), x,y);
+    if (building instanceof PlayerModifierBuilding
+        || building instanceof StartOfTurnEffectBuilding) {
+      g2d.drawString(effect.toString(), x, y);
     } else if (building instanceof SummonerBuilding) {
       g2d.drawString("Can summon units at radius " + effect, x, y);
     } else if (building instanceof AllUnitModifierBuilding) {

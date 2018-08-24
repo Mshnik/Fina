@@ -263,7 +263,7 @@ public abstract class Unit implements Stringable {
     killer
         .owner
         .getCommander()
-        .addResearch((int) (manaCost * Commander.MANA_COST_TO_RESEARCH_RATIO));
+        .addResearch((int) (level * Commander.LEVEL_TO_RESEARCH_RATIO));
   }
 
   /**

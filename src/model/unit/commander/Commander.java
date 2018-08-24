@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import model.board.Board;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
@@ -33,60 +32,59 @@ import model.unit.stat.Stats;
 public abstract class Commander extends MovingUnit implements Summoner {
 
   /** Base level of health for lvl1 commanders */
-  public static final int BASE_HEALTH = 1000;
-
-  /** Base starting amount of mana for lvl1 commanders */
-  public static final int START_MANA = 500;
+  static final int BASE_HEALTH = 500;
 
   /** Base starting level of mana per turn for lvl1 commanders */
-  public static final int BASE_MANA_PT = 500;
+  static final int BASE_MANA_PT = 200;
 
   /** Base starting level of actions per turn for lvl1 commander */
-  public static final int BASE_ACTIONS_PT = 2;
+  static final int BASE_ACTIONS_PT = 2;
 
-  /** Amount of health gained per level */
-  public static final int LEVELUP_HEALTH = 200;
-
-  /** Name of the LEVELUP_HEALTH buff */
-  public static final String LEVELUP_HEALTH_NAME = "Level Up Health";
-
-  /** Amount of mana per turn gained per level */
-  public static final int LEVELUP_MANAPT = 250;
-
-  /** Name of the LEVELUP_MANA buff */
-  public static final String LEVELUP_MANA_NAME = "Level Up Mana";
+  /** Prefix for all levelup buffs. */
+  public static final String LEVEL_UP_MODIFIER_PREFIX = "Level Up";
 
   protected static final ModifierBundle LEVELUP =
       new ModifierBundle(
           new StatModifier(
-              LEVELUP_MANA_NAME,
+              LEVEL_UP_MODIFIER_PREFIX + " Mana",
               Integer.MAX_VALUE,
               StackMode.STACKABLE,
               StatType.MANA_PER_TURN,
               StatModifier.ModificationType.ADD,
-              LEVELUP_MANAPT),
+              100),
           new StatModifier(
-              LEVELUP_HEALTH_NAME,
+              LEVEL_UP_MODIFIER_PREFIX + " Actions",
               Integer.MAX_VALUE,
               StackMode.STACKABLE,
-              StatType.MAX_HEALTH,
+              StatType.COMMANDER_ACTIONS_PER_TURN,
               StatModifier.ModificationType.ADD,
-              LEVELUP_HEALTH));
+              1),
+          new StatModifier(
+              LEVEL_UP_MODIFIER_PREFIX + " Move",
+              Integer.MAX_VALUE,
+              StackMode.STACKABLE,
+              StatType.MOVEMENT_TOTAL,
+              StatModifier.ModificationType.ADD,
+              1),
+          new StatModifier(
+              LEVEL_UP_MODIFIER_PREFIX + " Vision",
+              Integer.MAX_VALUE,
+              StackMode.STACKABLE,
+              StatType.VISION_RANGE,
+              StatModifier.ModificationType.ADD,
+              1));
 
   /**
    * The amount of research required to get to the next level for free. Index i = cost to get from
    * level i+1 to i+2 (because levels are 1 indexed).
    */
-  public static final int[] RESEARCH_REQS = {1000, 3000, 6000, 10000};
+  private static final int[] RESEARCH_REQS = {200, 600, 1200};
 
   /** The highest level commanders can achieve */
-  public static final int MAX_LEVEL = RESEARCH_REQS.length + 1;
+  private static final int MAX_LEVEL = RESEARCH_REQS.length + 1;
 
-  /** The ratio of manaCost -> research for the owner of the killing model.unit */
-  public static final double MANA_COST_TO_RESEARCH_RATIO = 3;
-
-  /** The extra defense (applied first) against ranged units granted to commanders */
-  public static final double RANGED_DEFENSE = 0.5;
+  /** The ratio of level -> research for the owner of the killing model.unit */
+  public static final double LEVEL_TO_RESEARCH_RATIO = 50;
 
   /** The current mana level of this commander. Varies over the course of the model.game. */
   private int mana;
@@ -128,19 +126,16 @@ public abstract class Commander extends MovingUnit implements Summoner {
    *     unnecessary or calculated elsewhere.
    * @param startingLevel - the level this commander starts at.
    */
-  public Commander(
-      String name,
-      String imageFilename,
-      Player owner,
-      Stats stats,
-      int startingLevel)
+  public Commander(String name, String imageFilename, Player owner, Stats stats, int startingLevel)
       throws RuntimeException, IllegalArgumentException {
     super(owner, name, imageFilename, 0, 0, stats);
-    level = startingLevel;
+    if (startingLevel > MAX_LEVEL) {
+      throw new RuntimeException("Can't start at level above max level");
+    }
     research = 0;
     currentTurnCasts = new LinkedList<Ability>();
-    setMana(START_MANA);
     setHealth(getMaxHealth(), this);
+    setMana(0);
 
     abilityChoices = new int[MAX_LEVEL];
     for (int i = 1; i < MAX_LEVEL; i++) { // leave abilityChoices[0] = 0
@@ -149,6 +144,12 @@ public abstract class Commander extends MovingUnit implements Summoner {
     location = owner.game.board.getCommanderStartLocation(owner);
     location.addOccupyingUnit(this);
     owner.addUnit(this);
+
+    // Level up to starting level.
+    level = 1;
+    for (int i = 1; i < startingLevel; i++) {
+      levelUp();
+    }
   }
 
   /** Throws a runtime exception - commanders are not clonable */
@@ -311,8 +312,8 @@ public abstract class Commander extends MovingUnit implements Summoner {
     research = 0;
     level++;
     LEVELUP.clone(this, this);
-    setHealth(getHealth() + LEVELUP_HEALTH, this);
     owner.updateManaPerTurn();
+    owner.refreshVisionCloud();
     owner.game.getController().startNewAbilityDecision(owner);
   }
 

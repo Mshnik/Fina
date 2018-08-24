@@ -16,11 +16,11 @@ public final class DummyCommander extends Commander {
   private static final Stats STATS =
       new Stats(
           new Stat(StatType.MAX_HEALTH, Commander.BASE_HEALTH),
-          new Stat(StatType.MANA_PER_TURN, 100000),
+          new Stat(StatType.MANA_PER_TURN, 200),
           new Stat(StatType.COMMANDER_ACTIONS_PER_TURN, Commander.BASE_ACTIONS_PT),
           new Stat(StatType.SUMMON_RANGE, 2),
-          new Stat(StatType.VISION_RANGE, 3),
-          new Stat(StatType.MOVEMENT_TOTAL, 5),
+          new Stat(StatType.VISION_RANGE, 2),
+          new Stat(StatType.MOVEMENT_TOTAL, 2),
           new Stat(StatType.GRASS_COST, 1),
           new Stat(StatType.WOODS_COST, 2),
           new Stat(StatType.MOUNTAIN_COST, 9999));
