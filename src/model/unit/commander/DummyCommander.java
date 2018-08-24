@@ -1,6 +1,7 @@
 package model.unit.commander;
 
 import java.util.LinkedList;
+import model.board.Board;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.ability.Ability;
@@ -24,8 +25,8 @@ public final class DummyCommander extends Commander {
           new Stat(StatType.WOODS_COST, 2),
           new Stat(StatType.MOUNTAIN_COST, 9999));
 
-  public DummyCommander(Player owner, Tile startingTile, int startingLevel) {
-    super("Dummy", "mario.png", owner, startingTile, STATS, startingLevel);
+  public DummyCommander(Player owner, int startingLevel) {
+    super("Dummy", "mario.png", owner, STATS, startingLevel);
   }
 
   @Override

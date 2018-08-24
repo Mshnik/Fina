@@ -18,18 +18,18 @@ public final class Main {
     Buildings.getBuildingsForLevel(1);
 
     // Load board file and make board.
-    String boardFilename = args.length > 0 ? args[0] : "sample_board.csv";
+    String boardFilename = args.length > 0 ? args[0] : "sample_board_small.csv";
     Board board = BoardReader.readBoard("game/boards/" + boardFilename);
 
-    Frame f = new Frame(8, 16);
+    Frame f = new Frame(14, 28);
 
     Game g = new Game(board, Game.FogOfWar.HIDE_ANCIENT_GROUND);
     GameController gc = new GameController(g, f);
 
     Player p1 = new HumanPlayer(g, Color.green);
-    new DummyCommander(p1, g.board.getTileAt(3, 6), 4);
+    new DummyCommander(p1, 4);
     Player p2 = new HumanPlayer(g, Color.magenta);
-    new DummyCommander(p2, g.board.getTileAt(1, 2), 4);
+    new DummyCommander(p2, 4);
 
     gc.start();
   }

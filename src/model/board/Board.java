@@ -9,8 +9,10 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
+import model.game.Player;
 import model.game.Stringable;
 import model.unit.MovingUnit;
 import model.util.MPoint;
@@ -25,13 +27,20 @@ import model.util.MPoint;
 public final class Board implements Iterable<Tile>, Stringable {
 
   /** The tiles that make up this model.board. Must be rectangular (non-jagged) */
-  private Tile[][] tiles;
+  private final Tile[][] tiles;
+
+  /**
+   * The locations where commanders start. Use up to as many as needed. (May be longer than
+   * necessary.
+   */
+  private final List<MPoint> commanderStartLocations;
 
   /**
    * Construct a simple model.board of just terrain Throws IllegalArgumentException if input array
    * is jagged.
    */
-  public Board(Terrain[][] terrain) throws IllegalArgumentException {
+  public Board(Terrain[][] terrain, List<MPoint> commanderStartLocations)
+      throws IllegalArgumentException {
     tiles = new Tile[terrain.length][terrain[0].length];
     for (int i = 0; i < terrain.length; i++) {
 
@@ -43,6 +52,7 @@ public final class Board implements Iterable<Tile>, Stringable {
         tiles[i][j] = new Tile(this, i, j, terrain[i][j]);
       }
     }
+    this.commanderStartLocations = Collections.unmodifiableList(commanderStartLocations);
   }
 
   /** Returns the height (# rows) of this Board */
@@ -68,7 +78,6 @@ public final class Board implements Iterable<Tile>, Stringable {
   public Tile getTileAt(MPoint loc) {
     return getTileAt(loc.row, loc.col);
   }
-
   /**
    * Return the tile in the given direction from this tile. If oob, returns null or if direction
    * invalid.
@@ -103,6 +112,14 @@ public final class Board implements Iterable<Tile>, Stringable {
       getTileInDirection(t, Direction.DOWN)
     };
     return neighbors;
+  }
+
+  /**
+   * Returns the commander start location for the given player. Throws an exception if this board
+   * doesn't support the given player's index.
+   */
+  public Tile getCommanderStartLocation(Player player) {
+    return getTileAt(commanderStartLocations.get(player.index - 1));
   }
 
   /** Returns a set of tiles that are a contiguous mountain range. Diagonals do not count. */

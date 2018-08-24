@@ -30,7 +30,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
   private static final long serialVersionUID = 1L;
 
   /** Pixels (size) for each square tile. */
-  public static final int CELL_SIZE = 64;
+  public static final int CELL_SIZE = 48;
 
   /** Shading for fog of war - translucent black */
   private static final Color FOG_OF_WAR = new Color(0, 0, 0, 0.75f);

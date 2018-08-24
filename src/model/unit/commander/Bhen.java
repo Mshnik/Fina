@@ -1,6 +1,7 @@
 package model.unit.commander;
 
 import java.util.LinkedList;
+import model.board.Board;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.ability.Ability;
@@ -86,8 +87,8 @@ public final class Bhen extends Commander {
   /** Ability Choices */
   public final Ability[][] ABILITIES = {{BATTLE_FURY}, {ENRAGE}};
 
-  public Bhen(Player owner, Tile startingTile) throws RuntimeException, IllegalArgumentException {
-    super("Bhen", "link.png", owner, startingTile, STATS, 1);
+  public Bhen(Board board, Player owner) throws RuntimeException, IllegalArgumentException {
+    super("Bhen", "link.png", owner, STATS, 1);
   }
 
   @Override

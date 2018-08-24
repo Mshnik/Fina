@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import model.board.Board;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
@@ -117,13 +118,11 @@ public abstract class Commander extends MovingUnit implements Summoner {
   private LinkedList<Ability> currentTurnCasts;
 
   /**
-   * Constructor for Commander. Also adds this model.unit to the tile it is on as an occupant, and
+   * Constructor for Commander. Also adds this model.unit to the starting tile for the owner, and
    * its owner as a model.unit that player owns, Commanders have a manaCost of 0.
    *
    * @param owner - the player owner of this model.unit
    * @param imageFilename - the image to draw when drawing this unit.
-   * @param startingTile - the tile this model.unit begins the model.game on. Also notifies the tile
-   *     of this.
    * @param stats - the stats of this commander. Notably, because of restrictions on commander, the
    *     attack, counterattack, and attackType Attributes are unused, because they are either
    *     unnecessary or calculated elsewhere.
@@ -133,7 +132,6 @@ public abstract class Commander extends MovingUnit implements Summoner {
       String name,
       String imageFilename,
       Player owner,
-      Tile startingTile,
       Stats stats,
       int startingLevel)
       throws RuntimeException, IllegalArgumentException {
@@ -148,7 +146,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
     for (int i = 1; i < MAX_LEVEL; i++) { // leave abilityChoices[0] = 0
       abilityChoices[i] = -1;
     }
-    location = startingTile;
+    location = owner.game.board.getCommanderStartLocation(owner);
     location.addOccupyingUnit(this);
     owner.addUnit(this);
   }
