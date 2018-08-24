@@ -272,9 +272,8 @@ public final class InfoPanel extends JPanel {
 
       y += effectSpace;
       drawBuildingEffect(g2d, building, ancientGroundEffect, x, y);
-
     } else {
-
+      drawBuildingEffect(g2d, building, building.getEffect(), x, y);
     }
   }
 
@@ -291,7 +290,7 @@ public final class InfoPanel extends JPanel {
       g2d.drawString("Can summon units at radius " + effect, x, y);
     } else if (building instanceof AllUnitModifierBuilding) {
       ModifierBundle bundle = (ModifierBundle) effect;
-      g2d.drawString(bundle.toStatString(), x, y);
+      g2d.drawString("All Units get " + bundle.toStatString(), x, y);
     }
   }
 
