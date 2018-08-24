@@ -144,8 +144,6 @@ public class Stats implements Iterable<Stat> {
   public ArrayList<Stat> getStandardStatsList(boolean filterOmittableZeroes) {
     StatType[] t = {
       StatType.MAX_HEALTH,
-      StatType.MANA_PER_TURN,
-      StatType.COMMANDER_ACTIONS_PER_TURN,
       StatType.VISION_RANGE,
       StatType.SUMMON_RANGE
     };

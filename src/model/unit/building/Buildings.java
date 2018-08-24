@@ -44,6 +44,7 @@ public final class Buildings {
         String[] comps = line.split(",");
         if (comps.length == 0 || comps[0].isEmpty()) continue; // Blank line.
         if (comps[0].equals("Name")) continue; // Header line.
+        if (comps[0].equals("SKIP")) continue; // Not fully implemented building.
 
         try {
           String name = comps[0];
