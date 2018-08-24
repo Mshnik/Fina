@@ -1,6 +1,7 @@
 package model.unit.building;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import model.board.Terrain;
@@ -117,7 +118,10 @@ public final class Temple extends Building<Void> {
 
   @Override
   public List<Void> getPossibleEffectsList() {
-    return Collections.emptyList();
+    LinkedList<Void> list = new LinkedList<>();
+    list.add(null);
+    list.add(null);
+    return Collections.unmodifiableList(list);
   }
 
   @Override

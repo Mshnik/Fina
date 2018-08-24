@@ -7,6 +7,7 @@ import model.unit.Unit;
 import model.unit.ability.Ability;
 import model.unit.ability.EffectAbility;
 import model.unit.ability.ModifierAbility;
+import model.unit.building.*;
 import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
@@ -18,6 +19,7 @@ import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 import view.gui.Frame;
 import view.gui.ImageIndex;
+import java.util.List;
 
 import javax.swing.*;
 import java.awt.*;
@@ -208,9 +210,20 @@ public final class InfoPanel extends JPanel {
     g2d.drawString(modString, x + frame.getTextWidth(MEDIUM_FONT, modifierTitle) + 15, y);
 
     x = XMARGIN + 2 * xInc;
-    // Draw modifier list along bottom
-    y = YMARGIN;
-    for (Stat s : stats.getAttackStatsList(true)) {
+
+    if (unit instanceof MovingUnit) {
+      continueDrawingMovingUnit(g2d, x, YMARGIN);
+    } else if (unit instanceof Building) {
+      continueDrawingBuilding(g2d, x, YMARGIN);
+    }
+  }
+
+  /** Continues drawing a unit for movable units. */
+  private void continueDrawingMovingUnit(Graphics2D g2d, int x, int y) {
+    final int infoFont = MEDIUM_FONT.getSize();
+    final int xInc = 225;
+
+    for (Stat s : unit.getStats().getAttackStatsList(true)) {
       drawStat(g2d, s, x, y);
       y += infoFont;
     }
@@ -229,9 +242,56 @@ public final class InfoPanel extends JPanel {
       y += infoFont;
     }
 
-    for (Stat s : stats.getMovementStatsList(true)) {
+    for (Stat s : unit.getStats().getMovementStatsList(true)) {
       drawStat(g2d, s, x, y);
       y += infoFont;
+    }
+  }
+
+  /** Continues drawing a unit for buildings. */
+  private void continueDrawingBuilding(Graphics2D g2d, int x, int y) {
+    final int infoFont = MEDIUM_FONT.getSize();
+    final int xInc = 225;
+
+    Building<?> building = (Building<?>) unit;
+    if (isMenu) {
+      Object nonAncientGroundEffect = building.getPossibleEffectsList().get(0);
+      Object ancientGroundEffect = building.getPossibleEffectsList().get(1);
+      final int effectSpace = infoFont * 3;
+
+      g2d.setFont(MEDIUM_FONT);
+      g2d.drawString("Non-Ancient Ground", x, y);
+      y += effectSpace;
+      g2d.drawString("Ancient Ground", x, y);
+
+      x += xInc;
+      y = YMARGIN;
+
+      g2d.setFont(SMALL_FONT);
+      drawBuildingEffect(g2d, building, nonAncientGroundEffect, x, y);
+
+      y += effectSpace;
+      drawBuildingEffect(g2d, building, ancientGroundEffect, x, y);
+
+    } else {
+
+    }
+  }
+
+  /** Draws a building's effect at the given x,y. */
+  private void drawBuildingEffect(Graphics2D g2d, Building<?> building, Object effect, int x, int y) {
+    if (effect == null) {
+      g2d.drawString("None",x,y);
+      return;
+    }
+
+    if (building instanceof PlayerModifierBuilding || building instanceof StartOfTurnEffectBuilding) {
+      g2d.drawString(effect.toString(), x,y);
+    } else if (building instanceof SummonerBuilding) {
+      g2d.drawString("Can summon units at radius " + effect, x, y);
+    } else if (building instanceof AllUnitModifierBuilding) {
+      ModifierBundle bundle = (ModifierBundle) effect;
+      g2d.drawString(bundle.toStatString(), x, y);
     }
   }
 

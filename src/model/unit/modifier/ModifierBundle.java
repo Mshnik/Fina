@@ -129,6 +129,15 @@ public final class ModifierBundle implements Collection<Modifier> {
     return s;
   }
 
+  /** Returns the toStatStrings of the modifiers in this bundle */
+  public String toStatString() {
+    String s = "";
+    for (Modifier m : modifiers) {
+      s += m.toStatString() + "  ";
+    }
+    return s;
+  }
+
   @Override
   public int size() {
     return modifiers.size();
