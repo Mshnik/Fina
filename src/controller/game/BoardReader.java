@@ -3,10 +3,9 @@ package controller.game;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import model.board.Board;
 import model.board.Terrain;
 import model.util.MPoint;
@@ -36,7 +35,7 @@ final class BoardReader {
     int rows = fileLines.size();
 
     Terrain[][] terrainArr = new Terrain[rows][];
-    List<MPoint> playerStartLocations = new LinkedList<>();
+    List<MPoint> playerStartLocations = new ArrayList<>();
 
     int row = 0;
     for (String line : fileLines) {
@@ -53,6 +52,9 @@ final class BoardReader {
       }
       row++;
     }
+
+    // Randomize starting locations.
+    Collections.shuffle(playerStartLocations);
 
     return new Board(terrainArr, playerStartLocations);
   }
