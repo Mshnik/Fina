@@ -25,8 +25,8 @@ public final class DummyCommander extends Commander {
           new Stat(StatType.WOODS_COST, 2),
           new Stat(StatType.MOUNTAIN_COST, 9999));
 
-  public DummyCommander(Player owner, Tile startingTile) {
-    super("Dummy", "mario.png", owner, startingTile, STATS, 1);
+  public DummyCommander(Player owner, Tile startingTile, int startingLevel) {
+    super("Dummy", "mario.png", owner, startingTile, STATS, startingLevel);
   }
 
   @Override

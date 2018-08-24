@@ -66,6 +66,9 @@ public final class Buildings {
 
           Building building;
           switch (buildingType) {
+            case "Temple":
+              building = new Temple(null, null);
+              break;
             case "NoEffectBuilding":
               building =
                   new NoEffectBuilding(

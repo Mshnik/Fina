@@ -6,7 +6,7 @@ Portal,,1,250,100,Offensive,100,0,Grass-Woods-Ancient_Ground,SummonerBuilding,Su
 ,,,,,,,,,,,
 Watchtower,,2,80,20,Utility,110,2+Eagle Eye,Grass-Woods-Mountain-Ancient_Ground,NoEffectBuilding,--,--
 Dojo,,2,450,650,Utility,180,0,Grass-Woods-Ancient_Ground,NoEffectBuilding,+ 1 action/turn,+ 2 actions/turn
-Temple,,2,300,150,Utility,200,0,Ancient_Ground,NoEffectBuilding,--,"All unit buffs, Varies by # of temples: 1: +2 vision 2: Strengthened +5 Toughness +5 3: +2 move 4: Tenacity 20 5: Strengthed +20 Toughness +10"
+Temple,,2,300,150,Utility,200,0,Ancient_Ground,Temple,--,"All unit buffs, Varies by # of temples: 1: +2 vision 2: Strengthened +5 Toughness +5 3: +2 move 4: Tenacity 20 5: Strengthed +20 Toughness +10"
 Fountain,,2,450,200,Defensive,300,0,Grass-Woods-Ancient_Ground,StartOfTurnEffectBuilding,Start of turn heal units in radius 1 by 15 health,Start of turn heal units in radius 2 by 25 health
 Armory,,2,500,500,Offensive,200,0,Grass-Woods-Ancient_Ground,AllUnitModifierBuilding,All units Strengthened 3,"All units Strengthened 3, Toughness 3"
 ,,,,,,,,,,,

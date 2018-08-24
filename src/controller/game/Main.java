@@ -17,6 +17,7 @@ public final class Main {
     FileCombatant.getCombatantsForAge(1);
     Buildings.getBuildingsForLevel(1);
 
+    // Load board file and make board.
     String boardFilename = args.length > 0 ? args[0] : "sample_board.csv";
     Board board = BoardReader.readBoard("game/boards/" + boardFilename);
 
@@ -26,9 +27,9 @@ public final class Main {
     GameController gc = new GameController(g, f);
 
     Player p1 = new HumanPlayer(g, Color.green);
-    new DummyCommander(p1, g.board.getTileAt(0, 0));
+    new DummyCommander(p1, g.board.getTileAt(0, 0), 4);
     Player p2 = new HumanPlayer(g, Color.magenta);
-    new DummyCommander(p2, g.board.getTileAt(1, 2));
+    new DummyCommander(p2, g.board.getTileAt(1, 2), 4);
 
     gc.start();
   }
