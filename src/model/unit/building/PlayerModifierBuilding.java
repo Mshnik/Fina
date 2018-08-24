@@ -1,10 +1,13 @@
 package model.unit.building;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import model.board.Terrain;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.building.PlayerModifierBuilding.PlayerModifierEffect;
+import model.unit.modifier.ModifierBundle;
 import model.unit.stat.Stats;
 
 /** An extension of building that grants the player (not a particular unit) a bonus. */
@@ -27,20 +30,32 @@ public final class PlayerModifierBuilding extends Building<PlayerModifierEffect>
   }
 
   public static final class PlayerModifierEffect {
+    /** The type of effect for this effect. */
     public final PlayerModifierEffectType effectType;
+
+    /** The value of this effect. */
     public final int value;
 
-    PlayerModifierEffect(PlayerModifierEffectType effectType, int value) {
+    /** A string representation of this effect. */
+    public final String description;
+
+    PlayerModifierEffect(PlayerModifierEffectType effectType, int value, String description) {
       this.effectType = effectType;
       this.value = value;
+      this.description = description;
+    }
+
+    @Override
+    public String toString() {
+      return description;
     }
   }
 
   /** Effect this building grants if this isn't on ancient ground. */
-  private final PlayerModifierEffect nonAncientGroundEffect;
+  public final PlayerModifierEffect nonAncientGroundEffect;
 
   /** Effect this building grants if this is on ancient ground. */
-  private final PlayerModifierEffect ancientGroundEffect;
+  public final PlayerModifierEffect ancientGroundEffect;
 
   /**
    * Constructor for Building. Also adds this model.unit to the tile it is on as an occupant, and
@@ -75,6 +90,14 @@ public final class PlayerModifierBuilding extends Building<PlayerModifierEffect>
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, stats);
     this.nonAncientGroundEffect = nonAncientGroundEffect;
     this.ancientGroundEffect = ancientGroundEffect;
+  }
+
+  @Override
+  public List<PlayerModifierEffect> getPossibleEffectsList() {
+    LinkedList<PlayerModifierEffect> list = new LinkedList<>();
+    list.add(nonAncientGroundEffect);
+    list.add(ancientGroundEffect);
+    return Collections.unmodifiableList(list);
   }
 
   @Override

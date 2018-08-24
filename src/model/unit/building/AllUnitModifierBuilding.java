@@ -1,5 +1,7 @@
 package model.unit.building;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import model.board.Terrain;
 import model.game.Player;
@@ -56,6 +58,15 @@ public final class AllUnitModifierBuilding extends Building<ModifierBundle> {
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, stats);
     this.nonAncientGroundModifierBundle = nonAncientGroundModifierBundle;
     this.ancientGroundModifierBundle = ancientGroundModifierBundle;
+  }
+
+
+  @Override
+  public List<ModifierBundle> getPossibleEffectsList() {
+    LinkedList<ModifierBundle> list = new LinkedList<>();
+    list.add(nonAncientGroundModifierBundle);
+    list.add(ancientGroundModifierBundle);
+    return Collections.unmodifiableList(list);
   }
 
   @Override

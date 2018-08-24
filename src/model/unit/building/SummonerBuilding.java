@@ -1,6 +1,8 @@
 package model.unit.building;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import model.board.Terrain;
 import model.board.Tile;
@@ -55,6 +57,14 @@ public final class SummonerBuilding extends Building<Integer> implements Summone
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, stats);
     this.nonAncientGroundSummonRadius = nonAncientGroundSummonRadius;
     this.ancientGroundSummonRadius = ancientGroundSummonRadius;
+  }
+
+  @Override
+  public List<Integer> getPossibleEffectsList() {
+    LinkedList<Integer> list = new LinkedList<>();
+    list.add(nonAncientGroundSummonRadius);
+    list.add(ancientGroundSummonRadius);
+    return Collections.unmodifiableList(list);
   }
 
   @Override

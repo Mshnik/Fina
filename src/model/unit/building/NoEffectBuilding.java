@@ -1,5 +1,6 @@
 package model.unit.building;
 
+import java.util.Collections;
 import java.util.List;
 import model.board.Terrain;
 import model.game.Player;
@@ -36,6 +37,11 @@ public final class NoEffectBuilding extends Building<Void> {
       Stats stats)
       throws RuntimeException, IllegalArgumentException {
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, stats);
+  }
+
+  @Override
+  public List<Void> getPossibleEffectsList() {
+    return Collections.emptyList();
   }
 
   @Override

@@ -1,6 +1,8 @@
 package model.unit.building;
 
 import java.util.Collections;
+import java.util.List;
+
 import model.board.Terrain;
 import model.game.Player;
 import model.unit.Unit;
@@ -111,6 +113,11 @@ public final class Temple extends Building<Void> {
     for (Unit u : owner.getUnits()) {
       BUFFS[index].clone(u, this);
     }
+  }
+
+  @Override
+  public List<Void> getPossibleEffectsList() {
+    return Collections.emptyList();
   }
 
   @Override

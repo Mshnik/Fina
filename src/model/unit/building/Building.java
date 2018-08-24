@@ -1,7 +1,5 @@
 package model.unit.building;
 
-import java.util.Collections;
-import java.util.List;
 import model.board.Terrain;
 import model.game.Player;
 import model.unit.Unit;
@@ -11,6 +9,9 @@ import model.unit.modifier.Modifier;
 import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Represents a Building on the model.board, controllable by a player. E is the effect type for this
@@ -50,6 +51,12 @@ public abstract class Building<E> extends Unit {
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, stats);
     this.validTerrain = Collections.unmodifiableList(validTerrain);
   }
+
+  /**
+   * Return a list of possible effects this building can give. Used to draw info in menu. In game
+   * use getEffect() below to get actually provided effect.
+   */
+  public abstract List<E> getPossibleEffectsList();
 
   /**
    * Return the effect this building gives. May vary based on the tile this is built on or other

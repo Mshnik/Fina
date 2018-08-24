@@ -1,5 +1,7 @@
 package model.unit.building;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import model.board.Terrain;
 import model.game.Player;
@@ -32,18 +34,27 @@ public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect>
     /** The cloud the effect is applied to, if any. */
     public final Cloud cloud;
 
-    StartOfTurnEffect(StartOfTurnEffectType type, int value, Cloud cloud) {
+    /** A string description of this effect. */
+    public final String description;
+
+    StartOfTurnEffect(StartOfTurnEffectType type, int value, Cloud cloud, String description) {
       this.type = type;
       this.value = value;
       this.cloud = cloud;
+      this.description = description;
+    }
+
+    @Override
+    public String toString() {
+      return description;
     }
   }
 
   /** The effect this grants if not built on ancient ground. */
-  private final StartOfTurnEffect nonAncientGroundEffect;
+  public final StartOfTurnEffect nonAncientGroundEffect;
 
   /** The effect this grants if built on ancient ground. */
-  private final StartOfTurnEffect ancientGroundEffect;
+  public final StartOfTurnEffect ancientGroundEffect;
 
   /**
    * Constructor for Building. Also adds this model.unit to the tile it is on as an occupant, and
@@ -78,6 +89,14 @@ public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect>
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, stats);
     this.nonAncientGroundEffect = nonAncientGroundEffect;
     this.ancientGroundEffect = ancientGroundEffect;
+  }
+
+  @Override
+  public List<StartOfTurnEffect> getPossibleEffectsList() {
+    LinkedList<StartOfTurnEffect> list = new LinkedList<>();
+    list.add(nonAncientGroundEffect);
+    list.add(ancientGroundEffect);
+    return Collections.unmodifiableList(list);
   }
 
   @Override

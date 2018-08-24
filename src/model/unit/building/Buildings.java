@@ -1,14 +1,5 @@
 package model.unit.building;
 
-import static model.unit.modifier.Modifiers.EAGLE_EYE;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.unit.building.PlayerModifierBuilding.PlayerModifierEffect;
 import model.unit.building.PlayerModifierBuilding.PlayerModifierEffectType;
@@ -24,6 +15,16 @@ import model.unit.stat.Stats;
 import model.util.ExpandableCloud;
 import model.util.ExpandableCloud.ExpandableCloudType;
 import util.TextIO;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static model.unit.modifier.Modifiers.EAGLE_EYE;
 
 /** Index of buildings read from storage. */
 public final class Buildings {
@@ -66,6 +67,9 @@ public final class Buildings {
                   .collect(Collectors.toList());
           String buildingType = comps[9];
 
+          String nonAncientGroundEffectDescription = comps[10];
+          String ancientGroundEffectDescription = comps[11];
+
           Building building;
           switch (buildingType) {
             case "Temple":
@@ -74,14 +78,7 @@ public final class Buildings {
             case "NoEffectBuilding":
               building =
                   new NoEffectBuilding(
-                      null,
-                      name,
-                      imageFilename,
-                      level,
-                      baseCost,
-                      costScaling,
-                      validTerrain,
-                      stats);
+                      null, name, imageFilename, level, baseCost, costScaling, validTerrain, stats);
               break;
             case "SummonerBuilding":
               EffectPair<Integer> summoningRadii = getSummoningRadii(name);
@@ -99,7 +96,9 @@ public final class Buildings {
                       summoningRadii.ancientGroundEffect);
               break;
             case "StartOfTurnEffectBuilding":
-              EffectPair<StartOfTurnEffect> startOfTurnEffects = getStartOfTurnEffects(name);
+              EffectPair<StartOfTurnEffect> startOfTurnEffects =
+                  getStartOfTurnEffects(
+                      name, nonAncientGroundEffectDescription, ancientGroundEffectDescription);
               building =
                   new StartOfTurnEffectBuilding(
                       null,
@@ -130,7 +129,8 @@ public final class Buildings {
               break;
             case "PlayerModifierBuilding":
               EffectPair<PlayerModifierEffect> playerModifierEffects =
-                  getPlayerModifierEffects(name);
+                  getPlayerModifierEffects(
+                      name, nonAncientGroundEffectDescription, ancientGroundEffectDescription);
               building =
                   new PlayerModifierBuilding(
                       null,
@@ -189,18 +189,21 @@ public final class Buildings {
   }
 
   /** Helper to get StartOfTurnEffects by building name. Throws for unknown name. */
-  private static EffectPair<StartOfTurnEffect> getStartOfTurnEffects(String buildingName) {
+  private static EffectPair<StartOfTurnEffect> getStartOfTurnEffects(
+      String buildingName, String nonAncientGroundDescription, String ancientGroundDescription) {
     switch (buildingName) {
       case "Fountain":
         return EffectPair.of(
             new StartOfTurnEffect(
                 StartOfTurnEffectType.HEAL_COMBATANT,
                 15,
-                ExpandableCloud.create(ExpandableCloudType.CIRCLE, 1)),
+                ExpandableCloud.create(ExpandableCloudType.CIRCLE, 1),
+                nonAncientGroundDescription),
             new StartOfTurnEffect(
                 StartOfTurnEffectType.HEAL_COMBATANT,
                 25,
-                ExpandableCloud.create(ExpandableCloudType.CIRCLE, 2)));
+                ExpandableCloud.create(ExpandableCloudType.CIRCLE, 2),
+                ancientGroundDescription));
       default:
         throw new RuntimeException("Unknown building name " + buildingName);
     }
@@ -294,31 +297,44 @@ public final class Buildings {
   }
 
   /** Helper to get PlayerModifier effects for the given building name. Throws for unknown name. */
-  private static EffectPair<PlayerModifierEffect> getPlayerModifierEffects(String buildingName) {
+  private static EffectPair<PlayerModifierEffect> getPlayerModifierEffects(
+      String buildingName, String nonAncientGroundDescription, String ancientGroundDescription) {
     switch (buildingName) {
       case "Well":
         return EffectPair.of(
-            new PlayerModifierEffect(PlayerModifierEffectType.MANA_GENERATION, 30),
-            new PlayerModifierEffect(PlayerModifierEffectType.MANA_GENERATION, 100));
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.MANA_GENERATION, 30, nonAncientGroundDescription),
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.MANA_GENERATION, 100, ancientGroundDescription));
       case "Library":
         return EffectPair.of(
-            new PlayerModifierEffect(PlayerModifierEffectType.RESEARCH_GENERATION, 5),
-            new PlayerModifierEffect(PlayerModifierEffectType.RESEARCH_GENERATION, 15));
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.RESEARCH_GENERATION, 5, nonAncientGroundDescription),
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.RESEARCH_GENERATION, 15, ancientGroundDescription));
       case "Laboratory":
         return EffectPair.of(
-            null, new PlayerModifierEffect(PlayerModifierEffectType.CAST_CLOUD_BOOST, 1));
+            null,
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.CAST_CLOUD_BOOST, 1, ancientGroundDescription));
       case "Ritual Grounds":
         return EffectPair.of(
-            new PlayerModifierEffect(PlayerModifierEffectType.SUMMON_DISCOUNT, 15),
-            new PlayerModifierEffect(PlayerModifierEffectType.SUMMON_DISCOUNT, 30));
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.SUMMON_DISCOUNT, 15, nonAncientGroundDescription),
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.SUMMON_DISCOUNT, 30, ancientGroundDescription));
       case "Archive":
         return EffectPair.of(
-            new PlayerModifierEffect(PlayerModifierEffectType.BUILD_DISCOUNT, 20),
-            new PlayerModifierEffect(PlayerModifierEffectType.BUILD_DISCOUNT, 40));
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.BUILD_DISCOUNT, 20, nonAncientGroundDescription),
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.BUILD_DISCOUNT, 40, ancientGroundDescription));
       case "Studio":
         return EffectPair.of(
-            new PlayerModifierEffect(PlayerModifierEffectType.CAST_DISCOUNT, 20),
-            new PlayerModifierEffect(PlayerModifierEffectType.CAST_DISCOUNT, 40));
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.CAST_DISCOUNT, 20, nonAncientGroundDescription),
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.CAST_DISCOUNT, 40, ancientGroundDescription));
       default:
         throw new RuntimeException("Unknown building name " + buildingName);
     }
