@@ -3,6 +3,7 @@ package controller.game;
 import java.awt.Color;
 import model.board.Board;
 import model.game.Game;
+import model.game.Game.FogOfWar;
 import model.game.HumanPlayer;
 import model.game.Player;
 import model.unit.building.Buildings;
@@ -23,13 +24,13 @@ public final class Main {
 
     Frame f = new Frame(14, 28);
 
-    Game g = new Game(board, Game.FogOfWar.HIDE_ANCIENT_GROUND);
+    Game g = new Game(board, FogOfWar.NONE);
     GameController gc = new GameController(g, f);
 
     Player p1 = new HumanPlayer(g, Color.green);
-    new DummyCommander(p1, 3);
+    new DummyCommander(p1, 1);
     Player p2 = new HumanPlayer(g, Color.magenta);
-    new DummyCommander(p2, 3);
+    new DummyCommander(p2, 1);
 
     gc.start();
   }
