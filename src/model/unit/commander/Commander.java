@@ -275,7 +275,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
 
   /** Returns the amount of research still necessary to get to the next level */
   public int getResearchRemaining() {
-    return research - getResearchRequirement();
+    return getResearchRequirement() - research;
   }
 
   /**

@@ -169,7 +169,7 @@ public abstract class Player implements Stringable {
 
   /** Returns the amount of research still necessary to get to the next level */
   public int getResearchRemaining() {
-    return commander.getResearchRequirement();
+    return commander.getResearchRemaining();
   }
 
   /** Returns the researchPerTurn this player generates */
