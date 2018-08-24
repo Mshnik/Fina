@@ -29,6 +29,7 @@ public class Stats implements Iterable<Stat> {
     TEMPLATE.put(StatType.COMMANDER_ACTIONS_PER_TURN, 0);
     TEMPLATE.put(StatType.MIN_ATTACK, 0);
     TEMPLATE.put(StatType.MAX_ATTACK, 0);
+    TEMPLATE.put(StatType.DAMAGE_REDUCTION, 0);
     TEMPLATE.put(StatType.ATTACK_RANGE, 0);
     TEMPLATE.put(StatType.SUMMON_RANGE, 0);
     TEMPLATE.put(StatType.VISION_RANGE, 0);

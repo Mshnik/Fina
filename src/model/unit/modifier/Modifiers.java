@@ -22,6 +22,18 @@ public final class Modifiers {
           false,
           true);
 
+  /** Modifier that deals more damage to commanders. */
+  public static final Modifier BLOODLUST =
+      new CustomModifier(
+          "Bloodlust",
+          "This unit deals more damage to commanders",
+          10,
+          Integer.MAX_VALUE,
+          true,
+          false,
+          false,
+          true);
+
   /** Modifier that reduces movement cost in woods. */
   public static final Modifier PATHFINDER =
       new StatModifier(

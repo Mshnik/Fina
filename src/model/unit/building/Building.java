@@ -11,8 +11,11 @@ import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 
-/** Represents a Building on the model.board, controllable by a player */
-public abstract class Building extends Unit {
+/**
+ * Represents a Building on the model.board, controllable by a player.
+ * E is the effect type for this building. May be Void for none.
+ */
+public abstract class Building<E> extends Unit {
 
   /**
    * Constructor for Building. Also adds this model.unit to the tile it is on as an occupant, and
@@ -46,6 +49,11 @@ public abstract class Building extends Unit {
     }
   }
 
+  /** Return the effect this building gives. May vary based on the tile this is built on or other
+   * buildings its player owns.
+   */
+  public abstract E getEffect();
+
   // RESTRICTIONS
   /** Restricted attack - has val 0. */
   @Override
@@ -59,7 +67,7 @@ public abstract class Building extends Unit {
     return false;
   }
 
-  /** Commanders can't fight */
+  /** Buildings can't fight */
   public boolean canFight() {
     return false;
   }

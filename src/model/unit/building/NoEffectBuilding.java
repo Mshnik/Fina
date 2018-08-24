@@ -6,7 +6,7 @@ import model.unit.Unit;
 import model.unit.stat.Stats;
 
 /** An extension of building with no additional effects. */
-public final class NoEffectBuilding extends Building {
+public final class NoEffectBuilding extends Building<Void> {
 
   /**
    * Constructor for Building. Also adds this model.unit to the tile it is on as an occupant, and
@@ -28,6 +28,11 @@ public final class NoEffectBuilding extends Building {
       int manaCostScaling, Tile tile, Stats stats)
       throws RuntimeException, IllegalArgumentException {
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, tile, stats);
+  }
+
+  @Override
+  public Void getEffect() {
+    return null;
   }
 
   @Override

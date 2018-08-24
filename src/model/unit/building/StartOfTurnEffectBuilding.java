@@ -1,8 +1,10 @@
 package model.unit.building;
 
+import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
+import model.unit.building.StartOfTurnEffectBuilding.StartOfTurnEffect;
 import model.unit.stat.Stats;
 import model.util.Cloud;
 
@@ -11,10 +13,10 @@ import model.util.Cloud;
  *
  * @author Mshnik
  */
-public final class StartOfTurnEffectBuilding extends Building {
+public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect> {
 
   /** Types of effects that can occur at start of each turn. */
-  public enum StartOfTurnEffect {
+  public enum StartOfTurnEffectType {
     /** Gain value extra mana per turn (cloud is null) */
     MANA_GENERATION,
     /** Gain value extra research per turn (cloud is null) */
@@ -23,14 +25,29 @@ public final class StartOfTurnEffectBuilding extends Building {
     HEAL_COMBATANT
   }
 
-  /** The StartOfTurnEffect for this building. */
-  public final StartOfTurnEffect startOfTurnEffect;
+  /** An effect that occurs at the start of each turn. */
+  public static final class StartOfTurnEffect {
+    /** The StartOfTurnEffect for this building. */
+    public final StartOfTurnEffectType type;
 
-  /** The value of the StartOfTurnEffect for this building. */
-  public final int value;
+    /** The value of the StartOfTurnEffect for this building. */
+    public final int value;
 
-  /** The cloud the effect is applied to, if any. */
-  public final Cloud cloud;
+    /** The cloud the effect is applied to, if any. */
+    public final Cloud cloud;
+
+    public StartOfTurnEffect(StartOfTurnEffectType type, int value, Cloud cloud) {
+      this.type = type;
+      this.value = value;
+      this.cloud = cloud;
+    }
+  }
+
+  /** The effect this grants if not built on ancient ground. */
+  private final StartOfTurnEffect nonAncientGroundEffect;
+
+  /** The effect this grants if built on ancient ground. */
+  private final StartOfTurnEffect ancientGroundEffect;
 
   /**
    * Constructor for Building. Also adds this model.unit to the tile it is on as an occupant, and
@@ -43,14 +60,13 @@ public final class StartOfTurnEffectBuilding extends Building {
    * @param imageFilename - the image to draw when drawing this unit.
    * @param level - the level of this model.unit - the age this belongs to
    * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
-   * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond the first. Should be a non-negative number.
+   * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond
+   *     the first. Should be a non-negative number.
    * @param tile - the tile this model.unit begins the model.game on. Also notifies the tile of
    *     this.
    * @param stats - the base unmodified stats of this model.unit. stats that remain used are
-   * @param startOfTurnEffect - the effect this building grants
-   * @param value - the magnitude of the effect this building grants.
-   * @param untranslatedCloud - the effect cloud of the effect this building grants. May be null if
-   *     not used. Should be centered on (0,0).
+   * @param nonAncientGroundEffect - the effect this building grants if not built on ancient ground
+   * @param ancientGroundEffect - the effect this building grants if built on ancient ground
    */
   StartOfTurnEffectBuilding(
       Player owner,
@@ -61,14 +77,19 @@ public final class StartOfTurnEffectBuilding extends Building {
       int manaCostScaling,
       Tile tile,
       Stats stats,
-      StartOfTurnEffect startOfTurnEffect,
-      int value,
-      Cloud untranslatedCloud)
+      StartOfTurnEffect nonAncientGroundEffect,
+      StartOfTurnEffect ancientGroundEffect)
       throws RuntimeException, IllegalArgumentException {
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, tile, stats);
-    this.startOfTurnEffect = startOfTurnEffect;
-    this.value = value;
-    this.cloud = untranslatedCloud;
+    this.nonAncientGroundEffect = nonAncientGroundEffect;
+    this.ancientGroundEffect = ancientGroundEffect;
+  }
+
+  @Override
+  public StartOfTurnEffect getEffect() {
+    return getLocation() != null && getLocation().terrain == Terrain.ANCIENT_GROUND
+        ? ancientGroundEffect
+        : nonAncientGroundEffect;
   }
 
   @Override
@@ -82,8 +103,7 @@ public final class StartOfTurnEffectBuilding extends Building {
         manaCostScaling,
         location,
         getStats(),
-        startOfTurnEffect,
-        value,
-        cloud);
+        nonAncientGroundEffect,
+        ancientGroundEffect);
   }
 }

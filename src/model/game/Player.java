@@ -369,21 +369,19 @@ public abstract class Player implements Stringable {
       for (Unit u : units) {
         if (u instanceof StartOfTurnEffectBuilding) {
           StartOfTurnEffectBuilding.StartOfTurnEffect effect =
-              ((StartOfTurnEffectBuilding) u).startOfTurnEffect;
-          int value = ((StartOfTurnEffectBuilding) u).value;
+              ((StartOfTurnEffectBuilding) u).getEffect();
 
-          switch (effect) {
+          switch (effect.type) {
             case MANA_GENERATION:
-              commander.addMana(value);
+              commander.addMana(effect.value);
               break;
             case RESEARCH_GAIN:
-              commander.addResearch(value);
+              commander.addResearch(effect.value);
               break;
             case HEAL_COMBATANT:
-              Cloud cloud = ((StartOfTurnEffectBuilding) u).cloud;
-              for (Unit u2 : getUnitsInCloud(cloud.translate(u.getLocation().getPoint()))) {
+              for (Unit u2 : getUnitsInCloud(effect.cloud.translate(u.getLocation().getPoint()))) {
                 if (u2 instanceof Combatant) {
-                  u2.changeHealth(value, u);
+                  u2.changeHealth(effect.value, u);
                 }
               }
               break;

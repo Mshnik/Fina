@@ -21,6 +21,8 @@ public enum StatType {
    * Max damage dealt when attacking. attack >= 0. If a unit's attack == 0, this unit cannot attack.
    */
   MAX_ATTACK,
+  /** Reduction on damage taken. Damage Reduction >= 0. */
+  DAMAGE_REDUCTION,
   /**
    * Distance at which another model.unit can be attacked Distance is measured using manhattan
    * distance - 1. Units with range 0 are melee, others are ranged range >= 0.
@@ -65,7 +67,10 @@ public enum StatType {
 
   /** Returns true iff this stat is an attack-related stat. */
   public boolean isAttackStat() {
-    return this == MIN_ATTACK || this == MAX_ATTACK || this == ATTACK_RANGE;
+    return this == MIN_ATTACK
+        || this == MAX_ATTACK
+        || this == ATTACK_RANGE
+        || this == DAMAGE_REDUCTION;
   }
 
   /** Returns true iff this stat is a movement-related stat. */
@@ -90,6 +95,7 @@ public enum StatType {
         return false;
       case COMMANDER_ACTIONS_PER_TURN:
       case MIN_ATTACK:
+      case DAMAGE_REDUCTION:
       case MANA_PER_TURN:
       case SUMMON_RANGE:
       case GRASS_COST:
@@ -108,6 +114,7 @@ public enum StatType {
       case MAX_ATTACK:
       case ATTACK_RANGE:
       case GRASS_COST:
+      case DAMAGE_REDUCTION:
       case MANA_PER_TURN:
       case COMMANDER_ACTIONS_PER_TURN:
       case MAX_HEALTH:

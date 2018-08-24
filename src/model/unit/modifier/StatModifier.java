@@ -43,6 +43,7 @@ public final class StatModifier extends Modifier {
    * @param turns - the total duration of this modifier (turns after this one). Can be
    *     Integer.MAX_VAL - interpreted as forever rather than the actual val
    * @param stackable - true iff this is stackable
+   * TODO - add duration extendable.
    * @param stat - the stat to modify
    * @param modType - the operation on stat to perform
    * @param modVal - the value to modify by

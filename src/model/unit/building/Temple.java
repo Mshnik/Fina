@@ -11,7 +11,7 @@ import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 
-public final class Temple extends Building {
+public final class Temple extends Building<Void> {
 
   /** Buffs, by number of temples other than this (0 indexed) */
   private static final ModifierBundle[] BUFFS = {
@@ -101,5 +101,10 @@ public final class Temple extends Building {
     for (Unit u : owner.getUnits()) {
       BUFFS[index].clone(u, this);
     }
+  }
+
+  @Override
+  public Void getEffect() {
+    return null;
   }
 }
