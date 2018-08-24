@@ -178,7 +178,8 @@ public final class InfoPanel extends JPanel {
     final int infoFont = (int) (MEDIUM_FONT.getSize() * 1.25);
     y += infoFont;
 
-    g2d.drawString(" Level " + (unit instanceof Commander ? unit.owner.getLevel() : unit.level), x, y);
+    g2d.drawString(
+        " Level " + (unit instanceof Commander ? unit.owner.getLevel() : unit.level), x, y);
     y += infoFont;
 
     String subString = " " + unit.getIdentifierString() + " ";
