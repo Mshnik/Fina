@@ -94,6 +94,8 @@ public class Stats implements Iterable<Stat> {
                 newVal = Mth.roundTo(((Double) newVal * (double) s.getModVal()), -2);
                 break;
             }
+          } else {
+            throw new RuntimeException("Unhandled stat value type " + s.getModVal().getClass());
           }
           stats.put(s.modifiedStat, newVal);
         }
