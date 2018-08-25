@@ -24,10 +24,16 @@ public abstract class Combatant extends MovingUnit {
 
   /** Possible combatant classes. A combatant may have more than one. */
   public enum CombatantClass {
+    // Mid health mid-high damage standard melee
     FIGHTER,
+    // Mid health mid damage mid range
     RANGER,
+    // Low health high damage, counter range
     ASSASSIN,
-    TANK;
+    // High health mid damage, counter melee
+    TANK,
+    // Low health high damage high range, counter ranger + tank
+    MAGE;
 
     /** Returns the CombatantClass from the given short string. */
     public static CombatantClass valueOfShort(String s) {
@@ -40,6 +46,8 @@ public abstract class Combatant extends MovingUnit {
           return ASSASSIN;
         case "T":
           return TANK;
+        case "M":
+          return MAGE;
         default:
           throw new RuntimeException("Unknown short string " + s);
       }
@@ -56,6 +64,8 @@ public abstract class Combatant extends MovingUnit {
           return "Asn";
         case TANK:
           return "Tnk";
+        case MAGE:
+          return "Mag";
         default:
           throw new RuntimeException();
       }
@@ -65,13 +75,15 @@ public abstract class Combatant extends MovingUnit {
     private boolean hasBonusAgainstClass(CombatantClass other) {
       switch (this) {
         case FIGHTER:
-          return other == TANK;
+          return other == ASSASSIN || other == MAGE;
         case RANGER:
-          return other == FIGHTER;
+          return other == FIGHTER || other == TANK;
         case ASSASSIN:
-          return other == RANGER;
+          return other == MAGE || other == RANGER;
         case TANK:
-          return other == ASSASSIN;
+          return other == FIGHTER || other == ASSASSIN;
+        case MAGE:
+          return other == RANGER || other == TANK;
       }
       return false;
     }
