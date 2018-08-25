@@ -17,6 +17,6 @@ SKIP,Siege Works,temple.png,3,500,500,Offensive,125,0,Grass-Ancient_Ground,AllUn
 SKIP,Military Academy,temple.png,3,500,500,Defensive,125,0,Grass-Ancient_Ground,AllUnitModifierBuilding,All units Patience 10,All units Patience 20
 SKIP,Sanctuary,temple.png,3,500,500,Defensive,125,0,Grass-Ancient_Ground,AllUnitModifierBuilding,All units Hexproof 15,All units Hexproof 30
 ,,,,,,,,,,,
-SKIP,Ritual Grounds,temple.png,4,700,600,Utility,125,0,Grass-Ancient_Ground,PlayerModifierBuilding,Summon cost -15%,Summon cost -30%
+Ritual Grounds,temple.png,4,700,600,Utility,125,0,Grass-Ancient_Ground,PlayerModifierBuilding,Summon cost -15%,Summon cost -30%
 SKIP,Archive,temple.png,4,700,600,Utility,125,0,Grass-Ancient_Ground,PlayerModifierBuilding,Spell cost -20%,Spell cost -40%
-SKIP,Studio,temple.png,4,700,600,Utility,125,0,Grass-Ancient_Ground,PlayerModifierBuilding,Build cost -20%,Build cost -40%
+Studio,temple.png,4,700,600,Utility,125,0,Grass-Ancient_Ground,PlayerModifierBuilding,Build cost -20%,Build cost -40%

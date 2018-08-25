@@ -29,7 +29,6 @@ import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.unit.commander.DummyCommander;
-import view.gui.Animator;
 import view.gui.BoardCursor;
 import view.gui.Frame;
 import view.gui.panel.GamePanel;
@@ -116,9 +115,9 @@ public final class GameController {
 
     // Create players.
     Player p1 = new HumanPlayer(g, Color.green);
-    new DummyCommander(p1, 1);
+    new DummyCommander(p1, 4);
     Player p2 = new HumanPlayer(g, Color.magenta);
-    new DummyCommander(p2, 1);
+    new DummyCommander(p2, 4);
 
     // Start game.
     gc.start();
@@ -438,7 +437,7 @@ public final class GameController {
       choices.add(
           new Choice(
               u.manaCost <= c.getMana(),
-              u.name + Choice.SEPERATOR + " (" + u.getManaCostWithScalingForPlayer(c.owner) + ")",
+              u.name + Choice.SEPERATOR + " (" + u.getManaCostWithScalingAndDiscountsForPlayer(c.owner) + ")",
               u));
     }
     decision = new Decision(DecisionType.SUMMON_DECISION, false, true, choices);

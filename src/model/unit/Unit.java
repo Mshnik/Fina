@@ -1,17 +1,11 @@
 package model.unit;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
 import model.game.Stringable;
+import model.unit.building.Building;
+import model.unit.building.PlayerModifierBuilding;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.unit.modifier.CustomModifier;
@@ -20,6 +14,9 @@ import model.unit.modifier.Modifiers;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Represents any thing that can be owned by a player. Maintains its health and stats, and
@@ -106,15 +103,38 @@ public abstract class Unit implements Stringable {
     grantedModifiers = new LinkedList<>();
   }
 
-  /** Returns the mana cost of the given player summoning a copy of this, including scaling. */
-  public int getManaCostWithScalingForPlayer(Player p) {
-    return manaCost
-        + (int) p.getUnits().stream().filter(u -> u.name.equals(name)).count() * manaCostScaling;
+  /**
+   * Returns the mana cost of the given player summoning a copy of this, including scaling and
+   * discounting.
+   */
+  public int getManaCostWithScalingAndDiscountsForPlayer(Player p) {
+    // Scaling cost - player pays additional scaling cost for each copy of this unit they already
+    // have.
+    int scalingCost =
+        (int) p.getUnits().stream().filter(u -> u.name.equals(name)).count() * manaCostScaling;
+
+    // Discount - check for player modifiers that make this type of unit creation cheaper.
+    PlayerModifierBuilding.PlayerModifierEffectType discountType =
+        this instanceof Building
+            ? PlayerModifierBuilding.PlayerModifierEffectType.BUILD_DISCOUNT
+            : PlayerModifierBuilding.PlayerModifierEffectType.SUMMON_DISCOUNT;
+    double discountPercentage =
+        1.0
+            - p.getUnits()
+                    .stream()
+                    .filter(u -> u instanceof PlayerModifierBuilding)
+                    .map(u -> (PlayerModifierBuilding) u)
+                    .filter(b -> b.getEffect().effectType == discountType)
+                    .mapToInt(b -> b.getEffect().value)
+                    .sum()
+                / 100.0;
+
+    return (int) ((manaCost + scalingCost) * discountPercentage);
   }
 
   /** Returns a copy of this for the given player, on the given tile */
   public final Unit clone(Player owner, Tile location) {
-    int cost = getManaCostWithScalingForPlayer(owner);
+    int cost = getManaCostWithScalingAndDiscountsForPlayer(owner);
     if (cost > 0 && owner.getMana() < cost)
       throw new RuntimeException(owner + " can't afford to summon model.unit with cost " + cost);
     Unit u = createClone(owner);

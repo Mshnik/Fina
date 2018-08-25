@@ -333,15 +333,15 @@ public final class Buildings {
       case "Archive":
         return EffectPair.of(
             new PlayerModifierEffect(
-                PlayerModifierEffectType.BUILD_DISCOUNT, 20, nonAncientGroundDescription),
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.BUILD_DISCOUNT, 40, ancientGroundDescription));
-      case "Studio":
-        return EffectPair.of(
-            new PlayerModifierEffect(
                 PlayerModifierEffectType.CAST_DISCOUNT, 20, nonAncientGroundDescription),
             new PlayerModifierEffect(
                 PlayerModifierEffectType.CAST_DISCOUNT, 40, ancientGroundDescription));
+      case "Studio":
+        return EffectPair.of(
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.BUILD_DISCOUNT, 20, nonAncientGroundDescription),
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.BUILD_DISCOUNT, 40, ancientGroundDescription));
       default:
         throw new RuntimeException("Unknown building name " + buildingName);
     }
