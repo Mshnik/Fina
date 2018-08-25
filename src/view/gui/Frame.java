@@ -8,6 +8,7 @@ import java.awt.FontMetrics;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.nio.file.Paths;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -27,9 +28,6 @@ public final class Frame extends JFrame {
 
   /** */
   private static final long serialVersionUID = 1L;
-
-  /** True iff debugging output/painting should be shown */
-  public static final boolean DEBUG = true;
 
   // Some nice fonts to consider:
   // Apple Chancery
@@ -72,6 +70,9 @@ public final class Frame extends JFrame {
 
   /** The current zoom of this frame. */
   private int zoomIndex;
+
+  /** True iff debugging output/painting should be shown */
+  public boolean DEBUG = false;
 
   /** The current active cursor */
   @SuppressWarnings("rawtypes")
@@ -143,7 +144,6 @@ public final class Frame extends JFrame {
           pack();
         });
     windowMenu.add(zoomInMenuItem);
-
     JMenuItem zoomOutMenuItem = new JMenuItem("Zoom Out");
     zoomOutMenuItem.setAccelerator(
         KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.META_DOWN_MASK));
@@ -156,6 +156,13 @@ public final class Frame extends JFrame {
           pack();
         });
     windowMenu.add(zoomOutMenuItem);
+    JMenuItem drawDebugInfoMenuItem = new JCheckBoxMenuItem("Draw Debug Info");
+    drawDebugInfoMenuItem.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.META_DOWN_MASK));
+    drawDebugInfoMenuItem.addActionListener(e -> {
+      DEBUG = !DEBUG;
+    });
+    windowMenu.add(drawDebugInfoMenuItem);
 
     setJMenuBar(menu);
   }

@@ -108,7 +108,7 @@ public final class HeaderPanel extends JPanel {
     g2d.setStroke(new BasicStroke(width));
     g2d.drawRect(width / 2, width / 2, getWidth() - width, getHeight() - width);
 
-    if (Frame.DEBUG) {
+    if (frame.DEBUG) {
       g2d.setColor(Color.black);
       g2d.drawString(frame.getController().getToggle().toString(), MARGIN, MARGIN);
     }
