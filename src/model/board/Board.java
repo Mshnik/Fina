@@ -118,6 +118,16 @@ public final class Board implements Iterable<Tile>, Stringable {
     return neighbors;
   }
 
+  /** Returns the maximum number of players this board can support. */
+  public int getMaxPlayers() {
+    return commanderStartLocations.size();
+  }
+
+  /** Returns true if the given location is a commander starting location. */
+  public boolean isCommanderStartLocation(int row, int col) {
+    return commanderStartLocations.contains(new MPoint(row, col));
+  }
+
   /**
    * Returns the commander start location for the given player. Throws an exception if this board
    * doesn't support the given player's index.

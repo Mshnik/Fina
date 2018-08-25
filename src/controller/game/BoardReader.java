@@ -28,10 +28,10 @@ public final class BoardReader {
   private static final Terrain PLAYER_START_TERRAIN = Terrain.GRASS;
 
   /** Reads a board from memory at the given csvFilepath. */
-  static Board readBoard(String csvFilepath) {
+  public static Board readBoard(String boardFilepath) {
     List<String> fileLines;
     try {
-      fileLines = Files.readAllLines(Paths.get(csvFilepath));
+      fileLines = Files.readAllLines(Paths.get(boardFilepath));
     } catch (IOException e) {
       throw new RuntimeException("Error reading file", e);
     }
@@ -59,6 +59,6 @@ public final class BoardReader {
     // Randomize starting locations.
     Collections.shuffle(playerStartLocations);
 
-    return new Board(csvFilepath, terrainArr, playerStartLocations);
+    return new Board(boardFilepath, terrainArr, playerStartLocations);
   }
 }
