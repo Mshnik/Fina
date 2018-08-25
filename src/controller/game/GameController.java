@@ -102,13 +102,16 @@ public final class GameController {
   private LocationSelector locationSelector;
 
   /** Loads a board and starts the game in the same frame as this, then disposes of this. */
-  static void loadAndStart(String boardFilepath) {
+  static void loadAndStart(String boardFilepath, int numPlayers, FogOfWar fogOfWar) {
+    if (numPlayers < 2) {
+      throw new RuntimeException("Can't have game with less than 2 players");
+    }
     Frame f = new Frame(8, 20);
     KeyboardListener.setFrame(f);
 
     // Read board and create game.
     Board board = BoardReader.readBoard(boardFilepath);
-    Game g = new Game(board, FogOfWar.NONE);
+    Game g = new Game(board, fogOfWar);
     GameController gc = new GameController(g, f);
 
     // Create players.
@@ -155,14 +158,14 @@ public final class GameController {
   }
 
   /** Loads the given board and kills this. */
-  public synchronized void loadAndKillThis(String boardFilepath) {
-    loadAndStart(boardFilepath);
+  public synchronized void loadAndKillThis(String boardFilepath, int numPlayers, FogOfWar fogOfWar) {
+    loadAndStart(boardFilepath, numPlayers, fogOfWar);
     kill();
   }
 
   /** Restarts this game by creating a new copy of this then disposing of this. */
   public synchronized void restart() {
-    loadAndStart(game.board.filepath);
+    loadAndStart(game.board.filepath, playerColors.size(), game.getFogOfWar());
     kill();
   }
 

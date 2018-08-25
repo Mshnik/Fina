@@ -36,7 +36,7 @@ final class NewGameSelector {
   }
 
   /** Visual panel that displays the options for creating a new game. */
-  static final class NewGamePanel extends JPanel {
+  private static final class NewGamePanel extends JPanel {
     private final JComboBox<String> boardSelector;
     private final JComboBox<Integer> numPlayersSelector;
     private final JComboBox<FogOfWar> fogOfWarSelector;
