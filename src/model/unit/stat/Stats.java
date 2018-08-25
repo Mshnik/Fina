@@ -63,23 +63,30 @@ public class Stats implements Iterable<Stat> {
       for (Modifier m : modifiers) {
         if (m instanceof StatModifier) {
           StatModifier s = (StatModifier) m;
-          StatType t = s.modifiedStat;
-          if (s.modType == StatModifier.ModificationType.SET) {
-            stats.put(t, s.getModVal());
-            continue;
-          }
           Object newVal = stats.get(s.modifiedStat);
           if (s.getModVal() instanceof Integer) {
             switch (s.modType) {
+              case SET_MIN:
+                newVal = Math.min((int) newVal, (int)s.getModVal());
+                break;
+              case SET_MAX:
+                newVal = Math.max((int) newVal, (int)s.getModVal());
+                break;
               case ADD:
-                newVal = (int) ((Integer) newVal + (int) s.getModVal());
+                newVal = (int) newVal + (int) s.getModVal();
                 break;
               case MULTIPLY:
-                newVal = (int) ((Integer) newVal * (double) s.getModVal());
+                newVal = (int) ((int) newVal * (double) s.getModVal());
                 break;
             }
           } else if (s.getModVal() instanceof Double) {
             switch (s.modType) {
+              case SET_MIN:
+                newVal = Math.min((double) newVal, (double)s.getModVal());
+                break;
+              case SET_MAX:
+                newVal = Math.max((double) newVal, (double)s.getModVal());
+                break;
               case ADD:
                 newVal = Mth.roundTo(((Double) newVal + (double) s.getModVal()), -2);
                 break;
