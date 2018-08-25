@@ -304,15 +304,15 @@ public final class Buildings {
       case "Well":
         return EffectPair.of(
             new PlayerModifierEffect(
-                PlayerModifierEffectType.MANA_GENERATION, 30, nonAncientGroundDescription),
+                PlayerModifierEffectType.MANA_GENERATION, 75, nonAncientGroundDescription),
             new PlayerModifierEffect(
-                PlayerModifierEffectType.MANA_GENERATION, 100, ancientGroundDescription));
+                PlayerModifierEffectType.MANA_GENERATION, 150, ancientGroundDescription));
       case "Library":
         return EffectPair.of(
             new PlayerModifierEffect(
-                PlayerModifierEffectType.RESEARCH_GENERATION, 5, nonAncientGroundDescription),
+                PlayerModifierEffectType.RESEARCH_GENERATION, 50, nonAncientGroundDescription),
             new PlayerModifierEffect(
-                PlayerModifierEffectType.RESEARCH_GENERATION, 15, ancientGroundDescription));
+                PlayerModifierEffectType.RESEARCH_GENERATION, 100, ancientGroundDescription));
       case "Dojo":
         return EffectPair.of(
             new PlayerModifierEffect(

@@ -45,7 +45,7 @@ public abstract class Unit implements Stringable {
   public final int manaCost;
 
   /** The additional mana cost to summon each copy of this unit past the first. */
-  public final int manaCostScaling;
+  protected final int manaCostScaling;
 
   /** The player that owns this model.unit */
   public final Player owner;
@@ -109,8 +109,7 @@ public abstract class Unit implements Stringable {
   /** Returns the mana cost of the given player summoning a copy of this, including scaling. */
   public int getManaCostWithScalingForPlayer(Player p) {
     return manaCost
-        + (int) p.getUnits().stream().filter(u -> u.name.equals(name)).count()
-        * manaCostScaling;
+        + (int) p.getUnits().stream().filter(u -> u.name.equals(name)).count() * manaCostScaling;
   }
 
   /** Returns a copy of this for the given player, on the given tile */
@@ -227,20 +226,27 @@ public abstract class Unit implements Stringable {
    *
    * @see #changeHealth(int, Unit) called with (desired - current, source)
    */
-  protected void setHealth(int newHealth, Unit source) {
+  protected final void setHealth(int newHealth, Unit source) {
     changeHealth(newHealth - health, source);
   }
 
   /**
    * Alters the current health of this model.unit. Maxes health at maxHealth. if health <= 0 because
-   * of this call, calls died().
+   * of this call, calls died(). If a unit owned by the opposing player caused this change in health
+   * and deltaHealth is negative, the owner gains research equal to the health lost, times
+   * Commander.BONUS_DAMAGE_TO_RESEARCH_RATIO if this is a commander.
    *
    * @param deltaHealth - amount to change health by.
    * @param source - the model.unit causing this change in health
    */
-  public void changeHealth(int deltaHealth, Unit source) {
+  public final void changeHealth(int deltaHealth, Unit source) {
     health += deltaHealth;
     health = Math.min(health, getMaxHealth());
+    if (source.owner != owner && deltaHealth < 0) {
+      double bonusResearchRatio =
+          (this instanceof Commander ? Commander.BONUS_DAMAGE_TO_RESEARCH_RATIO : 1);
+      source.owner.getCommander().addResearch((int) (-deltaHealth * bonusResearchRatio));
+    }
     if (health <= 0) died(source);
   }
 
@@ -251,8 +257,7 @@ public abstract class Unit implements Stringable {
 
   /**
    * Called when a change in health causes this to die. Removes it from its owner and tile, and
-   * gives its killer research Can be overriden in subclasses to add additional behavior, but this
-   * method should be called somewhere in that overriden method
+   * gives its killer research based on this' level.
    */
   private void died(Unit killer) {
     for (Modifier m : getGrantedModifiers()) {
@@ -260,10 +265,9 @@ public abstract class Unit implements Stringable {
     }
     owner.removeUnit(this);
     location.removeOccupyingUnit();
-    killer
-        .owner
-        .getCommander()
-        .addResearch((int) (level * Commander.LEVEL_TO_RESEARCH_RATIO));
+    if (killer.owner != owner) {
+      killer.owner.getCommander().addResearch((int) (level * Commander.LEVEL_TO_RESEARCH_RATIO));
+    }
   }
 
   /**
