@@ -1,13 +1,11 @@
 package view.gui;
 
-import controller.game.BoardReader;
 import controller.game.GameController;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.nio.file.Paths;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -19,6 +17,7 @@ import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;
 import model.unit.combatant.Combat;
+import view.gui.NewGameSelector.NewGameOptions;
 import view.gui.panel.GamePanel;
 import view.gui.panel.HeaderPanel;
 import view.gui.panel.InfoPanel;
@@ -102,18 +101,10 @@ public final class Frame extends JFrame {
     newGameMenuItem.addActionListener(
         e -> {
           animator.paused = true;
-          String[] boardChoices = Paths.get(BoardReader.BOARDS_ROOT_FILEPATH).toFile().list();
-          String input =
-              (String)
-                  JOptionPane.showInputDialog(
-                      Frame.this,
-                      "Choose Board to load.",
-                      "New Game - Choose Board",
-                      JOptionPane.QUESTION_MESSAGE,
-                      null,
-                      boardChoices,
-                      boardChoices[0]);
-          controller.loadAndKillThis(BoardReader.BOARDS_ROOT_FILEPATH + input);
+          NewGameOptions newGameOptions = NewGameSelector.getNewGame(this);
+          if (!newGameOptions.cancelled) {
+            controller.loadAndKillThis(newGameOptions.boardFilepath);
+          }
         });
     gameMenu.add(newGameMenuItem);
     restartGameMenuItem = new JMenuItem("Restart Game");
@@ -159,9 +150,10 @@ public final class Frame extends JFrame {
     JMenuItem drawDebugInfoMenuItem = new JCheckBoxMenuItem("Draw Debug Info");
     drawDebugInfoMenuItem.setAccelerator(
         KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.META_DOWN_MASK));
-    drawDebugInfoMenuItem.addActionListener(e -> {
-      DEBUG = !DEBUG;
-    });
+    drawDebugInfoMenuItem.addActionListener(
+        e -> {
+          DEBUG = !DEBUG;
+        });
     windowMenu.add(drawDebugInfoMenuItem);
 
     setJMenuBar(menu);
