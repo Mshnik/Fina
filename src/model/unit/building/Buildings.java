@@ -218,12 +218,14 @@ public final class Buildings {
             new ModifierBundle(
                 new StatModifier(
                     "Strengthened Min Atk - Armory",
+                    "Strengthened Min Atk - Armory",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
                     StatType.MIN_ATTACK,
                     ModificationType.ADD,
                     3),
                 new StatModifier(
+                    "Strengthened Max Atk - Armory",
                     "Strengthened Max Atk - Armory",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
@@ -233,6 +235,7 @@ public final class Buildings {
             new ModifierBundle(
                 new StatModifier(
                     "Strengthened Min Atk - Armory",
+                    "Strengthened Min Atk - Armory",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
                     StatType.MIN_ATTACK,
@@ -240,12 +243,14 @@ public final class Buildings {
                     3),
                 new StatModifier(
                     "Strengthened Max Atk - Armory",
+                    "Strengthened Max Atk - Armory",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
                     StatType.MAX_ATTACK,
                     ModificationType.ADD,
                     3),
                 new StatModifier(
+                    "Toughness - Armory",
                     "Toughness - Armory",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
@@ -257,12 +262,14 @@ public final class Buildings {
             new ModifierBundle(
                 new StatModifier(
                     "Farsight - Comms Tower",
+                    "Farsight - Comms Tower",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
                     StatType.VISION_RANGE,
                     ModificationType.ADD,
                     2),
                 new StatModifier(
+                    "Quickness - Comms Towe",
                     "Quickness - Comms Towe",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
@@ -272,12 +279,14 @@ public final class Buildings {
             new ModifierBundle(
                 new StatModifier(
                     "Farsight - Comms Tower",
+                    "Farsight - Comms Tower",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
                     StatType.VISION_RANGE,
                     ModificationType.ADD,
                     3),
                 new StatModifier(
+                    "Quickness - Comms Tower",
                     "Quickness - Comms Tower",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,

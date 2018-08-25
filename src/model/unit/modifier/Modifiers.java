@@ -15,6 +15,7 @@ public final class Modifiers {
   public static final Modifier BORN_TO_FIGHT =
       new CustomModifier(
           "Born to Fight",
+          "Born to Fight",
           "After dealing damage, this unit gains some health",
           10,
           Integer.MAX_VALUE,
@@ -26,6 +27,7 @@ public final class Modifiers {
   /** Modifier that deals more damage to commanders. */
   public static final Modifier BLOODLUST =
       new CustomModifier(
+          "Bloodlust",
           "Bloodlust",
           "This unit deals more damage to commanders",
           10,
@@ -39,6 +41,7 @@ public final class Modifiers {
   public static final Modifier EAGLE_EYE =
       new CustomModifier(
           "Eagle Eye",
+          "Eagle Eye",
           "This unit can see into woods and past mountains.",
           null,
           Integer.MAX_VALUE,
@@ -51,6 +54,7 @@ public final class Modifiers {
   public static final Modifier PATHFINDER =
       new StatModifier(
           "Pathfinder",
+          "Pathfinder",
           Integer.MAX_VALUE,
           StackMode.STACKABLE,
           StatType.WOODS_COST,
@@ -61,6 +65,7 @@ public final class Modifiers {
   public static final Modifier TRAILBLAZER =
       new StatModifier(
           "Trailblazer",
+          "Trailblazer",
           Integer.MAX_VALUE,
           StackMode.STACKABLE,
           StatType.MOUNTAIN_COST,
@@ -70,6 +75,7 @@ public final class Modifiers {
   /** Modifier that slowly regenerates health. */
   public static final Modifier TOUGHNESS =
       new CustomModifier(
+          "Toughness",
           "Toughness",
           "This unit gains health each turn",
           5,
@@ -82,6 +88,7 @@ public final class Modifiers {
   /** Modifier that slowly regenerates health. */
   public static final Modifier DISAPPEARANCE =
       new CustomModifier(
+          "Disappearance",
           "Disappearance",
           "This unit can move after attacking",
           null,

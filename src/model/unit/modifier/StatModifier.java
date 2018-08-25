@@ -39,6 +39,7 @@ public final class StatModifier extends Modifier {
   /**
    * Constructor for dummy instance
    *
+   * @param identifier - the identifier of this statModifier
    * @param name - the name of this statModifier
    * @param turns - the total duration of this modifier (turns after this one). Can be
    *     Integer.MAX_VAL - interpreted as forever rather than the actual val
@@ -48,13 +49,14 @@ public final class StatModifier extends Modifier {
    * @param modVal - the value to modify by
    */
   public StatModifier(
+      String identifier,
       String name,
       int turns,
       StackMode stackable,
       StatType stat,
       ModificationType modType,
       Object modVal) {
-    super(name, turns, stackable);
+    super(identifier, name, turns, stackable);
     modifiedStat = stat;
     this.modType = modType;
     val = modVal;
