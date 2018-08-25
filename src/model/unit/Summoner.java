@@ -13,4 +13,9 @@ public interface Summoner {
    * ancient ground
    */
   public boolean hasBuildSpace();
+
+  /** Can summon returns true for summoners, this may force an override. */
+  public default boolean canSummon() {
+    return true;
+  }
 }

@@ -23,6 +23,7 @@ import model.game.Game.FogOfWar;
 import model.game.HumanPlayer;
 import model.game.Player;
 import model.unit.MovingUnit;
+import model.unit.Summoner;
 import model.unit.Unit;
 import model.unit.ability.Ability;
 import model.unit.combatant.Combat;
@@ -281,10 +282,10 @@ public final class GameController {
     if (u instanceof Combatant) {
       choices.add(new Choice(u.canFight() && ((Combatant) u).hasFightableTarget(), FIGHT));
     }
-    if (u instanceof Commander) {
+    if (u instanceof Commander || u instanceof Summoner) {
       int actionsRemaining = u.owner.getCommanderActionsRemaining();
       choices.add(
-          new Choice(actionsRemaining > 0, COMMANDER_ACTION + " (" + actionsRemaining + ")"));
+          new Choice(actionsRemaining > 0, COMMANDER_ACTION + " (" + actionsRemaining + ")", u));
     }
 
     // If there are no applicable choices, do nothing
@@ -309,7 +310,7 @@ public final class GameController {
         startPathSelection();
         break;
       case COMMANDER_ACTION:
-        startCommanderActionDecision();
+        startCommanderActionDecision(c.getVal() instanceof Commander);
         break;
       case FIGHT:
         startAttackSelection();
@@ -320,21 +321,21 @@ public final class GameController {
   }
 
   /**
-   * Starts a getGamePanel().getDecisionPanel() for performing a commander action. Throws a runtime
-   * exception if the current element isn't the player's commander.
+   * Starts a getGamePanel().getDecisionPanel() for performing a commander action. isCommander is true if the
+   * commander was selected - otherwise could be any summoner the player controls.
    */
-  void startCommanderActionDecision() {
+  void startCommanderActionDecision(boolean isCommander) {
     Tile t = getGamePanel().boardCursor.getElm();
-    if (!(t.getOccupyingUnit() instanceof Commander)) {
-      throw new RuntimeException("Expected cursor to be on player's commander.");
-    }
-    Commander u = (Commander) t.getOccupyingUnit();
+    Summoner s = (Summoner) t.getOccupyingUnit();
 
     // Add choices based on the model.unit on this tile
     LinkedList<Choice> choices = new LinkedList<>();
-    choices.add(new Choice(u.hasSummonSpace(), SUMMON));
-    choices.add(new Choice(u.hasBuildSpace(), BUILD));
-    choices.add(new Choice(u.canCast(), CAST));
+    choices.add(new Choice(s.hasSummonSpace(), SUMMON));
+    choices.add(new Choice(s.hasBuildSpace(), BUILD));
+    if (isCommander) {
+      Commander c = (Commander) s;
+      choices.add(new Choice(c.canCast(), CAST));
+    }
 
     // If there are no applicable choices, do nothing
     if (choices.isEmpty()) return;

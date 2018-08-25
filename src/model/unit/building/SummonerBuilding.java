@@ -98,6 +98,11 @@ public final class SummonerBuilding extends Building<Integer> implements Summone
   }
 
   @Override
+  public boolean canSummon() {
+    return true;
+  }
+
+  @Override
   protected Unit createClone(Player owner) {
     return new SummonerBuilding(
         owner,

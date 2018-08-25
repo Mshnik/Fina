@@ -2,16 +2,18 @@ package controller.game;
 
 import controller.decision.Choice;
 import controller.decision.Decision;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.Arrays;
-import java.util.List;
 import model.board.Direction;
 import model.board.Tile;
+import model.unit.commander.Commander;
 import view.gui.BoardCursor;
 import view.gui.Cursor;
 import view.gui.Frame;
 import view.gui.decision.DecisionCursor;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Arrays;
+import java.util.List;
 
 /** Manager for all keyboard input. Only singleton instance is allowed. */
 public final class KeyboardListener implements KeyListener {
@@ -124,7 +126,9 @@ public final class KeyboardListener implements KeyListener {
               if (gc.getDecisionType() == Decision.DecisionType.SUMMON_DECISION
                   || gc.getDecisionType() == Decision.DecisionType.CAST_DECISION) {
                 gc.cancelDecision();
-                gc.startCommanderActionDecision();
+                gc.startCommanderActionDecision(
+                    gc.frame.getGamePanel().boardCursor.getElm().getOccupyingUnit()
+                        instanceof Commander);
               } else if (gc.getDecisionType() == Decision.DecisionType.COMMANDER_ACTION_DECISION) {
                 gc.cancelDecision();
                 gc.startActionDecision();
