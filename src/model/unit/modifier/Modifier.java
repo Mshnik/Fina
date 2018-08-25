@@ -1,18 +1,14 @@
 package model.unit.modifier;
 
+import java.util.Collection;
 import model.game.Stringable;
 import model.unit.Unit;
-
-import java.util.Collection;
 
 /** A Modifier for a model.unit - a buff or nerf, etc. */
 public abstract class Modifier implements Stringable {
 
   /** The bundle this is a member of, if any */
   ModifierBundle bundle;
-
-  /** The identifier of this modifier. Clones will have the same identifier. */
-  public final String identifier;
 
   /** The name of this modifier */
   public final String name;
@@ -37,9 +33,7 @@ public abstract class Modifier implements Stringable {
     STACKABLE,
   }
 
-  /**
-   * The stacking mode of this modifier. Modifiers with the same identifier are considered clones.
-   */
+  /** The stacking mode of this modifier. */
   public final StackMode stacking;
 
   /** True once this has been attached to a model.unit */
@@ -51,14 +45,13 @@ public abstract class Modifier implements Stringable {
   /**
    * Constructor for dummy instance
    *
-   * @param identifier - the identifier of this modifier
    * @param name - the name of this modifier
    * @param turns - the total duration of this modifier (turns after this one). Can be
    *     Integer.MAX_VAL - interpreted as forever rather than the actual val
    * @param stacking - the stack mode of this Modifier that determines how it interacts with
+   *     modifiers of the same name.
    */
-  public Modifier(String identifier, String name, int turns, StackMode stacking) {
-    this.identifier = identifier;
+  public Modifier(String name, int turns, StackMode stacking) {
     this.name = name;
     unit = null;
     remainingTurns = turns;
@@ -83,7 +76,6 @@ public abstract class Modifier implements Stringable {
    */
   public Modifier(Unit unit, Unit source, Modifier dummy) {
     attached = false;
-    this.identifier = dummy.identifier;
     this.name = dummy.name;
     this.unit = unit;
     this.source = source;

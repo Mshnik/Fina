@@ -28,7 +28,6 @@ public final class CustomModifier extends Modifier {
   /**
    * Constructor for dummy instance
    *
-   * @param identifier - the identifier of this modifier
    * @param name - the name of this modifier
    * @param description - a description of this modifier
    * @param val - the magnitude of the modifier, as needed
@@ -40,7 +39,6 @@ public final class CustomModifier extends Modifier {
    * @param combatants - true iff this modifier can apply to combatants
    */
   public CustomModifier(
-      String identifier,
       String name,
       String description,
       Number val,
@@ -49,7 +47,7 @@ public final class CustomModifier extends Modifier {
       boolean buildings,
       boolean commanders,
       boolean combatants) {
-    super(identifier, name, turns, stackable);
+    super(name, turns, stackable);
     this.description = description;
     this.val = val;
     this.appliesToBuildings = buildings;

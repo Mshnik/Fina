@@ -24,7 +24,6 @@ public final class Temple extends Building<Void> {
     new ModifierBundle(
         new StatModifier(
             "Temple Attack",
-            "Temple Attack",
             Integer.MAX_VALUE,
             StackMode.NONE_DO_NOT_APPLY,
             StatType.MIN_ATTACK,
@@ -38,14 +37,12 @@ public final class Temple extends Building<Void> {
     new ModifierBundle(
         new StatModifier(
             "Temple Vision",
-            "Temple Vision",
             Integer.MAX_VALUE,
             StackMode.NONE_DO_NOT_APPLY,
             StatType.VISION_RANGE,
             ModificationType.ADD,
             2),
         new StatModifier(
-            "Temple Movement",
             "Temple Movement",
             Integer.MAX_VALUE,
             StackMode.NONE_DO_NOT_APPLY,
@@ -59,7 +56,6 @@ public final class Temple extends Building<Void> {
     // 5 temples
     new ModifierBundle(
         new StatModifier(
-            "Temple Ult1",
             "Temple Ult1",
             Integer.MAX_VALUE,
             StackMode.NONE_DO_NOT_APPLY,

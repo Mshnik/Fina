@@ -49,7 +49,6 @@ public final class Bhen extends Commander {
           new ModifierBundle(
               new CustomModifier(
                   ABILITY_NAMES[0][0],
-                  ABILITY_NAMES[0][0],
                   "Units gain 2 movement after killing another model.unit",
                   2,
                   Integer.MAX_VALUE,
@@ -72,14 +71,12 @@ public final class Bhen extends Commander {
           new ModifierBundle(
               new StatModifier(
                   ABILITY_NAMES[1][0],
-                  ABILITY_NAMES[1][0],
                   1,
                   StackMode.STACKABLE,
                   StatType.MOVEMENT_TOTAL,
                   ModificationType.ADD,
                   4),
               new StatModifier(
-                  ABILITY_NAMES[1][0],
                   ABILITY_NAMES[1][0],
                   1,
                   StackMode.STACKABLE,

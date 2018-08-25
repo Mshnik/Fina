@@ -47,14 +47,12 @@ public abstract class Commander extends MovingUnit implements Summoner {
       new ModifierBundle(
           new StatModifier(
               LEVEL_UP_MODIFIER_PREFIX + " Mana",
-              LEVEL_UP_MODIFIER_PREFIX + " Mana",
               Integer.MAX_VALUE,
               StackMode.STACKABLE,
               StatType.MANA_PER_TURN,
               StatModifier.ModificationType.ADD,
               100),
           new StatModifier(
-              LEVEL_UP_MODIFIER_PREFIX + " Actions",
               LEVEL_UP_MODIFIER_PREFIX + " Actions",
               Integer.MAX_VALUE,
               StackMode.STACKABLE,
@@ -63,14 +61,12 @@ public abstract class Commander extends MovingUnit implements Summoner {
               1),
           new StatModifier(
               LEVEL_UP_MODIFIER_PREFIX + " Move",
-              LEVEL_UP_MODIFIER_PREFIX + " Move",
               Integer.MAX_VALUE,
               StackMode.STACKABLE,
               StatType.MOVEMENT_TOTAL,
               StatModifier.ModificationType.ADD,
               1),
           new StatModifier(
-              LEVEL_UP_MODIFIER_PREFIX + " Vision",
               LEVEL_UP_MODIFIER_PREFIX + " Vision",
               Integer.MAX_VALUE,
               StackMode.STACKABLE,
