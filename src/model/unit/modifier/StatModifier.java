@@ -11,7 +11,8 @@ public final class StatModifier extends Modifier {
 
   /** Types of modifications a stat modifier can apply. */
   public enum ModificationType {
-    SET,
+    SET_MIN,
+    SET_MAX,
     ADD,
     MULTIPLY;
 
@@ -22,7 +23,8 @@ public final class StatModifier extends Modifier {
           return "+";
         case MULTIPLY:
           return "*";
-        case SET:
+        case SET_MIN:
+        case SET_MAX:
           return "->";
         default:
           return "";
@@ -67,7 +69,7 @@ public final class StatModifier extends Modifier {
    * @param source - the model.unit this modifier is tied to.
    * @param dummy - the StatModifier to make a copy of
    */
-  public StatModifier(Unit unit, Unit source, StatModifier dummy) {
+  private StatModifier(Unit unit, Unit source, StatModifier dummy) {
     super(unit, source, dummy);
     modifiedStat = dummy.modifiedStat;
     modType = dummy.modType;
