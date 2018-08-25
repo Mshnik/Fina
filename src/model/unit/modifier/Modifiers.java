@@ -82,11 +82,15 @@ public final class Modifiers {
    */
   public static ModifierBundle flight() {
     return new ModifierBundle(
-        new MarkerModifier(
+        new CustomModifier(
             "Flight",
             "This unit has move cost 1 on all terrain, eagle eye, and isn't hidden in woods",
+            0,
             Integer.MAX_VALUE,
-            StackMode.DURATION_ADD),
+            StackMode.DURATION_ADD,
+            false,
+            true,
+            true),
         eagleEye(),
         trailblazer(1),
         pathfinder(1)
