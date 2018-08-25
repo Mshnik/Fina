@@ -82,7 +82,7 @@ public final class InfoPanel extends JPanel {
   public InfoPanel(Frame f) {
     frame = f;
     GamePanel gp = f.getGamePanel();
-    setPreferredSize(new Dimension(gp.getShowedCols() * GamePanel.CELL_SIZE, HEIGHT));
+    setPreferredSize(new Dimension(gp.getShowedCols() * frame.getGamePanel().cellSize(), HEIGHT));
   }
 
   /** Returns the tile this InfoPanel is currently drawing info for */

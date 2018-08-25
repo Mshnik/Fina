@@ -52,7 +52,7 @@ public abstract class LocationSelector implements Paintable {
     for (Tile t : cloud) {
       int x = controller.getGamePanel().getXPosition(t);
       int y = controller.getGamePanel().getYPosition(t);
-      g2d.fillRect(x, y, GamePanel.CELL_SIZE, GamePanel.CELL_SIZE);
+      g2d.fillRect(x, y, controller.getGamePanel().cellSize(), controller.getGamePanel().cellSize());
     }
   }
 }

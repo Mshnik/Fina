@@ -129,7 +129,7 @@ public final class PathSelector extends LocationSelector implements Paintable, I
     Iterator<Tile> i2 = iterator();
     i2.next(); // Advance i2 to be in front of i1
 
-    final int s = GamePanel.CELL_SIZE / 2;
+    final int s = controller.getGamePanel().cellSize() / 2;
 
     while (i2.hasNext()) {
       Tile current = i1.next();

@@ -90,7 +90,7 @@ public final class HeaderPanel extends JPanel {
     frame = f;
     maxMana = new HashMap<>();
     GamePanel gp = f.getGamePanel();
-    setPreferredSize(new Dimension(gp.getShowedCols() * GamePanel.CELL_SIZE, HEIGHT));
+    setPreferredSize(new Dimension(gp.getShowedCols() * frame.getGamePanel().cellSize(), HEIGHT));
   }
 
   /** Draws the HeaderPanel */

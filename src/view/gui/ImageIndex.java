@@ -185,29 +185,29 @@ public final class ImageIndex {
         g2d.drawLine(
             gp.getXPosition(t),
             gp.getYPosition(t),
-            gp.getXPosition(t) + GamePanel.CELL_SIZE,
+            gp.getXPosition(t) + gp.cellSize(),
             gp.getYPosition(t));
         break;
       case RIGHT:
         g2d.drawLine(
-            gp.getXPosition(t) + GamePanel.CELL_SIZE,
+            gp.getXPosition(t) + gp.cellSize(),
             gp.getYPosition(t),
-            gp.getXPosition(t) + GamePanel.CELL_SIZE,
-            gp.getYPosition(t) + GamePanel.CELL_SIZE);
+            gp.getXPosition(t) + gp.cellSize(),
+            gp.getYPosition(t) + gp.cellSize());
         break;
       case DOWN:
         g2d.drawLine(
             gp.getXPosition(t),
-            gp.getYPosition(t) + GamePanel.CELL_SIZE,
-            gp.getXPosition(t) + GamePanel.CELL_SIZE,
-            gp.getYPosition(t) + GamePanel.CELL_SIZE);
+            gp.getYPosition(t) + gp.cellSize(),
+            gp.getXPosition(t) + gp.cellSize(),
+            gp.getYPosition(t) + gp.cellSize());
         break;
       case LEFT:
         g2d.drawLine(
             gp.getXPosition(t),
             gp.getYPosition(t),
             gp.getXPosition(t),
-            gp.getYPosition(t) + GamePanel.CELL_SIZE);
+            gp.getYPosition(t) + gp.cellSize());
         break;
     }
   }

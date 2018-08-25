@@ -31,7 +31,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
   private static final long serialVersionUID = 1L;
 
   /** Pixels (size) for each square tile. */
-  public static final int CELL_SIZE = 48;
+  private static final int BASE_CELL_SIZE = 64;
 
   /** Shading for fog of war - translucent black */
   private static final Color FOG_OF_WAR = new Color(0, 0, 0, 0.75f);
@@ -71,7 +71,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
         Math.max(0, maxCols - f.getController().game.board.getWidth()),
         Math.max(0, maxRows - f.getController().game.board.getHeight()));
     boardCursor = new BoardCursor(this);
-    setPreferredSize(new Dimension(getShowedCols() * CELL_SIZE, getShowedRows() * CELL_SIZE));
+    setPreferredSize(new Dimension(getShowedCols() * cellSize(), getShowedRows() * cellSize()));
   }
 
   /** Sets the decisionPanel */
@@ -101,13 +101,13 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
     Tile t = boardCursor.getElm();
     int x = getXPosition(t);
     if (x < getWidth() / 2) {
-      x += GamePanel.CELL_SIZE + 5;
+      x += cellSize() + 5;
     } else {
       x -= (decisionPanel.DECISION_WIDTH + 5);
     }
     int y = getYPosition(t);
     if (y > getHeight() / 2) {
-      y = getYPosition(t) - decisionPanel.getHeight() + GamePanel.CELL_SIZE;
+      y = getYPosition(t) - decisionPanel.getHeight() + cellSize();
     }
     decisionPanel.setXPosition(x);
     decisionPanel.setYPosition(y);
@@ -148,8 +148,8 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
               ImageIndex.margin(),
               col * getElementWidth(),
               row * getElementHeight(),
-              CELL_SIZE,
-              CELL_SIZE,
+              cellSize(),
+              cellSize(),
               null);
         } else {
           Tile t =
@@ -224,15 +224,15 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
     if (controller.game.getFogOfWar().hideAncientGround
         && t.terrain == Terrain.ANCIENT_GROUND
         && !controller.game.isVisible(t)) {
-      g2d.drawImage(ImageIndex.imageForTerrain(Terrain.GRASS), x, y, CELL_SIZE, CELL_SIZE, null);
+      g2d.drawImage(ImageIndex.imageForTerrain(Terrain.GRASS), x, y, cellSize(), cellSize(), null);
     } else {
-      g2d.drawImage(ImageIndex.imageForTerrain(t.terrain), x, y, CELL_SIZE, CELL_SIZE, null);
+      g2d.drawImage(ImageIndex.imageForTerrain(t.terrain), x, y, cellSize(), cellSize(), null);
     }
 
     // If the player can't see this tile, shade darkly.
     if (!controller.game.isVisible(t)) {
       g2d.setColor(FOG_OF_WAR);
-      g2d.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+      g2d.fillRect(x, y, cellSize(), cellSize());
     }
   }
 
@@ -247,20 +247,20 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
         ImageIndex.tint(unitImg, controller.getColorFor(u.owner)),
         x,
         y,
-        CELL_SIZE,
-        CELL_SIZE,
+        cellSize(),
+        cellSize(),
         null);
 
     // Draw health bar
     final int marginX = 4; // Room from left side of tile
     final int marginY = 4; // Room from BOTTOM side of tile
     final int barX = x + marginX;
-    final int barY = y + CELL_SIZE - marginY * 2;
+    final int barY = y + cellSize() - marginY * 2;
     ImageIndex.drawBar(
         g2d,
         barX,
         barY,
-        CELL_SIZE - marginX * 2,
+        cellSize() - marginX * 2,
         marginY,
         null,
         null,
@@ -297,15 +297,20 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
     return controller.game.board.getHeight();
   }
 
-  /** Returns GamePanel.CELL_SIZE */
-  @Override
-  public int getElementHeight() {
-    return GamePanel.CELL_SIZE;
+  /** Returns the size of cells, based on the current zoom. */
+  public int cellSize() {
+    return (int) (BASE_CELL_SIZE * controller.frame.getZoom());
   }
 
-  /** Returns GamePanel.CELL_SIZE */
+  /** Returns GamePanel.cellSize() */
+  @Override
+  public int getElementHeight() {
+    return cellSize();
+  }
+
+  /** Returns GamePanel.cellSize() */
   @Override
   public int getElementWidth() {
-    return GamePanel.CELL_SIZE;
+    return cellSize();
   }
 }

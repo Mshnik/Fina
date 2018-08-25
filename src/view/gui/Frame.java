@@ -61,11 +61,17 @@ public final class Frame extends JFrame {
   /** The controller for this game */
   private GameController controller;
 
-  /** The number of rows of tiles to show */
-  private final int rows;
+  /** The number of rows of tiles to show when this was created. May be zoomed in/out. */
+  private final int originalRows;
 
-  /** The number of cols of tiles to show */
-  private final int cols;
+  /** The number of colos of tiles to show when this was created. May be zoomed in/out. */
+  private final int originalCols;
+
+  /** Increment of zoom, in multiplication/division. */
+  private static final double[] ZOOM = {0.25, 0.5, 0.75, 1, 1.5, 2};
+
+  /** The current zoom of this frame. */
+  private int zoomIndex;
 
   /** The current active cursor */
   @SuppressWarnings("rawtypes")
@@ -78,8 +84,9 @@ public final class Frame extends JFrame {
     setResizable(false);
     setLocation(100, 100);
     animator = new Animator();
-    this.rows = rows;
-    this.cols = cols;
+    this.originalRows = rows;
+    this.originalCols = cols;
+    zoomIndex = 2; // Use original number of rows and cols.
 
     // Set up menu
     JMenuBar menu = new JMenuBar();
@@ -94,8 +101,7 @@ public final class Frame extends JFrame {
     newGameMenuItem.addActionListener(
         e -> {
           animator.paused = true;
-          String[] boardChoices =
-              Paths.get(BoardReader.BOARDS_ROOT_FILEPATH).toFile().list();
+          String[] boardChoices = Paths.get(BoardReader.BOARDS_ROOT_FILEPATH).toFile().list();
           String input =
               (String)
                   JOptionPane.showInputDialog(
@@ -121,6 +127,36 @@ public final class Frame extends JFrame {
     quitGameMenuItem.addActionListener(e -> System.exit(0));
     gameMenu.add(quitGameMenuItem);
 
+    // Window menu - visual functionality.
+    JMenu windowMenu = new JMenu("Window");
+    menu.add(windowMenu);
+
+    JMenuItem zoomInMenuItem = new JMenuItem("Zoom In");
+    zoomInMenuItem.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.META_DOWN_MASK));
+    zoomInMenuItem.addActionListener(
+        e -> {
+          zoomIndex += 1;
+          zoomIndex = Math.min(zoomIndex, ZOOM.length - 1);
+          createGamePanel();
+          repaint();
+          pack();
+        });
+    windowMenu.add(zoomInMenuItem);
+
+    JMenuItem zoomOutMenuItem = new JMenuItem("Zoom Out");
+    zoomOutMenuItem.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.META_DOWN_MASK));
+    zoomOutMenuItem.addActionListener(
+        e -> {
+          zoomIndex -= 1;
+          zoomIndex = Math.max(zoomIndex, 0);
+          createGamePanel();
+          repaint();
+          pack();
+        });
+    windowMenu.add(zoomOutMenuItem);
+
     setJMenuBar(menu);
   }
 
@@ -129,7 +165,7 @@ public final class Frame extends JFrame {
    * packing and repainting.
    */
   public void setController(GameController c) {
-    // Removal
+    // Removal - if this is called twice, should dispose of all old stuff.
     if (gamePanel != null) {
       remove(gamePanel);
       remove(headerPanel);
@@ -138,11 +174,7 @@ public final class Frame extends JFrame {
     }
     controller = c;
     // New Adding
-    GamePanel gp = new GamePanel(this, rows, cols);
-    add(gp, BorderLayout.CENTER);
-    gamePanel = gp;
-    activeCursor = gamePanel.boardCursor;
-    animator.addAnimatable(gamePanel.boardCursor);
+    createGamePanel();
     HeaderPanel hp = new HeaderPanel(this);
     headerPanel = hp;
     add(hp, BorderLayout.NORTH);
@@ -153,6 +185,25 @@ public final class Frame extends JFrame {
     repaint();
     setVisible(true);
     restartGameMenuItem.setEnabled(true);
+  }
+
+  /** Returns the current zoom. */
+  public double getZoom() {
+    return ZOOM[zoomIndex];
+  }
+
+  /** Helper to create the game panel for this. If old game panel existed, dispose first. */
+  private void createGamePanel() {
+    if (gamePanel != null) {
+      animator.removeAnimatable(gamePanel.boardCursor);
+      remove(gamePanel);
+    }
+    GamePanel gp =
+        new GamePanel(this, (int) (originalRows / getZoom()), (int) (originalCols / getZoom()));
+    add(gp, BorderLayout.CENTER);
+    gamePanel = gp;
+    activeCursor = gamePanel.boardCursor;
+    animator.addAnimatable(gamePanel.boardCursor);
   }
 
   /** @return the headerPanel */

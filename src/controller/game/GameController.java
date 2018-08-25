@@ -103,7 +103,7 @@ public final class GameController {
 
   /** Loads a board and starts the game in the same frame as this, then disposes of this. */
   static void loadAndStart(String boardFilepath) {
-    Frame f = new Frame(14, 28);
+    Frame f = new Frame(8, 20);
     KeyboardListener.setFrame(f);
 
     // Read board and create game.
