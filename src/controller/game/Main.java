@@ -5,7 +5,9 @@ import model.unit.building.Buildings;
 import model.unit.combatant.FileCombatant;
 
 public final class Main {
-  /** Simple main method to test out Frame features */
+  /**
+   * Simple main method to test out Frame features
+   */
   public static void main(String[] args) {
     // Force unit and building loading.
     FileCombatant.getCombatantsForAge(1);
