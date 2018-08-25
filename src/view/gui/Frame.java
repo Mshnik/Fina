@@ -1,12 +1,19 @@
 package view.gui;
 
+import controller.game.BoardReader;
 import controller.game.GameController;
-import controller.game.KeyboardListener;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.nio.file.Paths;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;
@@ -36,6 +43,9 @@ public final class Frame extends JFrame {
   /** The font to use for all text */
   public static final String FONTNAME = "Damascus";
 
+  /** Restart game menu item. */
+  private JMenuItem restartGameMenuItem;
+
   /** The headerPanel this Frame is drawing, if any */
   private HeaderPanel headerPanel;
 
@@ -61,15 +71,57 @@ public final class Frame extends JFrame {
   @SuppressWarnings("rawtypes")
   private Cursor activeCursor;
 
+  /** Creates a new frame. */
   public Frame(int rows, int cols) {
-    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    // Set frame defaults.
     setLayout(new BorderLayout());
     setResizable(false);
     setLocation(100, 100);
     animator = new Animator();
-    KeyboardListener.setFrame(this);
     this.rows = rows;
     this.cols = cols;
+
+    // Set up menu
+    JMenuBar menu = new JMenuBar();
+
+    // Game menu - game-related functions.
+    JMenu gameMenu = new JMenu("Game");
+    menu.add(gameMenu);
+
+    JMenuItem newGameMenuItem = new JMenuItem("New Game...");
+    newGameMenuItem.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.META_DOWN_MASK));
+    newGameMenuItem.addActionListener(
+        e -> {
+          animator.paused = true;
+          String[] boardChoices =
+              Paths.get(BoardReader.BOARDS_ROOT_FILEPATH).toFile().list();
+          String input =
+              (String)
+                  JOptionPane.showInputDialog(
+                      Frame.this,
+                      "Choose Board to load.",
+                      "New Game - Choose Board",
+                      JOptionPane.QUESTION_MESSAGE,
+                      null,
+                      boardChoices,
+                      boardChoices[0]);
+          controller.loadAndKillThis(BoardReader.BOARDS_ROOT_FILEPATH + input);
+        });
+    gameMenu.add(newGameMenuItem);
+    restartGameMenuItem = new JMenuItem("Restart Game");
+    restartGameMenuItem.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.META_DOWN_MASK));
+    restartGameMenuItem.addActionListener(e -> controller.restart());
+    restartGameMenuItem.setEnabled(false);
+    gameMenu.add(restartGameMenuItem);
+    JMenuItem quitGameMenuItem = new JMenuItem("Quit");
+    quitGameMenuItem.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.META_DOWN_MASK));
+    quitGameMenuItem.addActionListener(e -> System.exit(0));
+    gameMenu.add(quitGameMenuItem);
+
+    setJMenuBar(menu);
   }
 
   /**
@@ -81,7 +133,8 @@ public final class Frame extends JFrame {
     if (gamePanel != null) {
       remove(gamePanel);
       remove(headerPanel);
-      animator.removeAnimatable(gamePanel.boardCursor);
+      remove(infoPanel);
+      animator.clearAnimatables();
     }
     controller = c;
     // New Adding
@@ -99,6 +152,7 @@ public final class Frame extends JFrame {
     pack();
     repaint();
     setVisible(true);
+    restartGameMenuItem.setEnabled(true);
   }
 
   /** @return the headerPanel */

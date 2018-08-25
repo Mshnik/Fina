@@ -15,11 +15,15 @@ import javax.swing.Timer;
  */
 public final class Animator {
 
+  /** True if this animator is paused - stop animating all things while this is true. */
+  public boolean paused;
+
   /** Animatables to that are animated by this */
   private Set<Animatable> animates;
 
   /** Constructor for an Animator */
   Animator() {
+    paused = false;
     animates = Collections.synchronizedSet(new HashSet<Animatable>());
   }
 
@@ -33,7 +37,9 @@ public final class Animator {
             public void actionPerformed(ActionEvent e) {
               // Check if this is still to be animated. If not, exit.
               if (!animates.contains(a)) return;
-              if (a.isActive()) a.advanceState();
+              if (!paused) {
+                if (a.isActive()) a.advanceState();
+              }
               t.restart();
             }
           });
@@ -45,5 +51,10 @@ public final class Animator {
   /** Removes the given Animatable from this Animator */
   public void removeAnimatable(Animatable a) {
     animates.remove(a);
+  }
+
+  /** Clears all animatables. */
+  public void clearAnimatables() {
+    animates.clear();
   }
 }

@@ -15,8 +15,11 @@ import model.util.MPoint;
  *
  * @author Mshnik
  */
-final class BoardReader {
+public final class BoardReader {
   private BoardReader() {}
+
+  /** Root filepath for board files. */
+  public static final String BOARDS_ROOT_FILEPATH = "game/boards/";
 
   /** Special character for where a player starts. */
   private static final String PLAYER_START_STRING = "C";
@@ -56,6 +59,6 @@ final class BoardReader {
     // Randomize starting locations.
     Collections.shuffle(playerStartLocations);
 
-    return new Board(terrainArr, playerStartLocations);
+    return new Board(csvFilepath, terrainArr, playerStartLocations);
   }
 }

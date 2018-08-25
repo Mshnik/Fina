@@ -16,8 +16,11 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
+import model.board.Board;
 import model.board.Tile;
 import model.game.Game;
+import model.game.Game.FogOfWar;
+import model.game.HumanPlayer;
 import model.game.Player;
 import model.unit.MovingUnit;
 import model.unit.Unit;
@@ -25,6 +28,8 @@ import model.unit.ability.Ability;
 import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
+import model.unit.commander.DummyCommander;
+import view.gui.Animator;
 import view.gui.BoardCursor;
 import view.gui.Frame;
 import view.gui.panel.GamePanel;
@@ -84,6 +89,9 @@ public final class GameController {
   /** The Frame that is drawing this Game */
   public final Frame frame;
 
+  /** The thread the game is running in. Null if the game isn't running right now. */
+  private Thread gameThread;
+
   /** The game this is controlling */
   public final Game game;
 
@@ -93,7 +101,28 @@ public final class GameController {
   /** The active location selector, if any */
   private LocationSelector locationSelector;
 
-  public GameController(Game g, Frame f) {
+  /** Loads a board and starts the game in the same frame as this, then disposes of this. */
+  static void loadAndStart(String boardFilepath) {
+    Frame f = new Frame(14, 28);
+    KeyboardListener.setFrame(f);
+
+    // Read board and create game.
+    Board board = BoardReader.readBoard(boardFilepath);
+    Game g = new Game(board, FogOfWar.NONE);
+    GameController gc = new GameController(g, f);
+
+    // Create players.
+    Player p1 = new HumanPlayer(g, Color.green);
+    new DummyCommander(p1, 1);
+    Player p2 = new HumanPlayer(g, Color.magenta);
+    new DummyCommander(p2, 1);
+
+    // Start game.
+    gc.start();
+  }
+
+  /** Creates a new game controller for the given game and frame. */
+  private GameController(Game g, Frame f) {
     game = g;
     game.setGameController(this);
     frame = f;
@@ -104,9 +133,9 @@ public final class GameController {
     toggle = new Stack<>();
   }
 
-  /** Returns the gamePanel located within frame */
-  public GamePanel getGamePanel() {
-    return frame.getGamePanel();
+  /** Returns iff the game is currently running */
+  public boolean isRunning() {
+    return game.isRunning();
   }
 
   /**
@@ -114,8 +143,32 @@ public final class GameController {
    */
   public synchronized void start() {
     if (isRunning() || game.isGameOver()) return;
-    Thread th = new Thread(game);
-    th.start();
+    gameThread = new Thread(game);
+    gameThread.start();
+  }
+
+  /** Stops this game controller. Does nothing if this game isn't running. */
+  private synchronized void kill() {
+    if (!isRunning()) return;
+    frame.dispose();
+    gameThread.interrupt();
+  }
+
+  /** Loads the given board and kills this. */
+  public synchronized void loadAndKillThis(String boardFilepath) {
+    loadAndStart(boardFilepath);
+    kill();
+  }
+
+  /** Restarts this game by creating a new copy of this then disposing of this. */
+  public synchronized void restart() {
+    loadAndStart(game.board.filepath);
+    kill();
+  }
+
+   /** Returns the gamePanel located within frame */
+  public GamePanel getGamePanel() {
+    return frame.getGamePanel();
   }
 
   /**
@@ -134,11 +187,6 @@ public final class GameController {
   /** Starts a new ability decision for the given player - call during levelup */
   public void startNewAbilityDecision(Player p) {
     startNewAbilityDecision(p.getCommander());
-  }
-
-  /** Returns iff the game is currently runnign */
-  public boolean isRunning() {
-    return game.isRunning();
   }
 
   /** Instructs the Frame to repaint */

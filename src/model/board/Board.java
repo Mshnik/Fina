@@ -26,6 +26,9 @@ import model.util.MPoint;
  */
 public final class Board implements Iterable<Tile>, Stringable {
 
+  /** The csv file this board was read from. */
+  public final String filepath;
+
   /** The tiles that make up this model.board. Must be rectangular (non-jagged) */
   private final Tile[][] tiles;
 
@@ -39,8 +42,9 @@ public final class Board implements Iterable<Tile>, Stringable {
    * Construct a simple model.board of just terrain Throws IllegalArgumentException if input array
    * is jagged.
    */
-  public Board(Terrain[][] terrain, List<MPoint> commanderStartLocations)
+  public Board(String filepath, Terrain[][] terrain, List<MPoint> commanderStartLocations)
       throws IllegalArgumentException {
+    this.filepath = filepath;
     tiles = new Tile[terrain.length][terrain[0].length];
     for (int i = 0; i < terrain.length; i++) {
 
