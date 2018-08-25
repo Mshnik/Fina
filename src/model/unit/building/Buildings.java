@@ -7,6 +7,7 @@ import model.unit.building.StartOfTurnEffectBuilding.StartOfTurnEffect;
 import model.unit.building.StartOfTurnEffectBuilding.StartOfTurnEffectType;
 import model.unit.modifier.Modifier.StackMode;
 import model.unit.modifier.ModifierBundle;
+import model.unit.modifier.Modifiers;
 import model.unit.modifier.StatModifier;
 import model.unit.modifier.StatModifier.ModificationType;
 import model.unit.stat.Stat;
@@ -23,8 +24,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static model.unit.modifier.Modifiers.EAGLE_EYE;
 
 /** Index of buildings read from storage. */
 public final class Buildings {
@@ -149,7 +148,7 @@ public final class Buildings {
               throw new RuntimeException("Got unknown building type: " + buildingType);
           }
           if (hasEagleEye) {
-            EAGLE_EYE.clone(building);
+            Modifiers.eagleEye().clone(building);
           }
 
           buildings.add(building);
@@ -217,7 +216,7 @@ public final class Buildings {
         return EffectPair.of(
             new ModifierBundle(
                 new StatModifier(
-                    "Strengthened Min Atk - Armory",
+                    "Strengthened",
                     Integer.MAX_VALUE,
                     StackMode.STACKABLE,
                     StatType.MIN_ATTACK,

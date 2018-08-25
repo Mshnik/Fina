@@ -80,6 +80,15 @@ public final class StatModifier extends Modifier {
     return val;
   }
 
+  /** Returns a new dummy copy of this that's unique from a memory standpoint. */
+  @Override
+  public Modifier uniqueCopy() {
+    if (! isDummy()) {
+      throw new RuntimeException("Shouldn't call uniqueCopy except on a dummy");
+    }
+    return new StatModifier(name, getRemainingTurns(), stacking, modifiedStat, modType, val);
+  }
+
   /** Returns a StatModifier clone of this with the given model.unit and source */
   @Override
   public Modifier clone(Unit unit, Unit source) {

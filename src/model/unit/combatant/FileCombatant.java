@@ -99,17 +99,17 @@ public final class FileCombatant extends Combatant {
 
           // Default buffs by class and/or level.
           if (classes.contains(CombatantClass.FIGHTER)) {
-            Modifiers.BORN_TO_FIGHT.clone(unit);
+            Modifiers.bornToFight(10).clone(unit);
           }
           if (classes.contains(CombatantClass.RANGER)) {
-            Modifiers.PATHFINDER.clone(unit);
-            Modifiers.TRAILBLAZER.clone(unit);
+            Modifiers.pathfinder(1).clone(unit);
+            Modifiers.trailblazer(3).clone(unit);
           }
           if (classes.contains(CombatantClass.ASSASSIN)) {
-            Modifiers.DISAPPEARANCE.clone(unit);
+            Modifiers.disappearance().clone(unit);
           }
           if (classes.contains(CombatantClass.TANK)) {
-            Modifiers.TOUGHNESS.clone(unit);
+            Modifiers.tenacity(5).clone(unit);
           }
 
           // Add to list.

@@ -4,7 +4,8 @@ import model.unit.modifier.Modifier.StackMode;
 import model.unit.stat.StatType;
 
 /**
- * Listing of Modifier instances.
+ * Listing of Modifier instances. Each time a method is called it returns a unique copy for the
+ * purposes of cloning.
  *
  * @author Mshnik
  */
@@ -12,82 +13,96 @@ public final class Modifiers {
   private Modifiers() {}
 
   /** Modifier that gives life gain after dealing damage. */
-  public static final Modifier BORN_TO_FIGHT =
-      new CustomModifier(
-          "Born to Fight",
-          "After dealing damage, this unit gains some health",
-          10,
-          Integer.MAX_VALUE,
-          StackMode.STACKABLE,
-          false,
-          false,
-          true);
+  public static Modifier bornToFight(int healthGainedPerAttack) {
+    return new CustomModifier(
+            "Born to Fight",
+            "After dealing damage, this unit gains some health",
+            healthGainedPerAttack,
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            false,
+            false,
+            true)
+        .uniqueCopy();
+  }
 
   /** Modifier that deals more damage to commanders. */
-  public static final Modifier BLOODLUST =
-      new CustomModifier(
-          "Bloodlust",
-          "This unit deals more damage to commanders",
-          10,
-          Integer.MAX_VALUE,
-          StackMode.STACKABLE,
-          false,
-          false,
-          true);
+  public static Modifier bloodlust(int bonusDamageToCommanderPercent) {
+    return new CustomModifier(
+            "Bloodlust",
+            "This unit deals more damage to commanders",
+            bonusDamageToCommanderPercent,
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            false,
+            false,
+            true)
+        .uniqueCopy();
+  }
 
   /** Modifier that allows a unit to see into woods and past mountains. */
-  public static final Modifier EAGLE_EYE =
-      new CustomModifier(
-          "Eagle Eye",
-          "This unit can see into woods and past mountains.",
-          null,
-          Integer.MAX_VALUE,
-          StackMode.STACKABLE,
-          true,
-          true,
-          true);
+  public static Modifier eagleEye() {
+    return new CustomModifier(
+            "Eagle Eye",
+            "This unit can see into woods and past mountains.",
+            null,
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            true,
+            true,
+            true)
+        .uniqueCopy();
+  }
 
   /** Modifier that reduces movement cost in woods. */
-  public static final Modifier PATHFINDER =
-      new StatModifier(
-          "Pathfinder",
-          Integer.MAX_VALUE,
-          StackMode.STACKABLE,
-          StatType.WOODS_COST,
-          StatModifier.ModificationType.SET,
-          1);
+  public static Modifier pathfinder(int woodsMoveCost) {
+    return new StatModifier(
+            "Pathfinder",
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            StatType.WOODS_COST,
+            StatModifier.ModificationType.SET,
+            woodsMoveCost)
+        .uniqueCopy();
+  }
 
-  /** Modifier that reduces movement cost in woods. */
-  public static final Modifier TRAILBLAZER =
-      new StatModifier(
-          "Trailblazer",
-          Integer.MAX_VALUE,
-          StackMode.STACKABLE,
-          StatType.MOUNTAIN_COST,
-          StatModifier.ModificationType.SET,
-          3);
-
-  /** Modifier that slowly regenerates health. */
-  public static final Modifier TOUGHNESS =
-      new CustomModifier(
-          "Toughness",
-          "This unit gains health each turn",
-          5,
-          Integer.MAX_VALUE,
-          StackMode.STACKABLE,
-          true,
-          true,
-          true);
+  /** Modifier that reduces movement cost in mountains. */
+  public static Modifier trailblazer(int mountainMoveCost) {
+    return new StatModifier(
+            "Trailblazer",
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            StatType.MOUNTAIN_COST,
+            StatModifier.ModificationType.SET,
+            mountainMoveCost)
+        .uniqueCopy();
+  }
 
   /** Modifier that slowly regenerates health. */
-  public static final Modifier DISAPPEARANCE =
-      new CustomModifier(
-          "Disappearance",
-          "This unit can move after attacking",
-          null,
-          Integer.MAX_VALUE,
-          StackMode.STACKABLE,
-          false,
-          false,
-          true);
+  public static Modifier tenacity(int healthGainedPerTurn) {
+    return new CustomModifier(
+            "Tenacity",
+            "This unit gains health each turn",
+            healthGainedPerTurn,
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            true,
+            true,
+            true)
+        .uniqueCopy();
+  }
+
+  /** Modifier that slowly regenerates health. */
+  public static Modifier disappearance() {
+    return new CustomModifier(
+            "Disappearance",
+            "This unit can move after attacking",
+            null,
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            false,
+            false,
+            true)
+        .uniqueCopy();
+  }
 }

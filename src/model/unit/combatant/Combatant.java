@@ -173,7 +173,7 @@ public abstract class Combatant extends MovingUnit {
    */
   @Override
   public int getMovement() {
-    if (hasModifierByName(Modifiers.DISAPPEARANCE)) {
+    if (hasModifierByName(Modifiers.disappearance())) {
       return super.getMovement();
     } else {
       return canFight() ? super.getMovement() : 0;
@@ -210,7 +210,7 @@ public abstract class Combatant extends MovingUnit {
   @Override
   public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {
     if (damageDealt > 0) {
-      for (Modifier m : getModifiersByName(Modifiers.BORN_TO_FIGHT)) {
+      for (Modifier m : getModifiersByName(Modifiers.bornToFight(0))) {
         CustomModifier customModifier = (CustomModifier) m;
         changeHealth(customModifier.val.intValue(), this);
       }
@@ -229,7 +229,7 @@ public abstract class Combatant extends MovingUnit {
    */
   public void postFight(int damageDealt, Unit other, int damageTaken) {
     if (damageDealt > 0) {
-      for (Modifier m : getModifiersByName(Modifiers.BORN_TO_FIGHT)) {
+      for (Modifier m : getModifiersByName(Modifiers.bornToFight(0))) {
         CustomModifier customModifier = (CustomModifier) m;
         changeHealth(customModifier.val.intValue(), this);
       }

@@ -84,6 +84,11 @@ public abstract class Modifier implements Stringable {
     clonedFrom = dummy;
   }
 
+  /** Returns a new copy of this that is also a dummy - allows for separate clone chains of
+   * identical Modifiers. Should only be called on a dummy.
+   */
+  public abstract Modifier uniqueCopy();
+
   /** Calls clone(unit, unit). */
   public final Modifier clone(Unit unit) {
     return clone(unit, unit);

@@ -186,7 +186,7 @@ public abstract class Unit implements Stringable {
     }
 
     // Start of turn modifiers.
-    for (Modifier m : getModifiersByName(Modifiers.TOUGHNESS)) {
+    for (Modifier m : getModifiersByName(Modifiers.tenacity(0))) {
       changeHealth(((CustomModifier) m).val.intValue(), this);
     }
   }
@@ -379,9 +379,9 @@ public abstract class Unit implements Stringable {
 
   /**
    * Returns a list of modifiers modifying this with the given name, if any. Returns an empty list
-   * otherwise
+   * otherwise. Should not be used for clone detection, only behavior specification.
    */
-  public List<Modifier> getModifiersByName(Modifier modifier) {
+  protected List<Modifier> getModifiersByName(Modifier modifier) {
     return modifiers
         .stream()
         .filter(m -> m.name.equals(modifier.name))
