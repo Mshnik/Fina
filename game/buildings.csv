@@ -8,7 +8,7 @@ Watchtower,temple.png,2,80,20,Utility,150,2+Eagle Eye,Grass-Woods-Mountain-Ancie
 Dojo,temple.png,2,450,650,Utility,125,0,Grass-Woods-Ancient_Ground,PlayerModifierBuilding,+ 1 action/turn,+ 2 actions/turn
 SKIP,Temple,temple.png,2,300,150,Utility,75,0,Ancient_Ground,Temple,--,"All unit buffs, Varies by # of temples: 1: +2 vision 2: Strengthened +5 Toughness +5 3: +2 move 4: Tenacity 20 5: Strengthed +20 Toughness +10"
 Fountain,temple.png,2,450,200,Defensive,175,0,Grass-Woods-Ancient_Ground,StartOfTurnEffectBuilding,Start of turn heal units in radius 1 by 15 health,Start of turn heal units in radius 2 by 25 health
-Armory,temple.png,2,500,500,Offensive,150,0,Grass-Woods-Ancient_Ground,AllUnitModifierBuilding,All units Strengthened 3,"All units Strengthened 3, Toughness 3"
+Armory,temple.png,2,500,500,Offensive,150,0,Grass-Woods-Ancient_Ground,AllUnitModifierBuilding,All units Strengthened 10,All units Strengthened 10 + Toughness 5
 ,,,,,,,,,,,
 Comms Tower,temple.png,3,450,250,Utility,150,2+Eagle Eye,Grass-Woods-Mountain-Ancient_Ground,AllUnitModifierBuilding,"All units Farsight 2, Quickness 1","All Farsight 3, Quickness 2"
 SKIP,Laboratory,temple.png,3,700,1000,Utility,100,0,Ancient_Ground,PlayerModifierBuilding,--,Spell +1 cloud level

@@ -40,6 +40,20 @@ public final class Modifiers {
         .uniqueCopy();
   }
 
+  /** Modifier that slowly regenerates health. */
+  public static Modifier disappearance() {
+    return new CustomModifier(
+            "Disappearance",
+            "This unit can move after attacking",
+            null,
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            false,
+            false,
+            true)
+        .uniqueCopy();
+  }
+
   /** Modifier that allows a unit to see into woods and past mountains. */
   public static Modifier eagleEye() {
     return new CustomModifier(
@@ -66,16 +80,26 @@ public final class Modifiers {
         .uniqueCopy();
   }
 
-  /** Modifier that reduces movement cost in mountains. */
-  public static Modifier trailblazer(int mountainMoveCost) {
-    return new StatModifier(
-            "Trailblazer",
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            StatType.MOUNTAIN_COST,
-            StatModifier.ModificationType.SET,
-            mountainMoveCost)
-        .uniqueCopy();
+  /** Modifier Bundle that grants bonus min and max attack. */
+  public static ModifierBundle strengthened(int attackBonus) {
+    return new ModifierBundle(
+        new StatModifier(
+                "Strengthened",
+                Integer.MAX_VALUE,
+                StackMode.STACKABLE,
+                StatType.MIN_ATTACK,
+                StatModifier.ModificationType.ADD,
+                attackBonus)
+            .uniqueCopy(),
+        new StatModifier(
+                // Empty so name doesn't occur twice.
+                "",
+                Integer.MAX_VALUE,
+                StackMode.STACKABLE,
+                StatType.MAX_ATTACK,
+                StatModifier.ModificationType.ADD,
+                attackBonus)
+            .uniqueCopy());
   }
 
   /** Modifier that slowly regenerates health. */
@@ -92,17 +116,29 @@ public final class Modifiers {
         .uniqueCopy();
   }
 
-  /** Modifier that slowly regenerates health. */
-  public static Modifier disappearance() {
+  /** Modifier that reduces incoming damage */
+  public static Modifier toughness(int damageReduction) {
     return new CustomModifier(
-            "Disappearance",
-            "This unit can move after attacking",
-            null,
+            "Toughness",
+            "This unit takes less damage",
+            damageReduction,
             Integer.MAX_VALUE,
             StackMode.STACKABLE,
-            false,
-            false,
+            true,
+            true,
             true)
+        .uniqueCopy();
+  }
+
+  /** Modifier that reduces movement cost in mountains. */
+  public static Modifier trailblazer(int mountainMoveCost) {
+    return new StatModifier(
+            "Trailblazer",
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            StatType.MOUNTAIN_COST,
+            StatModifier.ModificationType.SET,
+            mountainMoveCost)
         .uniqueCopy();
   }
 }

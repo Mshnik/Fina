@@ -1,10 +1,12 @@
 package model.unit.combatant;
 
-import java.util.Random;
 import model.unit.Unit;
 import model.unit.commander.Bhen;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
+import model.unit.modifier.Modifiers;
+
+import java.util.Random;
 
 /**
  * A class that describes a prospective combat between two given units and can process it. Used to
@@ -76,6 +78,15 @@ public final class Combat {
         0, (int) (attacker.getMaxAttackScaled() * (1 + COMBAT_CLASS_BONUS * getClassBonus())));
   }
 
+  /** Returns the sum of all damage reduction for the attacker. */
+  public int getAttackerDamageReduction() {
+    return attacker
+        .getModifiersByName(Modifiers.toughness(0))
+        .stream()
+        .mapToInt(m -> ((CustomModifier) m).val.intValue())
+        .sum();
+  }
+
   /** Returns true iff the defender could counterattack if it has health left after the attack. */
   public boolean defenderCouldCounterAttack() {
     return defender.isAlive()
@@ -102,6 +113,15 @@ public final class Combat {
         0, (int) (defender.getMaxAttackScaled() * (1 - (COMBAT_CLASS_BONUS * getClassBonus()))));
   }
 
+  /** Returns the sum of all damage reduction for the defender. */
+  public int getDefenderDamageReduction() {
+    return defender
+        .getModifiersByName(Modifiers.toughness(0))
+        .stream()
+        .mapToInt(m -> ((CustomModifier) m).val.intValue())
+        .sum();
+  }
+
   /**
    * Returns the projected minimum damage the defender could do after scaling by combat classes and
    * account for modifiers along with change in health Should only be used for projections, not
@@ -109,7 +129,8 @@ public final class Combat {
    */
   public int getProjectedMinCounterAttack() {
     double minProjectedHealthPercentage =
-        ((double) defender.getHealth() - getMaxAttack()) / defender.getMaxHealth();
+        ((double) defender.getHealth() + getDefenderDamageReduction() - getMaxAttack())
+            / defender.getMaxHealth();
     return (int)
         (defender.getMinAttack()
             * minProjectedHealthPercentage
@@ -123,7 +144,8 @@ public final class Combat {
    */
   public int getProjectedMaxCounterAttack() {
     double maxProjectedHealthPercentage =
-        ((double) defender.getHealth() - getMinAttack()) / defender.getMaxHealth();
+        ((double) defender.getHealth() + getDefenderDamageReduction() - getMinAttack())
+            / defender.getMaxHealth();
     return (int)
         (defender.getMaxAttack()
             * maxProjectedHealthPercentage
@@ -169,8 +191,8 @@ public final class Combat {
     attacker.preFight(defender);
     if (counterAttack) defender.preCounterFight(attacker);
 
-    // attacker attacks defender
-    defender.changeHealth(-damage, attacker);
+    // attacker attacks defender, less damage reduction.
+    defender.changeHealth(Math.min(0, getDefenderDamageReduction() - damage), attacker);
 
     // If defender is still alive, can see the first unit,
     // and this is within range, defender counterattacks
@@ -182,7 +204,8 @@ public final class Combat {
       System.out.println("Counter damage: " + counterAttackDamage);
 
       // Change this unit's health
-      attacker.changeHealth(-counterAttackDamage, defender);
+      attacker.changeHealth(
+          Math.min(0, getAttackerDamageReduction() - counterAttackDamage), defender);
       counterAttack = true;
     }
 

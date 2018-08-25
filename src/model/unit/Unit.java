@@ -381,7 +381,7 @@ public abstract class Unit implements Stringable {
    * Returns a list of modifiers modifying this with the given name, if any. Returns an empty list
    * otherwise. Should not be used for clone detection, only behavior specification.
    */
-  protected List<Modifier> getModifiersByName(Modifier modifier) {
+  public List<Modifier> getModifiersByName(Modifier modifier) {
     return modifiers
         .stream()
         .filter(m -> m.name.equals(modifier.name))

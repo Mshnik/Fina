@@ -214,43 +214,8 @@ public final class Buildings {
     switch (buildingName) {
       case "Armory":
         return EffectPair.of(
-            new ModifierBundle(
-                new StatModifier(
-                    "Strengthened",
-                    Integer.MAX_VALUE,
-                    StackMode.STACKABLE,
-                    StatType.MIN_ATTACK,
-                    ModificationType.ADD,
-                    3),
-                new StatModifier(
-                    "Strengthened Max Atk - Armory",
-                    Integer.MAX_VALUE,
-                    StackMode.STACKABLE,
-                    StatType.MAX_ATTACK,
-                    ModificationType.ADD,
-                    3)),
-            new ModifierBundle(
-                new StatModifier(
-                    "Strengthened Min Atk - Armory",
-                    Integer.MAX_VALUE,
-                    StackMode.STACKABLE,
-                    StatType.MIN_ATTACK,
-                    ModificationType.ADD,
-                    3),
-                new StatModifier(
-                    "Strengthened Max Atk - Armory",
-                    Integer.MAX_VALUE,
-                    StackMode.STACKABLE,
-                    StatType.MAX_ATTACK,
-                    ModificationType.ADD,
-                    3),
-                new StatModifier(
-                    "Toughness - Armory",
-                    Integer.MAX_VALUE,
-                    StackMode.STACKABLE,
-                    StatType.DAMAGE_REDUCTION,
-                    ModificationType.ADD,
-                    3)));
+            Modifiers.strengthened(10),
+            new ModifierBundle(Modifiers.strengthened(10), Modifiers.toughness(5)));
       case "Comms Tower":
         return EffectPair.of(
             new ModifierBundle(

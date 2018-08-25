@@ -24,10 +24,13 @@ public final class ModifierBundle implements Collection<Modifier> {
     }
   }
 
-  /** Constructs a new Modifier Bundle from copying the given bundle. */
-  public ModifierBundle(ModifierBundle bundle) {
+  /** Constructs a new Modifier Bundle from copying the given bundle along with the given modifiers. */
+  public ModifierBundle(ModifierBundle bundle, Modifier... m) {
     modifiers = new LinkedList<>();
     for (Modifier mod : bundle.modifiers) {
+      add(mod);
+    }
+    for (Modifier mod : m) {
       add(mod);
     }
   }
