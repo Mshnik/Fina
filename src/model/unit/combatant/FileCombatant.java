@@ -26,7 +26,7 @@ public final class FileCombatant extends Combatant {
   private static final List<FileCombatant> FILE_COMBATANTS;
 
   /** File containing the units, in csv format */
-  private static final File UNITS_FILE = new File("game/units.csv");
+  private static final File UNITS_FILE = new File("game/units/units.csv");
 
   /* Initializes the combatants available */
   static {

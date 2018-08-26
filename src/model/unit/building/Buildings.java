@@ -29,7 +29,7 @@ public final class Buildings {
   private static final List<Building> BUILDINGS;
 
   /** File containing the buildings, in csv format */
-  private static final File BUILDINGS_FILE = new File("game/buildings.csv");
+  private static final File BUILDINGS_FILE = new File("game/units/buildings.csv");
 
   static {
     List<Building> buildings = new LinkedList<>();
