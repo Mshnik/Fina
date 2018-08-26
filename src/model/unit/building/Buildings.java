@@ -218,13 +218,19 @@ public final class Buildings {
             new ModifierBundle(Modifiers.farsight(2), Modifiers.quickness(1)),
             new ModifierBundle(Modifiers.farsight(3), Modifiers.quickness(2)));
       case "Cemetery":
-        return EffectPair.of(new ModifierBundle(), new ModifierBundle());
+        return EffectPair.of(
+            new ModifierBundle(Modifiers.bloodlust(.1)),
+            new ModifierBundle(Modifiers.bloodlust(.2)));
       case "Siege Works":
-        return EffectPair.of(new ModifierBundle(), new ModifierBundle());
+        return EffectPair.of(
+            new ModifierBundle(Modifiers.siege(.5)), new ModifierBundle(Modifiers.siege(1)));
       case "Military Academy":
-        return EffectPair.of(new ModifierBundle(), new ModifierBundle());
+        return EffectPair.of(
+            new ModifierBundle(Modifiers.patience(.1)), new ModifierBundle(Modifiers.patience(.2)));
       case "Sanctuary":
-        return EffectPair.of(new ModifierBundle(), new ModifierBundle());
+        return EffectPair.of(
+            new ModifierBundle(Modifiers.hexproof(.15)),
+            new ModifierBundle(Modifiers.hexproof(.3)));
       default:
         throw new RuntimeException("Unknown building name " + buildingName);
     }
