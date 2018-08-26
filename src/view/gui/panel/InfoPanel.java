@@ -5,7 +5,11 @@ import model.board.Tile;
 import model.unit.MovingUnit;
 import model.unit.Unit;
 import model.unit.ability.Ability;
-import model.unit.building.*;
+import model.unit.building.AllUnitModifierBuilding;
+import model.unit.building.Building;
+import model.unit.building.PlayerModifierBuilding;
+import model.unit.building.StartOfTurnEffectBuilding;
+import model.unit.building.SummonerBuilding;
 import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
@@ -17,8 +21,15 @@ import model.unit.stat.Stats;
 import view.gui.Frame;
 import view.gui.ImageIndex;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public final class InfoPanel extends JPanel {
@@ -181,6 +192,16 @@ public final class InfoPanel extends JPanel {
                   .collect(Collectors.joining(", "));
     }
     g2d.drawString(subString, x, y);
+    if (unit instanceof Building && isMenu) {
+      List<Terrain> terrainList = ((Building<?>) unit).getValidTerrain();
+      y += infoFont;
+      g2d.setFont(SMALL_FONT);
+      g2d.drawString(
+          " Can be Built on "
+              + terrainList.stream().map(Terrain::toString).collect(Collectors.joining(", ")),
+          x,
+          y);
+    }
 
     g2d.setFont(SMALL_FONT);
     x += xInc;
@@ -205,7 +226,7 @@ public final class InfoPanel extends JPanel {
     g2d.drawString(modifierTitle, x, y);
     StringBuilder modString = new StringBuilder();
     for (Modifier m : unit.getModifiers()) {
-      if (!m.name.contains(Commander.LEVEL_UP_MODIFIER_PREFIX) && ! m.name.isEmpty()) {
+      if (!m.name.contains(Commander.LEVEL_UP_MODIFIER_PREFIX) && !m.name.isEmpty()) {
         modString.append(m.name);
         if (m.getValue() != null) {
           modString.append(" " + m.getValue());
@@ -218,7 +239,7 @@ public final class InfoPanel extends JPanel {
       }
     }
     g2d.drawString(
-        modString.toString().substring(0, Math.max(0,modString.toString().length() - 2)),
+        modString.toString().substring(0, Math.max(0, modString.toString().length() - 2)),
         x + frame.getTextWidth(MEDIUM_FONT, modifierTitle) + 15,
         y);
 
