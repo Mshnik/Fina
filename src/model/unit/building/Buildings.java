@@ -5,11 +5,8 @@ import model.unit.building.PlayerModifierBuilding.PlayerModifierEffect;
 import model.unit.building.PlayerModifierBuilding.PlayerModifierEffectType;
 import model.unit.building.StartOfTurnEffectBuilding.StartOfTurnEffect;
 import model.unit.building.StartOfTurnEffectBuilding.StartOfTurnEffectType;
-import model.unit.modifier.Modifier.StackMode;
 import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.Modifiers;
-import model.unit.modifier.StatModifier;
-import model.unit.modifier.StatModifier.ModificationType;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
@@ -218,36 +215,8 @@ public final class Buildings {
             new ModifierBundle(Modifiers.strengthened(10), Modifiers.toughness(5)));
       case "Comms Tower":
         return EffectPair.of(
-            new ModifierBundle(
-                new StatModifier(
-                    "Farsight - Comms Tower",
-                    Integer.MAX_VALUE,
-                    StackMode.STACKABLE,
-                    StatType.VISION_RANGE,
-                    ModificationType.ADD,
-                    2),
-                new StatModifier(
-                    "Quickness - Comms Towe",
-                    Integer.MAX_VALUE,
-                    StackMode.STACKABLE,
-                    StatType.MOVEMENT_TOTAL,
-                    ModificationType.ADD,
-                    1)),
-            new ModifierBundle(
-                new StatModifier(
-                    "Farsight - Comms Tower",
-                    Integer.MAX_VALUE,
-                    StackMode.STACKABLE,
-                    StatType.VISION_RANGE,
-                    ModificationType.ADD,
-                    3),
-                new StatModifier(
-                    "Quickness - Comms Tower",
-                    Integer.MAX_VALUE,
-                    StackMode.STACKABLE,
-                    StatType.MOVEMENT_TOTAL,
-                    ModificationType.ADD,
-                    2)));
+            new ModifierBundle(Modifiers.farsight(2), Modifiers.quickness(1)),
+            new ModifierBundle(Modifiers.farsight(3), Modifiers.quickness(2)));
       case "Cemetery":
         return EffectPair.of(new ModifierBundle(), new ModifierBundle());
       case "Siege Works":

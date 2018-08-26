@@ -227,6 +227,15 @@ public abstract class Player implements Stringable {
     return commander;
   }
 
+  /** Recalcualtes nearly all state for this player - call after adding a unit. */
+  public void recalculateState() {
+    refreshTempleBuffs();
+    refreshVisionCloud();
+    updateManaPerTurn();
+    updateResearchPerTurn();
+    updateCommanderActionsPerTurn();
+  }
+
   /**
    * Adds the given model.unit to this player's units. Call whenever a model.unit is constructed. If
    * commander is null and u is a commander, sets commander to u. If temple, adds to temples,
@@ -261,11 +270,6 @@ public abstract class Player implements Stringable {
         allUnitModifierBuilding.applyModifiersTo(u);
       }
     }
-    refreshTempleBuffs();
-    refreshVisionCloud();
-    updateManaPerTurn();
-    updateResearchPerTurn();
-    updateCommanderActionsPerTurn();
   }
 
   /**

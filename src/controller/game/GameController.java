@@ -532,8 +532,7 @@ public final class GameController {
     Unit summonedUnit = summonSelector.toSummon.clone(summonSelector.summoner.owner, loc);
     summonedUnit.copyPersonalModifiersFrom(summonSelector.toSummon);
     game.refreshPassiveAbilities();
-    // Force vision refresh after modifiers are applied.
-    summonedUnit.owner.refreshVisionCloud();
+    summonedUnit.owner.recalculateState();
     summonType = null;
     locationSelector = null;
     getGamePanel().boardCursor.setElm(loc); // Cause info update

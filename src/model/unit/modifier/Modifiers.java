@@ -102,7 +102,7 @@ public final class Modifiers {
         "Farsight",
         Integer.MAX_VALUE,
         StackMode.STACKABLE,
-        StatType.MOVEMENT_TOTAL,
+        StatType.VISION_RANGE,
         StatModifier.ModificationType.ADD,
         visionRangeIncrease)
         .uniqueCopy();
