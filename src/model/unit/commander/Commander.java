@@ -9,7 +9,7 @@ import model.unit.ability.Ability;
 import model.unit.building.Building;
 import model.unit.building.Buildings;
 import model.unit.combatant.Combatant;
-import model.unit.combatant.FileCombatant;
+import model.unit.combatant.Combatants;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.Modifier.StackMode;
@@ -371,7 +371,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
   public Map<String, Combatant> getSummonables() {
     HashMap<String, Combatant> units = new HashMap<String, Combatant>();
     for (int i = 1; i <= getLevel(); i++) {
-      for (FileCombatant c : FileCombatant.getCombatantsForAge(i)) {
+      for (Combatant c : Combatants.getCombatantsForAge(i)) {
         units.put(c.name, c);
       }
     }

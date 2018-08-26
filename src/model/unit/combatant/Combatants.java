@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  *
  * @author MPatashnik
  */
-public final class FileCombatant extends Combatant {
+public final class Combatants {
 
   /** The avaliable combatants read into storage during initialization. */
   private static final List<FileCombatant> FILE_COMBATANTS;
@@ -59,9 +59,9 @@ public final class FileCombatant extends Combatant {
           int level = Integer.parseInt(comps[2]);
           int manaCost = Integer.parseInt(comps[3]);
 
-          List<CombatantClass> classes =
+          List<Combatant.CombatantClass> classes =
               Arrays.stream(comps[4].split("/"))
-                  .map(CombatantClass::valueOfShort)
+                  .map(Combatant.CombatantClass::valueOfShort)
                   .collect(Collectors.toList());
 
           int hp = Integer.parseInt(comps[5]);
@@ -97,17 +97,17 @@ public final class FileCombatant extends Combatant {
           FileCombatant unit = new FileCombatant(name, img, level, classes, manaCost, stats);
 
           // Default buffs by class and/or level.
-          if (classes.contains(CombatantClass.FIGHTER)) {
+          if (classes.contains(Combatant.CombatantClass.FIGHTER)) {
             Modifiers.bornToFight(10).clone(unit);
           }
-          if (classes.contains(CombatantClass.RANGER)) {
+          if (classes.contains(Combatant.CombatantClass.RANGER)) {
             Modifiers.pathfinder(1).clone(unit);
             Modifiers.trailblazer(3).clone(unit);
           }
-          if (classes.contains(CombatantClass.ASSASSIN)) {
+          if (classes.contains(Combatant.CombatantClass.ASSASSIN)) {
             Modifiers.disappearance().clone(unit);
           }
-          if (classes.contains(CombatantClass.TANK)) {
+          if (classes.contains(Combatant.CombatantClass.TANK)) {
             Modifiers.tenacity(5).clone(unit);
           }
 
@@ -136,48 +136,52 @@ public final class FileCombatant extends Combatant {
     return combatants;
   }
 
-  /**
-   * Constructor for FileCombatant that clones the given dummy fileCombatant, starting on the given
-   * tile.
-   *
-   * @param owner - the owner of the new FileCombatant
-   * @param dummy - the FileCombatant to clone
-   */
-  private FileCombatant(Player owner, FileCombatant dummy) {
-    super(
-        owner,
-        dummy.name,
-        dummy.getImgFilename(),
-        dummy.getLevel(),
-        dummy.combatantClasses,
-        dummy.manaCost,
-        dummy.getStats());
-  }
+  /** A combatant read from file. */
+  private static final class FileCombatant extends Combatant {
 
-  /** Clones this model.unit for the given player */
-  @Override
-  protected Unit createClone(Player owner) {
-    return new FileCombatant(owner, this);
-  }
+    /**
+     * Constructor for FileCombatant that clones the given dummy fileCombatant, starting on the
+     * given tile.
+     *
+     * @param owner - the owner of the new FileCombatant
+     * @param dummy - the FileCombatant to clone
+     */
+    private FileCombatant(Player owner, FileCombatant dummy) {
+      super(
+          owner,
+          dummy.name,
+          dummy.getImgFilename(),
+          dummy.getLevel(),
+          dummy.combatantClasses,
+          dummy.manaCost,
+          dummy.getStats());
+    }
 
-  /**
-   * Constructor used during initialization to create a dummy instance Creates with null owner,
-   * tile.
-   *
-   * @param name - the name of clones of this
-   * @param imageFilename - the image to draw for clones of this
-   * @param level - the level of clones of this
-   * @param classes - combatant classes of clones of this
-   * @param manaCost - the mana cost for clones of this
-   * @param stats - the stats of clones of this
-   */
-  private FileCombatant(
-      String name,
-      String imageFilename,
-      int level,
-      List<CombatantClass> classes,
-      int manaCost,
-      Stats stats) {
-    super(null, name, imageFilename, level, classes, manaCost, stats);
+    /** Clones this model.unit for the given player */
+    @Override
+    protected Unit createClone(Player owner) {
+      return new FileCombatant(owner, this);
+    }
+
+    /**
+     * Constructor used during initialization to create a dummy instance Creates with null owner,
+     * tile.
+     *
+     * @param name - the name of clones of this
+     * @param imageFilename - the image to draw for clones of this
+     * @param level - the level of clones of this
+     * @param classes - combatant classes of clones of this
+     * @param manaCost - the mana cost for clones of this
+     * @param stats - the stats of clones of this
+     */
+    private FileCombatant(
+        String name,
+        String imageFilename,
+        int level,
+        List<CombatantClass> classes,
+        int manaCost,
+        Stats stats) {
+      super(null, name, imageFilename, level, classes, manaCost, stats);
+    }
   }
 }

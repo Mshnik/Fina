@@ -3,13 +3,13 @@ package controller.game;
 import controller.audio.AudioController;
 import model.game.Game.FogOfWar;
 import model.unit.building.Buildings;
-import model.unit.combatant.FileCombatant;
+import model.unit.combatant.Combatants;
 
 public final class Main {
   /** Simple main method to test out Frame features */
   public static void main(String[] args) {
     // Force unit, building, audio loading.
-    FileCombatant.getCombatantsForAge(1);
+    Combatants.getCombatantsForAge(1);
     Buildings.getBuildingsForLevel(1);
     AudioController.setMute(false);
 
