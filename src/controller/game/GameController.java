@@ -9,14 +9,6 @@ import controller.selector.CastSelector;
 import controller.selector.LocationSelector;
 import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Random;
-import java.util.Stack;
 import model.board.Board;
 import model.board.Tile;
 import model.game.Game;
@@ -31,9 +23,18 @@ import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.unit.commander.DummyCommander;
-import view.gui.panel.BoardCursor;
 import view.gui.Frame;
+import view.gui.panel.BoardCursor;
 import view.gui.panel.GamePanel;
+
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Random;
+import java.util.Stack;
 
 /**
  * Overall controlling class that unites all classes. Should be run in its own thread, because some
@@ -440,10 +441,12 @@ public final class GameController {
   private void startSummonDecision(Commander c, Map<String, ? extends Unit> creatables) {
     LinkedList<Choice> choices = new LinkedList<Choice>();
     ArrayList<Unit> units = Unit.sortedList(creatables.values());
+    Tile t = getGamePanel().boardCursor.getElm();
     for (Unit u : units) {
       choices.add(
           new Choice(
-              u.manaCost <= c.getMana(),
+              u.manaCost <= c.getMana()
+                  && !new SummonSelector(this, t.getOccupyingUnit(), u).getCloud().isEmpty(),
               u.name
                   + Choice.SEPERATOR
                   + " ("
