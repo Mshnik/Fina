@@ -141,7 +141,11 @@ public final class Combat {
     double classBonus = 1 - (COMBAT_CLASS_BONUS * getClassBonus());
     return Math.max(
         0,
-        (int) (defender.getMinAttackScaled() * classBonus * getTypeBonusRatio(defender, attacker)));
+        (int)
+            (defender.getMinAttackScaled()
+                * classBonus
+                * getTypeBonusRatio(defender, attacker)
+                * getDefenderCounterAttackBonusRatio()));
   }
 
   /**
@@ -152,7 +156,11 @@ public final class Combat {
     double classBonus = 1 - (COMBAT_CLASS_BONUS * getClassBonus());
     return Math.max(
         0,
-        (int) (defender.getMaxAttackScaled() * classBonus * getTypeBonusRatio(defender, attacker)));
+        (int)
+            (defender.getMaxAttackScaled()
+                * classBonus
+                * getTypeBonusRatio(defender, attacker)
+                * getDefenderCounterAttackBonusRatio()));
   }
 
   /** Returns the sum of all damage reduction for the defender. */
@@ -169,13 +177,23 @@ public final class Combat {
             .sum();
   }
 
+  /** Returns the sum of all counterattack damage boosting modifiers for the defender. */
+  public double getDefenderCounterAttackBonusRatio() {
+    return 1
+        + defender
+            .getModifiersByName(Modifiers.patience(0))
+            .stream()
+            .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
+            .sum();
+  }
+
   /**
    * Returns the projected minimum damage the defender could do after scaling by combat classes and
    * account for modifiers along with change in health Should only be used for projections, not
    * actual combat.
    */
   public int getProjectedMinCounterAttack() {
-    if (! defenderCouldCounterAttack()) {
+    if (!defenderCouldCounterAttack()) {
       return 0;
     }
     double minProjectedHealthPercentage =
@@ -184,7 +202,8 @@ public final class Combat {
     return (int)
         (defender.getMinAttack()
             * minProjectedHealthPercentage
-            * (1 - COMBAT_CLASS_BONUS * getClassBonus()));
+            * (1 - COMBAT_CLASS_BONUS * getClassBonus())
+            * getDefenderCounterAttackBonusRatio());
   }
 
   /**
@@ -193,7 +212,7 @@ public final class Combat {
    * combat.
    */
   public int getProjectedMaxCounterAttack() {
-    if (! defenderCouldCounterAttack()) {
+    if (!defenderCouldCounterAttack()) {
       return 0;
     }
     double maxProjectedHealthPercentage =
@@ -202,7 +221,8 @@ public final class Combat {
     return (int)
         (defender.getMaxAttack()
             * maxProjectedHealthPercentage
-            * (1 - COMBAT_CLASS_BONUS * getClassBonus()));
+            * (1 - COMBAT_CLASS_BONUS * getClassBonus())
+            * getDefenderCounterAttackBonusRatio());
   }
 
   /**
@@ -229,8 +249,7 @@ public final class Combat {
     if (!attacker.owner.canSee(defender))
       throw new IllegalArgumentException(attacker.owner + " can't see " + defender);
     if (dist < attacker.getMinAttackRange())
-      throw new IllegalArgumentException(
-          this + " can't fight " + defender + ", it is too close.");
+      throw new IllegalArgumentException(this + " can't fight " + defender + ", it is too close.");
     if (dist > attacker.getMaxAttackRange())
       throw new IllegalArgumentException(
           this + " can't fight " + defender + ", it is too far away.");
