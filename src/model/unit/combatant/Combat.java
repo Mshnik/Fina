@@ -1,7 +1,9 @@
 package model.unit.combatant;
 
 import model.unit.Unit;
+import model.unit.building.Building;
 import model.unit.commander.Bhen;
+import model.unit.commander.Commander;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.Modifiers;
@@ -66,12 +68,35 @@ public final class Combat {
   }
 
   /**
+   * Returns the sum of all type bonus ratio modifiers for the given source attacking the given
+   * target.
+   */
+  private static double getTypeBonusRatio(Unit source, Unit target) {
+    Modifier m;
+    if (target instanceof Building) {
+      m = Modifiers.siege(0);
+    } else if (target instanceof Commander) {
+      m = Modifiers.bloodlust(0);
+    } else {
+      return 1;
+    }
+    return 1
+        + source
+            .getModifiersByName(m)
+            .stream()
+            .mapToDouble(mod -> ((CustomModifier) mod).val.doubleValue())
+            .sum();
+  }
+
+  /**
    * Returns the minimum damage the attacker could do after scaling by combat classes and account
    * for modifiers.
    */
   public int getMinAttack() {
+    double classBonus = 1 + COMBAT_CLASS_BONUS * getClassBonus();
     return Math.max(
-        0, (int) (attacker.getMinAttackScaled() * (1 + COMBAT_CLASS_BONUS * getClassBonus())));
+        0,
+        (int) (attacker.getMinAttackScaled() * classBonus * getTypeBonusRatio(attacker, defender)));
   }
 
   /**
@@ -79,8 +104,10 @@ public final class Combat {
    * for modifiers.
    */
   public int getMaxAttack() {
+    double classBonus = 1 + COMBAT_CLASS_BONUS * getClassBonus();
     return Math.max(
-        0, (int) (attacker.getMaxAttackScaled() * (1 + COMBAT_CLASS_BONUS * getClassBonus())));
+        0,
+        (int) (attacker.getMaxAttackScaled() * classBonus * getTypeBonusRatio(attacker, defender)));
   }
 
   /** Returns the sum of all damage reduction for the attacker. */
@@ -110,8 +137,10 @@ public final class Combat {
    * for modifiers.
    */
   private int getMinCounterAttack() {
+    double classBonus = 1 - (COMBAT_CLASS_BONUS * getClassBonus());
     return Math.max(
-        0, (int) (defender.getMinAttackScaled() * (1 - (COMBAT_CLASS_BONUS * getClassBonus()))));
+        0,
+        (int) (defender.getMinAttackScaled() * classBonus * getTypeBonusRatio(defender, attacker)));
   }
 
   /**
@@ -119,8 +148,10 @@ public final class Combat {
    * for modifiers.
    */
   private int getMaxCounterAttack() {
+    double classBonus = 1 - (COMBAT_CLASS_BONUS * getClassBonus());
     return Math.max(
-        0, (int) (defender.getMaxAttackScaled() * (1 - (COMBAT_CLASS_BONUS * getClassBonus()))));
+        0,
+        (int) (defender.getMaxAttackScaled() * classBonus * getTypeBonusRatio(defender, attacker)));
   }
 
   /** Returns the sum of all damage reduction for the defender. */
@@ -143,6 +174,9 @@ public final class Combat {
    * actual combat.
    */
   public int getProjectedMinCounterAttack() {
+    if (! defenderCouldCounterAttack()) {
+      return 0;
+    }
     double minProjectedHealthPercentage =
         ((double) defender.getHealth() + getDefenderDamageReduction() - getMaxAttack())
             / defender.getMaxHealth();
@@ -158,6 +192,9 @@ public final class Combat {
    * combat.
    */
   public int getProjectedMaxCounterAttack() {
+    if (! defenderCouldCounterAttack()) {
+      return 0;
+    }
     double maxProjectedHealthPercentage =
         ((double) defender.getHealth() + getDefenderDamageReduction() - getMinAttack())
             / defender.getMaxHealth();
