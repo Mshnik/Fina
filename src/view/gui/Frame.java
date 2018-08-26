@@ -1,5 +1,6 @@
 package view.gui;
 
+import controller.audio.AudioController;
 import controller.game.GameController;
 import model.game.Player;
 import model.unit.Unit;
@@ -149,6 +150,16 @@ public final class Frame extends JFrame {
           DEBUG = !DEBUG;
         });
     windowMenu.add(drawDebugInfoMenuItem);
+
+    // Sound menu
+    JMenu soundMenu = new JMenu("Sound");
+    menu.add(soundMenu);
+
+    JCheckBoxMenuItem muteMenuItem = new JCheckBoxMenuItem("Mute");
+    muteMenuItem.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.META_DOWN_MASK));
+    muteMenuItem.addActionListener(e -> AudioController.setMute(muteMenuItem.getState()));
+    soundMenu.add(muteMenuItem);
 
     setJMenuBar(menu);
   }

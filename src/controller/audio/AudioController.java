@@ -25,15 +25,17 @@ public final class AudioController {
     }
   }
 
-  public static boolean MUTE = false;
+  private static boolean MUTE = false;
   private static MP3Player mp3Player;
 
+  /** Plays the given sound effect. */
   public static void playEffect(SoundEffect effect) {
     if (!MUTE) {
       new Thread(() -> playEffectHelper(effect.filepath)).start();
     }
   }
 
+  /** Plays the given music. */
   public static void playMusic(String filepath) {
     if (!MUTE) {
       if (mp3Player != null) {
@@ -42,6 +44,11 @@ public final class AudioController {
       mp3Player = new MP3Player(new File(filepath));
       mp3Player.play();
     }
+  }
+
+  /** Sets the mute setting and stops any currently playing music. */
+  public static void setMute(boolean mute) {
+    MUTE = mute;
   }
 
   /**
