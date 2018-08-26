@@ -42,8 +42,7 @@ public final class AudioController {
     }
   }
 
-  private static final Map<Class<? extends Commander>, Music> MUSIC_MAP =
-      new HashMap<>();
+  private static final Map<Class<? extends Commander>, Music> MUSIC_MAP = new HashMap<>();
 
   /* Set up music map. */
   static {
@@ -56,7 +55,14 @@ public final class AudioController {
   /** Plays the given sound effect. */
   public static void playEffect(SoundEffect effect) {
     if (!MUTE) {
-      new Thread(() -> playEffectHelper(effect.filepath)).start();
+      try {
+        Clip clip = AudioSystem.getClip();
+        AudioInputStream ais = AudioSystem.getAudioInputStream(new File(effect.filepath));
+        clip.open(ais);
+        clip.loop(0);
+      } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 
@@ -74,7 +80,8 @@ public final class AudioController {
 
   /** Plays the music for the given commander. */
   public static void playMusicForTurn(Player player) {
-    playMusic(MUSIC_MAP.getOrDefault(player.getCommander().getClass(), Music.DUMMY_COMMANDER_THEME));
+    // playMusic(MUSIC_MAP.getOrDefault(player.getCommander().getClass(),
+    // Music.DUMMY_COMMANDER_THEME));
   }
 
   /** Sets the mute setting and stops any currently playing music. */
@@ -85,50 +92,5 @@ public final class AudioController {
       mp3Player.play();
     }
     MUTE = mute;
-  }
-
-  /**
-   * Plays the given sound effect. Should be called in a separate thread to not clog processing
-   * logic. Logic taken from http://www.anyexample.com/programming/java/java_play_wav_sound_file.xml
-   */
-  private static void playEffectHelper(String filename) {
-    File soundFile = new File(filename);
-    if (!soundFile.exists()) {
-      System.err.println("Wave file not found: " + filename);
-      return;
-    }
-    AudioInputStream audioInputStream = null;
-    try {
-      audioInputStream = AudioSystem.getAudioInputStream(new File(filename));
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-
-    AudioFormat format = audioInputStream.getFormat();
-    SourceDataLine auline = null;
-    DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-
-    try {
-      auline = (SourceDataLine) AudioSystem.getLine(info);
-      auline.open(format);
-    } catch (LineUnavailableException e) {
-      throw new RuntimeException(e);
-    }
-
-    auline.start();
-    int nBytesRead = 0;
-    byte[] abData = new byte[524288]; // 128Kb
-
-    try {
-      while (nBytesRead != -1) {
-        nBytesRead = audioInputStream.read(abData, 0, abData.length);
-        if (nBytesRead >= 0) auline.write(abData, 0, nBytesRead);
-      }
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    } finally {
-      auline.drain();
-      auline.close();
-    }
   }
 }
