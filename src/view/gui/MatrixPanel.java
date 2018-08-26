@@ -14,7 +14,7 @@ public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {
   private static final long serialVersionUID = 1L;
 
   /** The GameController this MatrixPanel is drawing something or other for ... Fuck idk. */
-  protected final GameController controller;
+  public final GameController controller;
 
   /** Maximum number of columns of elements to visually show */
   private int maxX;

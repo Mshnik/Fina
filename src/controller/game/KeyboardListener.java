@@ -6,7 +6,7 @@ import controller.decision.Decision;
 import model.board.Direction;
 import model.board.Tile;
 import model.unit.commander.Commander;
-import view.gui.BoardCursor;
+import view.gui.panel.BoardCursor;
 import view.gui.Cursor;
 import view.gui.Frame;
 import view.gui.decision.DecisionCursor;

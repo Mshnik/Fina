@@ -1,10 +1,11 @@
-package view.gui;
+package view.gui.panel;
 
 import controller.selector.CastSelector;
 import controller.selector.LocationSelector;
 import controller.selector.PathSelector;
 import model.board.Direction;
 import model.board.Tile;
+import view.gui.Cursor;
 import view.gui.panel.GamePanel;
 
 import java.awt.*;
@@ -114,7 +115,7 @@ public final class BoardCursor extends Cursor<Tile, GamePanel> {
 
   /** Called internally whenever the cursor is moved works with pathSelector */
   @Override
-  protected void moved() {
+  public void moved() {
     super.moved();
     LocationSelector ls = getPanel().controller.getLocationSelector();
     if (ls != null && ls instanceof PathSelector) {

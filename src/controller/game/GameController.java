@@ -31,7 +31,7 @@ import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.unit.commander.DummyCommander;
-import view.gui.BoardCursor;
+import view.gui.panel.BoardCursor;
 import view.gui.Frame;
 import view.gui.panel.GamePanel;
 
