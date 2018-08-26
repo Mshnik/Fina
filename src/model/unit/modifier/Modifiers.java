@@ -12,6 +12,20 @@ import model.unit.stat.StatType;
 public final class Modifiers {
   private Modifiers() {}
 
+  /** Modifier that reduces incoming melee damage */
+  public static Modifier armored(int damageReduction) {
+    return new CustomModifier(
+        "Armored",
+        "This unit takes less damage from melee attacks",
+        damageReduction,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        true,
+        true,
+        true)
+        .uniqueCopy();
+  }
+
   /** Modifier that gives life gain after dealing damage. */
   public static Modifier bornToFight(int healthGainedPerAttack) {
     return new CustomModifier(
@@ -65,6 +79,32 @@ public final class Modifiers {
             true,
             true,
             true)
+        .uniqueCopy();
+  }
+
+  /** Modifier that reduces incoming ranged damage */
+  public static Modifier elusive(int damageReduction) {
+    return new CustomModifier(
+        "Elusive",
+        "This unit takes less damage from ranged attacks",
+        damageReduction,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        true,
+        true,
+        true)
+        .uniqueCopy();
+  }
+
+  /** Modifier that increases total movement */
+  public static Modifier farsight(int visionRangeIncrease) {
+    return new StatModifier(
+        "Farsight",
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        StatType.MOVEMENT_TOTAL,
+        StatModifier.ModificationType.ADD,
+        visionRangeIncrease)
         .uniqueCopy();
   }
 
