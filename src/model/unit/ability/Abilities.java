@@ -1,20 +1,19 @@
 package model.unit.ability;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 import model.unit.Unit;
 import model.unit.building.Building;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
+import model.unit.modifier.ModifierBundle;
+import model.unit.modifier.Modifiers;
 import model.util.ExpandableCloud;
 import model.util.ExpandableCloud.ExpandableCloudType;
 import util.TextIO;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /** Index of abilities commanders can use. */
 public final class Abilities {
@@ -93,7 +92,45 @@ public final class Abilities {
 
   /** Helper for construction to get the list of ability effects for an ability. */
   private static List<AbilityEffect> getEffectsFor(String abilityName) {
-    return Collections.emptyList();
+    switch (abilityName) {
+      case "Magic Missile":
+        return Collections.singletonList(AbilityEffect.damage(15, 30));
+      case "Heal":
+        return Collections.singletonList(AbilityEffect.healConstantHp(25));
+      case "Clairvoyance":
+        return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.farsight(3)));
+      case "Cone of Flame":
+        return Collections.singletonList(AbilityEffect.damage(15, 30));
+      case "Strengthen":
+        return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.strengthened(5)));
+      case "Repair":
+        return Collections.singletonList(AbilityEffect.healPercentageOfMaxHp(.5));
+      case "Toughen":
+        return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.toughness(5)));
+      case "Quicken":
+        return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.quickness(2)));
+      case "Cone of Ice":
+        return Arrays.asList(AbilityEffect.damage(15, 30), AbilityEffect.modifierBundle());
+      case "Cone of Electricity":
+        return Arrays.asList(AbilityEffect.damage(15, 30), AbilityEffect.modifierBundle());
+      case "Mass Heal":
+        return Collections.singletonList(AbilityEffect.healPercentageOfMaxHp(.25));
+      case "Resolution":
+        return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.tenacity(15)));
+      case "Cone of Light":
+        return Collections.singletonList(AbilityEffect.damage(45, 90));
+      case "Mana Shield":
+        return Arrays.asList(
+            AbilityEffect.modifierBundle(Modifiers.shielded(0.25)),
+            AbilityEffect.healConstantHp(50));
+      case "Levitation":
+        return Collections.singletonList(
+            AbilityEffect.modifierBundle(
+                new ModifierBundle(
+                    Modifiers.flight(), Modifiers.farsight(3), Modifiers.quickness(1))));
+      default:
+        throw new RuntimeException("Unknown ability name " + abilityName);
+    }
   }
 
   /**

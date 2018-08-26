@@ -88,6 +88,22 @@ public final class CustomModifier extends Modifier {
         appliesToCombatants);
   }
 
+  @Override
+  public Modifier uniqueCopy(int remainingTurns, StackMode stackMode) {
+    if (!isDummy()) {
+      throw new RuntimeException("Shouldn't call uniqueCopy except on a dummy");
+    }
+    return new CustomModifier(
+        name,
+        description,
+        val,
+        remainingTurns,
+        stackMode,
+        appliesToBuildings,
+        appliesToCommanders,
+        appliesToCombatants);
+  }
+
   /**
    * Clones this for the given model.unit, source - creates a new customModifier(model.unit, source,
    * this)

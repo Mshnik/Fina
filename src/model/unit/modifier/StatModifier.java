@@ -91,6 +91,18 @@ public final class StatModifier extends Modifier {
     return new StatModifier(name, getRemainingTurns(), stacking, modifiedStat, modType, val);
   }
 
+  /**
+   * Returns a new dummy copy of this that's unique from a memory standpoint with the given
+   * remaining turns and stack mode.
+   */
+  @Override
+  public Modifier uniqueCopy(int remainingTurns, StackMode stackMode) {
+    if (!isDummy()) {
+      throw new RuntimeException("Shouldn't call uniqueCopy except on a dummy");
+    }
+    return new StatModifier(name, remainingTurns, stackMode, modifiedStat, modType, val);
+  }
+
   /** Returns a StatModifier clone of this with the given model.unit and source */
   @Override
   public Modifier clone(Unit unit, Unit source) {

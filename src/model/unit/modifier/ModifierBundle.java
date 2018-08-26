@@ -3,6 +3,7 @@ package model.unit.modifier;
 import model.unit.Unit;
 import model.unit.modifier.Modifier.StackMode;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -19,8 +20,18 @@ public final class ModifierBundle implements Collection<Modifier> {
    *     to this bundle
    */
   public ModifierBundle(Modifier... m) {
-    modifiers = new LinkedList<>();
-    for (Modifier mod : m) {
+    this(Arrays.asList(m));
+  }
+
+  /**
+   * Constructs a new Modifier Bundle
+   *
+   * @param modifiers- the modifiers to put in this bundle. Doesn't deep copy - adds the actual
+   *     modifiers to this bundle
+   */
+  public ModifierBundle(Iterable<Modifier> modifiers) {
+    this.modifiers = new LinkedList<>();
+    for (Modifier mod : modifiers) {
       add(mod);
     }
   }

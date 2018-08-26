@@ -1,7 +1,10 @@
 package model.unit.ability;
 
 import model.unit.Unit;
+import model.unit.modifier.Modifier;
 import model.unit.modifier.ModifierBundle;
+
+import java.util.stream.Collectors;
 
 /** An effect applied to a unit as part of an ability. */
 public final class AbilityEffect {
@@ -17,6 +20,9 @@ public final class AbilityEffect {
 
   /** HP to heal if this is an effect that heals a percentage of max HP, 0 otherwise. */
   private final double healPercentageOfMaxHp;
+
+  /** Number of turns all modifiers granted through abilities last. */
+  private static final int MODIFIER_TURN_DURATION = 3;
 
   /** ModifierBundle if this is an effect that gives a modifier, null otherwise. */
   private final ModifierBundle modifierEffect;
@@ -50,13 +56,31 @@ public final class AbilityEffect {
     return new AbilityEffect(0, 0, 0, percentageOfMaxHp, null);
   }
 
-  /** Creates an ability effect that grants a modifierbundle. */
-  static AbilityEffect modifierBundle(ModifierBundle modifierEffect) {
-    return new AbilityEffect(0, 0, 0, 0, modifierEffect);
+  /**
+   * Creates an ability effect that grants a set of modifiers. Modifiers are set to have the correct
+   * duration and stack mode.
+   */
+  static AbilityEffect modifierBundle(Modifier... modifiers) {
+    return modifierBundle(new ModifierBundle(modifiers));
+  }
+
+  /**
+   * Creates an ability effect that grants a modifier bundle. Modifiers are set to have the correct
+   * duration and stack mode.
+   */
+  static AbilityEffect modifierBundle(ModifierBundle modifiers) {
+    return new AbilityEffect(
+        0,
+        0,
+        0,
+        0,
+        new ModifierBundle(
+            modifiers
+                .stream()
+                .map(m -> m.uniqueCopy(MODIFIER_TURN_DURATION, Modifier.StackMode.DURATION_ADD))
+                .collect(Collectors.toList())));
   }
 
   /** Makes this abilityEffect affect the given unit. */
-  void affect(Unit u) {
-
-  }
+  void affect(Unit u) {}
 }
