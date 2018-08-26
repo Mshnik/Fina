@@ -86,8 +86,9 @@ public final class PathSelector extends LocationSelector implements Paintable, I
     return c;
   }
 
-  /** Adds the given Tile to the path, then removes cycle as necessary */
-  public void addToPath(Tile t) {
+  /** Adds the given Tile to the path, then removes cycle as necessary.
+   * Returns true if this added to the path, false if it removed a cycle. */
+  public boolean addToPath(Tile t) {
     path.add(t);
     // Cycle iff first and last index of t aren't equal
     int i = path.indexOf(t);
@@ -97,14 +98,8 @@ public final class PathSelector extends LocationSelector implements Paintable, I
       path.remove(i); // Remove ith position r times to delete cycle.
     }
 
-    // If this had no cycle, play sound as forward, otherwise backwards.
-    if (diff == 0) {
-      AudioController.playEffect(AudioController.SoundEffect.CLICK_YES);
-    } else {
-      AudioController.playEffect(AudioController.SoundEffect.CLICK_NO);
-    }
-
     refreshPossibilitiesCloud();
+    return diff == 0;
   }
 
   /** Returns an iterator over the tiles in this path */

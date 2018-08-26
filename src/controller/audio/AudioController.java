@@ -15,7 +15,8 @@ public final class AudioController {
 
   public enum SoundEffect {
     CLICK_YES("click_yes.wav"),
-    CLICK_NO("click_no.wav");
+    CLICK_NO("click_no.wav"),
+    CURSOR_MOVE("cursor_move.wav");
 
     private final String filepath;
 
@@ -24,18 +25,23 @@ public final class AudioController {
     }
   }
 
+  public static boolean MUTE = false;
   private static MP3Player mp3Player;
 
   public static void playEffect(SoundEffect effect) {
-    new Thread(() -> playEffectHelper(effect.filepath)).start();
+    if (!MUTE) {
+      new Thread(() -> playEffectHelper(effect.filepath)).start();
+    }
   }
 
   public static void playMusic(String filepath) {
-    if (mp3Player != null) {
-      mp3Player.stop();
+    if (!MUTE) {
+      if (mp3Player != null) {
+        mp3Player.stop();
+      }
+      mp3Player = new MP3Player(new File(filepath));
+      mp3Player.play();
     }
-    mp3Player = new MP3Player(new File(filepath));
-    mp3Player.play();
   }
 
   /**

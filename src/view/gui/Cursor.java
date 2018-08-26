@@ -1,5 +1,6 @@
 package view.gui;
 
+import controller.audio.AudioController;
 import controller.game.MatrixElement;
 import model.board.Direction;
 
@@ -47,8 +48,12 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>>
 
   /** Sets the tile this cursor is on */
   public void setElm(T t) {
+    T oldElm = elm;
     elm = t;
     panel.repaint();
+    if (oldElm != elm) {
+      AudioController.playEffect(AudioController.SoundEffect.CURSOR_MOVE);
+    }
   }
 
   /** Returns the row in the matrix this Cursor is currently on */
