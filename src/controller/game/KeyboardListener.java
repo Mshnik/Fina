@@ -1,5 +1,6 @@
 package controller.game;
 
+import controller.audio.AudioController;
 import controller.decision.Choice;
 import controller.decision.Decision;
 import model.board.Direction;
@@ -77,14 +78,17 @@ public final class KeyboardListener implements KeyListener {
           // No toggle currently open. Maybe open one.
         case NONE:
           if (keyCode == A) {
+            AudioController.playEffect(AudioController.SoundEffect.CLICK_YES);
             gc.startActionDecision();
           } else if (keyCode == B) {
+            AudioController.playEffect(AudioController.SoundEffect.CLICK_YES);
             gc.startEndTurnDecision();
           }
           break;
           // Process the decision.
         case DECISION:
           if (keyCode == A) {
+            AudioController.playEffect(AudioController.SoundEffect.CLICK_YES);
             if (!gc.frame.getActiveCursor().canSelect()) return;
             Choice decision = ((DecisionCursor) gc.frame.getActiveCursor()).getElm();
             switch (gc.getDecisionType()) {
@@ -122,6 +126,7 @@ public final class KeyboardListener implements KeyListener {
                 break;
             }
           } else {
+            AudioController.playEffect(AudioController.SoundEffect.CLICK_NO);
             if (!gc.isDecisionManditory()) {
               if (gc.getDecisionType() == Decision.DecisionType.SUMMON_DECISION
                   || gc.getDecisionType() == Decision.DecisionType.CAST_DECISION) {
@@ -143,10 +148,12 @@ public final class KeyboardListener implements KeyListener {
         case SUMMON_SELECTION:
           ((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.DEFAULT);
           if (keyCode == A) {
+            AudioController.playEffect(AudioController.SoundEffect.CLICK_YES);
             if (!gc.frame.getActiveCursor().canSelect()) return;
             Tile loc = ((BoardCursor) gc.frame.getActiveCursor()).getElm();
             gc.processSummonSelection(loc);
           } else {
+            AudioController.playEffect(AudioController.SoundEffect.CLICK_NO);
             boolean summoningUnit = gc.getSummonType().equals(GameController.SummonType.UNIT);
             gc.cancelSummonSelection();
             if (summoningUnit) gc.startSummonCombatantDecision();
@@ -156,10 +163,12 @@ public final class KeyboardListener implements KeyListener {
         case CAST_SELECTION:
           ((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.DEFAULT);
           if (keyCode == A) {
+            AudioController.playEffect(AudioController.SoundEffect.CLICK_YES);
             if (!gc.frame.getActiveCursor().canSelect()) return;
             Tile loc = ((BoardCursor) gc.frame.getActiveCursor()).getElm();
             gc.processCastSelection(loc);
           } else {
+            AudioController.playEffect(AudioController.SoundEffect.CLICK_NO);
             gc.cancelCastSelection();
             gc.startCastDecision();
           }
@@ -167,8 +176,10 @@ public final class KeyboardListener implements KeyListener {
         case ATTACK_SELECTION:
           ((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.DEFAULT);
           if (keyCode == A) {
+            AudioController.playEffect(AudioController.SoundEffect.CLICK_YES);
             gc.startConfirmAttackDecision();
           } else {
+            AudioController.playEffect(AudioController.SoundEffect.CLICK_NO);
             gc.cancelAttackSelection();
             gc.startActionDecision();
           }
@@ -177,10 +188,12 @@ public final class KeyboardListener implements KeyListener {
         case PATH_SELECTION:
           ((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.DEFAULT);
           if (keyCode == A) {
+            AudioController.playEffect(AudioController.SoundEffect.CLICK_YES);
             if (!gc.frame.getActiveCursor().canSelect()) return;
             Tile loc = ((BoardCursor) gc.frame.getActiveCursor()).getElm();
             gc.processPathSelection(loc);
           } else {
+            AudioController.playEffect(AudioController.SoundEffect.CLICK_NO);
             gc.cancelPathSelection();
             gc.startActionDecision();
           }

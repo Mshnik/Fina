@@ -1,5 +1,6 @@
 package controller.selector;
 
+import controller.audio.AudioController;
 import controller.game.GameController;
 import model.board.Tile;
 import model.unit.MovingUnit;
@@ -35,8 +36,6 @@ public final class PathSelector extends LocationSelector implements Paintable, I
 
   /**
    * Constructor for PathSelector
-   *
-   * @param s - start of path.
    */
   public PathSelector(GameController gc, MovingUnit unit) {
     super(gc);
@@ -96,6 +95,13 @@ public final class PathSelector extends LocationSelector implements Paintable, I
     int diff = l - i;
     for (int r = 0; r < diff; r++) {
       path.remove(i); // Remove ith position r times to delete cycle.
+    }
+
+    // If this had no cycle, play sound as forward, otherwise backwards.
+    if (diff == 0) {
+      AudioController.playEffect(AudioController.SoundEffect.CLICK_YES);
+    } else {
+      AudioController.playEffect(AudioController.SoundEffect.CLICK_NO);
     }
 
     refreshPossibilitiesCloud();
