@@ -13,7 +13,7 @@ public final class Main {
     Combatants.getCombatantsForAge(1);
     Buildings.getBuildingsForLevel(1);
     Abilities.getAbilitiesForAge(1);
-    AudioController.setMute(false);
+    AudioController.setMute(true);
 
     // Select initial board file and make start game.
     String boardFilename = args.length > 0 ? args[0] : "sample_board_small.csv";

@@ -576,7 +576,6 @@ public final class GameController {
     if (!t.isOccupied() || !(t.getOccupyingUnit() instanceof Commander)) {
       return;
     }
-    String name = choice.getShortMessage();
     cancelDecision();
     Commander c = (Commander) t.getOccupyingUnit();
     Ability a = (Ability) choice.getVal();
@@ -588,13 +587,9 @@ public final class GameController {
         return; // No possible summoning locations for this model.unit
       }
       addToggle(Toggle.CAST_SELECTION);
-      if (a.castDist == 0) {
-        processCastSelection(t);
-      } else {
-        Tile t2 = cloud.get(0);
-        getGamePanel().boardCursor.setElm(t2);
-        getGamePanel().fixScrollToShow(t2.getRow(), t2.getCol());
-      }
+      Tile t2 = cloud.get(0);
+      getGamePanel().boardCursor.setElm(t2);
+      getGamePanel().fixScrollToShow(t2.getRow(), t2.getCol());
     }
   }
 
@@ -633,7 +628,7 @@ public final class GameController {
    * Creates a new pathSelector at the current getGamePanel().boardCursor position. Does nothing if
    * the current tile is unoccupied or the unit has already moved.
    */
-  void startPathSelection() {
+  private void startPathSelection() {
     Tile t = getGamePanel().boardCursor.getElm();
     if (!t.isOccupied() || !t.getOccupyingUnit().canMove()) return;
 

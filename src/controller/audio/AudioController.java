@@ -56,7 +56,7 @@ public final class AudioController {
     SwingUtilities.invokeLater(JFXPanel::new);
   }
 
-  private static boolean MUTE = false;
+  private static boolean MUTE;
   private static MediaPlayer mediaPlayer;
 
   /** Plays the given sound effect. */
