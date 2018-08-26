@@ -466,7 +466,7 @@ public abstract class Player implements Stringable {
 
   @Override
   public String toStringShort() {
-    return "Player " + index;
+    return "P" + index;
   }
 
   @Override

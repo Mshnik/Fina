@@ -162,7 +162,7 @@ public final class InfoPanel extends JPanel {
     final int xInc = 225;
     String mainLine = unit.name;
     if (unit.owner != null) {
-      mainLine += " (" + unit.owner + ")";
+      mainLine += " (" + unit.owner.toStringShort() + ")";
     }
     g2d.drawString(mainLine, x, YMARGIN);
     g2d.setFont(MEDIUM_FONT);
