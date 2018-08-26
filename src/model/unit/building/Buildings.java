@@ -260,7 +260,7 @@ public final class Buildings {
                 PlayerModifierEffectType.BONUS_ACTIONS, 2, ancientGroundDescription));
       case "Laboratory":
         return EffectPair.of(
-            null,
+            new PlayerModifierEffect(PlayerModifierEffectType.CAST_SELECT_BOOST, 1,nonAncientGroundDescription),
             new PlayerModifierEffect(
                 PlayerModifierEffectType.CAST_CLOUD_BOOST, 1, ancientGroundDescription));
       case "Ritual Grounds":

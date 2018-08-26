@@ -27,7 +27,9 @@ public final class PlayerModifierBuilding extends Building<PlayerModifierEffect>
     BUILD_DISCOUNT,
     /** Percent discount on Casting. */
     CAST_DISCOUNT,
-    /** Increased cloud level for casting. */
+    /** Increase selection range for non-cloud casting. */
+    CAST_SELECT_BOOST,
+    /** Increased cloud level for cloud-casting. */
     CAST_CLOUD_BOOST;
   }
 

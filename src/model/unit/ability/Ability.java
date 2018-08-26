@@ -34,7 +34,7 @@ public class Ability implements Stringable {
   public final ExpandableCloud effectCloud;
 
   /** True if cloud boosting effects increase the size of this ability's cloud. */
-  private final boolean canBeCloudBoosted;
+  public final boolean canBeCloudBoosted;
 
   /**
    * Distance from the commander this can be cast. 0 for requiring commander as origin. If > 0,

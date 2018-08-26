@@ -221,6 +221,19 @@ public abstract class Player implements Stringable {
     return temples.indexOf(t);
   }
 
+  /** Returns the total cast select boost this player has. */
+  public int getCastSelectBoost() {
+    return units
+        .stream()
+        .filter(u -> u instanceof PlayerModifierBuilding)
+        .filter(
+            u ->
+                ((PlayerModifierBuilding) u).getEffect().effectType
+                    == PlayerModifierEffectType.CAST_SELECT_BOOST)
+        .mapToInt(u -> ((PlayerModifierBuilding) u).getEffect().value)
+        .sum();
+  }
+
   /** Returns the total cloud boost this player has. */
   public int getCastCloudBoost() {
     return units

@@ -1,11 +1,12 @@
 package controller.selector;
 
 import controller.game.GameController;
-import java.util.ArrayList;
-import java.util.List;
 import model.board.Tile;
 import model.unit.ability.Ability;
 import model.unit.commander.Commander;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class CastSelector extends LocationSelector {
   /** The commander doing the casting */
@@ -28,9 +29,12 @@ public final class CastSelector extends LocationSelector {
   /** Refreshes the possible cast locations for this castSelector */
   @Override
   protected void refreshPossibilitiesCloud() {
-    cloud = controller.game.board.getRadialCloud(caster.getLocation(), toCast.castDist);
+    int castDist =
+        toCast.castDist + (toCast.canBeCloudBoosted ? 0 : caster.owner.getCastSelectBoost());
+
+    cloud = controller.game.board.getRadialCloud(caster.getLocation(), castDist);
     // If cast dist is greater than 0, can't cast on commander location.
-    if (toCast.castDist > 0) {
+    if (castDist > 0) {
       cloud.remove(caster.getLocation());
     }
     refreshEffectCloud();

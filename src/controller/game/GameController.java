@@ -592,6 +592,8 @@ public final class GameController {
       getGamePanel().boardCursor.setElm(t2);
       getGamePanel().fixScrollToShow(t2.getRow(), t2.getCol());
       ((CastSelector) locationSelector).refreshEffectCloud();
+    } else {
+      throw new RuntimeException("Expected commander and ability");
     }
   }
 
