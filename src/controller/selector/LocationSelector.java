@@ -23,20 +23,20 @@ public abstract class LocationSelector implements Paintable {
    * Constructor for Location Selector. Implementing classes should refresh possibilities cloud at end of
    * construction
    */
-  public LocationSelector(GameController gc) {
+  LocationSelector(GameController gc) {
     controller = gc;
-    cloud = new ArrayList<Tile>();
+    cloud = new ArrayList<>();
   }
 
   /** Empties and recalculated the possibilities cloud using the current path as set */
   protected abstract void refreshPossibilitiesCloud();
 
   /**
-   * Returns the possible movements cloud. This is pass-by-value, so editing the returned set won't
+   * Returns the possible cloud. This is pass-by-value, so editing the returned set won't
    * change the PathSelector.
    */
-  public ArrayList<Tile> getPossibleMovementsCloud() {
-    return new ArrayList<Tile>(cloud);
+  public ArrayList<Tile> getCloud() {
+    return new ArrayList<>(cloud);
   }
 
   /** Draws this cloud */

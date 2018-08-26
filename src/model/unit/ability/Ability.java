@@ -112,20 +112,22 @@ public class Ability implements Stringable {
     if (effectCloud.type == ExpandableCloudType.CONE
         || effectCloud.type == ExpandableCloudType.WALL) {
       Direction d = caster.getLocation().directionTo(castLocation);
-      switch (d) {
-        case LEFT:
-          boostedCloud = boostedCloud.rotate(false);
-          boostedCloud = boostedCloud.rotate(false);
-          break;
-        case UP:
-          boostedCloud = boostedCloud.rotate(false);
-          break;
-        case RIGHT:
-          // Already in correct orientation.
-          break;
-        case DOWN:
-          boostedCloud = boostedCloud.rotate(false);
-          break;
+      if (d != null) {
+        switch (d) {
+          case LEFT:
+            boostedCloud = boostedCloud.rotate(false);
+            boostedCloud = boostedCloud.rotate(false);
+            break;
+          case UP:
+            boostedCloud = boostedCloud.rotate(false);
+            break;
+          case RIGHT:
+            // Already in correct orientation.
+            break;
+          case DOWN:
+            boostedCloud = boostedCloud.rotate(true);
+            break;
+        }
       }
     }
     return boostedCloud.translate(castLocation.getPoint()).toTileSet(caster.owner.game.board);

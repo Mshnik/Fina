@@ -497,7 +497,7 @@ public final class GameController {
     Commander commander = t.getOccupyingUnit().owner.getCommander();
     Unit toSummon = commander.getUnitByName(name);
     locationSelector = new SummonSelector(this, t.getOccupyingUnit(), toSummon);
-    ArrayList<Tile> cloud = locationSelector.getPossibleMovementsCloud();
+    ArrayList<Tile> cloud = locationSelector.getCloud();
     if (cloud.isEmpty()) {
       locationSelector = null;
       return false; // No possible summoning locations for this model.unit
@@ -581,15 +581,16 @@ public final class GameController {
     Ability a = (Ability) choice.getVal();
     if (a != null && c != null) {
       locationSelector = new CastSelector(this, c, a);
-      ArrayList<Tile> cloud = locationSelector.getPossibleMovementsCloud();
+      ArrayList<Tile> cloud = locationSelector.getCloud();
       if (cloud.isEmpty()) {
         locationSelector = null;
-        return; // No possible summoning locations for this model.unit
+        return; // No possible casting locations for this model.unit
       }
       addToggle(Toggle.CAST_SELECTION);
       Tile t2 = cloud.get(0);
       getGamePanel().boardCursor.setElm(t2);
       getGamePanel().fixScrollToShow(t2.getRow(), t2.getCol());
+      ((CastSelector) locationSelector).refreshEffectCloud();
     }
   }
 
@@ -679,11 +680,11 @@ public final class GameController {
     if (!t.isOccupied() || !t.getOccupyingUnit().canFight()) return;
     Combatant attacker = (Combatant) t.getOccupyingUnit();
     locationSelector = new AttackSelector(this, attacker);
-    if (locationSelector.getPossibleMovementsCloud().isEmpty()) {
+    if (locationSelector.getCloud().isEmpty()) {
       locationSelector = null;
       return;
     }
-    getGamePanel().boardCursor.setElm(locationSelector.getPossibleMovementsCloud().get(0));
+    getGamePanel().boardCursor.setElm(locationSelector.getCloud().get(0));
     addToggle(Toggle.ATTACK_SELECTION);
   }
 

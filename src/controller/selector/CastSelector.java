@@ -12,7 +12,7 @@ public final class CastSelector extends LocationSelector {
   public final Commander caster;
 
   /** The cloud of effect range based on the current location of the boardCursor */
-  private List<Tile> effectCloud;
+  public List<Tile> effectCloud;
 
   /** The ability this selector is trying to summon */
   public final Ability toCast;
@@ -29,6 +29,10 @@ public final class CastSelector extends LocationSelector {
   @Override
   protected void refreshPossibilitiesCloud() {
     cloud = controller.game.board.getRadialCloud(caster.getLocation(), toCast.castDist);
+    // If cast dist is greater than 0, can't cast on commander location.
+    if (toCast.castDist > 0) {
+      cloud.remove(caster.getLocation());
+    }
     refreshEffectCloud();
   }
 

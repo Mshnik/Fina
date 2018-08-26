@@ -1,6 +1,5 @@
 package view.gui;
 
-import controller.audio.AudioController;
 import controller.selector.CastSelector;
 import controller.selector.LocationSelector;
 import controller.selector.PathSelector;
@@ -63,14 +62,14 @@ public final class BoardCursor extends Cursor<Tile, GamePanel> {
       return destination != null;
     }
     LocationSelector ls = getPanel().controller.getLocationSelector();
-    boolean cloudOK = destination != null && ls.getPossibleMovementsCloud().contains(destination);
+    boolean cloudOK = destination != null && ls.getCloud().contains(destination);
     if (ls instanceof PathSelector) {
       PathSelector ps = (PathSelector) ls;
       return cloudOK || ps.getPath().contains(destination);
     } else {
       if (cloudOK) return true;
       else {
-        ArrayList<Tile> cloud = ls.getPossibleMovementsCloud();
+        ArrayList<Tile> cloud = ls.getCloud();
         int i = cloud.indexOf(getElm());
         if (d.equals(Direction.LEFT)) {
           if (i > 0) setElm(cloud.get(i - 1));

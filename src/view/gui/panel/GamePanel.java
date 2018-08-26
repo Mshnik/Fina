@@ -42,7 +42,10 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
   private static final Color SUMMON_COLOR = Color.cyan;
 
   /** Color of cast radii */
-  private static final Color CAST_COLOR = Color.magenta;
+  private static final Color CAST_BORDER_COLOR = new Color(244, 231, 35);
+
+  /** Color of cast radii */
+  private static final Color CAST_FILL_COLOR = new Color(0.96f, 0.89f, 0.11f, 0.5f);
 
   /** The BoardCursor for this GamePanel */
   public final BoardCursor boardCursor;
@@ -200,12 +203,17 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
         || controller.getLocationSelector() != null
             && controller.getToggle() == GameController.Toggle.CAST_SELECTION) {
       Ability a = null;
-      if (decisionPanel != null) a = (Ability) decisionPanel.getElm().getVal();
-      else a = ((CastSelector) controller.getLocationSelector()).toCast;
-
-      g2d.setStroke(RADIUS_STROKE);
-      g2d.setColor(CAST_COLOR);
-//      ImageIndex.trace(a.getEffectCloud(boardCursor.getElm()), this, g2d);
+      if (decisionPanel != null){
+        a = (Ability) decisionPanel.getElm().getVal();
+      }
+      else {
+        CastSelector selector = (CastSelector) controller.getLocationSelector();
+        g2d.setStroke(RADIUS_STROKE);
+        g2d.setColor(CAST_FILL_COLOR);
+        ImageIndex.fill(selector.effectCloud, this, g2d);
+        g2d.setColor(CAST_BORDER_COLOR);
+        ImageIndex.trace(selector.effectCloud, this, g2d);
+      }
     }
 
     // Draw the cursor if it's not hidden.
