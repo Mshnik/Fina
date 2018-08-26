@@ -1,11 +1,14 @@
 package controller.audio;
 
-import jaco.mp3.player.MP3Player;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import model.game.Player;
 import model.unit.commander.Commander;
 import model.unit.commander.DummyCommander;
 
 import javax.sound.sampled.*;
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -47,10 +50,14 @@ public final class AudioController {
   /* Set up music map. */
   static {
     MUSIC_MAP.put(DummyCommander.class, Music.DUMMY_COMMANDER_THEME);
+
+    // Start up a JavaFX room for sound, don't show anything.
+    // this will prepare JavaFX toolkit and environment so we can use media.
+    SwingUtilities.invokeLater(JFXPanel::new);
   }
 
   private static boolean MUTE = false;
-  private static MP3Player mp3Player;
+  private static MediaPlayer mediaPlayer;
 
   /** Plays the given sound effect. */
   public static void playEffect(SoundEffect effect) {
@@ -69,27 +76,28 @@ public final class AudioController {
   /** Plays the given music. */
   private static void playMusic(Music music) {
     if (!MUTE) {
-      if (mp3Player != null) {
-        mp3Player.stop();
+      if (mediaPlayer != null) {
+        mediaPlayer.stop();
       }
-      mp3Player = new MP3Player(new File(music.filepath));
-      mp3Player.setRepeat(true);
-      mp3Player.play();
+      mediaPlayer = new MediaPlayer(new Media(new File(music.filepath).toURI().toString()));
+      mediaPlayer.setVolume(0.25);
+      mediaPlayer.setCycleCount(Integer.MAX_VALUE);
+      mediaPlayer.play();
     }
   }
 
   /** Plays the music for the given commander. */
   public static void playMusicForTurn(Player player) {
-    // playMusic(MUSIC_MAP.getOrDefault(player.getCommander().getClass(),
-    // Music.DUMMY_COMMANDER_THEME));
+    playMusic(
+        MUSIC_MAP.getOrDefault(player.getCommander().getClass(), Music.DUMMY_COMMANDER_THEME));
   }
 
   /** Sets the mute setting and stops any currently playing music. */
   public static void setMute(boolean mute) {
-    if (mp3Player != null && mute) {
-      mp3Player.pause();
-    } else if (mp3Player != null) {
-      mp3Player.play();
+    if (mediaPlayer != null && mute) {
+      mediaPlayer.pause();
+    } else if (mediaPlayer != null) {
+      mediaPlayer.play();
     }
     MUTE = mute;
   }
