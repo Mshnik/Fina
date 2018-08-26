@@ -4,7 +4,19 @@ import controller.audio.AudioController;
 import controller.decision.Choice;
 import controller.decision.Decision;
 import controller.decision.Decision.DecisionType;
-import controller.selector.*;
+import controller.selector.AttackSelector;
+import controller.selector.CastSelector;
+import controller.selector.LocationSelector;
+import controller.selector.PathSelector;
+import controller.selector.SummonSelector;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Random;
+import java.util.Stack;
 import model.board.Board;
 import model.board.Tile;
 import model.game.Game;
@@ -22,9 +34,6 @@ import model.unit.commander.DummyCommander;
 import view.gui.BoardCursor;
 import view.gui.Frame;
 import view.gui.panel.GamePanel;
-
-import java.awt.*;
-import java.util.*;
 
 /**
  * Overall controlling class that unites all classes. Should be run in its own thread, because some
@@ -394,20 +403,22 @@ public final class GameController {
    * ability yet
    */
   private void startNewAbilityDecision(Commander c) throws RuntimeException {
-    if (c.getAbility(c.getLevel()) != null)
-      throw new RuntimeException(
-          "Can't pick a new ability for " + c + ", already has " + c.getAbility(c.getLevel()));
-
-    Ability[] a = c.getPossibleAbilities(c.getLevel());
-    if (a != null) {
-      decision = new Decision(DecisionType.NEW_ABILITY_DECISION, true, true);
-      for (Ability ab : a) {
-        decision.add(new Choice(true, ab.name, ab));
-      }
-      addToggle(Toggle.DECISION);
-      getGamePanel().fixDecisionPanel("Choose a New Ability", c.owner, decision, true);
-      getGamePanel().centerDecisionPanel();
-    }
+    // TODO - revisit this
+    //    if (c.getAbility(c.getLevel()) != null)
+    //      throw new RuntimeException(
+    //          "Can't pick a new ability for " + c + ", already has " +
+    // c.getAbility(c.getLevel()));
+    //
+    //    Ability[] a = c.getPossibleAbilities(c.getLevel());
+    //    if (a != null) {
+    //      decision = new Decision(DecisionType.NEW_ABILITY_DECISION, true, true);
+    //      for (Ability ab : a) {
+    //        decision.add(new Choice(true, ab.name, ab));
+    //      }
+    //      addToggle(Toggle.DECISION);
+    //      getGamePanel().fixDecisionPanel("Choose a New Ability", c.owner, decision, true);
+    //      getGamePanel().centerDecisionPanel();
+    //    }
     // else do nothing
   }
 
@@ -531,7 +542,6 @@ public final class GameController {
     }
     Unit summonedUnit = summonSelector.toSummon.clone(summonSelector.summoner.owner, loc);
     summonedUnit.copyPersonalModifiersFrom(summonSelector.toSummon);
-    game.refreshPassiveAbilities();
     summonedUnit.owner.recalculateState();
     summonType = null;
     locationSelector = null;
@@ -543,8 +553,8 @@ public final class GameController {
   void startCastDecision() {
     LinkedList<Choice> choices = new LinkedList<Choice>();
     Commander c = (Commander) getGamePanel().boardCursor.getElm().getOccupyingUnit();
-    LinkedList<Ability> abilities = c.getActiveAbilities();
-    for (Ability a : abilities) {
+    Map<String, Ability> abilities = c.getCastables();
+    for (Ability a : abilities.values()) {
       choices.add(
           new Choice(
               a.manaCost <= c.getMana(), a.name + Choice.SEPERATOR + "(" + a.manaCost + ")", a));
@@ -569,7 +579,7 @@ public final class GameController {
     String name = choice.getShortMessage();
     cancelDecision();
     Commander c = (Commander) t.getOccupyingUnit();
-    Ability a = c.getAbilityByName(name);
+    Ability a = (Ability) choice.getVal();
     if (a != null && c != null) {
       locationSelector = new CastSelector(this, c, a);
       ArrayList<Tile> cloud = locationSelector.getPossibleMovementsCloud();
@@ -603,6 +613,7 @@ public final class GameController {
     locationSelector = null;
   }
 
+  /** Processes the cast selection, causing the ability to actually occur. */
   void processCastSelection(Tile loc) {
     CastSelector castSelector = (CastSelector) locationSelector;
     Toggle t = removeTopToggle();
@@ -611,7 +622,8 @@ public final class GameController {
     if (game.getCurrentPlayer() != null) {
       game.getCurrentPlayer().spendCommanderAction();
     }
-    castSelector.toCast.cast(loc);
+    castSelector.toCast.cast(
+        castSelector.caster, loc, castSelector.caster.owner.getCastCloudBoost());
     locationSelector = null;
     getGamePanel().boardCursor.setElm(castSelector.caster.getLocation()); // Cause info update
     repaint();

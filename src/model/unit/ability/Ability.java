@@ -1,31 +1,45 @@
 package model.unit.ability;
 
-import model.board.Board;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import model.board.Direction;
 import model.board.Tile;
 import model.game.Stringable;
 import model.unit.Unit;
 import model.unit.commander.Commander;
-import model.util.MPoint;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import model.util.Cloud;
+import model.util.ExpandableCloud;
+import model.util.ExpandableCloud.ExpandableCloudType;
 
 /** Parent class of abilities useable by Commanders. */
-public abstract class Ability implements Stringable {
-
-  /** The commander that owns this ability */
-  public final Commander caster;
+public class Ability implements Stringable {
 
   /** The name of this ability */
   public final String name;
 
+  /** The level of the ability */
+  public final int level;
+
   /** The cost of casting this Ability */
   public final int manaCost;
 
-  /** True iff this ability can be cast multiple times in a single turn */
-  public final boolean canBeCastMultipleTimes;
+  /**
+   * The effect range of this Ability, as a collection of locations relative to its origin location
+   */
+  public final ExpandableCloud effectCloud;
+
+  /** True if cloud boosting effects increase the size of this ability's cloud. */
+  private final boolean canBeCloudBoosted;
+
+  /**
+   * Distance from the commander this can be cast. 0 for requiring commander as origin. If > 0,
+   * can't pick tile commander is on.
+   */
+  public final int castDist;
+
+  /** Types of units this ability should be applied to. */
+  public final List<Class<? extends Unit>> affectedUnitTypes;
 
   /** True iff modifiers should be applied to allied units */
   public final boolean appliesToAllied;
@@ -33,144 +47,140 @@ public abstract class Ability implements Stringable {
   /** True iff modifiers should be applied to enemy units */
   public final boolean appliesToFoe;
 
-  /**
-   * The effect range of this Ability, as a collection of locations relative to its origin location
-   */
-  private final Set<MPoint> effectCloud;
+  /** A string description of this ability, used for debugging and UI. */
+  public final String description;
 
-  /** Distance from the commander this can be cast. 0 for requiring commander as origin */
-  public final int castDist;
+  /** A list of AbilityEffects to apply to each affected unit. */
+  public final List<AbilityEffect> effects;
 
   /**
    * Ability Constructor
    *
    * @param name - the Name of this ability
+   * @param level - the level of the ability.
    * @param manaCost - the mana cost of using this ability. 0 if passive
-   * @param caster - the Commander who owns this ability
+   * @param effectCloud - the cloud of tiles this ability effects.
+   * @param canBeCloudBoosted - true if this abilty's cloud can be increased in size by cloud
+   *     boosting effects, false if not.
    * @param castDist - the distance from the commander this ability can be cast
-   * @param multiCast - true iff this can be used multiple times in a turn
+   * @param affectedUnitTypes - types of units this ability effects. Units with other types will not
+   *     be effected by this ability.
    * @param appliesToAllied - true iff this ability can affect allied units
    * @param appliesToFoe - true iff this ability can affect non-allied units
-   * @param cloud - the cloud of points (around the target as (0,0)) that it affects. If this is
-   *     null, has infinite (whole model.board) range
+   * @param description - a string description of this ability.
+   * @param effects - the effects of this ability to apply to each unit.
    */
   public Ability(
       String name,
+      int level,
       int manaCost,
-      Commander caster,
+      ExpandableCloud effectCloud,
+      boolean canBeCloudBoosted,
       int castDist,
-      boolean multiCast,
+      List<Class<? extends Unit>> affectedUnitTypes,
       boolean appliesToAllied,
       boolean appliesToFoe,
-      Set<MPoint> cloud) {
+      String description,
+      List<AbilityEffect> effects) {
     this.name = name;
+    this.level = level;
+    this.effectCloud = effectCloud;
+    this.canBeCloudBoosted = canBeCloudBoosted;
+    this.affectedUnitTypes = affectedUnitTypes;
     this.appliesToAllied = appliesToAllied;
     this.appliesToFoe = appliesToFoe;
-    if (cloud != null) this.effectCloud = new HashSet<MPoint>(cloud);
-    else this.effectCloud = null;
-    this.caster = caster;
-    if (manaCost > 0) {
-      this.manaCost = manaCost;
-      this.castDist = castDist;
-      this.canBeCastMultipleTimes = multiCast;
-    } else {
-      // Passive ability. Must be cast on commander, can be cast multiple times in turn
-      // Has 0 mana cost
-      this.manaCost = 0;
-      this.castDist = 0;
-      this.canBeCastMultipleTimes = true;
-    }
-  }
-
-  /** Returns true if this is a passive ability (manaCost == 0) */
-  public boolean isPassive() {
-    return manaCost == 0;
+    this.manaCost = manaCost;
+    this.castDist = castDist;
+    this.description = description;
+    this.effects = effects;
   }
 
   /**
-   * Returns a translation of the effectCloud, centered at the given tile's location. If effectCloud
-   * is empty, treats it as infinite range, returns all tiles in model.board
+   * Returns true iff this ability would affect the given unit. Doesn't check location, only type
+   * and ownership.
    */
-  public ArrayList<Tile> getEffectCloud(Tile t) {
-    ArrayList<Tile> cloud = new ArrayList<Tile>();
-    Board b = t.board;
-    MPoint origin = t.getPoint();
-
-    if (effectCloud == null) {
-      for (Tile t2 : b) {
-        cloud.add(t2);
-      }
-      return cloud;
-    } else {
-      for (MPoint p : effectCloud) {
-        try {
-          cloud.add(b.getTileAt(origin.add(p)));
-        } catch (IllegalArgumentException e) {
-        } // Do nothing - OOB
-      }
-      Collections.sort(cloud);
-
-      return cloud;
-    }
+  public boolean wouldAffect(Unit u, Commander caster) {
+    return affectedUnitTypes.contains(u.getClass())
+        && (u.owner == caster.owner && appliesToAllied || u.owner != caster.owner && appliesToFoe);
   }
 
-  /**
-   * Returns the size of the generic (unplaced) effectCloud. Returns Integer.MAX_VALUE if it is null
-   * (infinite)
-   */
-  public int getEffectCloudSize() {
-    if (effectCloud == null) return Integer.MAX_VALUE;
-    return effectCloud.size();
+  /** Returns the effect cloud translated for the given location and caster location. */
+  public List<Tile> getTranslatedEffectCloud(Commander caster, Tile castLocation, int boostLevel) {
+    Cloud boostedCloud = effectCloud.expand(canBeCloudBoosted ? boostLevel : 0);
+
+    // Check for rotatable types - if need be, rotate.
+    if (effectCloud.type == ExpandableCloudType.CONE
+        || effectCloud.type == ExpandableCloudType.WALL) {
+      Direction d = caster.getLocation().directionTo(castLocation);
+      switch (d) {
+        case LEFT:
+          boostedCloud = boostedCloud.rotate(false);
+          boostedCloud = boostedCloud.rotate(false);
+          break;
+        case UP:
+          boostedCloud = boostedCloud.rotate(false);
+          break;
+        case RIGHT:
+          // Already in correct orientation.
+          break;
+        case DOWN:
+          boostedCloud = boostedCloud.rotate(false);
+          break;
+      }
+    }
+    return boostedCloud.translate(castLocation.getPoint()).toTileSet(caster.owner.game.board);
   }
 
   /**
    * Casts this ability. Returns true if this call is ok and cast happens, throws exception
-   * otherwise. If this is passive, always cast with the commander's location as its location
+   * otherwise. If this is passive, always cast with the commander's location as its location.
+   * Returns the list of units this affected.
    */
-  public boolean cast(Tile location) throws RuntimeException {
+  public List<Unit> cast(Commander caster, Tile location, int boostLevel) throws RuntimeException {
     // Check mana
-    if (caster.getMana() < manaCost) throw new RuntimeException("Can't Cast " + this + "; OOM");
+    if (caster.getMana() < manaCost) {
+      throw new RuntimeException("Can't Cast " + this + "; OOM");
+    }
 
-    // Check location
-    if (location.manhattanDistance(caster.getLocation()) > castDist)
+    // Check location - if cast dist is 0, expect location to be caster's location.
+    // Otherwise, check that tile is in correct range for cast dist.
+    // Also check dist == 1 for cone type in order for rotation to work.
+    if (castDist == 0 && !location.getPoint().equals(caster.getLocation().getPoint())) {
+      throw new RuntimeException(
+          "Can't Cast " + this + " at " + location + "; must be on commander's location");
+    } else if (location.manhattanDistance(caster.getLocation()) > castDist) {
       throw new RuntimeException(
           "Can't Cast " + this + " at " + location + "; too far away from commander");
+    }
+    if (castDist != 1
+        && (effectCloud.type == ExpandableCloudType.CONE
+            || effectCloud.type == ExpandableCloudType.WALL)) {
+      throw new RuntimeException("Cone and Wall types must be cast at distance one");
+    }
 
-    // Check multicast
-    if (!canBeCastMultipleTimes && caster.getAbilitiesCastThisTurn().contains(this))
-      throw new RuntimeException("Can't cast " + this + " twice in one turn");
+    // Ok. Cast.
+    // Compute cloud with boost and rotation.
+    List<Tile> affectedTiles = getTranslatedEffectCloud(caster, location, boostLevel);
 
-    // Ok. Cast
+    // Subtract mana cost from commander.
     caster.addMana(-manaCost);
-    ArrayList<Tile> cloud = getEffectCloud(location);
-    for (Tile t : cloud) {
+
+    List<Unit> affectedUnits = new ArrayList<>();
+
+    // Go through all tiles in affected tiles and affect units as need be.
+    for (Tile t : affectedTiles) {
       if (!t.isOccupied()) continue;
 
       Unit u = t.getOccupyingUnit();
-      if (u.owner == caster.owner && appliesToAllied) {
-        affect(u);
-      }
-      if (u.owner != caster.owner && appliesToFoe) {
-        affect(u);
+      if (wouldAffect(u, caster)) {
+        affectedUnits.add(u);
+        for (AbilityEffect effect : effects) {
+          effect.affect(u);
+        }
       }
     }
-    return true;
+    return Collections.unmodifiableList(affectedUnits);
   }
-
-  /**
-   * Causes the effect of this Ability to take effect on the given model.unit. Assume validation has
-   * already been done
-   */
-  protected abstract void affect(Unit u);
-
-  /**
-   * Returns true iff this is affectig from the given model.unit. If this is a one off ability this
-   * can be unsupported
-   */
-  public abstract boolean isAffecting(Unit u);
-
-  /** Removes from the given model.unit. If this is a one off ability this can be unsupported */
-  public abstract void remove(Unit u);
 
   @Override
   public String toString() {
@@ -180,5 +190,15 @@ public abstract class Ability implements Stringable {
   @Override
   public String toStringShort() {
     return name + ":(" + manaCost + ")";
+  }
+
+  @Override
+  public String toStringLong() {
+    return toStringShort() + ": " + description;
+  }
+
+  @Override
+  public String toStringFull() {
+    return toStringLong();
   }
 }

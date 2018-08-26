@@ -49,9 +49,4 @@ public final class DummyCommander extends Commander {
     // TODO Auto-generated method stub
 
   }
-
-  @Override
-  public Ability[] getPossibleAbilities(int level) {
-    return null;
-  }
 }

@@ -205,7 +205,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
 
       g2d.setStroke(RADIUS_STROKE);
       g2d.setColor(CAST_COLOR);
-      ImageIndex.trace(a.getEffectCloud(boardCursor.getElm()), this, g2d);
+//      ImageIndex.trace(a.getEffectCloud(boardCursor.getElm()), this, g2d);
     }
 
     // Draw the cursor if it's not hidden.

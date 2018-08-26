@@ -1,5 +1,10 @@
 package model.game;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.Unit;
@@ -14,12 +19,6 @@ import model.unit.modifier.Modifiers;
 import model.util.Cloud;
 import model.util.ExpandableCloud;
 import model.util.MPoint;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * An instance is a player (not the commander piece). Extended to be either human controlled or AI.
@@ -222,6 +221,19 @@ public abstract class Player implements Stringable {
     return temples.indexOf(t);
   }
 
+  /** Returns the total cloud boost this player has. */
+  public int getCastCloudBoost() {
+    return units
+        .stream()
+        .filter(u -> u instanceof PlayerModifierBuilding)
+        .filter(
+            u ->
+                ((PlayerModifierBuilding) u).getEffect().effectType
+                    == PlayerModifierEffectType.CAST_CLOUD_BOOST)
+        .mapToInt(u -> ((PlayerModifierBuilding) u).getEffect().value)
+        .sum();
+  }
+
   /** The commander belonging to this player */
   public Commander getCommander() {
     return commander;
@@ -329,8 +341,8 @@ public abstract class Player implements Stringable {
                 .translate(u.getLocation().getPoint())
                 .toTileSet(game.board));
       } else {
-      // Otherwise, Calculate ray-based vision.
-      MPoint center = u.getLocation().getPoint();
+        // Otherwise, Calculate ray-based vision.
+        MPoint center = u.getLocation().getPoint();
         for (int radius = 1; radius <= u.getVisionRange(); radius++) {
           boolean radiusIsOne = radius == 1;
           addVisionPoint(center, center.add(radius, 0), radiusIsOne);

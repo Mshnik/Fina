@@ -1,28 +1,34 @@
 package view.gui.panel;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.stream.Collectors;
+import javax.swing.JPanel;
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.MovingUnit;
 import model.unit.Unit;
 import model.unit.ability.Ability;
-import model.unit.ability.EffectAbility;
-import model.unit.ability.ModifierAbility;
-import model.unit.building.*;
+import model.unit.building.AllUnitModifierBuilding;
+import model.unit.building.Building;
+import model.unit.building.PlayerModifierBuilding;
+import model.unit.building.StartOfTurnEffectBuilding;
+import model.unit.building.SummonerBuilding;
 import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.unit.modifier.Modifier;
-import model.unit.modifier.Modifier.StackMode;
 import model.unit.modifier.ModifierBundle;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 import view.gui.Frame;
 import view.gui.ImageIndex;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.stream.Collectors;
 
 public final class InfoPanel extends JPanel {
   /** */
@@ -310,18 +316,7 @@ public final class InfoPanel extends JPanel {
     g2d.setFont(MEDIUM_FONT);
 
     y += fontSize;
-    if (ability.manaCost > 0) {
-      g2d.drawString("Costs " + ability.manaCost + " Mana Per Use", x, y);
-      if (!ability.canBeCastMultipleTimes) {
-        y += fontSize;
-        g2d.drawString("Can Only Be Cast Once Per Turn", x, y);
-      }
-    } else g2d.drawString("Passive Ability", x, y);
-
-    y += fontSize;
-    int size = ability.getEffectCloudSize();
-    if (size == Integer.MAX_VALUE) g2d.drawString("Affects Whole Board", x, y);
-    else g2d.drawString("Affects Up To " + size + " Units", x, y);
+    g2d.drawString("Costs " + ability.manaCost + " Mana Per Use", x, y);
 
     String affects = "";
     if (ability.appliesToAllied) affects += "Allied";
@@ -329,28 +324,14 @@ public final class InfoPanel extends JPanel {
     if (ability.appliesToFoe) affects += "Enemy";
 
     y += fontSize;
-    g2d.drawString("Affects " + affects + " Units", x, y);
+    g2d.drawString("Affects " + affects + " " + ability.affectedUnitTypes, x, y);
 
     x += xInc;
     y = YMARGIN;
-    if (ability instanceof ModifierAbility) {
-      ModifierBundle mod = ((ModifierAbility) ability).getModifiers();
-      String turns =
-          (mod.getTurnsRemaining() == Integer.MAX_VALUE ? INF_CHAR + "" : mod.getTurnsRemaining())
-              + " Turns Remaining ("
-              + (mod.getStackMode() == StackMode.NONE_DO_NOT_APPLY ? "Not " : "")
-              + "Stackable)";
-      g2d.drawString(turns, x, y);
-      for (Modifier m : mod.getModifiers()) {
-        y += fontSize;
-        g2d.drawString(m.toStatString(), x, y);
-      }
-    } else if (ability instanceof EffectAbility) {
-      g2d.drawString("Effects:", x, y);
-      y += fontSize;
-      String s = ability.toStringLong();
-      g2d.drawString(s, x, y);
-    }
+    g2d.drawString("Effects:", x, y);
+    y += fontSize;
+    String s = ability.description;
+    g2d.drawString(s, x, y);
   }
 
   /** Draw the terrain for an empty tile on this info panel. */

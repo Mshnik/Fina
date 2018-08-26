@@ -156,8 +156,6 @@ public abstract class MovingUnit extends Unit {
     movement -= cost;
     owner.refreshVisionCloud();
 
-    owner.game.refreshPassiveAbilities();
-
     postMove(path);
 
     return location;

@@ -130,7 +130,7 @@ public final class ExpandableCloud extends Cloud {
   private final int size;
 
   /** The type of this cloud. */
-  private final ExpandableCloudType type;
+  public final ExpandableCloudType type;
 
   /** Constructs a new cloud. Up to the constructor to enforce that the points set is correct. */
   private ExpandableCloud(Set<MPoint> points, int size, ExpandableCloudType type) {

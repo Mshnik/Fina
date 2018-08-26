@@ -146,20 +146,6 @@ public final class Game implements Runnable, Stringable {
     return units;
   }
 
-  /** Refreshes all passive abilities on all units in the model.game */
-  public void refreshPassiveAbilities() {
-    List<Unit> units = getUnits();
-    for (Player p : getRemainingPlayers()) {
-      Commander c = p.getCommander();
-      for (Ability a : c.getPassiveAbilities()) {
-        for (Unit u : units) {
-          a.remove(u);
-        }
-        a.cast(c.getLocation());
-      }
-    }
-  }
-
   /** Returns the index of the current player, which rotates through as the players rotate. */
   public int getPlayerIndex() {
     return index;

@@ -1,10 +1,16 @@
 package model.unit.commander;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import javax.swing.Action;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
 import model.unit.Summoner;
 import model.unit.Unit;
+import model.unit.ability.Abilities;
 import model.unit.ability.Ability;
 import model.unit.building.Building;
 import model.unit.building.Buildings;
@@ -17,11 +23,6 @@ import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * Represents a commander for a player. Each player should have one.
@@ -180,10 +181,10 @@ public abstract class Commander extends MovingUnit implements Summoner {
     return true;
   }
 
-  /** Commanders can also cast - but only if they have at least one active ability */
+  /** Commanders can also cast */
   @Override
   public boolean canCast() {
-    return !getActiveAbilities().isEmpty();
+    return true;
   }
 
   /**
@@ -389,69 +390,15 @@ public abstract class Commander extends MovingUnit implements Summoner {
     return units;
   }
 
-  // ABILITIES
-
-  /**
-   * Returns the possible abilities for the given level. Note that the incoming levels are 1
-   * indexed, so keep that in mind
-   */
-  public abstract Ability[] getPossibleAbilities(int level);
-
-  /**
-   * Returns the ability chosen for the given level. This is an ability the commander actually has
-   * access to. Will return null if the input is greater than the current level
-   */
-  public Ability getAbility(int level) {
-    try {
-      return getPossibleAbilities(level)[abilityChoices[level - 1]];
-    } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
-      return null;
-    }
-  }
-
-  /** Returns all abilities this Commander currently has access to. */
-  public LinkedList<Ability> getAbilities() {
-    LinkedList<Ability> abilities = new LinkedList<Ability>();
-    for (int i = 1; i <= getLevel(); i++) {
-      Ability a = getAbility(i);
-      if (a != null) abilities.add(a);
-    }
-    return abilities;
-  }
-
-  /** Returns all active (castable) abilities this Commander currently has access to. */
-  public LinkedList<Ability> getActiveAbilities() {
-    LinkedList<Ability> abilities = new LinkedList<Ability>();
-    for (int i = 1; i <= getLevel(); i++) {
-      Ability a = getAbility(i);
-      if (a != null && !a.isPassive()) abilities.add(a);
-    }
-    return abilities;
-  }
-
-  /** Returns all passive (always on) abilities this Commander currently has access to. */
-  public LinkedList<Ability> getPassiveAbilities() {
-    LinkedList<Ability> abilities = new LinkedList<Ability>();
-    for (int i = 1; i <= getLevel(); i++) {
-      Ability a = getAbility(i);
-      if (a != null && a.isPassive()) abilities.add(a);
-    }
-    return abilities;
-  }
-
-  /** Returns the abilities this commander has cast this turn */
-  public LinkedList<Ability> getAbilitiesCastThisTurn() {
-    return new LinkedList<Ability>(currentTurnCasts);
-  }
-
-  /** Returns the ability associated with the given name for this commander, if possible */
-  public Ability getAbilityByName(String name) {
-    for (int i = 1; i <= MAX_LEVEL; i++) {
-      for (Ability a : getPossibleAbilities(i)) {
-        if (a.name.equals(name)) return a;
+  /** Returns a map of actions this can cast. */
+  public Map<String, Ability> getCastables() {
+    HashMap<String, Ability> units = new HashMap<String, Ability>();
+    for (int i = 0; i <= getLevel(); i++) {
+      for (Ability a : Abilities.getAbilitiesForAge(i)) {
+        units.put(a.name, a);
       }
     }
-    return null;
+    return units;
   }
 
   @Override
@@ -459,9 +406,6 @@ public abstract class Commander extends MovingUnit implements Summoner {
     String s = super.toStringFull();
     s += " Mana =" + getMana();
     s += " Level =" + getLevel() + " and " + getResearch() + "/" + getResearchRequirement() + " ";
-    for (Ability a : getAbilities()) {
-      s += a.toStringShort() + " ";
-    }
     return s;
   }
 }

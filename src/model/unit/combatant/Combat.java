@@ -2,7 +2,6 @@ package model.unit.combatant;
 
 import model.unit.Unit;
 import model.unit.building.Building;
-import model.unit.commander.Bhen;
 import model.unit.commander.Commander;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
@@ -296,12 +295,6 @@ public final class Combat {
     }
 
     boolean defenderIsDead = !defender.isAlive();
-
-    // Check for killing modifiers
-    Modifier mod1 = attacker.getModifierByName(Bhen.ABILITY_NAMES[0][0]);
-    if (mod1 != null) {
-      attacker.addMovement(((CustomModifier) mod1).val.intValue());
-    }
 
     processed = true;
     System.out.println("End combat ------");
