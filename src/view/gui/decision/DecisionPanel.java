@@ -66,7 +66,7 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
   public final Player player;
 
   /** True iff this should layout vertically, false for horizontally. */
-  private final boolean verticalLayout;
+  final boolean verticalLayout;
 
   public DecisionPanel(
       GameController g,

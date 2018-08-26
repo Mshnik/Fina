@@ -80,13 +80,16 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>>
    */
   protected abstract boolean willMoveTo(Direction d, T destination);
 
-  /** Call to move in the given direction, if possible */
-  public void move(Direction d) {
+  /** Call to move in the given direction, if possible. Returns true if this moved. */
+  public boolean move(Direction d) {
     T dest = getPanel().getElmInDirection(getElm(), d);
 
     if (willMoveTo(d, dest)) {
       setElm(dest);
       moved();
+      return true;
+    } else {
+      return false;
     }
   }
 

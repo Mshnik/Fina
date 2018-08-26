@@ -27,6 +27,32 @@ public final class DecisionCursor extends Cursor<Choice, DecisionPanel> {
     return getElm().isSelectable();
   }
 
+  /** Allows the cursor to wrap vertically on vertical decisions. */
+  @Override
+  public boolean move(Direction d) {
+    boolean moved = super.move(d);
+    if (moved) {
+      return true;
+    }
+
+    // If vertical layout, allow for vertical wrapping - check for being on first
+    // or last row and hitting up/down.
+    if (getPanel().verticalLayout) {
+      if (d == Direction.DOWN && getRow() == getPanel().getMatrixHeight() - 1) {
+        setElm(getPanel().getElmAt(0,0));
+        moved();
+        return true;
+      }
+      if (d == Direction.UP && getRow() == 0) {
+        setElm(getPanel().getElmAt(getPanel().getMatrixHeight() - 1,0));
+        moved();
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   /** Moves are always oked. Returns true, so long as destination isn't null */
   @Override
   protected boolean willMoveTo(Direction d, Choice destination) {
