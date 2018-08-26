@@ -156,19 +156,20 @@ public final class GameController {
     if (!isRunning()) return;
     frame.dispose();
     gameThread.interrupt();
+    AudioController.stopMusic();
   }
 
   /** Loads the given board and kills this. */
   public synchronized void loadAndKillThis(
       String boardFilepath, int numPlayers, FogOfWar fogOfWar) {
-    loadAndStart(boardFilepath, numPlayers, fogOfWar);
     kill();
+    loadAndStart(boardFilepath, numPlayers, fogOfWar);
   }
 
   /** Restarts this game by creating a new copy of this then disposing of this. */
   public synchronized void restart() {
-    loadAndStart(game.board.filepath, playerColors.size(), game.getFogOfWar());
     kill();
+    loadAndStart(game.board.filepath, playerColors.size(), game.getFogOfWar());
   }
 
   /** Returns the gamePanel located within frame */

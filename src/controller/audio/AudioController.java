@@ -92,6 +92,13 @@ public final class AudioController {
         MUSIC_MAP.getOrDefault(player.getCommander().getClass(), Music.DUMMY_COMMANDER_THEME));
   }
 
+  /** Stops music. */
+  public static void stopMusic() {
+    if (mediaPlayer != null) {
+      mediaPlayer.stop();
+    }
+  }
+
   /** Sets the mute setting and stops any currently playing music. */
   public static void setMute(boolean mute) {
     if (mediaPlayer != null && mute) {
