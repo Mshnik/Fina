@@ -122,13 +122,12 @@ final class NewGameSelector {
       }
       switch (t) {
         case GRASS:
+        case ANCIENT_GROUND:
           return new Color(142, 227, 58);
         case WOODS:
           return new Color(17, 134, 15);
         case MOUNTAIN:
           return new Color(188, 93, 30);
-        case ANCIENT_GROUND:
-          return new Color(237, 216, 35);
         default:
           return Color.WHITE;
       }
