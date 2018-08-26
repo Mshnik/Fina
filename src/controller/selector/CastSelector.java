@@ -37,7 +37,21 @@ public final class CastSelector extends LocationSelector {
     if (castDist > 0) {
       cloud.remove(caster.getLocation());
     }
-    refreshEffectCloud();
+    List<Tile> toRemove = new ArrayList<>();
+    for (Tile t : cloud) {
+      if (toCast
+          .getTranslatedEffectCloud(caster, t, caster.owner.getCastCloudBoost())
+          .stream()
+          .noneMatch(
+              tile -> tile.isOccupied() && toCast.wouldAffect(tile.getOccupyingUnit(), caster))) {
+        toRemove.add(t);
+      }
+    }
+
+    cloud.removeAll(toRemove);
+    if (!cloud.isEmpty()) {
+      refreshEffectCloud();
+    }
   }
 
   /** Refreshes the effectCloud for the current location of the boardCursor */

@@ -561,7 +561,9 @@ public final class GameController {
     for (Ability a : abilities.values()) {
       choices.add(
           new Choice(
-              a.manaCost <= c.getMana(), a.name + Choice.SEPERATOR + "(" + a.manaCost + ")", a));
+              a.manaCost <= c.getMana() && !new CastSelector(this, c, a).getCloud().isEmpty(),
+              a.name + Choice.SEPERATOR + "(" + a.manaCost + ")",
+              a));
     }
     decision = new Decision(DecisionType.CAST_DECISION, false, true, choices);
     addToggle(Toggle.DECISION);
