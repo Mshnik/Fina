@@ -10,8 +10,8 @@ import model.unit.modifier.Modifiers;
 import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
+import model.util.ExpandableCloud;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -201,7 +201,13 @@ public abstract class Combatant extends MovingUnit {
 
   /** Returns true iff there is at least one enemy unit within range and sight */
   public boolean hasFightableTarget() {
-    ArrayList<Tile> tiles = owner.game.board.getRadialCloud(location, getMinAttackRange() + 1);
+    List<Tile> tiles =
+        ExpandableCloud.create(ExpandableCloud.ExpandableCloudType.CIRCLE, getMaxAttackRange() + 1)
+            .difference(
+                ExpandableCloud.create(
+                    ExpandableCloud.ExpandableCloudType.CIRCLE, getMinAttackRange()))
+            .translate(getLocation().getPoint())
+            .toTileSet(owner.game.board);
     for (Tile t : tiles) {
       if (t.isOccupied()) {
         Unit u = t.getOccupyingUnit();
