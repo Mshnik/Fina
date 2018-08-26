@@ -619,7 +619,7 @@ public final class GameController {
       game.getCurrentPlayer().spendCommanderAction();
     }
     castSelector.toCast.cast(
-        castSelector.caster, loc, castSelector.caster.owner.getCastCloudBoost());
+        castSelector.caster, loc, castSelector.caster.owner.getCastCloudBoost(), random);
     locationSelector = null;
     getGamePanel().boardCursor.setElm(castSelector.caster.getLocation()); // Cause info update
     repaint();

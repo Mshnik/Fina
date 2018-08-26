@@ -1,9 +1,13 @@
 package model.unit.ability;
 
 import model.unit.Unit;
+import model.unit.commander.Commander;
+import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.ModifierBundle;
+import model.unit.modifier.Modifiers;
 
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /** An effect applied to a unit as part of an ability. */
@@ -82,5 +86,43 @@ public final class AbilityEffect {
   }
 
   /** Makes this abilityEffect affect the given unit. */
-  void affect(Unit u) {}
+  void affect(Unit u, Commander caster, Random random) {
+    if (maxDamage != 0) {
+      damageEffect(u, caster, random);
+    } else if (healConstantHp != 0) {
+      u.changeHealth(healConstantHp, caster);
+    } else if (healPercentageOfMaxHp != 0) {
+      u.changeHealth((int) (healPercentageOfMaxHp * u.getMaxHealth()), caster);
+    } else if (modifierEffect != null) {
+      modifierEffect.clone(u, caster);
+    } else {
+      throw new RuntimeException("This effect didn't match any known effect case");
+    }
+  }
+
+  private void damageEffect(Unit u, Commander caster, Random random) {
+    int damage = random.nextInt(maxDamage - minDamage + 1) + minDamage;
+
+    // Subtract ratio from hexproof.
+    damage *=
+        Math.max(0, 1
+            - u.getModifiersByName(Modifiers.hexproof(0))
+                .stream()
+                .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
+                .sum());
+
+    // Subtract constant from toughness.
+    damage -=
+        u.getModifiersByName(Modifiers.toughness(0))
+            .stream()
+            .mapToInt(m -> ((CustomModifier) m).val.intValue())
+            .sum();
+
+    // Make sure damage isn't negative.
+    damage = Math.max(0, damage);
+
+    // Apply damage.
+    System.out.println("Spell damage: " + damage);
+    u.changeHealth(-damage, caster);
+  }
 }

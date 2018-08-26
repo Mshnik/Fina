@@ -1,16 +1,20 @@
 package model.unit.ability;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import model.board.Direction;
 import model.board.Tile;
 import model.game.Stringable;
 import model.unit.Unit;
+import model.unit.building.Building;
+import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.util.Cloud;
 import model.util.ExpandableCloud;
 import model.util.ExpandableCloud.ExpandableCloudType;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /** Parent class of abilities useable by Commanders. */
 public class Ability implements Stringable {
@@ -100,7 +104,9 @@ public class Ability implements Stringable {
    * and ownership.
    */
   public boolean wouldAffect(Unit u, Commander caster) {
-    return affectedUnitTypes.contains(u.getClass())
+    return (u instanceof Combatant && affectedUnitTypes.contains(Combatant.class)
+            || u instanceof Commander && affectedUnitTypes.contains(Commander.class)
+            || u instanceof Building && affectedUnitTypes.contains(Building.class))
         && (u.owner == caster.owner && appliesToAllied || u.owner != caster.owner && appliesToFoe);
   }
 
@@ -138,7 +144,8 @@ public class Ability implements Stringable {
    * otherwise. If this is passive, always cast with the commander's location as its location.
    * Returns the list of units this affected.
    */
-  public List<Unit> cast(Commander caster, Tile location, int boostLevel) throws RuntimeException {
+  public List<Unit> cast(Commander caster, Tile location, int boostLevel, Random random)
+      throws RuntimeException {
     // Check mana
     if (caster.getMana() < manaCost) {
       throw new RuntimeException("Can't Cast " + this + "; OOM");
@@ -177,7 +184,7 @@ public class Ability implements Stringable {
       if (wouldAffect(u, caster)) {
         affectedUnits.add(u);
         for (AbilityEffect effect : effects) {
-          effect.affect(u);
+          effect.affect(u, caster, random);
         }
       }
     }
