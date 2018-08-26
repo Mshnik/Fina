@@ -72,6 +72,11 @@ public final class CustomModifier extends Modifier {
     attachToUnit();
   }
 
+  /** Returns the value of this custom modifier. May be null. */
+  public Number getValue() {
+    return val;
+  }
+
   @Override
   public Modifier uniqueCopy() {
     if (!isDummy()) {

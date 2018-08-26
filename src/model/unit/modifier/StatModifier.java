@@ -82,6 +82,11 @@ public final class StatModifier extends Modifier {
     return val;
   }
 
+  /** Returns the value of this custom modifier. */
+  public Object getValue() {
+    return val;
+  }
+
   /** Returns a new dummy copy of this that's unique from a memory standpoint. */
   @Override
   public Modifier uniqueCopy() {

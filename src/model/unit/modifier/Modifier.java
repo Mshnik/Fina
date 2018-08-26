@@ -85,6 +85,9 @@ public abstract class Modifier implements Stringable {
     clonedFrom = dummy;
   }
 
+  /** Returns the value of this modifier. May be null if not used. */
+  public abstract Object getValue();
+
   /**
    * Returns a new copy of this that is also a dummy - allows for separate clone chains of identical
    * Modifiers. Should only be called on a dummy.

@@ -203,11 +203,24 @@ public final class InfoPanel extends JPanel {
     y = YMARGIN + infoFont * 4;
     String modifierTitle = "Modifiers: ";
     g2d.drawString(modifierTitle, x, y);
-    String modString = "";
+    StringBuilder modString = new StringBuilder();
     for (Modifier m : unit.getModifiers()) {
-      if (!m.name.contains(Commander.LEVEL_UP_MODIFIER_PREFIX)) modString += m.name + " ";
+      if (!m.name.contains(Commander.LEVEL_UP_MODIFIER_PREFIX) && ! m.name.isEmpty()) {
+        modString.append(m.name);
+        if (m.getValue() != null) {
+          modString.append(" " + m.getValue());
+        }
+        if (m.getRemainingTurns() < Integer.MAX_VALUE) {
+          modString.append(" (" + m.getRemainingTurns() + " turns)");
+        }
+
+        modString.append(", ");
+      }
     }
-    g2d.drawString(modString, x + frame.getTextWidth(MEDIUM_FONT, modifierTitle) + 15, y);
+    g2d.drawString(
+        modString.toString().substring(0, Math.max(0,modString.toString().length() - 2)),
+        x + frame.getTextWidth(MEDIUM_FONT, modifierTitle) + 15,
+        y);
 
     x = XMARGIN + 2 * xInc;
 
