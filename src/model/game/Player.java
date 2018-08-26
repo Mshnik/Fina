@@ -10,7 +10,9 @@ import model.unit.building.StartOfTurnEffectBuilding;
 import model.unit.building.Temple;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
+import model.unit.modifier.Modifiers;
 import model.util.Cloud;
+import model.util.ExpandableCloud;
 import model.util.MPoint;
 
 import java.awt.*;
@@ -316,19 +318,27 @@ public abstract class Player implements Stringable {
       // Always have vision of a unit's location.
       visionCloud.add(u.getLocation());
 
-      // Calculate ray-based vision.
+      // If the unit has eagle eye, they just have radial vision.
+      if (u.hasModifierByName(Modifiers.eagleEye())) {
+        visionCloud.addAll(
+            ExpandableCloud.create(ExpandableCloud.ExpandableCloudType.CIRCLE, u.getVisionRange())
+                .translate(u.getLocation().getPoint())
+                .toTileSet(game.board));
+      } else {
+      // Otherwise, Calculate ray-based vision.
       MPoint center = u.getLocation().getPoint();
-      for (int radius = 1; radius <= u.getVisionRange(); radius++) {
-        boolean radiusIsOne = radius == 1;
-        addVisionPoint(center, center.add(radius, 0), radiusIsOne);
-        addVisionPoint(center, center.add(-radius, 0), radiusIsOne);
-        addVisionPoint(center, center.add(0, radius), radiusIsOne);
-        addVisionPoint(center, center.add(0, -radius), radiusIsOne);
-        for (int i = 1; i < radius; i++) {
-          addVisionPoint(center, center.add(radius - i, i), false);
-          addVisionPoint(center, center.add(-radius + i, -i), false);
-          addVisionPoint(center, center.add(-i, radius - i), false);
-          addVisionPoint(center, center.add(i, -radius + i), false);
+        for (int radius = 1; radius <= u.getVisionRange(); radius++) {
+          boolean radiusIsOne = radius == 1;
+          addVisionPoint(center, center.add(radius, 0), radiusIsOne);
+          addVisionPoint(center, center.add(-radius, 0), radiusIsOne);
+          addVisionPoint(center, center.add(0, radius), radiusIsOne);
+          addVisionPoint(center, center.add(0, -radius), radiusIsOne);
+          for (int i = 1; i < radius; i++) {
+            addVisionPoint(center, center.add(radius - i, i), false);
+            addVisionPoint(center, center.add(-radius + i, -i), false);
+            addVisionPoint(center, center.add(-i, radius - i), false);
+            addVisionPoint(center, center.add(i, -radius + i), false);
+          }
         }
       }
     }
