@@ -1,5 +1,6 @@
 package controller.game;
 
+import controller.audio.AudioController;
 import controller.decision.Choice;
 import controller.decision.Decision;
 import controller.decision.Decision.DecisionType;
@@ -197,6 +198,7 @@ public final class GameController {
   /** Called when the model wants to begin the turn for player p */
   public void startTurnFor(Player p) {
     frame.startTurnFor(p);
+    AudioController.playMusicForTurn(p);
   }
 
   /**
