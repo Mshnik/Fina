@@ -85,7 +85,7 @@ public final class StatModifier extends Modifier {
   /** Returns a new dummy copy of this that's unique from a memory standpoint. */
   @Override
   public Modifier uniqueCopy() {
-    if (! isDummy()) {
+    if (!isDummy()) {
       throw new RuntimeException("Shouldn't call uniqueCopy except on a dummy");
     }
     return new StatModifier(name, getRemainingTurns(), stacking, modifiedStat, modType, val);

@@ -1,6 +1,6 @@
 package model.game;
 
-import java.awt.Color;
+import java.awt.*;
 
 /** A human controlled player */
 public class HumanPlayer extends Player {

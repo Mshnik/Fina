@@ -1,14 +1,5 @@
 package model.unit.combatant;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.game.Player;
 import model.unit.Unit;
@@ -17,6 +8,11 @@ import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 import util.TextIO;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A FileUnit is a combatant read in from file. Full constructors are private, but the class
@@ -40,7 +36,7 @@ public final class FileCombatant extends Combatant {
 
       for (String line : unitLines) {
         String[] comps = line.split(",");
-        if (comps.length == 0) continue; // Blank line.
+        if (comps.length == 0 || comps[0].isEmpty()) continue; // Blank line.
         if (comps[0].equals("Name")) continue; // Header line.
 
         try {
@@ -53,9 +49,10 @@ public final class FileCombatant extends Combatant {
           // 5: Health (Int)
           // 6: Min Attack (Int)
           // 7: Max Attack (Int)
-          // 8: Attack Range (Int or --)
-          // 9: Move (Int)
-          // 10: Vision (Int)
+          // 8: Min Attack Range (Int or --)
+          // 9: Max Attack Range (Int or --)
+          // 10: Move (Int)
+          // 11: Vision (Int)
 
           String name = comps[0];
           String img = comps[1];
@@ -70,9 +67,10 @@ public final class FileCombatant extends Combatant {
           int hp = Integer.parseInt(comps[5]);
           int minAttack = Integer.parseInt(comps[6]);
           int maxAttack = Integer.parseInt(comps[7]);
-          int range = comps[8].equals("--") ? 0 : Integer.parseInt(comps[8]);
-          int moveTotal = Integer.parseInt(comps[9]);
-          int vision = Integer.parseInt(comps[10]);
+          int minRange = comps[8].equals("--") ? 0 : Integer.parseInt(comps[8]);
+          int maxRange = comps[8].equals("--") ? 0 : Integer.parseInt(comps[9]);
+          int moveTotal = Integer.parseInt(comps[10]);
+          int vision = Integer.parseInt(comps[11]);
 
           int manaPerTurn = 0;
 
@@ -87,7 +85,8 @@ public final class FileCombatant extends Combatant {
                   new Stat(StatType.MAX_HEALTH, hp),
                   new Stat(StatType.MIN_ATTACK, minAttack),
                   new Stat(StatType.MAX_ATTACK, maxAttack),
-                  new Stat(StatType.ATTACK_RANGE, range),
+                  new Stat(StatType.MIN_ATTACK_RANGE, minRange),
+                  new Stat(StatType.MAX_ATTACK_RANGE, maxRange),
                   new Stat(StatType.VISION_RANGE, vision),
                   new Stat(StatType.MANA_PER_TURN, manaPerTurn),
                   new Stat(StatType.MOVEMENT_TOTAL, moveTotal),

@@ -1,12 +1,13 @@
 package model.unit.building;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import model.board.Terrain;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.stat.Stats;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /** An extension of building with no additional effects. */
 public final class NoEffectBuilding extends Building<Void> {

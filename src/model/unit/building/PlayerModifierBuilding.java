@@ -1,14 +1,14 @@
 package model.unit.building;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import model.board.Terrain;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.building.PlayerModifierBuilding.PlayerModifierEffect;
-import model.unit.modifier.ModifierBundle;
 import model.unit.stat.Stats;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /** An extension of building that grants the player (not a particular unit) a bonus. */
 public final class PlayerModifierBuilding extends Building<PlayerModifierEffect> {

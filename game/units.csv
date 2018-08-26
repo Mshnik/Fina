@@ -1,23 +1,30 @@
-Name,Image Filename,Level,Cost,Type,Health,Min Attack,Max Attack,Range,Move,Vision
-Cutpurse,_1.png,1,100,A,100,50,75,--,5,2
-Rogue,_1.png,2,200,A,110,60,90,--,5,2
-Silencer,_1.png,3,350,A,120,70,105,--,6,3
-Master Assassin,_1.png,4,500,A,130,80,120,--,7,3
-Enforcer,_1.png,3,450,A/T,180,50,90,--,5,3
-Brawler,_1.png,1,100,F,110,40,60,--,4,3
-Skirmisher,_1.png,2,200,F,130,55,70,--,4,3
-Warrior,_1.png,3,350,t,150,70,80,--,5,3
-Master Fighter,_1.png,4,500,F,170,85,90,--,5,4
-Duelist,_1.png,4,600,F/A,135,70,90,--,5,3
-Outrider,_1.png,3,450,F/R,140,65,80,1,4,5
-Honor Guard,_1.png,3,450,F/T,200,60,70,--,4,3
-Marksman,_1.png,1,100,R,110,45,55,1,4,3
-Archer,_1.png,2,200,R,125,55,65,2,4,4
-Sharpshooter,_1.png,3,350,R,140,65,80,2,4,5
-Master Ranger,_1.png,4,500,R,155,75,90,3,5,5
-Shade,_1.png,3,450,R/A,130,70,95,2,5,4
-Guardian,_1.png,1,100,T,180,30,40,--,3,2
-Defender,_1.png,2,200,T,220,40,50,--,3,3
-Paladin,_1.png,3,350,T,250,50,60,--,3,3
-Master Tank,_1.png,4,500,T,300,60,70,--,4,3
-Siege Captain,_1.png,4,600,T/R,190,60,70,1,4,4
+Name,Image Filename,Level,Cost,Type,Health,Min Attack,Max Attack,Min Range,Max Range,Move,Vision,
+,,,,A,2,5,5,0,0,4,1,12
+,,,,M,1,4,4,2,4,1,4,12
+,,,,R,3,3,3,2,3,5,5,18
+,,,,T,5,2,2,0,0,2,2,11
+,,,,F,4,4,4,0,0,3,3,14
+,,,,,,,,,,,,
+Cutpurse,_1.png,1,100,A,90,50,75,0,0,4,2,
+Brawler,_1.png,1,100,F,120,40,60,0,0,3,2,
+Scout,_1.png,1,100,R,110,35,55,0,0,4,4,
+Guardian,_1.png,1,100,T,160,30,40,0,0,2,2,
+Apprentice,_1.png,1,100,M,85,40,60,1,2,2,2,
+,,,,,,,,,,,,
+Rogue,_1.png,2,200,A,105,60,90,0,0,4,2,
+Skirmisher,_1.png,2,200,F,130,55,70,0,0,3,3,
+Archer,_1.png,2,200,R,120,55,65,1,2,3,3,
+Defender,_1.png,2,200,T,200,50,55,0,0,2,3,
+Mage,_1.png,2,200,M,100,55,85,1,2,2,2,
+,,,,,,,,,,,,
+Honor Guard,_1.png,3,350,T/F,220,60,75,0,0,3,3,
+Duelist,_1.png,3,350,F/A,140,70,100,0,0,4,2,
+Shade,_1.png,3,350,A/M,115,80,105,0,1,3,2,
+Seer,_1.png,3,350,M/R,125,60,85,2,4,2,4,
+Siege Captain,_1.png,3,350,R/T,185,50,70,0,1,2,2,
+,,,,,,,,,,,,
+Assassin,_1.png,4,500,A,130,80,120,0,0,4,2,
+Master at Arms,_1.png,4,500,F,170,85,105,0,0,3,4,
+Outrider,_1.png,4,500,R,155,75,90,0,2,5,4,
+Paladin,_1.png,4,500,T,260,60,80,0,0,3,3,
+Sorcerer,_1.png,4,500,M,120,70,105,1,4,2,2,

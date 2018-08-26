@@ -1,9 +1,5 @@
 package model.unit.commander;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
@@ -21,6 +17,11 @@ import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * Represents a commander for a player. Each player should have one.
@@ -209,6 +210,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
   }
 
   // RESTRICTIONS
+
   /** Restricted attack - has val 0. */
   @Override
   public int getMinAttack() {
@@ -217,6 +219,16 @@ public abstract class Commander extends MovingUnit implements Summoner {
 
   @Override
   public int getMaxAttack() {
+    return 0;
+  }
+
+  @Override
+  public int getMinAttackRange() {
+    return 0;
+  }
+
+  @Override
+  public int getMaxAttackRange() {
     return 0;
   }
 
@@ -232,6 +244,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
   }
 
   // HEALTH and MANA
+
   /** Returns the current mana of this commander */
   public int getMana() {
     return mana;
@@ -256,6 +269,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
   }
 
   // LEVEL AND RESEARCH
+
   /**
    * Returns the level of this player. Uses the mutable level field of commander , thus ignores the
    * immutable model.unit level field
@@ -341,6 +355,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
   }
 
   // SUMMONING
+
   /** Returns a dummy model.unit for the given name, if possible (otherwise null ) */
   public Unit getUnitByName(String name) {
     Map<String, Combatant> summonables = getSummonables();
@@ -375,6 +390,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
   }
 
   // ABILITIES
+
   /**
    * Returns the possible abilities for the given level. Note that the incoming levels are 1
    * indexed, so keep that in mind

@@ -1,20 +1,15 @@
 package view.gui.panel;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.util.HashMap;
-import java.util.List;
-import javax.swing.JPanel;
 import model.game.Game;
 import model.game.Player;
 import view.gui.Frame;
 import view.gui.ImageIndex;
 import view.gui.ImageIndex.DrawingBarSegment;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * The panel at the top of the frame that shows basic information and the current player's turn

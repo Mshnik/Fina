@@ -1,6 +1,6 @@
 package view.gui;
 
-import java.awt.Graphics;
+import java.awt.*;
 
 /**
  * Implementing classes are able to be painted though perhaps as part of a containing classes'

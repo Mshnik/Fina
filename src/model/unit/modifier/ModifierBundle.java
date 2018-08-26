@@ -1,10 +1,11 @@
 package model.unit.modifier;
 
+import model.unit.Unit;
+import model.unit.modifier.Modifier.StackMode;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import model.unit.Unit;
-import model.unit.modifier.Modifier.StackMode;
 
 /** A set of modifiers applied to a single unit */
 public final class ModifierBundle implements Collection<Modifier> {
@@ -24,7 +25,9 @@ public final class ModifierBundle implements Collection<Modifier> {
     }
   }
 
-  /** Constructs a new Modifier Bundle from copying the given bundle along with the given modifiers. */
+  /**
+   * Constructs a new Modifier Bundle from copying the given bundle along with the given modifiers.
+   */
   public ModifierBundle(ModifierBundle bundle, Modifier... m) {
     modifiers = new LinkedList<>();
     for (Modifier mod : bundle.modifiers) {

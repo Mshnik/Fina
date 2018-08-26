@@ -1,14 +1,15 @@
 package controller.game;
 
+import model.board.Board;
+import model.board.Terrain;
+import model.util.MPoint;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import model.board.Board;
-import model.board.Terrain;
-import model.util.MPoint;
 
 /**
  * Input class to read a board by filepath into memory.

@@ -91,7 +91,7 @@ public final class Combat {
   public boolean defenderCouldCounterAttack() {
     return defender.isAlive()
         && defender.owner.canSee(attacker)
-        && dist <= defender.getAttackRange()
+        && dist <= defender.getMinAttackRange()
         && defender instanceof Combatant;
   }
 
@@ -175,7 +175,7 @@ public final class Combat {
       throw new RuntimeException(attacker + " can't fight again this turn");
     if (!attacker.owner.canSee(defender))
       throw new IllegalArgumentException(attacker.owner + " can't see " + defender);
-    if (dist > attacker.getAttackRange())
+    if (dist > attacker.getMinAttackRange())
       throw new IllegalArgumentException(
           this + " can't fight " + defender + ", it is too far away.");
 

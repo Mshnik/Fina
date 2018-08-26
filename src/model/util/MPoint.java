@@ -1,10 +1,11 @@
 package model.util;
 
-import java.awt.Point;
+import model.util.ExpandableCloud.ExpandableCloudType;
+
+import java.awt.*;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
-import model.util.ExpandableCloud.ExpandableCloudType;
 
 public final class MPoint {
 

@@ -1,14 +1,10 @@
 package model.unit.stat;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.StatModifier;
 import util.Mth;
+
+import java.util.*;
 
 /** Holder for the stats for a model.unit. Unless otherwise noted, all stats are non-negative. */
 public class Stats implements Iterable<Stat> {
@@ -30,7 +26,8 @@ public class Stats implements Iterable<Stat> {
     TEMPLATE.put(StatType.MIN_ATTACK, 0);
     TEMPLATE.put(StatType.MAX_ATTACK, 0);
     TEMPLATE.put(StatType.DAMAGE_REDUCTION, 0);
-    TEMPLATE.put(StatType.ATTACK_RANGE, 0);
+    TEMPLATE.put(StatType.MIN_ATTACK_RANGE, 0);
+    TEMPLATE.put(StatType.MAX_ATTACK_RANGE, 0);
     TEMPLATE.put(StatType.SUMMON_RANGE, 0);
     TEMPLATE.put(StatType.VISION_RANGE, 0);
     TEMPLATE.put(StatType.MOVEMENT_TOTAL, 0);
@@ -67,10 +64,10 @@ public class Stats implements Iterable<Stat> {
           if (s.getModVal() instanceof Integer) {
             switch (s.modType) {
               case SET_MIN:
-                newVal = Math.min((int) newVal, (int)s.getModVal());
+                newVal = Math.min((int) newVal, (int) s.getModVal());
                 break;
               case SET_MAX:
-                newVal = Math.max((int) newVal, (int)s.getModVal());
+                newVal = Math.max((int) newVal, (int) s.getModVal());
                 break;
               case ADD:
                 newVal = (int) newVal + (int) s.getModVal();
@@ -82,10 +79,10 @@ public class Stats implements Iterable<Stat> {
           } else if (s.getModVal() instanceof Double) {
             switch (s.modType) {
               case SET_MIN:
-                newVal = Math.min((double) newVal, (double)s.getModVal());
+                newVal = Math.min((double) newVal, (double) s.getModVal());
                 break;
               case SET_MAX:
-                newVal = Math.max((double) newVal, (double)s.getModVal());
+                newVal = Math.max((double) newVal, (double) s.getModVal());
                 break;
               case ADD:
                 newVal = Mth.roundTo(((Double) newVal + (double) s.getModVal()), -2);
@@ -142,7 +139,9 @@ public class Stats implements Iterable<Stat> {
 
   /** Returns an arrayList of the attack stats: - Attack - Attack Range */
   public ArrayList<Stat> getAttackStatsList(boolean filterOmittableZeroes) {
-    StatType[] t = {StatType.MIN_ATTACK, StatType.MAX_ATTACK, StatType.ATTACK_RANGE};
+    StatType[] t = {
+      StatType.MIN_ATTACK, StatType.MAX_ATTACK, StatType.MIN_ATTACK_RANGE, StatType.MAX_ATTACK_RANGE
+    };
     return getStatsList(t, filterOmittableZeroes);
   }
 
@@ -151,11 +150,7 @@ public class Stats implements Iterable<Stat> {
    * Summon Range
    */
   public ArrayList<Stat> getStandardStatsList(boolean filterOmittableZeroes) {
-    StatType[] t = {
-      StatType.MAX_HEALTH,
-      StatType.VISION_RANGE,
-      StatType.SUMMON_RANGE
-    };
+    StatType[] t = {StatType.MAX_HEALTH, StatType.VISION_RANGE, StatType.SUMMON_RANGE};
     return getStatsList(t, filterOmittableZeroes);
   }
 

@@ -1,8 +1,9 @@
 package model.unit.modifier;
 
-import java.util.Collection;
 import model.game.Stringable;
 import model.unit.Unit;
+
+import java.util.Collection;
 
 /** A Modifier for a model.unit - a buff or nerf, etc. */
 public abstract class Modifier implements Stringable {
@@ -84,8 +85,9 @@ public abstract class Modifier implements Stringable {
     clonedFrom = dummy;
   }
 
-  /** Returns a new copy of this that is also a dummy - allows for separate clone chains of
-   * identical Modifiers. Should only be called on a dummy.
+  /**
+   * Returns a new copy of this that is also a dummy - allows for separate clone chains of identical
+   * Modifiers. Should only be called on a dummy.
    */
   public abstract Modifier uniqueCopy();
 

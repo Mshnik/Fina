@@ -1,13 +1,12 @@
 package controller.selector;
 
 import controller.game.GameController;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.util.ArrayList;
 import model.board.Tile;
 import view.gui.Paintable;
-import view.gui.panel.GamePanel;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /** An instance represents a selector for any location with a given criteria */
 public abstract class LocationSelector implements Paintable {
@@ -15,16 +14,14 @@ public abstract class LocationSelector implements Paintable {
   public final GameController controller;
 
   /** The possible tiles the path could go to from here - possibilities cloud */
-  protected ArrayList<Tile> cloud;
+  protected List<Tile> cloud;
 
   /** Color for Cloud Drawing - translucent white - can be changed by subclasses */
-  protected Color cloudColor = new Color(1, 1, 1, 0.5f);
+  Color cloudColor = new Color(1, 1, 1, 0.5f);
 
   /**
-   * Constructor for PathSelector. Implementing classes should refresh possibilities cloud at end of
+   * Constructor for Location Selector. Implementing classes should refresh possibilities cloud at end of
    * construction
-   *
-   * @param s - start of path.
    */
   public LocationSelector(GameController gc) {
     controller = gc;
@@ -52,7 +49,8 @@ public abstract class LocationSelector implements Paintable {
     for (Tile t : cloud) {
       int x = controller.getGamePanel().getXPosition(t);
       int y = controller.getGamePanel().getYPosition(t);
-      g2d.fillRect(x, y, controller.getGamePanel().cellSize(), controller.getGamePanel().cellSize());
+      g2d.fillRect(
+          x, y, controller.getGamePanel().cellSize(), controller.getGamePanel().cellSize());
     }
   }
 }

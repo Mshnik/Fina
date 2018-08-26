@@ -2,9 +2,10 @@ package view.gui;
 
 import controller.game.GameController;
 import controller.game.MatrixElement;
-import java.awt.Graphics;
-import javax.swing.JPanel;
 import model.board.Direction;
+
+import javax.swing.*;
+import java.awt.*;
 
 /** Instantiating classes are able to act as a matrix with scroll, max sizes. */
 public abstract class MatrixPanel<T extends MatrixElement> extends JPanel {

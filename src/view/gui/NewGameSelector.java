@@ -1,24 +1,15 @@
 package view.gui;
 
 import controller.game.BoardReader;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Window;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import model.board.Board;
 import model.board.Terrain;
 import model.game.Game.FogOfWar;
+
+import javax.swing.*;
+import java.awt.*;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 /** Blocking top-level selector that allows the user to create a new game. */
 final class NewGameSelector {

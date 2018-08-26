@@ -1,14 +1,15 @@
 package model.game;
 
 import controller.game.GameController;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import model.board.Board;
 import model.board.Tile;
 import model.unit.Unit;
 import model.unit.ability.Ability;
 import model.unit.commander.Commander;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /** Unifying model that holds all sub-model classes */
 public final class Game implements Runnable, Stringable {

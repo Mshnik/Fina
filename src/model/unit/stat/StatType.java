@@ -24,10 +24,15 @@ public enum StatType {
   /** Reduction on damage taken. Damage Reduction >= 0. */
   DAMAGE_REDUCTION,
   /**
-   * Distance at which another model.unit can be attacked Distance is measured using manhattan
-   * distance - 1. Units with range 0 are melee, others are ranged range >= 0.
+   * Min distance at which another model.unit can be attacked, inclusive. Distance is measured using
+   * manhattan distance - 1. Units with range 0 are melee, others are ranged range >= 0.
    */
-  ATTACK_RANGE,
+  MIN_ATTACK_RANGE,
+  /**
+   * Max distance at which another model.unit can be attacked, inclusive. Distance is measured using
+   * manhattan distance - 1. Units with range 0 are melee, others are ranged range >= 0.
+   */
+  MAX_ATTACK_RANGE,
   /**
    * Distance at which another model.unit can be summoned Distance is measured using manhattan
    * distance - 1. range >= 0.
@@ -69,7 +74,8 @@ public enum StatType {
   public boolean isAttackStat() {
     return this == MIN_ATTACK
         || this == MAX_ATTACK
-        || this == ATTACK_RANGE
+        || this == MIN_ATTACK_RANGE
+        || this == MAX_ATTACK_RANGE
         || this == DAMAGE_REDUCTION;
   }
 
@@ -89,12 +95,13 @@ public enum StatType {
       case BASE:
       case MAX_HEALTH:
       case MAX_ATTACK:
-      case ATTACK_RANGE:
+      case MAX_ATTACK_RANGE:
       case MOVEMENT_TOTAL:
       case VISION_RANGE:
         return false;
       case COMMANDER_ACTIONS_PER_TURN:
       case MIN_ATTACK:
+      case MIN_ATTACK_RANGE:
       case DAMAGE_REDUCTION:
       case MANA_PER_TURN:
       case SUMMON_RANGE:
@@ -112,7 +119,8 @@ public enum StatType {
     switch (t) {
       case MIN_ATTACK:
       case MAX_ATTACK:
-      case ATTACK_RANGE:
+      case MIN_ATTACK_RANGE:
+      case MAX_ATTACK_RANGE:
       case GRASS_COST:
       case DAMAGE_REDUCTION:
       case MANA_PER_TURN:

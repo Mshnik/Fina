@@ -1,10 +1,5 @@
 package model.game;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.Unit;
@@ -17,6 +12,12 @@ import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.util.Cloud;
 import model.util.MPoint;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * An instance is a player (not the commander piece). Extended to be either human controlled or AI.

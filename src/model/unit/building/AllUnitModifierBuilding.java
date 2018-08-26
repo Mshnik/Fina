@@ -1,13 +1,14 @@
 package model.unit.building;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import model.board.Terrain;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.modifier.ModifierBundle;
 import model.unit.stat.Stats;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A building that grants all units the player controls a modifier as long as this building is
@@ -59,7 +60,6 @@ public final class AllUnitModifierBuilding extends Building<ModifierBundle> {
     this.nonAncientGroundModifierBundle = nonAncientGroundModifierBundle;
     this.ancientGroundModifierBundle = ancientGroundModifierBundle;
   }
-
 
   @Override
   public List<ModifierBundle> getPossibleEffectsList() {

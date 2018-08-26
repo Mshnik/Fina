@@ -1,11 +1,12 @@
 package model.unit.ability;
 
-import java.util.Set;
 import model.unit.Unit;
 import model.unit.commander.Commander;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.ModifierBundle;
 import model.util.MPoint;
+
+import java.util.Set;
 
 public class ModifierAbility extends Ability {
 

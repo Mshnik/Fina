@@ -76,6 +76,21 @@ public abstract class Building<E> extends Unit {
     return 0;
   }
 
+  @Override
+  public int getMaxAttack() {
+    return 0;
+  }
+
+  @Override
+  public int getMinAttackRange() {
+    return 0;
+  }
+
+  @Override
+  public int getMaxAttackRange() {
+    return 0;
+  }
+
   /** Restricted movement - buildings can't move */
   @Override
   public boolean canMove() {

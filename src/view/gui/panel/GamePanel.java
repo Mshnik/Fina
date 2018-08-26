@@ -2,27 +2,23 @@ package view.gui.panel;
 
 import controller.decision.Decision;
 import controller.game.GameController;
+import controller.selector.AttackSelector;
 import controller.selector.CastSelector;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
-import java.awt.image.BufferedImage;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Game;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;
-import view.gui.BoardCursor;
+import model.util.ExpandableCloud;
+import view.gui.*;
 import view.gui.Frame;
-import view.gui.ImageIndex;
 import view.gui.ImageIndex.DrawingBarSegment;
-import view.gui.MatrixPanel;
-import view.gui.Paintable;
 import view.gui.decision.DecisionPanel;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.List;
 
 /** Drawable wrapper for a model.board object */
 public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
@@ -174,13 +170,20 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
       g2d.setStroke(RADIUS_STROKE);
       switch (decisionPanel.cursor.getElm().getMessage()) {
         case GameController.FIGHT:
+          List<Tile> tiles =
+              ExpandableCloud.create(
+                      ExpandableCloud.ExpandableCloudType.CIRCLE,
+                      boardCursor.getElm().getOccupyingUnit().getMaxAttackRange() + 1)
+                  .difference(
+                      ExpandableCloud.create(
+                          ExpandableCloud.ExpandableCloudType.CIRCLE,
+                          boardCursor.getElm().getOccupyingUnit().getMinAttackRange()))
+                  .translate(boardCursor.getElm().getPoint())
+                  .toTileSet(controller.game.board);
+          g2d.setColor(AttackSelector.SHADE_COLOR);
+          ImageIndex.fill(tiles, this, g2d);
           g2d.setColor(ATTACK_COLOR);
-          ImageIndex.trace(
-              controller.game.board.getRadialCloud(
-                  boardCursor.getElm(),
-                  boardCursor.getElm().getOccupyingUnit().getAttackRange() + 1),
-              this,
-              g2d);
+          ImageIndex.trace(tiles, this, g2d);
           break;
         case GameController.BUILD:
         case GameController.SUMMON:

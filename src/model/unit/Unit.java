@@ -318,14 +318,14 @@ public abstract class Unit implements Stringable {
     return (int) (getMaxAttack() * getHealthPercent());
   }
 
-  /** Returns true if this is a ranged model.unit (range > 0) false if this is melee (range == 0) */
-  public boolean isRanged() {
-    return getAttackRange() > 0;
+  /** Returns the min attack range of this model.unit. */
+  public int getMinAttackRange() {
+    return (Integer) stats.getStat(StatType.MIN_ATTACK_RANGE);
   }
 
   /** Returns the attack range of this model.unit. */
-  public int getAttackRange() {
-    return (Integer) stats.getStat(StatType.ATTACK_RANGE);
+  public int getMaxAttackRange() {
+    return (Integer) stats.getStat(StatType.MAX_ATTACK_RANGE);
   }
 
   /** Returns the vision range of this model.unit. */

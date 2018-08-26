@@ -1,6 +1,10 @@
 package model.util;
 
+import model.board.Board;
+import model.board.Tile;
+
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,6 +34,18 @@ public class Cloud {
     return points.contains(point);
   }
 
+  /**
+   * Returns a set of tiles this cloud corresponds to from the given board. Omits tiles that are off
+   * board.
+   */
+  public List<Tile> toTileSet(Board board) {
+    return points
+        .stream()
+        .filter(board::isOnBoard)
+        .map(board::getTileAt)
+        .collect(Collectors.toList());
+  }
+
   /** Returns a cloud translated to have the new center point. */
   public Cloud translate(MPoint center) {
     return new Cloud(points.stream().map(p -> p.add(center)).collect(Collectors.toSet()));
@@ -48,5 +64,10 @@ public class Cloud {
             .stream()
             .map(p -> clockwise ? new MPoint(p.col, -p.row) : new MPoint(-p.col, p.row))
             .collect(Collectors.toSet()));
+  }
+
+  /** Returns a cloud with the points of this minus the points in other. */
+  public Cloud difference(Cloud other) {
+    return new Cloud(points.stream().filter(p -> !other.contains(p)).collect(Collectors.toSet()));
   }
 }

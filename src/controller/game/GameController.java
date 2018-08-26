@@ -3,19 +3,7 @@ package controller.game;
 import controller.decision.Choice;
 import controller.decision.Decision;
 import controller.decision.Decision.DecisionType;
-import controller.selector.AttackSelector;
-import controller.selector.CastSelector;
-import controller.selector.LocationSelector;
-import controller.selector.PathSelector;
-import controller.selector.SummonSelector;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Random;
-import java.util.Stack;
+import controller.selector.*;
 import model.board.Board;
 import model.board.Tile;
 import model.game.Game;
@@ -33,6 +21,9 @@ import model.unit.commander.DummyCommander;
 import view.gui.BoardCursor;
 import view.gui.Frame;
 import view.gui.panel.GamePanel;
+
+import java.awt.*;
+import java.util.*;
 
 /**
  * Overall controlling class that unites all classes. Should be run in its own thread, because some
@@ -158,7 +149,8 @@ public final class GameController {
   }
 
   /** Loads the given board and kills this. */
-  public synchronized void loadAndKillThis(String boardFilepath, int numPlayers, FogOfWar fogOfWar) {
+  public synchronized void loadAndKillThis(
+      String boardFilepath, int numPlayers, FogOfWar fogOfWar) {
     loadAndStart(boardFilepath, numPlayers, fogOfWar);
     kill();
   }
@@ -169,7 +161,7 @@ public final class GameController {
     kill();
   }
 
-   /** Returns the gamePanel located within frame */
+  /** Returns the gamePanel located within frame */
   public GamePanel getGamePanel() {
     return frame.getGamePanel();
   }
@@ -321,8 +313,8 @@ public final class GameController {
   }
 
   /**
-   * Starts a getGamePanel().getDecisionPanel() for performing a commander action. isCommander is true if the
-   * commander was selected - otherwise could be any summoner the player controls.
+   * Starts a getGamePanel().getDecisionPanel() for performing a commander action. isCommander is
+   * true if the commander was selected - otherwise could be any summoner the player controls.
    */
   void startCommanderActionDecision(boolean isCommander) {
     Tile t = getGamePanel().boardCursor.getElm();
@@ -438,7 +430,11 @@ public final class GameController {
       choices.add(
           new Choice(
               u.manaCost <= c.getMana(),
-              u.name + Choice.SEPERATOR + " (" + u.getManaCostWithScalingAndDiscountsForPlayer(c.owner) + ")",
+              u.name
+                  + Choice.SEPERATOR
+                  + " ("
+                  + u.getManaCostWithScalingAndDiscountsForPlayer(c.owner)
+                  + ")",
               u));
     }
     decision = new Decision(DecisionType.SUMMON_DECISION, false, true, choices);

@@ -1,9 +1,5 @@
 package model.unit.combatant;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
@@ -14,6 +10,11 @@ import model.unit.modifier.Modifiers;
 import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Represents a moving and fighting unit
@@ -200,7 +201,7 @@ public abstract class Combatant extends MovingUnit {
 
   /** Returns true iff there is at least one enemy unit within range and sight */
   public boolean hasFightableTarget() {
-    ArrayList<Tile> tiles = owner.game.board.getRadialCloud(location, getAttackRange() + 1);
+    ArrayList<Tile> tiles = owner.game.board.getRadialCloud(location, getMinAttackRange() + 1);
     for (Tile t : tiles) {
       if (t.isOccupied()) {
         Unit u = t.getOccupyingUnit();

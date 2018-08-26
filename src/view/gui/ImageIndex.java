@@ -1,9 +1,15 @@
 package view.gui;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
+import model.board.Direction;
+import model.board.Terrain;
+import model.board.Tile;
+import model.unit.MovingUnit;
+import model.unit.Unit;
+import model.unit.building.Building;
+import view.gui.panel.GamePanel;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.File;
@@ -12,15 +18,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import javax.imageio.ImageIO;
-import model.board.Board;
-import model.board.Direction;
-import model.board.Terrain;
-import model.board.Tile;
-import model.unit.MovingUnit;
-import model.unit.Unit;
-import model.unit.building.Building;
-import view.gui.panel.GamePanel;
 
 /** Library for lookup of different image resources. Also some drawing functionality */
 public final class ImageIndex {
@@ -164,18 +161,27 @@ public final class ImageIndex {
 
   /** Draws a border around the set of tiles. */
   public static void trace(Collection<Tile> tiles, GamePanel gp, Graphics2D g2d) {
-    Board b = null;
     for (Tile t : tiles) {
-      if (b == null) b = t.board;
       for (Direction d : Direction.values()) {
         boolean paint = true;
         try {
-          Tile n = b.getTileAt(t.row + d.dRow(), t.col + d.dCol());
+          Tile n = t.board.getTileAt(t.row + d.dRow(), t.col + d.dCol());
           paint = !tiles.contains(n);
         } catch (IllegalArgumentException e) {
         }
         if (paint) drawLine(g2d, gp, t, d);
       }
+    }
+  }
+
+  /** Fills the given tiles. */
+  public static void fill(Collection<Tile> tiles, GamePanel gp, Graphics2D g2d) {
+    for (Tile t : tiles) {
+      g2d.fillRect(
+          gp.getXPosition(t),
+          gp.getYPosition(t),
+          gp.cellSize(),
+          gp.cellSize());
     }
   }
 

@@ -1,9 +1,5 @@
 package model.unit.building;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
 import model.board.Terrain;
 import model.game.Player;
 import model.unit.Unit;
@@ -15,6 +11,10 @@ import model.unit.modifier.StatModifier.ModificationType;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public final class Temple extends Building<Void> {
 
