@@ -157,6 +157,10 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
           if (t.isOccupied() && game.isVisible(t)) {
             drawUnit(g2d, t.getOccupyingUnit());
           }
+          if (getFrame().DEBUG) {
+            g2d.setColor(Color.RED);
+            g2d.drawString(t.getPoint().toString(), getXPosition(t), getYPosition(t) + 10);
+          }
         }
       }
     }

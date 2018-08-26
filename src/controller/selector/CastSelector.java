@@ -43,7 +43,10 @@ public final class CastSelector extends LocationSelector {
           .getTranslatedEffectCloud(caster, t, caster.owner.getCastCloudBoost())
           .stream()
           .noneMatch(
-              tile -> tile.isOccupied() && toCast.wouldAffect(tile.getOccupyingUnit(), caster))) {
+              tile ->
+                  tile.isOccupied()
+                      && caster.owner.canSee(tile)
+                      && toCast.wouldAffect(tile.getOccupyingUnit(), caster))) {
         toRemove.add(t);
       }
     }

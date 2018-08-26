@@ -16,7 +16,7 @@ public final class Main {
     AudioController.setMute(true);
 
     // Select initial board file and make start game.
-    String boardFilename = args.length > 0 ? args[0] : "sample_board_small.csv";
-    GameController.loadAndStart("game/boards/" + boardFilename, 2, FogOfWar.NONE);
+    String boardFilename = args.length > 0 ? args[0] : "Darkwood.csv";
+    GameController.loadAndStart("game/boards/" + boardFilename, 2, FogOfWar.REGULAR);
   }
 }
