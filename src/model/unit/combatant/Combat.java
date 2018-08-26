@@ -60,6 +60,11 @@ public final class Combat {
     }
   }
 
+  /** Returns true if this combat is ranged - if the two combatants are not adjacent. */
+  private boolean isRanged() {
+    return attacker.getLocation().directionTo(defender.getLocation()) == null;
+  }
+
   /**
    * Returns the minimum damage the attacker could do after scaling by combat classes and account
    * for modifiers.
@@ -81,10 +86,15 @@ public final class Combat {
   /** Returns the sum of all damage reduction for the attacker. */
   public int getAttackerDamageReduction() {
     return attacker
-        .getModifiersByName(Modifiers.toughness(0))
-        .stream()
-        .mapToInt(m -> ((CustomModifier) m).val.intValue())
-        .sum();
+            .getModifiersByName(Modifiers.toughness(0))
+            .stream()
+            .mapToInt(m -> ((CustomModifier) m).val.intValue())
+            .sum()
+        + attacker
+            .getModifiersByName(isRanged() ? Modifiers.elusive(0) : Modifiers.armored(0))
+            .stream()
+            .mapToInt(m -> ((CustomModifier) m).val.intValue())
+            .sum();
   }
 
   /** Returns true iff the defender could counterattack if it has health left after the attack. */
@@ -116,10 +126,15 @@ public final class Combat {
   /** Returns the sum of all damage reduction for the defender. */
   public int getDefenderDamageReduction() {
     return defender
-        .getModifiersByName(Modifiers.toughness(0))
-        .stream()
-        .mapToInt(m -> ((CustomModifier) m).val.intValue())
-        .sum();
+            .getModifiersByName(Modifiers.toughness(0))
+            .stream()
+            .mapToInt(m -> ((CustomModifier) m).val.intValue())
+            .sum()
+        + defender
+            .getModifiersByName(isRanged() ? Modifiers.elusive(0) : Modifiers.armored(0))
+            .stream()
+            .mapToInt(m -> ((CustomModifier) m).val.intValue())
+            .sum();
   }
 
   /**
