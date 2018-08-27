@@ -307,11 +307,7 @@ public abstract class Player implements Stringable {
     if (u instanceof Temple) {
       temples.remove(u);
     }
-    refreshTempleBuffs();
-    refreshVisionCloud();
-    updateManaPerTurn();
-    updateResearchPerTurn();
-    updateCommanderActionsPerTurn();
+    recalculateState();
   }
 
   /** Refreshes all temples buffs on all units */
@@ -444,6 +440,9 @@ public abstract class Player implements Stringable {
       // Add actions
       updateCommanderActionsPerTurn();
       commanderActionsRemaining = commanderActionsPerTurn;
+
+      // Update vision
+      refreshVisionCloud();
 
       // Process start of turn buildings.
       for (Unit u : units) {
