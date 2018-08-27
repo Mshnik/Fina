@@ -108,7 +108,7 @@ public final class GameController {
     if (numPlayers < 2) {
       throw new RuntimeException("Can't have game with less than 2 players");
     }
-    Frame f = new Frame(8, 20);
+    Frame f = new Frame(10, 20);
     KeyboardListener.setFrame(f);
 
     // Read board and create game.
@@ -118,9 +118,9 @@ public final class GameController {
 
     // Create players.
     Player p1 = new HumanPlayer(g, Color.green);
-    new DummyCommander(p1, 4);
+    new DummyCommander(p1, 1);
     Player p2 = new HumanPlayer(g, Color.magenta);
-    new DummyCommander(p2, 4);
+    new DummyCommander(p2, 1);
 
     // Start game.
     gc.start();
