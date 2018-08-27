@@ -1,5 +1,15 @@
 package view.gui.panel;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.swing.JPanel;
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.MovingUnit;
@@ -20,17 +30,6 @@ import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 import view.gui.Frame;
 import view.gui.ImageIndex;
-
-import javax.swing.JPanel;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public final class InfoPanel extends JPanel {
   /** */
@@ -252,7 +251,13 @@ public final class InfoPanel extends JPanel {
     }
 
     x += xInc + 100;
-    g2d.drawImage(ImageIndex.imageForUnit(unit), x + 150, 10, getHeight() - 20, getHeight() - 20, null);
+    g2d.drawImage(
+        ImageIndex.imageForUnit(unit, frame.getController().game.getCurrentPlayer()),
+        x + 150,
+        10,
+        getHeight() - 20,
+        getHeight() - 20,
+        null);
   }
 
   /** Continues drawing a unit for movable units. */

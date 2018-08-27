@@ -33,6 +33,15 @@ public abstract class Player implements Stringable {
   /** The index of this player in the model.game, where player 1 is the first player */
   public final int index;
 
+  /** Colors of players, determined by index. */
+  public enum PlayerColor {
+    BLUE,
+    RED,
+    YELLOW,
+    GREEN,
+    PURPLE;
+  }
+
   /** The Units this player controls */
   private HashSet<Unit> units;
 
@@ -73,6 +82,11 @@ public abstract class Player implements Stringable {
     allUnitModifierBuildings = new HashSet<>();
     temples = new ArrayList<Temple>();
     visionCloud = new HashSet<Tile>();
+  }
+
+  /** Returns the color of this player. */
+  public PlayerColor getColor() {
+    return PlayerColor.values()[index - 1];
   }
 
   /** Returns true if it is this player's turn, false if some other player */

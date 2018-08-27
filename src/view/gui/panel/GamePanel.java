@@ -4,6 +4,14 @@ import controller.decision.Decision;
 import controller.game.GameController;
 import controller.selector.AttackSelector;
 import controller.selector.CastSelector;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
+import java.awt.image.BufferedImage;
+import java.util.List;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Game;
@@ -11,14 +19,12 @@ import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;
 import model.util.ExpandableCloud;
-import view.gui.*;
 import view.gui.Frame;
+import view.gui.ImageIndex;
 import view.gui.ImageIndex.DrawingBarSegment;
+import view.gui.MatrixPanel;
+import view.gui.Paintable;
 import view.gui.decision.DecisionPanel;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.List;
 
 /** Drawable wrapper for a model.board object */
 public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
@@ -207,10 +213,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
         || controller.getLocationSelector() != null
             && controller.getToggle() == GameController.Toggle.CAST_SELECTION) {
       Ability a = null;
-      if (decisionPanel != null){
+      if (decisionPanel != null) {
         a = (Ability) decisionPanel.getElm().getVal();
-      }
-      else {
+      } else {
         CastSelector selector = (CastSelector) controller.getLocationSelector();
         g2d.setStroke(RADIUS_STROKE);
         g2d.setColor(CAST_FILL_COLOR);
@@ -257,14 +262,8 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
     int y = getYPosition(u.getLocation());
 
     // Draw model.unit
-    BufferedImage unitImg = ImageIndex.imageForUnit(u);
-    g2d.drawImage(
-        ImageIndex.tint(unitImg, controller.getColorFor(u.owner)),
-        x,
-        y,
-        cellSize(),
-        cellSize(),
-        null);
+    BufferedImage unitImg = ImageIndex.imageForUnit(u, controller.game.getCurrentPlayer());
+    g2d.drawImage(unitImg, x, y, cellSize(), cellSize(), null);
 
     // Draw health bar
     final int marginX = 4; // Room from left side of tile

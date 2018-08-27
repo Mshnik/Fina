@@ -1,17 +1,9 @@
 package view.gui;
 
-import model.board.Direction;
-import model.board.Terrain;
-import model.board.Tile;
-import model.unit.MovingUnit;
-import model.unit.Unit;
-import model.unit.building.Building;
-import model.unit.combatant.Combatant;
-import model.unit.commander.Commander;
-import view.gui.panel.GamePanel;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.File;
@@ -20,6 +12,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import javax.imageio.ImageIO;
+import model.board.Direction;
+import model.board.Terrain;
+import model.board.Tile;
+import model.game.Player;
+import model.unit.Unit;
+import model.unit.building.Building;
+import model.unit.combatant.Combatant;
+import model.unit.commander.Commander;
+import view.gui.panel.GamePanel;
 
 /** Library for lookup of different image resources. Also some drawing functionality */
 public final class ImageIndex {
@@ -37,7 +39,7 @@ public final class ImageIndex {
   private static final String COMMANDER_IMAGE_ROOT = "unit/";
 
   /** Image root for combatants within image root */
-  private static final String COMBATANT_IMAGE_ROOT = "unit/fireemblem/blue/";
+  private static final String COMBATANT_IMAGE_ROOT = "unit/fireemblem/";
 
   /** Image root for Building images within image root */
   private static final String BUILDING_IMAGE_ROOT = "building/";
@@ -106,21 +108,37 @@ public final class ImageIndex {
     }
   }
 
-  /** Returns the image file corresponding to the given model.unit */
-  public static BufferedImage imageForUnit(Unit unit) {
-    if (readUnits.containsKey(unit.getImgFilename())) return readUnits.get(unit.getImgFilename());
+  /** Returns the key for the given unit in the readUnits map. */
+  private static String getImageKey(Unit unit, Player activePlayer) {
+    return unit.getImgFilename()
+        + "-"
+        + (unit.owner == null ? activePlayer.index : unit.owner.index);
+  }
 
-    BufferedImage u = null;
+  /** Returns the image file corresponding to the given model.unit */
+  public static BufferedImage imageForUnit(Unit unit, Player activePlayer) {
+    String imageKey = getImageKey(unit, activePlayer);
+    if (readUnits.containsKey(imageKey)) {
+      return readUnits.get(imageKey);
+    }
+
+    BufferedImage u;
     try {
       String root = IMAGE_ROOT;
       if (unit instanceof Commander) root += COMMANDER_IMAGE_ROOT;
-      else if (unit instanceof Combatant) root += COMBATANT_IMAGE_ROOT;
-      else if (unit instanceof Building) root += BUILDING_IMAGE_ROOT;
+      else if (unit instanceof Combatant) {
+        root += COMBATANT_IMAGE_ROOT;
+        if (unit.owner != null) {
+          root += unit.owner.getColor().toString().toLowerCase() + "/";
+        } else {
+          root += activePlayer.getColor().toString().toLowerCase() + "/";
+        }
+      } else if (unit instanceof Building) root += BUILDING_IMAGE_ROOT;
       u = ImageIO.read(new File(root + unit.getImgFilename()));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    readUnits.put(unit.getImgFilename(), u);
+    readUnits.put(imageKey, u);
     return u;
   }
 
@@ -183,11 +201,7 @@ public final class ImageIndex {
   /** Fills the given tiles. */
   public static void fill(Collection<Tile> tiles, GamePanel gp, Graphics2D g2d) {
     for (Tile t : tiles) {
-      g2d.fillRect(
-          gp.getXPosition(t),
-          gp.getYPosition(t),
-          gp.cellSize(),
-          gp.cellSize());
+      g2d.fillRect(gp.getXPosition(t), gp.getYPosition(t), gp.cellSize(), gp.cellSize());
     }
   }
 
