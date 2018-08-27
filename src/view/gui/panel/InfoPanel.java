@@ -250,6 +250,9 @@ public final class InfoPanel extends JPanel {
     } else if (unit instanceof Building) {
       continueDrawingBuilding(g2d, x, YMARGIN);
     }
+
+    x += xInc + 100;
+    g2d.drawImage(ImageIndex.imageForUnit(unit), x + 150, 10, getHeight() - 20, getHeight() - 20, null);
   }
 
   /** Continues drawing a unit for movable units. */
