@@ -15,7 +15,13 @@ import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -276,10 +282,10 @@ public abstract class Unit implements Stringable {
   }
 
   /**
-   * Called when a change in health causes this to die. Removes it from its owner and tile, and
-   * gives its killer research based on this' level.
+   * Called when a change in health causes this to die or if another effect kills this. Removes it
+   * from its owner and tile, and gives its killer research based on this' level.
    */
-  private void died(Unit killer) {
+  public void died(Unit killer) {
     for (Modifier m : getGrantedModifiers()) {
       m.kill();
     }

@@ -2,7 +2,7 @@ Name,Level,Cost,Type,Cloud,Can be Cloud Boosted,Cast Dist From Commander,Combata
 Magic Missile,1,75,Offensive,Circle-0,No,2,Combatant,No,Yes,Unit takes 15-30 damage,
 Heal,1,50,Defensive,Circle-0,No,1,Combatant,Yes,No,Unit gains 25 health,
 Clairvoyance,1,40,Utility,Circle-1,Yes,0,Combatant/Commander,Yes,No,Unit gains Farsight 2 for 3 turns,
-SKIP,Sacrifice,1,0,Utility,Circle-0,No,1,Combatant/Building,Yes,No,Destroy unit; gain 20% of Mana cost,
+Sacrifice,1,0,Utility,Circle-0,No,1,Combatant/Building,Yes,No,Destroy unit; gain 25% of Mana cost,
 ,,,,,,,,,,,
 Cone of Flame,2,150,Offensive,Cone-1,Yes,1,Combatant/Commander/Building,Yes,Yes,Unit takes 30 - 45 damage,
 Strengthen,2,125,Offensive,Circle-1,Yes,0,Combatant,Yes,No,Unit gains Strengthened 5 for 3 turns,

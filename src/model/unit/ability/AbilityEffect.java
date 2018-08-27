@@ -25,6 +25,9 @@ public final class AbilityEffect {
   /** HP to heal if this is an effect that heals a percentage of max HP, 0 otherwise. */
   private final double healPercentageOfMaxHp;
 
+  /** True if this effect destroys a unit without dealing damage. */
+  private final boolean destroyUnit;
+
   /** Number of turns all modifiers granted through abilities last. */
   private static final int MODIFIER_TURN_DURATION = 3;
 
@@ -37,27 +40,34 @@ public final class AbilityEffect {
       int maxDamage,
       int healConstantHp,
       double healPercentageOfMaxHp,
+      boolean destroyUnit,
       ModifierBundle modifierEffect) {
     this.minDamage = minDamage;
     this.maxDamage = maxDamage;
     this.healConstantHp = healConstantHp;
     this.healPercentageOfMaxHp = healPercentageOfMaxHp;
+    this.destroyUnit = destroyUnit;
     this.modifierEffect = modifierEffect;
   }
 
   /** Creates an ability effect that deals damage. */
   static AbilityEffect damage(int minDamage, int maxDamage) {
-    return new AbilityEffect(minDamage, maxDamage, 0, 0, null);
+    return new AbilityEffect(minDamage, maxDamage, 0, 0, false, null);
   }
 
   /** Creates an ability effect that heals constant hp. */
   static AbilityEffect healConstantHp(int healConstantHp) {
-    return new AbilityEffect(0, 0, healConstantHp, 0, null);
+    return new AbilityEffect(0, 0, healConstantHp, 0, false, null);
   }
 
   /** Creates an ability effect that heals a percentage of max hp. */
   static AbilityEffect healPercentageOfMaxHp(double percentageOfMaxHp) {
-    return new AbilityEffect(0, 0, 0, percentageOfMaxHp, null);
+    return new AbilityEffect(0, 0, 0, percentageOfMaxHp, false, null);
+  }
+
+  /** Creates an ability effect that destroys a unit. */
+  static AbilityEffect destroyUnit() {
+    return new AbilityEffect(0, 0, 0, 0, true, null);
   }
 
   /**
@@ -78,6 +88,7 @@ public final class AbilityEffect {
         0,
         0,
         0,
+        false,
         new ModifierBundle(
             modifiers
                 .stream()
@@ -93,6 +104,8 @@ public final class AbilityEffect {
       u.changeHealth(healConstantHp, caster);
     } else if (healPercentageOfMaxHp != 0) {
       u.changeHealth((int) (healPercentageOfMaxHp * u.getMaxHealth()), caster);
+    } else if (destroyUnit) {
+      u.died(caster);
     } else if (modifierEffect != null) {
       modifierEffect.clone(u, caster);
     } else {
@@ -105,11 +118,13 @@ public final class AbilityEffect {
 
     // Subtract ratio from hexproof.
     damage *=
-        Math.max(0, 1
-            - u.getModifiersByName(Modifiers.hexproof(0))
-                .stream()
-                .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
-                .sum());
+        Math.max(
+            0,
+            1
+                - u.getModifiersByName(Modifiers.hexproof(0))
+                    .stream()
+                    .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
+                    .sum());
 
     // Subtract constant from toughness.
     damage -=

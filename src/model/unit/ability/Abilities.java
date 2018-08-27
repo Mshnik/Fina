@@ -12,7 +12,11 @@ import util.TextIO;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /** Index of abilities commanders can use. */
@@ -64,19 +68,34 @@ public final class Abilities {
 
           String description = comps[10];
 
-          Ability ability =
-              new Ability(
-                  name,
-                  level,
-                  manaCost,
-                  ExpandableCloud.create(cloudType, cloudRadius),
-                  canBeCloudBoosted,
-                  castDist,
-                  affectedUnitTypes,
-                  affectsAllied,
-                  affectsEnemy,
-                  description,
-                  getEffectsFor(name));
+          Ability ability;
+          if (name.equals(Sacrifice.NAME)) {
+            ability =
+                new Sacrifice(
+                    level,
+                    manaCost,
+                    ExpandableCloud.create(cloudType, cloudRadius),
+                    canBeCloudBoosted,
+                    castDist,
+                    affectedUnitTypes,
+                    affectsAllied,
+                    affectsEnemy,
+                    description);
+          } else {
+            ability =
+                new Ability(
+                    name,
+                    level,
+                    manaCost,
+                    ExpandableCloud.create(cloudType, cloudRadius),
+                    canBeCloudBoosted,
+                    castDist,
+                    affectedUnitTypes,
+                    affectsAllied,
+                    affectsEnemy,
+                    description,
+                    getEffectsFor(name));
+          }
           abilities.add(ability);
 
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {

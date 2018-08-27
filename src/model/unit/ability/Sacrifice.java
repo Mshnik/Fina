@@ -1,0 +1,72 @@
+package model.unit.ability;
+
+import model.board.Tile;
+import model.unit.Unit;
+import model.unit.commander.Commander;
+import model.util.ExpandableCloud;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+/**
+ * A special ability that causes the caster to gain mana.
+ *
+ * @author Mshnik
+ */
+final class Sacrifice extends Ability {
+
+  /** The name of Sacrifice abilities. */
+  static final String NAME = "Sacrifice";
+
+  /** The ratio of unit cost to mana gain. */
+  private static final double MANA_GAIN_RATIO = .25;
+
+  /**
+   * Ability Constructor
+   *
+   * @param level - the level of the ability.
+   * @param manaCost - the mana cost of using this ability. 0 if passive
+   * @param effectCloud - the cloud of tiles this ability effects.
+   * @param canBeCloudBoosted - true if this abilty's cloud can be increased in size by cloud
+   *     boosting effects, false if not.
+   * @param castDist - the distance from the commander this ability can be cast
+   * @param affectedUnitTypes - types of units this ability effects. Units with other types will not
+   *     be effected by this ability.
+   * @param appliesToAllied - true iff this ability can affect allied units
+   * @param appliesToFoe - true iff this ability can affect non-allied units
+   * @param description - a string description of this ability.
+   */
+  Sacrifice(
+      int level,
+      int manaCost,
+      ExpandableCloud effectCloud,
+      boolean canBeCloudBoosted,
+      int castDist,
+      List<Class<? extends Unit>> affectedUnitTypes,
+      boolean appliesToAllied,
+      boolean appliesToFoe,
+      String description) {
+    super(
+        NAME,
+        level,
+        manaCost,
+        effectCloud,
+        canBeCloudBoosted,
+        castDist,
+        affectedUnitTypes,
+        appliesToAllied,
+        appliesToFoe,
+        description,
+        Collections.singletonList(AbilityEffect.destroyUnit()));
+  }
+
+  @Override
+  public List<Unit> cast(Commander caster, Tile location, int boostLevel, Random random) {
+    List<Unit> affectedUnits = super.cast(caster, location, boostLevel, random);
+    for (Unit u : affectedUnits) {
+      caster.addMana((int) (u.getManaCost() * MANA_GAIN_RATIO));
+    }
+    return affectedUnits;
+  }
+}

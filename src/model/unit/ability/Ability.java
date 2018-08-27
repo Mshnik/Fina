@@ -74,7 +74,7 @@ public class Ability implements Stringable {
    * @param description - a string description of this ability.
    * @param effects - the effects of this ability to apply to each unit.
    */
-  public Ability(
+  Ability(
       String name,
       int level,
       int manaCost,
