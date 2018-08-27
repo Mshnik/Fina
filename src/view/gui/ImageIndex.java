@@ -6,6 +6,8 @@ import model.board.Tile;
 import model.unit.MovingUnit;
 import model.unit.Unit;
 import model.unit.building.Building;
+import model.unit.combatant.Combatant;
+import model.unit.commander.Commander;
 import view.gui.panel.GamePanel;
 
 import javax.imageio.ImageIO;
@@ -31,8 +33,11 @@ public final class ImageIndex {
   /** Location of terrain files within image root */
   private static final String TERRAIN_IMAGE_ROOT = "terrain/";
 
-  /** Image root for moving units (people) within image root */
-  private static final String UNIT_IMAGE_ROOT = "unit/";
+  /** Image root for commanders within image root */
+  private static final String COMMANDER_IMAGE_ROOT = "unit/";
+
+  /** Image root for combatants within image root */
+  private static final String COMBATANT_IMAGE_ROOT = "unit/fireemblem/blue/";
 
   /** Image root for Building images within image root */
   private static final String BUILDING_IMAGE_ROOT = "building/";
@@ -108,11 +113,12 @@ public final class ImageIndex {
     BufferedImage u = null;
     try {
       String root = IMAGE_ROOT;
-      if (unit instanceof MovingUnit) root += UNIT_IMAGE_ROOT;
+      if (unit instanceof Commander) root += COMMANDER_IMAGE_ROOT;
+      else if (unit instanceof Combatant) root += COMBATANT_IMAGE_ROOT;
       else if (unit instanceof Building) root += BUILDING_IMAGE_ROOT;
       u = ImageIO.read(new File(root + unit.getImgFilename()));
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
     readUnits.put(unit.getImgFilename(), u);
     return u;

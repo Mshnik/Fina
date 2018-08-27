@@ -124,7 +124,7 @@ public final class GameController {
     // Create players.
     for (int i = 0; i < numPlayers; i++) {
       Player p = new HumanPlayer(g, playerColorsArr[i]);
-      new DummyCommander(p, 1);
+      new DummyCommander(p, 4);
     }
 
     // Start game.
