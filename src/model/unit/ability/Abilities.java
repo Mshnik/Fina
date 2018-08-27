@@ -68,35 +68,31 @@ public final class Abilities {
 
           String description = comps[10];
 
-          Ability ability;
-          if (name.equals(Sacrifice.NAME)) {
-            ability =
-                new Sacrifice(
-                    level,
-                    manaCost,
-                    ExpandableCloud.create(cloudType, cloudRadius),
-                    canBeCloudBoosted,
-                    castDist,
-                    affectedUnitTypes,
-                    affectsAllied,
-                    affectsEnemy,
-                    description);
-          } else {
-            ability =
-                new Ability(
-                    name,
-                    level,
-                    manaCost,
-                    ExpandableCloud.create(cloudType, cloudRadius),
-                    canBeCloudBoosted,
-                    castDist,
-                    affectedUnitTypes,
-                    affectsAllied,
-                    affectsEnemy,
-                    description,
-                    getEffectsFor(name));
+          AbilityConstructor constructor;
+          switch (name) {
+            case Sacrifice.NAME:
+              constructor = Sacrifice::new;
+              break;
+            case SpacialShift.NAME:
+              constructor = SpacialShift::new;
+              break;
+            default:
+              constructor = Ability::new;
+              break;
           }
-          abilities.add(ability);
+          abilities.add(
+              constructor.create(
+                  name,
+                  level,
+                  manaCost,
+                  ExpandableCloud.create(cloudType, cloudRadius),
+                  canBeCloudBoosted,
+                  castDist,
+                  affectedUnitTypes,
+                  affectsAllied,
+                  affectsEnemy,
+                  description,
+                  getEffectsFor(name)));
 
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
           throw new RuntimeException(e);
@@ -109,6 +105,24 @@ public final class Abilities {
     ABILITIES = Collections.unmodifiableList(abilities);
   }
 
+  /** A generic functional interface wrapping a constructor for a particular Ability type. */
+  @FunctionalInterface
+  private interface AbilityConstructor<A extends Ability> {
+    /** Creates a new ability instance from the given values. */
+    A create(
+        String name,
+        int level,
+        int manaCost,
+        ExpandableCloud effectCloud,
+        boolean canBeCloudBoosted,
+        int castDist,
+        List<Class<? extends Unit>> affectedUnitTypes,
+        boolean appliesToAllied,
+        boolean appliesToFoe,
+        String description,
+        List<AbilityEffect> effects);
+  }
+
   /** Helper for construction to get the list of ability effects for an ability. */
   private static List<AbilityEffect> getEffectsFor(String abilityName) {
     switch (abilityName) {
@@ -118,6 +132,8 @@ public final class Abilities {
         return Collections.singletonList(AbilityEffect.healConstantHp(25));
       case "Clairvoyance":
         return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.farsight(3)));
+      case "Sacrifice":
+        return Collections.singletonList(AbilityEffect.destroyUnit());
       case "Cone of Flame":
         return Collections.singletonList(AbilityEffect.damage(15, 30));
       case "Strengthen":
@@ -136,6 +152,8 @@ public final class Abilities {
         return Collections.singletonList(AbilityEffect.healPercentageOfMaxHp(.25));
       case "Resolution":
         return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.tenacity(15)));
+      case "Spacial Shift":
+        return Collections.emptyList();
       case "Cone of Light":
         return Collections.singletonList(AbilityEffect.damage(45, 90));
       case "Mana Shield":

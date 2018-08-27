@@ -3,6 +3,7 @@ package controller.selector;
 import controller.game.GameController;
 import model.board.Tile;
 import model.unit.ability.Ability;
+import model.unit.ability.SpacialShift;
 import model.unit.commander.Commander;
 
 import java.util.ArrayList;
@@ -48,6 +49,16 @@ public final class CastSelector extends LocationSelector {
                       && caster.owner.canSee(tile)
                       && toCast.wouldAffect(tile.getOccupyingUnit(), caster))) {
         toRemove.add(t);
+      }
+    }
+
+    // If this is SpacialShift, cant cast on a unit on a mountain since commanders's can't occupy
+    // them.
+    if (toCast instanceof SpacialShift) {
+      for (Tile t : cloud) {
+        if (!caster.canOccupy(t.terrain)) {
+          toRemove.add(t);
+        }
       }
     }
 

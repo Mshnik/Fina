@@ -204,6 +204,11 @@ public abstract class Unit implements Stringable {
    */
   public abstract boolean canOccupy(Terrain t);
 
+  /** Sets the tile this Unit is on */
+  public void setLocation(Tile location) {
+    this.location = location;
+  }
+
   /** Returns the tile this Unit is on */
   public Tile getLocation() {
     return location;

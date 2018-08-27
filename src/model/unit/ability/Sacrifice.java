@@ -5,7 +5,6 @@ import model.unit.Unit;
 import model.unit.commander.Commander;
 import model.util.ExpandableCloud;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -25,6 +24,7 @@ final class Sacrifice extends Ability {
   /**
    * Ability Constructor
    *
+   * @param name - the name of this ability.
    * @param level - the level of the ability.
    * @param manaCost - the mana cost of using this ability. 0 if passive
    * @param effectCloud - the cloud of tiles this ability effects.
@@ -36,8 +36,10 @@ final class Sacrifice extends Ability {
    * @param appliesToAllied - true iff this ability can affect allied units
    * @param appliesToFoe - true iff this ability can affect non-allied units
    * @param description - a string description of this ability.
+   * @param abilityEffects - the effects this ability causes.
    */
   Sacrifice(
+      String name,
       int level,
       int manaCost,
       ExpandableCloud effectCloud,
@@ -46,9 +48,10 @@ final class Sacrifice extends Ability {
       List<Class<? extends Unit>> affectedUnitTypes,
       boolean appliesToAllied,
       boolean appliesToFoe,
-      String description) {
+      String description,
+      List<AbilityEffect> abilityEffects) {
     super(
-        NAME,
+        name,
         level,
         manaCost,
         effectCloud,
@@ -58,7 +61,7 @@ final class Sacrifice extends Ability {
         appliesToAllied,
         appliesToFoe,
         description,
-        Collections.singletonList(AbilityEffect.destroyUnit()));
+        abilityEffects);
   }
 
   @Override
