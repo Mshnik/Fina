@@ -152,6 +152,8 @@ public final class Abilities {
         return Collections.singletonList(AbilityEffect.healPercentageOfMaxHp(.25));
       case "Resolution":
         return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.tenacity(15)));
+      case "Refresh":
+        return Collections.singletonList(AbilityEffect.refreshUnit());
       case "Spacial Shift":
         return Collections.emptyList();
       case "Cone of Light":

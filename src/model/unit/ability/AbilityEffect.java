@@ -1,6 +1,8 @@
 package model.unit.ability;
 
+import model.unit.MovingUnit;
 import model.unit.Unit;
+import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
@@ -28,6 +30,9 @@ public final class AbilityEffect {
   /** True if this effect destroys a unit without dealing damage. */
   private final boolean destroyUnit;
 
+  /** True if this effect refreshes movement and attack of a unit. */
+  private final boolean refreshUnit;
+
   /** Number of turns all modifiers granted through abilities last. */
   private static final int MODIFIER_TURN_DURATION = 3;
 
@@ -41,33 +46,40 @@ public final class AbilityEffect {
       int healConstantHp,
       double healPercentageOfMaxHp,
       boolean destroyUnit,
+      boolean refreshUnit,
       ModifierBundle modifierEffect) {
     this.minDamage = minDamage;
     this.maxDamage = maxDamage;
     this.healConstantHp = healConstantHp;
     this.healPercentageOfMaxHp = healPercentageOfMaxHp;
     this.destroyUnit = destroyUnit;
+    this.refreshUnit = refreshUnit;
     this.modifierEffect = modifierEffect;
   }
 
   /** Creates an ability effect that deals damage. */
   static AbilityEffect damage(int minDamage, int maxDamage) {
-    return new AbilityEffect(minDamage, maxDamage, 0, 0, false, null);
+    return new AbilityEffect(minDamage, maxDamage, 0, 0, false, false, null);
   }
 
   /** Creates an ability effect that heals constant hp. */
   static AbilityEffect healConstantHp(int healConstantHp) {
-    return new AbilityEffect(0, 0, healConstantHp, 0, false, null);
+    return new AbilityEffect(0, 0, healConstantHp, 0, false, false, null);
   }
 
   /** Creates an ability effect that heals a percentage of max hp. */
   static AbilityEffect healPercentageOfMaxHp(double percentageOfMaxHp) {
-    return new AbilityEffect(0, 0, 0, percentageOfMaxHp, false, null);
+    return new AbilityEffect(0, 0, 0, percentageOfMaxHp, false, false, null);
   }
 
   /** Creates an ability effect that destroys a unit. */
   static AbilityEffect destroyUnit() {
-    return new AbilityEffect(0, 0, 0, 0, true, null);
+    return new AbilityEffect(0, 0, 0, 0, true, false, null);
+  }
+
+  /** Creates an ability effect that refreshes a unit. */
+  static AbilityEffect refreshUnit() {
+    return new AbilityEffect(0, 0, 0, 0, false, true, null);
   }
 
   /**
@@ -89,6 +101,7 @@ public final class AbilityEffect {
         0,
         0,
         false,
+        false,
         new ModifierBundle(
             modifiers
                 .stream()
@@ -106,6 +119,13 @@ public final class AbilityEffect {
       u.changeHealth((int) (healPercentageOfMaxHp * u.getMaxHealth()), caster);
     } else if (destroyUnit) {
       u.died(caster);
+    } else if (refreshUnit) {
+      if (u instanceof MovingUnit) {
+        ((MovingUnit) u).refreshMovement();
+      }
+      if (u instanceof Combatant) {
+        ((Combatant) u).setCanFight(true);
+      }
     } else if (modifierEffect != null) {
       modifierEffect.clone(u, caster);
     } else {
