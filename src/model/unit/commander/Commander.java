@@ -327,12 +327,14 @@ public abstract class Commander extends MovingUnit implements Summoner {
    * manaPerTurn and health of commander, updates stats
    */
   private void levelUp() {
-    research = 0;
-    level++;
-    LEVELUP.clone(this, this);
-    owner.updateManaPerTurn();
-    owner.refreshVisionCloud();
-    owner.game.getController().startNewAbilityDecision(owner);
+    if (level < MAX_LEVEL) {
+      research = 0;
+      level++;
+      LEVELUP.clone(this, this);
+      owner.updateManaPerTurn();
+      owner.refreshVisionCloud();
+      owner.game.getController().startNewAbilityDecision(owner);
+    }
   }
 
   /** Chooses ability index i for this level. Called when the player ends the levelup decision */
