@@ -445,7 +445,7 @@ public final class GameController {
     for (Unit u : units) {
       choices.add(
           new Choice(
-              u.manaCost <= c.getMana()
+              u.getManaCostWithScalingAndDiscountsForPlayer(c.owner) <= c.getMana()
                   && !new SummonSelector(this, t.getOccupyingUnit(), u).getCloud().isEmpty(),
               u.name
                   + Choice.SEPERATOR
@@ -561,7 +561,7 @@ public final class GameController {
     for (Ability a : abilities.values()) {
       choices.add(
           new Choice(
-              a.manaCost <= c.getMana() && !new CastSelector(this, c, a).getCloud().isEmpty(),
+              a.getManaCostWithDiscountsForPlayer(c.owner) <= c.getMana() && !new CastSelector(this, c, a).getCloud().isEmpty(),
               a.name + Choice.SEPERATOR + "(" + a.manaCost + ")",
               a));
     }

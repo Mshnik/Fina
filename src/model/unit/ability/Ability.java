@@ -2,9 +2,11 @@ package model.unit.ability;
 
 import model.board.Direction;
 import model.board.Tile;
+import model.game.Player;
 import model.game.Stringable;
 import model.unit.Unit;
 import model.unit.building.Building;
+import model.unit.building.PlayerModifierBuilding;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.util.Cloud;
@@ -97,6 +99,25 @@ public class Ability implements Stringable {
     this.castDist = castDist;
     this.description = description;
     this.effects = effects;
+  }
+
+  /** Returns the mana cost of casting this ability minus the discounts for the given player. */
+  public int getManaCostWithDiscountsForPlayer(Player p) {
+    return (int)
+        (manaCost
+            * (1
+                - p.getUnits()
+                        .stream()
+                        .filter(u -> u instanceof PlayerModifierBuilding)
+                        .map(u -> (PlayerModifierBuilding) u)
+                        .filter(
+                            b ->
+                                b.getEffect().effectType
+                                    == PlayerModifierBuilding.PlayerModifierEffectType
+                                        .CAST_DISCOUNT)
+                        .mapToInt(b -> b.getEffect().value)
+                        .sum()
+                    / 100.0));
   }
 
   /**
