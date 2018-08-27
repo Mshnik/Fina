@@ -60,6 +60,11 @@ public final class GameController {
   /** Text representing casting (Using active abilities) */
   public static final String CAST = "Magic";
 
+  /** Colors that will be used to tint player units. */
+  private static final Color[] playerColorsArr = {
+    Color.GREEN, Color.MAGENTA, Color.YELLOW, Color.BLUE
+  };
+
   /** Different possiblities for toggle options */
   public enum Toggle {
     NONE,
@@ -117,10 +122,10 @@ public final class GameController {
     GameController gc = new GameController(g, f);
 
     // Create players.
-    Player p1 = new HumanPlayer(g, Color.green);
-    new DummyCommander(p1, 1);
-    Player p2 = new HumanPlayer(g, Color.magenta);
-    new DummyCommander(p2, 1);
+    for (int i = 0; i < numPlayers; i++) {
+      Player p = new HumanPlayer(g, playerColorsArr[i]);
+      new DummyCommander(p, 1);
+    }
 
     // Start game.
     gc.start();
@@ -561,7 +566,8 @@ public final class GameController {
     for (Ability a : abilities.values()) {
       choices.add(
           new Choice(
-              a.getManaCostWithDiscountsForPlayer(c.owner) <= c.getMana() && !new CastSelector(this, c, a).getCloud().isEmpty(),
+              a.getManaCostWithDiscountsForPlayer(c.owner) <= c.getMana()
+                  && !new CastSelector(this, c, a).getCloud().isEmpty(),
               a.name + Choice.SEPERATOR + "(" + a.manaCost + ")",
               a));
     }
