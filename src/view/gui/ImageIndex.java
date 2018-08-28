@@ -133,7 +133,14 @@ public final class ImageIndex {
         } else {
           root += activePlayer.getColor().toString().toLowerCase() + "/";
         }
-      } else if (unit instanceof Building) root += BUILDING_IMAGE_ROOT;
+      } else if (unit instanceof Building) {
+        root += BUILDING_IMAGE_ROOT;
+        if (unit.owner != null) {
+          root += unit.owner.getColor().toString().toLowerCase() + "/";
+        } else {
+          root += activePlayer.getColor().toString().toLowerCase() + "/";
+        }
+      }
       u = ImageIO.read(new File(root + unit.getImgFilename()));
     } catch (IOException e) {
       throw new RuntimeException(e);

@@ -18,6 +18,7 @@ import model.game.Game;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;
+import model.unit.commander.Commander;
 import model.util.ExpandableCloud;
 import view.gui.Frame;
 import view.gui.ImageIndex;
@@ -263,6 +264,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
 
     // Draw model.unit
     BufferedImage unitImg = ImageIndex.imageForUnit(u, controller.game.getCurrentPlayer());
+    if (u instanceof Commander) {
+      unitImg = ImageIndex.tint(unitImg, controller.getColorFor(u.owner));
+    }
     g2d.drawImage(unitImg, x, y, cellSize(), cellSize(), null);
 
     // Draw health bar

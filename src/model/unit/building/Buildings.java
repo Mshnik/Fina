@@ -240,7 +240,7 @@ public final class Buildings {
   private static EffectPair<PlayerModifierEffect> getPlayerModifierEffects(
       String buildingName, String nonAncientGroundDescription, String ancientGroundDescription) {
     switch (buildingName) {
-      case "Well":
+      case "Mine":
         return EffectPair.of(
             new PlayerModifierEffect(
                 PlayerModifierEffectType.MANA_GENERATION, 75, nonAncientGroundDescription),
@@ -249,9 +249,9 @@ public final class Buildings {
       case "Library":
         return EffectPair.of(
             new PlayerModifierEffect(
-                PlayerModifierEffectType.RESEARCH_GENERATION, 50, nonAncientGroundDescription),
+                PlayerModifierEffectType.RESEARCH_GENERATION, 25, nonAncientGroundDescription),
             new PlayerModifierEffect(
-                PlayerModifierEffectType.RESEARCH_GENERATION, 100, ancientGroundDescription));
+                PlayerModifierEffectType.RESEARCH_GENERATION, 50, ancientGroundDescription));
       case "Dojo":
         return EffectPair.of(
             new PlayerModifierEffect(
