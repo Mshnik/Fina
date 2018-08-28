@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.JPanel;
@@ -274,6 +275,21 @@ public final class InfoPanel extends JPanel {
       drawStat(g2d, s, x, y);
       y += infoFont;
     }
+    if (unit instanceof Combatant) {
+      int oldX = x;
+      int iconSize = 24;
+      y += infoFont / 2;
+      x -= iconSize;
+      for (CombatantClass combatantClass : CombatantClass.values()) {
+        int bonusLevel = Combatant.CombatantClass.getBonusLevel(((Combatant) unit).combatantClasses, Collections.singletonList(combatantClass));
+        g2d.drawImage(ImageIndex.imageForCombatantClass(combatantClass), x, y-iconSize/2, iconSize, iconSize, null);
+        g2d.drawString((bonusLevel > 0 ? "+" : "") + bonusLevel, x + iconSize, y);
+        x += iconSize * 2;
+      }
+      x = oldX;
+    }
+
+
     x += xInc;
     y = YMARGIN;
 
