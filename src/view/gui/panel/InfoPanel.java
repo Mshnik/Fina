@@ -29,7 +29,7 @@ import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 import view.gui.Frame;
-import view.gui.ImageIndex;
+import view.gui.image.ImageIndex;
 
 public final class InfoPanel extends JPanel {
   /** */

@@ -1,4 +1,4 @@
-package view.gui;
+package view.gui.image;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

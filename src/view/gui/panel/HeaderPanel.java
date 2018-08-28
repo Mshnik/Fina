@@ -3,8 +3,8 @@ package view.gui.panel;
 import model.game.Game;
 import model.game.Player;
 import view.gui.Frame;
-import view.gui.ImageIndex;
-import view.gui.ImageIndex.DrawingBarSegment;
+import view.gui.image.ImageIndex;
+import view.gui.image.ImageIndex.DrawingBarSegment;
 
 import javax.swing.*;
 import java.awt.*;
