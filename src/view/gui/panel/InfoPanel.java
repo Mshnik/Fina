@@ -22,6 +22,7 @@ import model.unit.building.StartOfTurnEffectBuilding;
 import model.unit.building.SummonerBuilding;
 import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
+import model.unit.combatant.Combatant.CombatantClass;
 import model.unit.commander.Commander;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.ModifierBundle;
@@ -177,20 +178,24 @@ public final class InfoPanel extends JPanel {
     y += infoFont;
 
     g2d.drawString(
-        " Level " + (unit instanceof Commander ? unit.owner.getLevel() : unit.level), x, y);
+        " Level "
+            + (unit instanceof Commander ? unit.owner.getLevel() : unit.level)
+            + " "
+            + unit.getIdentifierString(),
+        x,
+        y);
     y += infoFont;
-
-    String subString = " " + unit.getIdentifierString() + " ";
     if (unit instanceof Combatant) {
-      subString +=
-          " - "
-              + ((Combatant) unit)
-                  .combatantClasses
-                  .stream()
-                  .map(Combatant.CombatantClass::toMidString)
-                  .collect(Collectors.joining(", "));
+      g2d.drawString(" Classes: ", x, y);
+      int iconSize = 32;
+      x += iconSize;
+      for (CombatantClass combatantClass : ((Combatant) unit).combatantClasses) {
+        x += 40;
+        g2d.drawImage(ImageIndex.imageForCombatantClass(combatantClass), x, y - iconSize/2, iconSize, iconSize, null);
+      }
+      x = XMARGIN;
     }
-    g2d.drawString(subString, x, y);
+
     if (unit instanceof Building && isMenu) {
       List<Terrain> terrainList = ((Building<?>) unit).getValidTerrain();
       y += infoFont;

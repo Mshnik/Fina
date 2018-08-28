@@ -20,6 +20,7 @@ import model.game.Player;
 import model.unit.Unit;
 import model.unit.building.Building;
 import model.unit.combatant.Combatant;
+import model.unit.combatant.Combatant.CombatantClass;
 import model.unit.commander.Commander;
 import view.gui.panel.GamePanel;
 
@@ -35,6 +36,9 @@ public final class ImageIndex {
   /** Location of terrain files within image root */
   private static final String TERRAIN_IMAGE_ROOT = "terrain/";
 
+  /** Location of class icons within image root */
+  private static final String CLASS_ICONS_ROOT = "icons/weapons/";
+
   /** Image root for commanders within image root */
   private static final String COMMANDER_IMAGE_ROOT = "unit/";
 
@@ -43,6 +47,8 @@ public final class ImageIndex {
 
   /** Image root for Building images within image root */
   private static final String BUILDING_IMAGE_ROOT = "building/";
+
+  // TERRAIN
 
   /** The image for margin outside of the board */
   private static BufferedImage MARGIN;
@@ -54,9 +60,21 @@ public final class ImageIndex {
   private static BufferedImage WOODS;
   /** The image for ancient ground terrain */
   private static BufferedImage ANCIENT_GROUND;
-
   /** The image for sandstone texture */
   public static BufferedImage SANDSTONE;
+
+  // ICONS
+
+  /** The image for the Fighter icon. */
+  private static BufferedImage FIGHTER_ICON;
+  /** The image for the Assassin icon. */
+  private static BufferedImage ASSASSIN_ICON;
+  /** The image for the Mage icon. */
+  private static BufferedImage MAGE_ICON;
+  /** The image for the Ranger icon. */
+  private static BufferedImage RANGER_ICON;
+  /** The image for the Tank icon. */
+  private static BufferedImage TANK_ICON;
 
   /** Read in units thus far */
   private static HashMap<String, BufferedImage> readUnits;
@@ -77,8 +95,15 @@ public final class ImageIndex {
       WOODS = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "woods.png"));
       ANCIENT_GROUND = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "gold.jpg"));
 
+      // Class Icons
+      FIGHTER_ICON = ImageIO.read(new File(IMAGE_ROOT + CLASS_ICONS_ROOT + "weapon_icon_1_0.png"));
+      ASSASSIN_ICON = ImageIO.read(new File(IMAGE_ROOT + CLASS_ICONS_ROOT + "weapon_icon_0_0.png"));
+      MAGE_ICON = ImageIO.read(new File(IMAGE_ROOT + CLASS_ICONS_ROOT + "weapon_icon_5_0.png"));
+      RANGER_ICON = ImageIO.read(new File(IMAGE_ROOT + CLASS_ICONS_ROOT + "weapon_icon_6_0.png"));
+      TANK_ICON = ImageIO.read(new File(IMAGE_ROOT + CLASS_ICONS_ROOT + "weapon_icon_9_0.png"));
+
       // Units
-      readUnits = new HashMap<String, BufferedImage>();
+      readUnits = new HashMap<>();
       tintedUnits = new HashMap<>();
     } catch (IOException e) {
       e.printStackTrace();
@@ -101,10 +126,26 @@ public final class ImageIndex {
         return WOODS;
       case ANCIENT_GROUND:
         return ANCIENT_GROUND;
-
-        // Image not found
       default:
-        return null;
+        throw new RuntimeException("Unsupported terrain: " + t);
+    }
+  }
+
+  /** Returns the image file for the corresponding combatant class. */
+  public static BufferedImage imageForCombatantClass(CombatantClass combatantClass) {
+    switch (combatantClass) {
+      case FIGHTER:
+        return FIGHTER_ICON;
+      case RANGER:
+        return RANGER_ICON;
+      case ASSASSIN:
+        return ASSASSIN_ICON;
+      case TANK:
+        return TANK_ICON;
+      case MAGE:
+        return MAGE_ICON;
+      default:
+        throw new RuntimeException("Unsupported combat class: " + combatantClass);
     }
   }
 
