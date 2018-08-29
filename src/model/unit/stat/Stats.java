@@ -4,7 +4,12 @@ import model.unit.modifier.Modifier;
 import model.unit.modifier.StatModifier;
 import util.Mth;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /** Holder for the stats for a model.unit. Unless otherwise noted, all stats are non-negative. */
 public class Stats implements Iterable<Stat> {
@@ -61,7 +66,8 @@ public class Stats implements Iterable<Stat> {
         if (m instanceof StatModifier) {
           StatModifier s = (StatModifier) m;
           Object newVal = stats.get(s.modifiedStat);
-          if (s.getModVal() instanceof Integer) {
+          if (newVal instanceof Integer
+              && (s.getModVal() instanceof Integer || s.getModVal() instanceof Double)) {
             switch (s.modType) {
               case SET_MIN:
                 newVal = Math.min((int) newVal, (int) s.getModVal());
@@ -92,7 +98,11 @@ public class Stats implements Iterable<Stat> {
                 break;
             }
           } else {
-            throw new RuntimeException("Unhandled stat value type " + s.getModVal().getClass());
+            throw new RuntimeException(
+                "Unhandled stat value type / mod type pair "
+                    + newVal.getClass()
+                    + ", "
+                    + s.getModVal().getClass());
           }
           stats.put(s.modifiedStat, newVal);
         }
