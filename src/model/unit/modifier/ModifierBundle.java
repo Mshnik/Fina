@@ -59,7 +59,7 @@ public final class ModifierBundle implements Collection<Modifier> {
     if (!modifiers.isEmpty()) {
       Modifier base = modifiers.get(0);
       if (m.stacking != base.stacking || m.getRemainingTurns() != base.getRemainingTurns())
-        throw new IllegalArgumentException(m + " incompatible with " + this);
+        throw new IllegalArgumentException(m.name + " incompatible with " + this);
     }
     modifiers.add(m);
     m.bundle = this;

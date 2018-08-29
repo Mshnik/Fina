@@ -10,6 +10,12 @@ import model.unit.Unit;
  */
 public final class CustomModifier extends Modifier {
 
+  /** The token used to replace percentages in descriptions. */
+  private static final String REPLACE_PERCENTAGE_DESCRIPTION = "-x%-";
+
+  /** The token used to replace other values in descriptions. */
+  private static final String REPLACE_STANDARD_DESCRIPTION = "-x-";
+
   /** True if this applies to Buildings */
   public final boolean appliesToBuildings;
 
@@ -38,7 +44,7 @@ public final class CustomModifier extends Modifier {
    * @param commanders - true iff this modifier can apply to commanders
    * @param combatants - true iff this modifier can apply to combatants
    */
-  public CustomModifier(
+  CustomModifier(
       String name,
       String description,
       Number val,
@@ -48,11 +54,38 @@ public final class CustomModifier extends Modifier {
       boolean commanders,
       boolean combatants) {
     super(name, turns, stackable);
-    this.description = description;
     this.val = val;
     this.appliesToBuildings = buildings;
     this.appliesToCommanders = commanders;
     this.appliesToCombatants = combatants;
+
+    if (val == null
+        && (description.contains(REPLACE_PERCENTAGE_DESCRIPTION)
+            || description.contains(REPLACE_STANDARD_DESCRIPTION))) {
+      throw new RuntimeException(
+          "Description shouldn't contain replace token with null value. Got: " + description);
+    }
+    if (description.contains(REPLACE_PERCENTAGE_DESCRIPTION) && !(val instanceof Double)) {
+      throw new RuntimeException("If replacing percentage, expected a double. Got: " + val);
+    }
+    if (description.contains(REPLACE_PERCENTAGE_DESCRIPTION)
+        && description.contains(REPLACE_STANDARD_DESCRIPTION)) {
+      throw new RuntimeException(
+          "Description can't contain both percentage and flat value. Got: " + description);
+    }
+
+    if (val != null && val.doubleValue() != 0) {
+      if (description.contains(REPLACE_PERCENTAGE_DESCRIPTION)) {
+        int percentVal = (int) (val.doubleValue() * 100);
+        this.description = description.replaceAll(REPLACE_PERCENTAGE_DESCRIPTION, percentVal + "%");
+      } else if (description.contains(REPLACE_STANDARD_DESCRIPTION)) {
+        this.description = description.replaceAll(REPLACE_STANDARD_DESCRIPTION, val.toString());
+      } else {
+        this.description = description;
+      }
+    } else {
+      this.description = description.replaceAll("-","");
+    }
   }
 
   /**
