@@ -151,12 +151,12 @@ public abstract class Modifier implements Stringable {
    * Decrements the remaining turns. Doesn't dec if is infinite (Integer.MAX_VAL) or is dummy Method
    * calling this method should use the return of the method to maybe remove this modifier.
    *
-   * @return true iff this is is now dead (remainingTurns < 0)
+   * @return true iff this is is now dead (remainingTurns <= 0)
    */
   public boolean decRemainingTurns() {
     if (remainingTurns == Integer.MAX_VALUE || isDummy()) return false;
     remainingTurns--;
-    return remainingTurns < 0;
+    return remainingTurns <= 0;
   }
 
   /**
