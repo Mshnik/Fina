@@ -22,6 +22,7 @@ import model.unit.building.PlayerModifierBuilding;
 import model.unit.building.StartOfTurnEffectBuilding;
 import model.unit.building.SummonerBuilding;
 import model.unit.combatant.Combat;
+import model.unit.combatant.Combat.CombatantClassPair;
 import model.unit.combatant.Combatant;
 import model.unit.combatant.Combatant.CombatantClass;
 import model.unit.commander.Commander;
@@ -458,6 +459,21 @@ public final class InfoPanel extends JPanel {
     y += MEDIUM_FONT.getSize();
     int classBonus = combat.getClassBonus();
     g2d.drawString(classBonus > 0 ? "+" + classBonus : "" + classBonus, x, y);
+
+    int oldX = x;
+    x += 50;
+    int iconSize = 28;
+    int iconSizePlusSpace = iconSize + 16;
+    g2d.setFont(BIG_FONT);
+    for (CombatantClassPair pair : combat.getRelevantClassPairs()) {
+      g2d.drawImage(ImageIndex.imageForCombatantClass(pair.first), x, y-iconSize - 2, iconSize, iconSize,null);
+      x += iconSizePlusSpace;
+      g2d.drawString(pair.firstBeatsSecond() ? ">" : "<", x - 16, y - iconSize/2 + 2);
+      g2d.drawImage(ImageIndex.imageForCombatantClass(pair.second), x, y-iconSize - 2, iconSize, iconSize,null);
+      x += iconSizePlusSpace;
+    }
+    x = oldX;
+    g2d.setFont(SMALL_FONT);
 
     y += smallFontSizeWithMargin;
     g2d.drawString(String.format("%d - %d", combat.getMinAttack(), combat.getMaxAttack()), x, y);

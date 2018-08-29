@@ -1,13 +1,16 @@
 package model.unit.combatant;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import model.unit.Unit;
 import model.unit.building.Building;
+import model.unit.combatant.Combatant.CombatantClass;
 import model.unit.commander.Commander;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.Modifiers;
-
-import java.util.Random;
 
 /**
  * A class that describes a prospective combat between two given units and can process it. Used to
@@ -36,6 +39,22 @@ public final class Combat {
   /** True after process() is called, to prevent double counting combat. */
   private boolean processed;
 
+  /** A pair of combatant classes. */
+  public static final class CombatantClassPair {
+    public final CombatantClass first;
+    public final CombatantClass second;
+
+    private CombatantClassPair(CombatantClass first, CombatantClass second) {
+      this.first = first;
+      this.second = second;
+    }
+
+    /** Returns true iff first beats second, false otherwise. */
+    public boolean firstBeatsSecond() {
+      return first.hasBonusAgainstClass(second);
+    }
+  }
+
   /**
    * Creates a new combat on the given attacker and defender. Does not process combat until process
    * is called.
@@ -59,6 +78,28 @@ public final class Combat {
     } else {
       return 0;
     }
+  }
+
+  /**
+   * Returns a list of all pairs of combatant classes that create the class bonus. Pairs that have
+   * no impact are left off.
+   */
+  public List<CombatantClassPair> getRelevantClassPairs() {
+    if (!(defender instanceof Combatant)) {
+      return Collections.emptyList();
+    }
+
+    ArrayList<CombatantClassPair> list = new ArrayList<>();
+    Combatant combatantDefender = (Combatant) defender;
+    for (CombatantClass attackerClass : attacker.combatantClasses) {
+      for (CombatantClass defenderClass : combatantDefender.combatantClasses) {
+        if (attackerClass.hasBonusAgainstClass(defenderClass)
+            || defenderClass.hasBonusAgainstClass(attackerClass)) {
+          list.add(new CombatantClassPair(attackerClass, defenderClass));
+        }
+      }
+    }
+    return list;
   }
 
   /** Returns true if this combat is ranged - if the two combatants are not adjacent. */

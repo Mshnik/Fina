@@ -73,7 +73,7 @@ public abstract class Combatant extends MovingUnit {
     }
 
     /** Returns true iff this class has a bonus against the given other class. */
-    private boolean hasBonusAgainstClass(CombatantClass other) {
+    public boolean hasBonusAgainstClass(CombatantClass other) {
       switch (this) {
         case FIGHTER:
           return other == ASSASSIN || other == MAGE;
