@@ -649,6 +649,7 @@ public final class GameController {
     castSelector.toCast.cast(
         castSelector.caster, loc, castSelector.caster.owner.getCastCloudBoost(), random);
     locationSelector = null;
+    castSelector.caster.owner.refreshVisionCloud();
     getGamePanel().boardCursor.setElm(castSelector.caster.getLocation()); // Cause info update
     repaint();
   }
