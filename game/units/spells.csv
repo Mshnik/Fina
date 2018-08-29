@@ -20,4 +20,4 @@ Spacial Shift,3,150,Utility,Circle-0,No,3,Combatant/Commander/Building,Yes,Yes,S
 ,,,,,,,,,,,
 Cone of Light,4,300,Offensive,Cone-1,Yes,1,Combatant/Commander,Yes,Yes,Unit takes 45-90 damage,
 Mana Shield,4,250,Defensive,Circle-1,Yes,0,Combatant/Building,Yes,No,Unit gains Shielded 25 for 3 turns then heal unit 50 health,
-Levitation,4,250,Utility,Circle-2,Yes,0,Combatant/Commander,Yes,No,"Unit gains Farsight 3, Quickness 1, and Flight for 3 turns",
+Levitation,4,250,Utility,Circle-2,Yes,0,Combatant/Commander,Yes,No,Unit gains Flight for 3 turns,

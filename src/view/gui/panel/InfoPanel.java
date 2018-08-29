@@ -15,10 +15,8 @@ import model.unit.combatant.Combat.CombatantClassPair;
 import model.unit.combatant.Combatant;
 import model.unit.combatant.Combatant.CombatantClass;
 import model.unit.commander.Commander;
-import model.unit.modifier.Modifier;
 import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.Modifiers;
-import model.unit.modifier.StatModifier;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
@@ -245,7 +243,10 @@ public final class InfoPanel extends JPanel {
     // Insert health at top here
     if (!isMenu) {
       g2d.drawString("Health", x, y);
-      g2d.drawString(String.format("%d (%d%%)",unit.getHealth(), (int) (unit.getHealthPercent() * 100)), x + 145, y);
+      g2d.drawString(
+          String.format("%d (%d%%)", unit.getHealth(), (int) (unit.getHealthPercent() * 100)),
+          x + 145,
+          y);
       y += infoFont;
     }
 
@@ -258,33 +259,12 @@ public final class InfoPanel extends JPanel {
     y = YMARGIN + infoFont * 4;
     String modifierTitle = "Modifiers: ";
     g2d.drawString(modifierTitle, x, y);
-    StringBuilder modString = new StringBuilder();
-    for (Modifier m : unit.getModifiers()) {
-      if (!m.name.contains(Commander.LEVEL_UP_MODIFIER_PREFIX) && !m.name.isEmpty()) {
-        modString.append(m.name);
-        if (m.getValue() != null) {
-          Object modValue;
-          if (m.getValue() instanceof Double) {
-            modValue =
-                String.format(
-                    "%d%%",
-                    (int) ((double) m.getValue() * 100) - (m instanceof StatModifier ? 100 : 0));
-          } else {
-            modValue = m.getValue();
-          }
-          modString.append(" " + modValue);
-        }
-        if (m.getRemainingTurns() < Integer.MAX_VALUE) {
-          modString.append(" (" + m.getRemainingTurns() + " turns)");
-        }
-
-        modString.append(", ");
-      }
-    }
-    g2d.drawString(
-        modString.toString().substring(0, Math.max(0, modString.toString().length() - 2)),
-        x + frame.getTextWidth(MEDIUM_FONT, modifierTitle) + 15,
-        y);
+    String modString =
+        Modifiers.getModifierDescriptions(unit.getVisibleModifiers())
+            .stream()
+            .map(Modifiers.ModifierDescription::toStringShort)
+            .collect(Collectors.joining(", "));
+    g2d.drawString(modString, x + frame.getTextWidth(MEDIUM_FONT, modifierTitle) + 15, y);
 
     x = XMARGIN + 2 * xInc;
 
@@ -445,6 +425,7 @@ public final class InfoPanel extends JPanel {
     g2d.drawString("Costs " + ability.manaCost + " Mana Per Use", x, y);
 
     String affects = "";
+    g2d.setFont(SMALL_FONT);
     if (ability.appliesToAllied) affects += "Allied";
     if (ability.appliesToAllied && ability.appliesToFoe) affects += " and ";
     if (ability.appliesToFoe) affects += "Enemy";

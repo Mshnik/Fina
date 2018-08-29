@@ -120,7 +120,11 @@ public final class StatModifier extends Modifier {
 
   @Override
   public String toStatString() {
-    return modifiedStat + ":" + modType.toSymbolString() + val;
+    if (modType == ModificationType.MULTIPLY) {
+      return String.format("%s: +%d%%",modifiedStat, (int)((double)val * 100 - 100));
+    } else {
+      return String.format("%s: %s%s",modifiedStat,modType.toSymbolString(),val);
+    }
   }
 
   @Override

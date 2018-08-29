@@ -89,14 +89,29 @@ public abstract class Modifier implements Stringable {
   public abstract Object getValue();
 
   /**
+   * Returns the value of this modifier formatted nicely as a string. If getValue() returns null,
+   * this returns the empty string.
+   */
+  String getValueFormatted() {
+    Object val = getValue();
+    if (val instanceof Double) {
+      return String.format("%d%%", (int)(((double) val) * 100) - (this instanceof StatModifier ? 100 : 0));
+    } else if (val != null) {
+      return val.toString();
+    } else {
+      return "";
+    }
+  }
+
+  /**
    * Returns a new copy of this that is also a dummy - allows for separate clone chains of identical
    * Modifiers. Should only be called on a dummy.
    */
   public abstract Modifier uniqueCopy();
 
   /**
-   * Returns a new copy of this that is also a dummy with some values overriden - allows for separate clone chains of identical
-   * Modifiers. Should only be called on a dummy.
+   * Returns a new copy of this that is also a dummy with some values overriden - allows for
+   * separate clone chains of identical Modifiers. Should only be called on a dummy.
    */
   public abstract Modifier uniqueCopy(int turns, StackMode stacking);
 

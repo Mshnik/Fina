@@ -44,27 +44,49 @@ public final class Modifiers {
   /** A description of a modifier or bundle, for showing in UI. */
   public static final class ModifierDescription {
     private final String name;
+    private final String formattedVal;
     private final String description;
     private final int turnsRemaining;
 
     private ModifierDescription(Modifier m) {
       this.name = m.name;
+      this.formattedVal = m.getValueFormatted();
       this.description = m.toStatString();
       this.turnsRemaining = m.getRemainingTurns();
     }
 
     private ModifierDescription(ModifierBundle m) {
       this.name = m.getModifiers().get(0).name;
+      this.formattedVal = m.getModifiers().get(0).getValueFormatted();
       this.description = m.toStatString().trim();
       this.turnsRemaining = m.getTurnsRemaining();
     }
 
+    /**
+     * Returns a string describing the number of turns remaining, or empty if this is infinite
+     * duration.
+     */
+    private String getTurnsRemainingString() {
+      return turnsRemaining == Integer.MAX_VALUE ? "" : " (" + turnsRemaining + " turns)";
+    }
+
+    private String getFormattedValStringWithSpace() {
+      return formattedVal.isEmpty() ? formattedVal : " " + formattedVal + " ";
+    }
+
+    /** Returns a short string for displaying on the info panel. */
+    public String toStringShort() {
+      return name + getFormattedValStringWithSpace() + getTurnsRemainingString();
+    }
+
+    /** Returns a longer string for displaying on the info panel. */
     @Override
     public String toString() {
       return name
+          + getFormattedValStringWithSpace()
           + " - "
           + description
-          + (turnsRemaining == Integer.MAX_VALUE ? "" : " (" + turnsRemaining + " turns)");
+          + getTurnsRemainingString();
     }
   }
 
