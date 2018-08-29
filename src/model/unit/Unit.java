@@ -172,8 +172,11 @@ public abstract class Unit implements Stringable {
   }
 
   /** Refreshes this' stats with the locally stored modifiers */
-  public void refreshStats() {
+  private void refreshStats() {
     stats = stats.modifiedWith(modifiers);
+    // If health now > max health, decrease to max health.
+    // Shouldn't be a need to fire a health changed event on this.
+    health = Math.min(health, getMaxHealth());
   }
 
   /**
