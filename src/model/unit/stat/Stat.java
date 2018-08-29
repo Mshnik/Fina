@@ -17,6 +17,11 @@ public class Stat implements Comparable<Stat> {
     val = v;
   }
 
+  /** Returns the stat. */
+  public final StatType getType() {
+    return name;
+  }
+
   /** Stats are comparable by their names' ordinal in StatType */
   @Override
   public int compareTo(Stat o) {

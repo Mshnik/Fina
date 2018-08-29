@@ -9,7 +9,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /** Holder for the stats for a model.unit. Unless otherwise noted, all stats are non-negative. */
 public class Stats implements Iterable<Stat> {
@@ -39,6 +42,17 @@ public class Stats implements Iterable<Stat> {
     TEMPLATE.put(StatType.GRASS_COST, 0);
     TEMPLATE.put(StatType.WOODS_COST, 0);
     TEMPLATE.put(StatType.MOUNTAIN_COST, 0);
+  }
+
+  /** Utility class for a pair of stats. */
+  public static final class StatPair {
+    public final Stat first;
+    public final Stat second;
+
+    private StatPair(Stat first, Stat second) {
+      this.first = first;
+      this.second = second;
+    }
   }
 
   /** The stats maintained by this unitstats */
@@ -140,7 +154,7 @@ public class Stats implements Iterable<Stat> {
    * Returns an arrayList of the movement stats: - Move total - Grass cost - woods cost - mountain
    * cost
    */
-  public ArrayList<Stat> getMovementStatsList(boolean filterOmittableZeroes) {
+  public List<Stat> getMovementStatsList(boolean filterOmittableZeroes) {
     StatType[] t = {
       StatType.MOVEMENT_TOTAL, StatType.GRASS_COST, StatType.WOODS_COST, StatType.MOUNTAIN_COST
     };
@@ -148,18 +162,36 @@ public class Stats implements Iterable<Stat> {
   }
 
   /** Returns an arrayList of the attack stats: - Attack - Attack Range */
-  public ArrayList<Stat> getAttackStatsList(boolean filterOmittableZeroes) {
+  public List<StatPair> getAttackStatsList(boolean filterOmittableZeroes) {
     StatType[] t = {
       StatType.MIN_ATTACK, StatType.MAX_ATTACK, StatType.MIN_ATTACK_RANGE, StatType.MAX_ATTACK_RANGE
     };
-    return getStatsList(t, filterOmittableZeroes);
+    Map<StatType, Stat> statTypeStatMap =
+        getStatsList(t, filterOmittableZeroes)
+            .stream()
+            .collect(Collectors.toMap(Stat::getType, Function.identity()));
+
+    List<StatPair> lst = new ArrayList<>();
+    if (statTypeStatMap.containsKey(StatType.MAX_ATTACK)) {
+      lst.add(
+          new StatPair(
+              statTypeStatMap.getOrDefault(StatType.MIN_ATTACK, new Stat(StatType.MIN_ATTACK, 0)),
+              statTypeStatMap.getOrDefault(StatType.MAX_ATTACK, new Stat(StatType.MAX_ATTACK, 0))));
+    }
+    if (statTypeStatMap.containsKey(StatType.MAX_ATTACK_RANGE)) {
+      lst.add(
+          new StatPair(
+              statTypeStatMap.getOrDefault(StatType.MIN_ATTACK_RANGE, new Stat(StatType.MIN_ATTACK_RANGE, 0)),
+              statTypeStatMap.getOrDefault(StatType.MAX_ATTACK_RANGE, new Stat(StatType.MAX_ATTACK_RANGE, 0))));
+    }
+    return Collections.unmodifiableList(lst);
   }
 
   /**
    * Returns an arrayList of the standard stats: - Max Health - Mana Per Turn - Vision Range -
    * Summon Range
    */
-  public ArrayList<Stat> getStandardStatsList(boolean filterOmittableZeroes) {
+  public List<Stat> getStandardStatsList(boolean filterOmittableZeroes) {
     StatType[] t = {StatType.MAX_HEALTH, StatType.VISION_RANGE, StatType.SUMMON_RANGE};
     return getStatsList(t, filterOmittableZeroes);
   }

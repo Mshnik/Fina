@@ -237,7 +237,7 @@ public final class InfoPanel extends JPanel {
     final int xInc = 225;
     int x = XMARGIN + xInc;
     int y = YMARGIN;
-    final int infoFont = (int) (MEDIUM_FONT.getSize() * 1.25);
+    final int infoFont = (int) (MEDIUM_FONT.getSize() * 1.2);
 
     g2d.setFont(SMALL_FONT);
     Stats stats = unit.getStats();
@@ -245,7 +245,7 @@ public final class InfoPanel extends JPanel {
     // Insert health at top here
     if (!isMenu) {
       g2d.drawString("Health", x, y);
-      g2d.drawString(unit.getHealth() + "", x + 145, y);
+      g2d.drawString(String.format("%d (%d%%)",unit.getHealth(), (int) (unit.getHealthPercent() * 100)), x + 145, y);
       y += infoFont;
     }
 
@@ -297,26 +297,33 @@ public final class InfoPanel extends JPanel {
     x += xInc + 100;
     g2d.drawImage(
         ImageIndex.imageForUnit(unit, frame.getController().game.getCurrentPlayer()),
-        x + 150,
+        x + 200,
         10,
-        getHeight() - 20,
-        getHeight() - 20,
+        getHeight() - 30,
+        getHeight() - 30,
         null);
   }
 
   /** Continues drawing a unit for movable units. */
   private void continueDrawingMovingUnit(Graphics2D g2d, int x, int y) {
-    final int infoFont = MEDIUM_FONT.getSize();
+    final int infoFont = (int) (MEDIUM_FONT.getSize() * 1.2);
     final int xInc = 225;
 
-    for (Stat s : unit.getStats().getAttackStatsList(true)) {
-      drawStat(g2d, s, x, y);
+    if (unit.getMaxAttack() > 0) {
+      g2d.drawString("Attack", x, y);
+      g2d.drawString(unit.getMinAttackScaled() + "-" + unit.getMaxAttackScaled(), x + 145, y);
       y += infoFont;
     }
+    if (unit.getMaxAttackRange() > 0) {
+      g2d.drawString("Attack Range", x, y);
+      g2d.drawString(unit.getMinAttackRange() + "-" + unit.getMaxAttackRange(), x + 145, y);
+      y += infoFont;
+    }
+
     if (unit instanceof Combatant) {
       int oldX = x;
       int iconSize = 24;
-      y += infoFont / 2;
+      y = YMARGIN + (int) (infoFont * 2.5);
       x -= iconSize;
       for (CombatantClass combatantClass : CombatantClass.values()) {
         int bonusLevel =
@@ -358,7 +365,7 @@ public final class InfoPanel extends JPanel {
 
   /** Continues drawing a unit for buildings. */
   private void continueDrawingBuilding(Graphics2D g2d, int x, int y) {
-    final int infoFont = MEDIUM_FONT.getSize();
+    final int infoFont = (int) (MEDIUM_FONT.getSize() * 1.2);
     final int xInc = 225;
 
     Building<?> building = (Building<?>) unit;
