@@ -1,16 +1,5 @@
 package view.gui.panel;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.swing.JPanel;
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.MovingUnit;
@@ -29,11 +18,24 @@ import model.unit.commander.Commander;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.Modifiers;
+import model.unit.modifier.StatModifier;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 import view.gui.Frame;
 import view.gui.image.ImageIndex;
+
+import javax.swing.JPanel;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public final class InfoPanel extends JPanel {
   /** */
@@ -207,7 +209,13 @@ public final class InfoPanel extends JPanel {
       x += iconSize;
       for (CombatantClass combatantClass : ((Combatant) unit).combatantClasses) {
         x += 40;
-        g2d.drawImage(ImageIndex.imageForCombatantClass(combatantClass), x, y - iconSize/2, iconSize, iconSize, null);
+        g2d.drawImage(
+            ImageIndex.imageForCombatantClass(combatantClass),
+            x,
+            y - iconSize / 2,
+            iconSize,
+            iconSize,
+            null);
       }
       x = XMARGIN;
     }
@@ -255,7 +263,16 @@ public final class InfoPanel extends JPanel {
       if (!m.name.contains(Commander.LEVEL_UP_MODIFIER_PREFIX) && !m.name.isEmpty()) {
         modString.append(m.name);
         if (m.getValue() != null) {
-          modString.append(" " + m.getValue());
+          Object modValue;
+          if (m.getValue() instanceof Double) {
+            modValue =
+                String.format(
+                    "%d%%",
+                    (int) ((double) m.getValue() * 100) - (m instanceof StatModifier ? 100 : 0));
+          } else {
+            modValue = m.getValue();
+          }
+          modString.append(" " + modValue);
         }
         if (m.getRemainingTurns() < Integer.MAX_VALUE) {
           modString.append(" (" + m.getRemainingTurns() + " turns)");
@@ -302,14 +319,21 @@ public final class InfoPanel extends JPanel {
       y += infoFont / 2;
       x -= iconSize;
       for (CombatantClass combatantClass : CombatantClass.values()) {
-        int bonusLevel = Combatant.CombatantClass.getBonusLevel(((Combatant) unit).combatantClasses, Collections.singletonList(combatantClass));
-        g2d.drawImage(ImageIndex.imageForCombatantClass(combatantClass), x, y-iconSize/2, iconSize, iconSize, null);
+        int bonusLevel =
+            Combatant.CombatantClass.getBonusLevel(
+                ((Combatant) unit).combatantClasses, Collections.singletonList(combatantClass));
+        g2d.drawImage(
+            ImageIndex.imageForCombatantClass(combatantClass),
+            x,
+            y - iconSize / 2,
+            iconSize,
+            iconSize,
+            null);
         g2d.drawString((bonusLevel > 0 ? "+" : "") + bonusLevel, x + iconSize, y);
         x += iconSize * 2;
       }
       x = oldX;
     }
-
 
     x += xInc;
     y = YMARGIN;
@@ -369,7 +393,8 @@ public final class InfoPanel extends JPanel {
     int x = XMARGIN + xInc - 50;
     int y = YMARGIN - 5;
     int count = 0;
-    for (Modifiers.ModifierDescription description : Modifiers.getModifierDescriptions(unit.getVisibleModifiers())) {
+    for (Modifiers.ModifierDescription description :
+        Modifiers.getModifierDescriptions(unit.getVisibleModifiers())) {
       g2d.drawString(description.toString(), x, y);
       y += infoFont;
       count++;
@@ -505,10 +530,22 @@ public final class InfoPanel extends JPanel {
     int iconSizePlusSpace = iconSize + 16;
     g2d.setFont(BIG_FONT);
     for (CombatantClassPair pair : combat.getRelevantClassPairs()) {
-      g2d.drawImage(ImageIndex.imageForCombatantClass(pair.first), x, y-iconSize - 2, iconSize, iconSize,null);
+      g2d.drawImage(
+          ImageIndex.imageForCombatantClass(pair.first),
+          x,
+          y - iconSize - 2,
+          iconSize,
+          iconSize,
+          null);
       x += iconSizePlusSpace;
-      g2d.drawString(pair.firstBeatsSecond() ? ">" : "<", x - 16, y - iconSize/2 + 2);
-      g2d.drawImage(ImageIndex.imageForCombatantClass(pair.second), x, y-iconSize - 2, iconSize, iconSize,null);
+      g2d.drawString(pair.firstBeatsSecond() ? ">" : "<", x - 16, y - iconSize / 2 + 2);
+      g2d.drawImage(
+          ImageIndex.imageForCombatantClass(pair.second),
+          x,
+          y - iconSize - 2,
+          iconSize,
+          iconSize,
+          null);
       x += iconSizePlusSpace;
     }
     x = oldX;
