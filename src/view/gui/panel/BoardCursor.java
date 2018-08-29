@@ -6,7 +6,6 @@ import controller.selector.PathSelector;
 import model.board.Direction;
 import model.board.Tile;
 import view.gui.Cursor;
-import view.gui.panel.GamePanel;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -133,7 +132,7 @@ public final class BoardCursor extends Cursor<Tile, GamePanel> {
    */
   private void updateUnitHover() {
     if (getElm().isOccupied() && panel.controller.game.getCurrentPlayer().canSee(getElm())) {
-      panel.getFrame().getInfoPanel().setUnit(getElm().getOccupyingUnit(), false);
+      panel.getFrame().getInfoPanel().setUnit(getElm().getOccupyingUnit(), false, false);
     } else {
       panel.getFrame().getInfoPanel().setTile(getElm());
     }

@@ -28,6 +28,7 @@ import model.unit.combatant.Combatant.CombatantClass;
 import model.unit.commander.Commander;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.ModifierBundle;
+import model.unit.modifier.Modifiers;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
@@ -68,6 +69,9 @@ public final class InfoPanel extends JPanel {
   /** The Unit (if any) this InfoPanel is currently drawing info for */
   private Unit unit;
 
+  /** True if extended modifier info should be drawn instead of general unit info. */
+  private boolean extendedModifiersInfo;
+
   /** The Ability (if any) this InfoPanel is currently drawing info for */
   private Ability ability;
 
@@ -97,12 +101,19 @@ public final class InfoPanel extends JPanel {
   }
 
   /** Sets the unit this InfoPanel is to draw info for, and causes a repaint */
-  public void setUnit(Unit u, boolean isMenu) {
+  public void setUnit(Unit u, boolean isMenu, boolean extendedModifiersInfo) {
     unit = u;
     this.isMenu = isMenu;
+    this.extendedModifiersInfo = extendedModifiersInfo;
     ability = null;
     tile = null;
     combat = null;
+    repaint();
+  }
+
+  /** Clears the extendedModifiersInfo bit. */
+  public void clearExtendedModifiersInfo() {
+    extendedModifiersInfo = false;
     repaint();
   }
 
@@ -154,7 +165,11 @@ public final class InfoPanel extends JPanel {
         RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
     g2d.setFont(BIG_FONT);
 
-    if (unit != null) {
+    if (unit != null && extendedModifiersInfo) {
+      drawUnitPrefix(g2d);
+      drawExtendedModifierInfo(g2d);
+    } else if (unit != null) {
+      drawUnitPrefix(g2d);
       drawUnit(g2d);
     } else if (ability != null) {
       drawAbility(g2d);
@@ -165,11 +180,10 @@ public final class InfoPanel extends JPanel {
     }
   }
 
-  /** Draws a unit on this InfoPanel. May be in a menu or on the board. */
-  private void drawUnit(Graphics2D g2d) {
+  /** Draws the prefix for a unit listing the name, owner, level, and class. */
+  private void drawUnitPrefix(Graphics2D g2d) {
     int x = XMARGIN;
     int y = YMARGIN;
-    final int xInc = 225;
     String mainLine = unit.name;
     if (unit.owner != null) {
       mainLine += " (" + unit.owner.toStringShort() + ")";
@@ -208,10 +222,16 @@ public final class InfoPanel extends JPanel {
           x,
           y);
     }
+  }
+
+  /** Draws a unit on this InfoPanel. May be in a menu or on the board. */
+  private void drawUnit(Graphics2D g2d) {
+    final int xInc = 225;
+    int x = XMARGIN + xInc;
+    int y = YMARGIN;
+    final int infoFont = (int) (MEDIUM_FONT.getSize() * 1.25);
 
     g2d.setFont(SMALL_FONT);
-    x += xInc;
-    y = YMARGIN;
     Stats stats = unit.getStats();
 
     // Insert health at top here
@@ -338,6 +358,25 @@ public final class InfoPanel extends JPanel {
       drawBuildingEffect(g2d, building, ancientGroundEffect, x, y);
     } else {
       drawBuildingEffect(g2d, building, building.getEffect(), x, y);
+    }
+  }
+
+  /** Draws extended modifier info for a unit. */
+  private void drawExtendedModifierInfo(Graphics2D g2d) {
+    g2d.setFont(SMALL_FONT);
+    final int infoFont = MEDIUM_FONT.getSize();
+    final int xInc = 250;
+    int x = XMARGIN + xInc - 50;
+    int y = YMARGIN - 5;
+    int count = 0;
+    for (Modifiers.ModifierDescription description : Modifiers.getModifierDescriptions(unit.getVisibleModifiers())) {
+      g2d.drawString(description.toString(), x, y);
+      y += infoFont;
+      count++;
+      if (count == 6) {
+        x += xInc * 2;
+        y = YMARGIN - 5;
+      }
     }
   }
 

@@ -7,10 +7,16 @@ import model.unit.ability.Ability;
 import model.unit.combatant.Combat;
 import view.gui.Cursor;
 
-import java.awt.*;
+import java.awt.Color;
 
 /** A default cursor implementation for when no special cursor actions are necessary */
 public final class DecisionCursor extends Cursor<Choice, DecisionPanel> {
+
+  /**
+   * Message to check for if a unit is hovered to show modifier info instead of unit info. Will
+   * check if the message string contains this string.
+   */
+  public static final String SHOW_EXTENDED_MODIFIERS_INFO_MESSAGE = "Modifiers";
 
   /**
    * DecisionCursor Constructor. Starts at index (0,0). Has custom yellow color.
@@ -39,12 +45,12 @@ public final class DecisionCursor extends Cursor<Choice, DecisionPanel> {
     // or last row and hitting up/down.
     if (getPanel().verticalLayout) {
       if (d == Direction.DOWN && getRow() == getPanel().getMatrixHeight() - 1) {
-        setElm(getPanel().getElmAt(0,0));
+        setElm(getPanel().getElmAt(0, 0));
         moved();
         return true;
       }
       if (d == Direction.UP && getRow() == 0) {
-        setElm(getPanel().getElmAt(getPanel().getMatrixHeight() - 1,0));
+        setElm(getPanel().getElmAt(getPanel().getMatrixHeight() - 1, 0));
         moved();
         return true;
       }
@@ -67,8 +73,12 @@ public final class DecisionCursor extends Cursor<Choice, DecisionPanel> {
     // Check for having linked object. If so, inspect it
     Object obj = getElm().getVal();
     if (obj != null) {
-      if (obj instanceof Unit) panel.getFrame().showUnitStats((Unit) obj);
-      else if (obj instanceof Ability) panel.getFrame().showAbilityStats((Ability) obj);
+      if (obj instanceof Unit) {
+        panel
+            .getFrame()
+            .showUnitStats(
+                (Unit) obj, getElm().getMessage().contains(SHOW_EXTENDED_MODIFIERS_INFO_MESSAGE));
+      } else if (obj instanceof Ability) panel.getFrame().showAbilityStats((Ability) obj);
       else if (obj instanceof Combat) panel.getFrame().showCombatStats((Combat) obj);
     }
 

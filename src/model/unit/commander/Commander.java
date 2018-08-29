@@ -3,7 +3,9 @@ package model.unit.commander;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.swing.Action;
 import model.board.Tile;
 import model.game.Player;
@@ -342,6 +344,12 @@ public abstract class Commander extends MovingUnit implements Summoner {
     if (abilityChoices[level - 1] != -1)
       throw new RuntimeException("Can't pick ability for level " + level + " already picked " + i);
     abilityChoices[level - 1] = i;
+  }
+
+  /** Returns the set of modifiers the player can see in the UI. Commander levelup modifiers should be filtered out. */
+  public List<Modifier> getVisibleModifiers() {
+    return getModifiers().stream().filter(m -> ! m.name.contains(LEVEL_UP_MODIFIER_PREFIX))
+        .collect(Collectors.toList());
   }
 
   /** Commanders can't attack, so attack modifications aren't ok. */

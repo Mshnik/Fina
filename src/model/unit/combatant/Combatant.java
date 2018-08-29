@@ -166,6 +166,11 @@ public abstract class Combatant extends MovingUnit {
     return canFight;
   }
 
+  /** All modifiers are visible. */
+  public List<Modifier> getVisibleModifiers() {
+    return getModifiers();
+  }
+
   /** Combatants are ok with any kind of modifier except summon range */
   @Override
   public boolean modifierOk(Modifier m) {

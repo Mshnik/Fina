@@ -107,6 +107,11 @@ public abstract class Building<E> extends Unit {
     return validTerrain.contains(t);
   }
 
+  /** All modifiers are visible. */
+  public List<Modifier> getVisibleModifiers() {
+    return getModifiers();
+  }
+
   /** Modifiers can't add movement or attack */
   @Override
   public boolean modifierOk(Modifier m) {

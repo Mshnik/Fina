@@ -1,6 +1,5 @@
 package model.unit.modifier;
 
-import model.unit.Unit;
 import model.unit.modifier.Modifier.StackMode;
 import model.unit.stat.StatType;
 
@@ -21,7 +20,7 @@ public final class Modifiers {
   /** A list of all modifier descriptions in the game. */
   private static final List<ModifierDescription> MODIFIER_DESCRIPTIONS;
 
-  static  {
+  static {
     ArrayList<ModifierDescription> list = new ArrayList<>();
     list.add(new ModifierDescription(armored(0)));
     list.add(new ModifierDescription(bornToFight(0)));
@@ -46,15 +45,26 @@ public final class Modifiers {
   public static final class ModifierDescription {
     private final String name;
     private final String description;
+    private final int turnsRemaining;
 
     private ModifierDescription(Modifier m) {
       this.name = m.name;
       this.description = m.toStatString();
+      this.turnsRemaining = m.getRemainingTurns();
     }
 
     private ModifierDescription(ModifierBundle m) {
       this.name = m.getModifiers().get(0).name;
       this.description = m.toStatString().trim();
+      this.turnsRemaining = m.getTurnsRemaining();
+    }
+
+    @Override
+    public String toString() {
+      return name
+          + " - "
+          + description
+          + (turnsRemaining == Integer.MAX_VALUE ? "" : " (" + turnsRemaining + " turns)");
     }
   }
 
@@ -63,12 +73,12 @@ public final class Modifiers {
     return MODIFIER_DESCRIPTIONS;
   }
 
-  /** Returns a list of all modifier descriptions currently affecting the given unit. */
-  public static List<ModifierDescription> getModifierDescriptions(Unit u) {
+  /** Returns a list of all modifier descriptions for the given list of modifiers */
+  public static List<ModifierDescription> getModifierDescriptions(List<Modifier> modifiers) {
     HashSet<Modifier> addedModifiers = new HashSet<>();
     ArrayList<ModifierDescription> descriptions = new ArrayList<>();
-    for (Modifier m : u.getModifiers()) {
-      if (! addedModifiers.contains(m)) {
+    for (Modifier m : modifiers) {
+      if (!addedModifiers.contains(m)) {
         if (m.bundle != null) {
           descriptions.add(new ModifierDescription(m.bundle));
           addedModifiers.addAll(m.bundle.getModifiers());
@@ -84,14 +94,14 @@ public final class Modifiers {
   /** Modifier that reduces incoming melee damage */
   public static Modifier armored(int damageReduction) {
     return new CustomModifier(
-        "Armored",
-        "This unit takes -x- less damage from melee attacks",
-        damageReduction,
-        Integer.MAX_VALUE,
-        StackMode.STACKABLE,
-        true,
-        true,
-        true)
+            "Armored",
+            "This unit takes -x- less damage from melee attacks",
+            damageReduction,
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            true,
+            true,
+            true)
         .uniqueCopy();
   }
 
@@ -154,26 +164,26 @@ public final class Modifiers {
   /** Modifier that reduces incoming ranged damage */
   public static Modifier elusive(int damageReduction) {
     return new CustomModifier(
-        "Elusive",
-        "This unit takes -x- less damage from ranged attacks",
-        damageReduction,
-        Integer.MAX_VALUE,
-        StackMode.STACKABLE,
-        true,
-        true,
-        true)
+            "Elusive",
+            "This unit takes -x- less damage from ranged attacks",
+            damageReduction,
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            true,
+            true,
+            true)
         .uniqueCopy();
   }
 
   /** Modifier that increases total movement */
   public static Modifier farsight(int visionRangeIncrease) {
     return new StatModifier(
-        "Farsight",
-        Integer.MAX_VALUE,
-        StackMode.STACKABLE,
-        StatType.VISION_RANGE,
-        StatModifier.ModificationType.ADD,
-        visionRangeIncrease)
+            "Farsight",
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            StatType.VISION_RANGE,
+            StatModifier.ModificationType.ADD,
+            visionRangeIncrease)
         .uniqueCopy();
   }
 
@@ -183,15 +193,7 @@ public final class Modifiers {
   public static ModifierBundle flight() {
     return new ModifierBundle(
         new CustomModifier(
-            "Flight",
-            "",
-            null,
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            false,
-            true,
-            true
-        ),
+            "Flight", "", null, Integer.MAX_VALUE, StackMode.STACKABLE, false, true, true),
         eagleEye(),
         trailblazer(1),
         pathfinder(1));

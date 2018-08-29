@@ -66,10 +66,10 @@ public abstract class Unit implements Stringable {
   Stats stats;
 
   /** The modifiers this is the source of */
-  private LinkedList<Modifier> grantedModifiers;
+  private List<Modifier> grantedModifiers;
 
   /** A set of modifiers that are currently affecting this model.unit */
-  private LinkedList<Modifier> modifiers;
+  private List<Modifier> modifiers;
 
   /**
    * Constructor for Unit. Also adds this model.unit to the tile it is on as an occupant, and its
@@ -105,8 +105,8 @@ public abstract class Unit implements Stringable {
     this.manaCostScaling = manaCostScaling;
     this.stats = new Stats(stats, null);
     health = getMaxHealth();
-    modifiers = new LinkedList<>();
-    grantedModifiers = new LinkedList<>();
+    modifiers = new ArrayList<>();
+    grantedModifiers = new ArrayList<>();
   }
 
   /**
@@ -369,9 +369,12 @@ public abstract class Unit implements Stringable {
    * Returns the modifiers currently affecting this model.unit Pass-by-value, so editing the
    * returned set doesn't do anything
    */
-  public LinkedList<Modifier> getModifiers() {
-    return new LinkedList<>(modifiers);
+  public List<Modifier> getModifiers() {
+    return new ArrayList<>(modifiers);
   }
+
+  /** Returns the set of modifiers the player can see in the UI. Commander levelup modifiers should be filtered out. */
+  public abstract List<Modifier> getVisibleModifiers();
 
   /** Returns true if this unit has a modifier matching the given name, false otherwise. */
   public boolean hasModifierByName(Modifier modifier) {

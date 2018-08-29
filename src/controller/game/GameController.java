@@ -24,6 +24,7 @@ import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.unit.commander.DummyCommander;
 import view.gui.Frame;
+import view.gui.decision.DecisionCursor;
 import view.gui.panel.BoardCursor;
 import view.gui.panel.GamePanel;
 
@@ -59,6 +60,11 @@ public final class GameController {
   public static final String BUILD = "Build";
   /** Text representing casting (Using active abilities) */
   public static final String CAST = "Magic";
+  /**
+   * Text representing into - the user can't click this, it changes the info panel when it is
+   * hovered.
+   */
+  private static final String INFO_PREFIX = "Info: ";
 
   /** Colors that will be used to tint player units. */
   private static final Color[] playerColorsArr = {
@@ -251,6 +257,7 @@ public final class GameController {
     decision = null;
     frame.getGamePanel().setDecisionPanel(null);
     frame.setActiveCursor(getGamePanel().boardCursor);
+    frame.getInfoPanel().clearExtendedModifiersInfo();
     repaint();
   }
 
@@ -287,15 +294,19 @@ public final class GameController {
     // Add choices based on the model.unit on this tile
     LinkedList<Choice> choices = new LinkedList<Choice>();
     if (u instanceof MovingUnit) {
-      choices.add(new Choice(u.canMove(), MOVE));
+      choices.add(new Choice(u.canMove(), MOVE, u));
     }
     if (u instanceof Combatant) {
-      choices.add(new Choice(u.canFight() && ((Combatant) u).hasFightableTarget(), FIGHT));
+      choices.add(new Choice(u.canFight() && ((Combatant) u).hasFightableTarget(), FIGHT, u));
     }
     if (u instanceof Commander || u instanceof Summoner) {
       int actionsRemaining = u.owner.getCommanderActionsRemaining();
       choices.add(
           new Choice(actionsRemaining > 0, COMMANDER_ACTION + " (" + actionsRemaining + ")", u));
+    }
+    if (u.getVisibleModifiers().size() > 0) {
+      choices.add(
+          new Choice(true, INFO_PREFIX + DecisionCursor.SHOW_EXTENDED_MODIFIERS_INFO_MESSAGE, u));
     }
 
     // If there are no applicable choices, do nothing
@@ -314,6 +325,9 @@ public final class GameController {
    */
   void processActionDecision(Choice c) throws RuntimeException {
     String choice = c.getMessage().replaceAll(" \\([0-9]*\\)", "");
+    if (choice.contains(INFO_PREFIX)) {
+      return;
+    }
     cancelDecision();
     switch (choice) {
       case MOVE:

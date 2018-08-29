@@ -252,8 +252,8 @@ public final class Frame extends JFrame {
   }
 
   /** Updates the info panel to show the given model.unit * */
-  public void showUnitStats(Unit u) {
-    infoPanel.setUnit(u, true);
+  public void showUnitStats(Unit u, boolean extendedModifiersInfo) {
+    infoPanel.setUnit(u, true, extendedModifiersInfo);
   }
 
   /** Updates the info panel to show the given ability * */
