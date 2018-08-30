@@ -118,11 +118,39 @@ public final class Modifiers {
     return Collections.unmodifiableList(descriptions);
   }
 
+  /** Returns the ModifierBundle by name, with the given value. If the value is not used, it may be null. */
+  public static ModifierBundle getBundleByName(String modName, Number modValue) {
+    switch (modName) {
+      case "Armored": return new ModifierBundle(armored(modValue.doubleValue()));
+      case "Blinded": return new ModifierBundle(blinded(modValue.intValue()));
+      case "Bloodlust": return new ModifierBundle(bloodlust(modValue.doubleValue()));
+      case "Born to Fight": return new ModifierBundle(bornToFight(modValue.intValue()));
+      case "Disappearance": return new ModifierBundle(disappearance());
+      case "Eagle Eye": return new ModifierBundle(eagleEye());
+      case "Elusive": return new ModifierBundle(elusive(modValue.doubleValue()));
+      case "Farsight": return new ModifierBundle(farsight(modValue.intValue()));
+      case "Flight": return flight();
+      case "Hexproof": return new ModifierBundle(hexproof(modValue.doubleValue()));
+      case "Pathfinder": return new ModifierBundle(pathfinder(modValue.intValue()));
+      case "Patience": return new ModifierBundle(patience(modValue.doubleValue()));
+      case "Quickness": return new ModifierBundle(quickness(modValue.intValue()));
+      case "Shielded": return new ModifierBundle(shielded(modValue.doubleValue()));
+      case "Siege": return new ModifierBundle(siege(modValue.doubleValue()));
+      case "Sluggish": return new ModifierBundle(sluggish(modValue.intValue()));
+      case "Strengthened": return strengthened(modValue.intValue());
+      case "Tenacity": return new ModifierBundle(tenacity(modValue.intValue()));
+      case "Toughness": return new ModifierBundle(toughness(modValue.intValue()));
+      case "Trailblazer": return new ModifierBundle(trailblazer(modValue.intValue()));
+      case "Weakened": return new ModifierBundle(weakened(modValue.intValue()));
+      default: throw new RuntimeException("Unknown modName: " + modName);
+    }
+  }
+
   /** Modifier that reduces incoming melee damage */
-  public static Modifier armored(int damageReduction) {
+  public static Modifier armored(double damageReduction) {
     return new CustomModifier(
             "Armored",
-            "This unit takes -x- less damage from melee attacks",
+            "This unit takes -x%- less damage from melee attacks",
             damageReduction,
             Integer.MAX_VALUE,
             StackMode.STACKABLE,
@@ -201,11 +229,11 @@ public final class Modifiers {
   }
 
   /** Modifier that reduces incoming ranged damage */
-  public static Modifier elusive(int damageReduction) {
+  public static Modifier elusive(double damageReductionPercent) {
     return new CustomModifier(
             "Elusive",
-            "This unit takes -x- less damage from ranged attacks",
-            damageReduction,
+            "This unit takes -x%- less damage from ranged attacks",
+            damageReductionPercent,
             Integer.MAX_VALUE,
             StackMode.STACKABLE,
             true,
@@ -267,7 +295,7 @@ public final class Modifiers {
   /** Modifier that deals more damage on counterattack */
   public static Modifier patience(double bonusCounterAttackDamagePercent) {
     return new CustomModifier(
-            "Siege",
+            "Patience",
             "This unit deals -x%- more damage when counter attacking",
             bonusCounterAttackDamagePercent,
             Integer.MAX_VALUE,

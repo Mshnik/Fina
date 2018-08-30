@@ -96,19 +96,17 @@ public final class Combatants {
 
           FileCombatant unit = new FileCombatant(name, img, level, classes, manaCost, stats);
 
-          // Default buffs by class and/or level.
-          if (classes.contains(Combatant.CombatantClass.FIGHTER)) {
-            Modifiers.bornToFight(10).clone(unit);
-          }
-          if (classes.contains(Combatant.CombatantClass.RANGER)) {
-            Modifiers.pathfinder(1).clone(unit);
-            Modifiers.trailblazer(3).clone(unit);
-          }
-          if (classes.contains(Combatant.CombatantClass.ASSASSIN)) {
-            Modifiers.disappearance().clone(unit);
-          }
-          if (classes.contains(Combatant.CombatantClass.TANK)) {
-            Modifiers.tenacity(5).clone(unit);
+          int modifiersStartIndex = 12;
+          for (int i = modifiersStartIndex; i < comps.length; i++) {
+            String modString = comps[i].trim();
+            if (modString.isEmpty()) {
+              break;
+            }
+
+            String[] modComps = modString.split("-");
+            String modName = modComps[0];
+            Number modVal = modComps.length > 1 ? Double.parseDouble(modComps[1]) : null;
+            Modifiers.getBundleByName(modName, modVal).clone(unit);
           }
 
           // Add to list.

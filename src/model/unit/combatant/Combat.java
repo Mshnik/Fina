@@ -150,18 +150,22 @@ public final class Combat {
         (int) (attacker.getMaxAttackScaled() * classBonus * getTypeBonusRatio(attacker, defender)));
   }
 
-  /** Returns the sum of all damage reduction for the attacker. */
-  public int getAttackerDamageReduction() {
+  /** Returns the sum of all percentage damage reduction for the defender, for the given combat. */
+  private double getAttackerPercentageDamageReduction() {
     return attacker
-            .getModifiersByName(Modifiers.toughness(0))
-            .stream()
-            .mapToInt(m -> ((CustomModifier) m).val.intValue())
-            .sum()
-        + attacker
-            .getModifiersByName(isRanged() ? Modifiers.elusive(0) : Modifiers.armored(0))
-            .stream()
-            .mapToInt(m -> ((CustomModifier) m).val.intValue())
-            .sum();
+        .getModifiersByName(isRanged() ? Modifiers.elusive(0) : Modifiers.armored(0))
+        .stream()
+        .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
+        .sum();
+  }
+
+  /** Returns the sum of all damage reduction for the attacker. */
+  private int getAttackerFlatDamageReduction() {
+    return attacker
+        .getModifiersByName(Modifiers.toughness(0))
+        .stream()
+        .mapToInt(m -> ((CustomModifier) m).val.intValue())
+        .sum();
   }
 
   /** Returns true iff the defender could counterattack if it has health left after the attack. */
@@ -203,22 +207,26 @@ public final class Combat {
                 * getDefenderCounterAttackBonusRatio()));
   }
 
-  /** Returns the sum of all damage reduction for the defender. */
-  public int getDefenderDamageReduction() {
+  /** Returns the sum of all percentage damage reduction for the defender, for the given combat. */
+  private double getDefenderPercentageDamageReduction() {
     return defender
-            .getModifiersByName(Modifiers.toughness(0))
-            .stream()
-            .mapToInt(m -> ((CustomModifier) m).val.intValue())
-            .sum()
-        + defender
-            .getModifiersByName(isRanged() ? Modifiers.elusive(0) : Modifiers.armored(0))
-            .stream()
-            .mapToInt(m -> ((CustomModifier) m).val.intValue())
-            .sum();
+        .getModifiersByName(isRanged() ? Modifiers.elusive(0) : Modifiers.armored(0))
+        .stream()
+        .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
+        .sum();
+  }
+
+  /** Returns the sum of all damage reduction for the defender. */
+  private int getDefenderFlatDamageReduction() {
+    return defender
+        .getModifiersByName(Modifiers.toughness(0))
+        .stream()
+        .mapToInt(m -> ((CustomModifier) m).val.intValue())
+        .sum();
   }
 
   /** Returns the sum of all counterattack damage boosting modifiers for the defender. */
-  public double getDefenderCounterAttackBonusRatio() {
+  private double getDefenderCounterAttackBonusRatio() {
     return 1
         + defender
             .getModifiersByName(Modifiers.patience(0))
@@ -237,7 +245,7 @@ public final class Combat {
       return 0;
     }
     double minProjectedHealthPercentage =
-        ((double) defender.getHealth() + getDefenderDamageReduction() - getMaxAttack())
+        ((double) defender.getHealth() + getDefenderFlatDamageReduction() - getMaxAttack())
             / defender.getMaxHealth();
     return (int)
         (defender.getMinAttack()
@@ -256,7 +264,7 @@ public final class Combat {
       return 0;
     }
     double maxProjectedHealthPercentage =
-        ((double) defender.getHealth() + getDefenderDamageReduction() - getMinAttack())
+        ((double) defender.getHealth() + getDefenderFlatDamageReduction() - getMinAttack())
             / defender.getMaxHealth();
     return (int)
         (defender.getMaxAttack()
@@ -298,7 +306,7 @@ public final class Combat {
 
     // Get damage in range [min,max]
     int damage = random.nextInt(getMaxAttack() + 1 - getMinAttack()) + getMinAttack();
-    System.out.println("damage: " + damage);
+    System.out.println("Raw Attack damage: " + damage);
 
     // True if a counterAttack is happening, false otherwise.
     boolean counterAttack = defenderCouldCounterAttack() && damage < defender.getHealth();
@@ -307,7 +315,14 @@ public final class Combat {
     if (counterAttack) defender.preCounterFight(attacker);
 
     // attacker attacks defender, less damage reduction.
-    defender.changeHealth(Math.min(0, getDefenderDamageReduction() - damage), attacker);
+    int finalDamage =
+        (int)
+            Math.max(
+                0,
+                damage * Math.max(0, 1 - getDefenderPercentageDamageReduction())
+                    - getDefenderFlatDamageReduction());
+    System.out.println("Final Attack damage: " + finalDamage);
+    defender.changeHealth(-finalDamage, attacker);
 
     // If defender is still alive, can see the first unit,
     // and this is within range, defender counterattacks
@@ -316,11 +331,17 @@ public final class Combat {
       // Get damage in range [min,max]
       counterAttackDamage =
           random.nextInt(getMaxCounterAttack() + 1 - getMinCounterAttack()) + getMinCounterAttack();
-      System.out.println("Counter damage: " + counterAttackDamage);
+      System.out.println("Raw Counter damage: " + counterAttackDamage);
 
       // Change this unit's health
-      attacker.changeHealth(
-          Math.min(0, getAttackerDamageReduction() - counterAttackDamage), defender);
+      int finalCounterDamage =
+          (int)
+              Math.max(
+                  0,
+                  counterAttackDamage * Math.max(0, 1 - getAttackerPercentageDamageReduction())
+                      - getAttackerFlatDamageReduction());
+      System.out.println("Final Counter damage: " + finalCounterDamage);
+      attacker.changeHealth(Math.min(0, -finalCounterDamage), defender);
       counterAttack = true;
     }
 

@@ -77,6 +77,11 @@ public final class ModifierBundle implements Collection<Modifier> {
     m.bundle = null;
   }
 
+  /** Calls clone(unit, unit). */
+  public ModifierBundle clone(Unit unit) {
+    return clone(unit, unit);
+  }
+
   /**
    * Clones each modifier in this bundle and adds them to a new ModifierBundle. Clones for
    * model.unit model.unit, from model.unit source. Returns that bundle
