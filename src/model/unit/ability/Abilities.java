@@ -134,7 +134,7 @@ public final class Abilities {
       case "Sacrifice":
         return Collections.singletonList(AbilityEffect.destroyUnit());
       case "Cone of Flame":
-        return Collections.singletonList(AbilityEffect.damage(15, 30));
+        return Collections.singletonList(AbilityEffect.damage(30, 45));
       case "Strengthen":
         return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.strengthened(5)));
       case "Repair":
@@ -145,10 +145,10 @@ public final class Abilities {
         return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.quickness(2)));
       case "Cone of Ice":
         return Arrays.asList(
-            AbilityEffect.damage(15, 30), AbilityEffect.modifierBundle(Modifiers.sluggish(1)));
+            AbilityEffect.damage(30, 45), AbilityEffect.modifierBundle(Modifiers.sluggish(1)));
       case "Cone of Electricity":
         return Arrays.asList(
-            AbilityEffect.damage(15, 30), AbilityEffect.modifierBundle(Modifiers.weakened(5)));
+            AbilityEffect.damage(30, 45), AbilityEffect.modifierBundle(Modifiers.weakened(5)));
       case "Mass Heal":
         return Collections.singletonList(AbilityEffect.healPercentageOfMaxHp(.25));
       case "Resolution":
