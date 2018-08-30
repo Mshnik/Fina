@@ -314,7 +314,7 @@ public abstract class Unit implements Stringable {
 
   /** Returns the min attack strength of this model.unit. 0 if this is not a combatant. */
   public int getMinAttack() {
-    return (Integer) stats.getStat(StatType.MIN_ATTACK);
+    return Math.max(0,(Integer) stats.getStat(StatType.MIN_ATTACK));
   }
 
   /** Returns the min attack of this unit, scaled by its current health percentage. */
@@ -324,7 +324,7 @@ public abstract class Unit implements Stringable {
 
   /** Returns the max attack strength of this model.unit. 0 if this is not a combatant. */
   public int getMaxAttack() {
-    return (int) (Integer) stats.getStat(StatType.MAX_ATTACK);
+    return Math.max(0,(Integer) stats.getStat(StatType.MAX_ATTACK));
   }
 
   /** Returns the max attack of this unit, scaled by its current health percentage. */
@@ -334,22 +334,22 @@ public abstract class Unit implements Stringable {
 
   /** Returns the min attack range of this model.unit. */
   public int getMinAttackRange() {
-    return (Integer) stats.getStat(StatType.MIN_ATTACK_RANGE);
+    return Math.max(0,(Integer) stats.getStat(StatType.MIN_ATTACK_RANGE));
   }
 
   /** Returns the attack range of this model.unit. */
   public int getMaxAttackRange() {
-    return (Integer) stats.getStat(StatType.MAX_ATTACK_RANGE);
+    return Math.max(0,(Integer) stats.getStat(StatType.MAX_ATTACK_RANGE));
   }
 
   /** Returns the vision range of this model.unit. */
   public int getVisionRange() {
-    return (Integer) stats.getStat(StatType.VISION_RANGE);
+    return Math.max(0,(Integer) stats.getStat(StatType.VISION_RANGE));
   }
 
   /** Returns the summon range of this model.unit. */
   public int getSummonRange() {
-    return (Integer) stats.getStat(StatType.SUMMON_RANGE);
+    return Math.max(0,(Integer) stats.getStat(StatType.SUMMON_RANGE));
   }
 
   /** Returns the mana per turn this model.unit costs/generates */

@@ -23,8 +23,10 @@ public final class Modifiers {
   static {
     ArrayList<ModifierDescription> list = new ArrayList<>();
     list.add(new ModifierDescription(armored(0)));
-    list.add(new ModifierDescription(bornToFight(0)));
+    list.add(new ModifierDescription(blinded(0)));
     list.add(new ModifierDescription(bloodlust(0)));
+    list.add(new ModifierDescription(bornToFight(0)));
+    list.add(new ModifierDescription(disappearance()));
     list.add(new ModifierDescription(eagleEye()));
     list.add(new ModifierDescription(elusive(0)));
     list.add(new ModifierDescription(farsight(0)));
@@ -33,11 +35,14 @@ public final class Modifiers {
     list.add(new ModifierDescription(pathfinder(0)));
     list.add(new ModifierDescription(patience(0)));
     list.add(new ModifierDescription(shielded(0)));
+    list.add(new ModifierDescription(siege(0)));
+    list.add(new ModifierDescription(sluggish(0)));
     list.add(new ModifierDescription(strengthened(0)));
     list.add(new ModifierDescription(tenacity(0)));
     list.add(new ModifierDescription(toughness(0)));
     list.add(new ModifierDescription(trailblazer(0)));
     list.add(new ModifierDescription(quickness(0)));
+    list.add(new ModifierDescription(weakness(0)));
     MODIFIER_DESCRIPTIONS = Collections.unmodifiableList(list);
   }
 
@@ -127,17 +132,15 @@ public final class Modifiers {
         .uniqueCopy();
   }
 
-  /** Modifier that gives life gain after dealing damage. */
-  public static Modifier bornToFight(int healthGainedPerAttack) {
-    return new CustomModifier(
-            "Born to Fight",
-            "After dealing damage, this unit gains -x- health",
-            healthGainedPerAttack,
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            false,
-            false,
-            true)
+  /** Modifier that decreases vision range */
+  public static Modifier blinded(int visionRangeDecreases) {
+    return new StatModifier(
+        "Farsight",
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        StatType.VISION_RANGE,
+        StatModifier.ModificationType.ADD,
+        -visionRangeDecreases)
         .uniqueCopy();
   }
 
@@ -152,6 +155,20 @@ public final class Modifiers {
             false,
             false,
             true)
+        .uniqueCopy();
+  }
+
+  /** Modifier that gives life gain after dealing damage. */
+  public static Modifier bornToFight(int healthGainedPerAttack) {
+    return new CustomModifier(
+        "Born to Fight",
+        "After dealing damage, this unit gains -x- health",
+        healthGainedPerAttack,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        false,
+        false,
+        true)
         .uniqueCopy();
   }
 
@@ -287,6 +304,18 @@ public final class Modifiers {
         .uniqueCopy();
   }
 
+  /** Modifier that decreases total movement */
+  public static Modifier sluggish(int totalMovementDecrease) {
+    return new StatModifier(
+        "Sluggish",
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        StatType.MOVEMENT_TOTAL,
+        StatModifier.ModificationType.ADD,
+        -totalMovementDecrease)
+        .uniqueCopy();
+  }
+
   /** Modifier Bundle that grants bonus min and max attack. */
   public static ModifierBundle strengthened(int attackBonus) {
     return new ModifierBundle(
@@ -359,5 +388,27 @@ public final class Modifiers {
             StatModifier.ModificationType.ADD,
             totalMovementIncrease)
         .uniqueCopy();
+  }
+
+  /** Modifier that decreases attack strength */
+  public static ModifierBundle weakness(int attackDecrease) {
+    return new ModifierBundle(
+        new StatModifier(
+            "Strengthened",
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            StatType.MIN_ATTACK,
+            StatModifier.ModificationType.ADD,
+            -attackDecrease)
+            .uniqueCopy(),
+        new StatModifier(
+            // Empty so name doesn't occur twice.
+            "",
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            StatType.MAX_ATTACK,
+            StatModifier.ModificationType.ADD,
+            -attackDecrease)
+            .uniqueCopy());
   }
 }
