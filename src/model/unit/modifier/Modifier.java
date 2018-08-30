@@ -96,6 +96,8 @@ public abstract class Modifier implements Stringable {
     Object val = getValue();
     if (val instanceof Double) {
       return String.format("%d%%", (int)(((double) val) * 100) - (this instanceof StatModifier ? 100 : 0));
+    } else if (val instanceof Integer && ((int) val) < 0) {
+      return Integer.toString(-(int)val);
     } else if (val != null) {
       return val.toString();
     } else {

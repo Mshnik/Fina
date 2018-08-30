@@ -42,7 +42,7 @@ public final class Modifiers {
     list.add(new ModifierDescription(toughness(0)));
     list.add(new ModifierDescription(trailblazer(0)));
     list.add(new ModifierDescription(quickness(0)));
-    list.add(new ModifierDescription(weakness(0)));
+    list.add(new ModifierDescription(weakened(0)));
     MODIFIER_DESCRIPTIONS = Collections.unmodifiableList(list);
   }
 
@@ -135,7 +135,7 @@ public final class Modifiers {
   /** Modifier that decreases vision range */
   public static Modifier blinded(int visionRangeDecreases) {
     return new StatModifier(
-        "Farsight",
+        "Blinded",
         Integer.MAX_VALUE,
         StackMode.STACKABLE,
         StatType.VISION_RANGE,
@@ -391,10 +391,10 @@ public final class Modifiers {
   }
 
   /** Modifier that decreases attack strength */
-  public static ModifierBundle weakness(int attackDecrease) {
+  public static ModifierBundle weakened(int attackDecrease) {
     return new ModifierBundle(
         new StatModifier(
-            "Strengthened",
+            "Weakened",
             Integer.MAX_VALUE,
             StackMode.STACKABLE,
             StatType.MIN_ATTACK,
