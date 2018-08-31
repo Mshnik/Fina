@@ -8,6 +8,7 @@ import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;
 import model.unit.combatant.Combat;
+import model.unit.combatant.Combatant;
 import view.gui.NewGameSelector.NewGameOptions;
 import view.gui.panel.GamePanel;
 import view.gui.panel.HeaderPanel;
@@ -206,12 +207,19 @@ public final class Frame extends JFrame {
 
   /** Creates default view options for the given player. */
   public void createViewOptionsForPlayer(Player p) {
-    viewOptionsMap.put(p.index, new ViewOptions(this, p.index));
+    viewOptionsMap.put(p.index, new ViewOptions(this, p));
   }
 
   /** Returns the view options for the given player. */
   public ViewOptions getViewOptionsForPlayer(Player p) {
     return viewOptionsMap.get(p.index);
+  }
+
+  /** Called when a unit's danger radius changes. Propagates changes to ViewOptions */
+  public void unitDangerRadiusChanged(Combatant c) {
+    for (ViewOptions viewOptions : viewOptionsMap.values()) {
+      viewOptions.unitDangerRadiusChanged(c);
+    }
   }
 
   /** Helper to create the game panel for this. If old game panel existed, dispose first. */

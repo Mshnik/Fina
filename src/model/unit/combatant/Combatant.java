@@ -1,5 +1,8 @@
 package model.unit.combatant;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
@@ -11,10 +14,6 @@ import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 import model.util.ExpandableCloud;
-
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Represents a moving and fighting unit
@@ -154,6 +153,9 @@ public abstract class Combatant extends MovingUnit {
   public void refreshForTurn() {
     super.refreshForTurn();
     canFight = true;
+    if (owner != null) {
+      owner.game.getController().frame.unitDangerRadiusChanged(this);
+    }
   }
 
   /** Sets whether this unit can still attack. */
@@ -206,13 +208,12 @@ public abstract class Combatant extends MovingUnit {
 
   /** Returns the list of tiles this can attack from the given tile. */
   public List<Tile> getAttackableTilesFrom(Tile tile) {
-    return
-        ExpandableCloud.create(ExpandableCloud.ExpandableCloudType.CIRCLE, getMaxAttackRange() + 1)
-            .difference(
-                ExpandableCloud.create(
-                    ExpandableCloud.ExpandableCloudType.CIRCLE, getMinAttackRange()))
-            .translate(tile.getPoint())
-            .toTileSet(owner.game.board);
+    return ExpandableCloud.create(
+            ExpandableCloud.ExpandableCloudType.CIRCLE, getMaxAttackRange() + 1)
+        .difference(
+            ExpandableCloud.create(ExpandableCloud.ExpandableCloudType.CIRCLE, getMinAttackRange()))
+        .translate(tile.getPoint())
+        .toTileSet(owner.game.board);
   }
 
   /** Returns the list of tiles this can attack, given its current location. */
@@ -234,8 +235,15 @@ public abstract class Combatant extends MovingUnit {
   @Override
   public void preMove(LinkedList<Tile> path) {}
 
+  /**
+   * Called after moving - tell the frame that danger clouds including this need to be recomputed.
+   */
   @Override
-  public void postMove(LinkedList<Tile> path) {}
+  public void postMove(LinkedList<Tile> path) {
+    if (path.size() > 0 && owner != null) {
+      owner.game.getController().frame.unitDangerRadiusChanged(this);
+    }
+  }
 
   @Override
   public void preCounterFight(Combatant other) {}
@@ -266,6 +274,18 @@ public abstract class Combatant extends MovingUnit {
         CustomModifier customModifier = (CustomModifier) m;
         changeHealth(customModifier.val.intValue(), this);
       }
+    }
+    if (owner != null) {
+      owner.game.getController().frame.unitDangerRadiusChanged(this);
+    }
+  }
+
+  /** When a non-dummy combatant's stats are changed, refresh the danger cloud if this is in one. */
+  @Override
+  protected void refreshStats() {
+    super.refreshStats();
+    if (owner != null) {
+      owner.game.getController().frame.unitDangerRadiusChanged(this);
     }
   }
 

@@ -12,6 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Set;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Game;
@@ -169,6 +170,16 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
             g2d.drawString(t.getPoint().toString(), getXPosition(t), getYPosition(t) + 10);
           }
         }
+      }
+    }
+
+    // Draw danger radius for active player. May be empty.
+    if (game.getCurrentPlayer() != null) {
+      Set<Tile> dangerRadius = getFrame().getViewOptionsForPlayer(game.getCurrentPlayer()).getDangerRadius();
+      if (!dangerRadius.isEmpty()) {
+        g2d.setColor(ATTACK_COLOR);
+        g2d.setStroke(new BasicStroke(2));
+        ImageIndex.trace(dangerRadius, this, g2d);
       }
     }
 
