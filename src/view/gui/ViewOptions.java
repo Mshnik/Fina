@@ -35,9 +35,13 @@ public final class ViewOptions {
     paintDangerRadiusUnits.clear();
   }
 
-  /** Adds the given unit to the dangerRadius. */
-  void addDangerRadiusUnit(Combatant c) {
-    paintDangerRadiusUnits.add(c);
+  /** Adds the given unit to the dangerRadius if it isn't present, removes it if it is present. */
+  public void toggleDangerRadiusUnit(Combatant c) {
+    if (!paintDangerRadiusUnits.contains(c)) {
+      paintDangerRadiusUnits.add(c);
+    } else {
+      paintDangerRadiusUnits.remove(c);
+    }
   }
 
   /** Remove all dead units from the danger radius. */
@@ -61,6 +65,7 @@ public final class ViewOptions {
    * is empty. Causes a cleanup that removes dead units.
    */
   public Set<Tile> getDangerRadius() {
+    cleanupDangerRadiusUnits();
     return paintDangerRadiusUnits
         .stream()
         .flatMap(

@@ -185,11 +185,6 @@ public final class Frame extends JFrame {
     }
     controller = c;
 
-    // Non-visual setup.
-    for (Player p : controller.game.getRemainingPlayers()) {
-      viewOptionsMap.put(p.index, new ViewOptions(this, p.index));
-    }
-
     // New Visual setup
     createGamePanel();
     HeaderPanel hp = new HeaderPanel(this);
@@ -207,6 +202,16 @@ public final class Frame extends JFrame {
   /** Returns the current zoom. */
   public double getZoom() {
     return ZOOM[zoomIndex];
+  }
+
+  /** Creates default view options for the given player. */
+  public void createViewOptionsForPlayer(Player p) {
+    viewOptionsMap.put(p.index, new ViewOptions(this, p.index));
+  }
+
+  /** Returns the view options for the given player. */
+  public ViewOptions getViewOptionsForPlayer(Player p) {
+    return viewOptionsMap.get(p.index);
   }
 
   /** Helper to create the game panel for this. If old game panel existed, dispose first. */

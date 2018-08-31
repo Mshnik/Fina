@@ -59,6 +59,9 @@ public final class GameController {
   public static final String BUILD = "Build";
   /** Text representing casting (Using active abilities) */
   public static final String CAST = "Magic";
+  /** Text Suffix for toggling showing / unshowing the danger radius for this unit. */
+  private static final String TOGGLE_DANGER_RADIUS = "Toggle Danger Zone";
+
   /**
    * Text representing into - the user can't click this, it changes the info panel when it is
    * hovered.
@@ -129,6 +132,7 @@ public final class GameController {
     // Create players.
     for (int i = 0; i < numPlayers; i++) {
       Player p = new HumanPlayer(g, playerColorsArr[i]);
+      gc.frame.createViewOptionsForPlayer(p);
       new DummyCommander(p, 4);
     }
 
@@ -309,10 +313,13 @@ public final class GameController {
             new Choice(actionsRemaining > 0, COMMANDER_ACTION + " (" + actionsRemaining + ")", u));
       }
     }
-    // Information choices.
+    // Information choices - can be either player.
     if (u.getVisibleModifiers().size() > 0) {
       choices.add(
           new Choice(true, INFO_PREFIX + DecisionCursor.SHOW_EXTENDED_MODIFIERS_INFO_MESSAGE, u));
+    }
+    if (u instanceof Combatant) {
+      choices.add(new Choice(true, TOGGLE_DANGER_RADIUS, u));
     }
 
     // If there are no applicable choices, do nothing
@@ -331,6 +338,7 @@ public final class GameController {
    */
   void processActionDecision(Choice c) throws RuntimeException {
     String choice = c.getMessage().replaceAll(" \\([0-9]*\\)", "");
+    Object val = c.getVal();
     if (choice.contains(INFO_PREFIX)) {
       return;
     }
@@ -344,6 +352,11 @@ public final class GameController {
         break;
       case FIGHT:
         startAttackSelection();
+        break;
+      case TOGGLE_DANGER_RADIUS:
+        frame
+            .getViewOptionsForPlayer(game.getCurrentPlayer())
+            .toggleDangerRadiusUnit((Combatant) val);
         break;
       default:
         throw new RuntimeException("Don't know how to handle this choice " + choice);
