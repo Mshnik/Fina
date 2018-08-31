@@ -242,6 +242,7 @@ public abstract class Combatant extends MovingUnit {
   public void postMove(LinkedList<Tile> path) {
     if (path.size() > 0 && owner != null) {
       owner.game.getController().frame.unitDangerRadiusChanged(this);
+      owner.maybeRemoveActionableUnit(this);
     }
   }
 
@@ -277,6 +278,7 @@ public abstract class Combatant extends MovingUnit {
     }
     if (owner != null) {
       owner.game.getController().frame.unitDangerRadiusChanged(this);
+      owner.maybeRemoveActionableUnit(this);
     }
   }
 

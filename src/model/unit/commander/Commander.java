@@ -412,6 +412,23 @@ public abstract class Commander extends MovingUnit implements Summoner {
   }
 
   @Override
+  public void preMove(LinkedList<Tile> path) {
+  }
+
+  @Override
+  public void postMove(LinkedList<Tile> path) {
+    owner.maybeRemoveActionableUnit(this);
+  }
+
+  @Override
+  public void preCounterFight(Combatant other) {
+  }
+
+  @Override
+  public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {
+  }
+
+  @Override
   public String toStringFull() {
     String s = super.toStringFull();
     s += " Mana =" + getMana();

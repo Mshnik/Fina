@@ -28,25 +28,4 @@ public final class DummyCommander extends Commander {
   public DummyCommander(Player owner, int startingLevel) {
     super("Dummy", "mario.png", owner, STATS, startingLevel);
   }
-
-  @Override
-  public void preMove(LinkedList<Tile> path) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void postMove(LinkedList<Tile> path) {}
-
-  @Override
-  public void preCounterFight(Combatant other) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {
-    // TODO Auto-generated method stub
-
-  }
 }

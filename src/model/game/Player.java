@@ -3,6 +3,7 @@ package model.game;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import model.board.Terrain;
@@ -42,8 +43,11 @@ public abstract class Player implements Stringable {
     PURPLE;
   }
 
-  /** The Units this player controls */
-  private HashSet<Unit> units;
+  /** The Units this player controls, in the order they were added to this player. */
+  private List<Unit> units;
+
+  /** The list of units the player controls that can still act this turn. Recomputed each turn. */
+  private List<Unit> actionableUnits;
 
   /** The commander belonging to this player */
   private Commander commander;
@@ -78,7 +82,8 @@ public abstract class Player implements Stringable {
   public Player(Game g, Color c) {
     game = g;
     this.index = g.getController().addPlayer(this, c);
-    units = new HashSet<Unit>();
+    units = new ArrayList<>();
+    actionableUnits = new ArrayList<>();
     allUnitModifierBuildings = new HashSet<>();
     temples = new ArrayList<Temple>();
     visionCloud = new HashSet<Tile>();
@@ -152,6 +157,9 @@ public abstract class Player implements Stringable {
       throw new RuntimeException("Can't spend commander action, already have none left");
     }
     commanderActionsRemaining--;
+    if (commanderActionsRemaining == 0) {
+      maybeRemoveActionableUnit(getCommander());
+    }
   }
 
   /**
@@ -220,6 +228,33 @@ public abstract class Player implements Stringable {
    */
   public Set<Unit> getUnits() {
     return new HashSet<>(units);
+  }
+
+  /**
+   * Returns the next actionable unit after the given unit. If currentUnit is null or not in the
+   * actionableUnits list, starts at element zero. If currentUnit is the last unit in the list,
+   * resets to the start of the list. Returns null if the list is empty.
+   */
+  public Unit getNextActionableUnit(Unit currentUnit) {
+    if (actionableUnits.isEmpty()) {
+      return null;
+    }
+    if (currentUnit == null) {
+      return actionableUnits.get(0);
+    }
+
+    // Handles not found because -1 + 1 = 0.
+    int indexOfCurrentUnit = actionableUnits.indexOf(currentUnit);
+    return actionableUnits.get((indexOfCurrentUnit + 1) % actionableUnits.size());
+  }
+
+  /** Removes the given unit from the set of actionable units if it's no longer actionable. */
+  public void maybeRemoveActionableUnit(Unit unit) {
+    if (!unit.canFight()
+        && !unit.canMove()
+        && (!(unit instanceof Commander) || commanderActionsRemaining == 0)) {
+      actionableUnits.remove(unit);
+    }
   }
 
   /** Returns the units belonging to this player in the given location cloud. */
@@ -317,6 +352,7 @@ public abstract class Player implements Stringable {
    */
   public void removeUnit(Unit u) {
     units.remove(u);
+    actionableUnits.remove(u);
     if (u instanceof Commander && (Commander) u == commander) commander = null;
     if (u instanceof Temple) {
       temples.remove(u);
@@ -439,9 +475,13 @@ public abstract class Player implements Stringable {
    */
   final boolean turnStart() {
     try {
-      // Refresh for turn
+      // Refresh for turn and refresh actionable units
+      actionableUnits.clear();
       for (Unit u : units) {
         u.refreshForTurn();
+        if (u.canMove() || u.canFight() || u == getCommander()) {
+          actionableUnits.add(u);
+        }
       }
       // Add base mana per turn
       updateManaPerTurn();

@@ -5,6 +5,7 @@ import controller.decision.Choice;
 import controller.decision.Decision;
 import model.board.Direction;
 import model.board.Tile;
+import model.unit.Unit;
 import model.unit.commander.Commander;
 import view.gui.panel.BoardCursor;
 import view.gui.Cursor;
@@ -35,6 +36,8 @@ public final class KeyboardListener implements KeyListener {
   public static final int START = KeyEvent.VK_ENTER;
   /** The "esc" (tertiary / strong decline button) key code */
   public static final int ESC = KeyEvent.VK_ESCAPE;
+  /** The unit cycling key for cycling through actionable units the player owns. */
+  public static final int UNIT_CYCLE = KeyEvent.VK_D;
 
   /** Keys that should be listend to for events. Others will be ignored. */
   private static final List<Integer> LISTENED_KEYS = Arrays.asList(A, B, START, ESC);
@@ -72,7 +75,19 @@ public final class KeyboardListener implements KeyListener {
       c.move(d);
     }
 
-    // Check different toggles - if non-none, handle
+    // Respond to tab if no decision open.
+    // If not on a unit, go to commander.
+    if (keyCode == UNIT_CYCLE && frame.getActiveCursor() instanceof BoardCursor) {
+      BoardCursor cursor = (BoardCursor) frame.getActiveCursor();
+      Unit hoveredUnit = cursor.getElm().getOccupyingUnit();
+      Unit nextUnit = gc.game.getCurrentPlayer().getNextActionableUnit(hoveredUnit);
+      if (nextUnit != null) {
+        cursor.setElm(nextUnit.getLocation());
+        cursor.moved();
+      }
+    }
+
+    // Action key. Check different toggles - if non-none, handle
     if (LISTENED_KEYS.contains(e.getKeyCode())) {
       switch (gc.getToggle()) {
           // No toggle currently open. Maybe open one.
