@@ -9,6 +9,14 @@ import controller.selector.CastSelector;
 import controller.selector.LocationSelector;
 import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Random;
+import java.util.Stack;
 import model.board.Board;
 import model.board.Tile;
 import model.game.Game;
@@ -27,15 +35,6 @@ import view.gui.Frame;
 import view.gui.decision.DecisionCursor;
 import view.gui.panel.BoardCursor;
 import view.gui.panel.GamePanel;
-
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Random;
-import java.util.Stack;
 
 /**
  * Overall controlling class that unites all classes. Should be run in its own thread, because some
@@ -279,31 +278,38 @@ public final class GameController {
   /**
    * Creates a new Decision Panel for doing things with a model.unit, shown to the side of the
    * current tile (side depending on location of current tile) If there is no model.unit on the
-   * given tile or the model.unit doesn't belong to the current player, does nothing. If the
-   * model.unit on the tile, populates getGamePanel().getDecisionPanel() with all the possible
-   * decisions
+   * given tile or the model.unit doesn't belong to the current player and the current player can't
+   * see the tile, does nothing. If the model.unit on the tile, populates
+   * getGamePanel().getDecisionPanel() with all the possible decisions. If the current player
+   * doesn't own the unit on the tile, decisions will all be informational only.
    */
   void startActionDecision() {
     Tile t = getGamePanel().boardCursor.getElm();
     if (!getGamePanel().boardCursor.canSelect()) return;
-    if (t.getOccupyingUnit() == null || t.getOccupyingUnit().owner != game.getCurrentPlayer()) {
+    if (t.getOccupyingUnit() == null
+        || (t.getOccupyingUnit().owner != game.getCurrentPlayer())
+            && !game.getCurrentPlayer().canSee(t)) {
       return;
     }
     Unit u = t.getOccupyingUnit();
 
-    // Add choices based on the model.unit on this tile
-    LinkedList<Choice> choices = new LinkedList<Choice>();
-    if (u instanceof MovingUnit) {
-      choices.add(new Choice(u.canMove(), MOVE, u));
+    // Add choices based on the model.unit on this tile.
+    ArrayList<Choice> choices = new ArrayList<>();
+    // Actionable choices - requires active player.
+    if (u.owner == game.getCurrentPlayer()) {
+      if (u instanceof MovingUnit) {
+        choices.add(new Choice(u.canMove(), MOVE, u));
+      }
+      if (u instanceof Combatant) {
+        choices.add(new Choice(u.canFight() && ((Combatant) u).hasFightableTarget(), FIGHT, u));
+      }
+      if (u instanceof Commander || u instanceof Summoner) {
+        int actionsRemaining = u.owner.getCommanderActionsRemaining();
+        choices.add(
+            new Choice(actionsRemaining > 0, COMMANDER_ACTION + " (" + actionsRemaining + ")", u));
+      }
     }
-    if (u instanceof Combatant) {
-      choices.add(new Choice(u.canFight() && ((Combatant) u).hasFightableTarget(), FIGHT, u));
-    }
-    if (u instanceof Commander || u instanceof Summoner) {
-      int actionsRemaining = u.owner.getCommanderActionsRemaining();
-      choices.add(
-          new Choice(actionsRemaining > 0, COMMANDER_ACTION + " (" + actionsRemaining + ")", u));
-    }
+    // Information choices.
     if (u.getVisibleModifiers().size() > 0) {
       choices.add(
           new Choice(true, INFO_PREFIX + DecisionCursor.SHOW_EXTENDED_MODIFIERS_INFO_MESSAGE, u));
