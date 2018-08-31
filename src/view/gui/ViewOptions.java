@@ -60,7 +60,7 @@ public final class ViewOptions {
    * Returns the tile(s) threatened by the units in paintDangerRadiusUnits. May be empty if that set
    * is empty. Causes a cleanup that removes dead units.
    */
-  Set<Tile> getDangerRadius() {
+  public Set<Tile> getDangerRadius() {
     return paintDangerRadiusUnits
         .stream()
         .flatMap(

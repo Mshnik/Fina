@@ -2,6 +2,8 @@ package view.gui;
 
 import controller.audio.AudioController;
 import controller.game.GameController;
+import java.util.HashMap;
+import java.util.Map;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;
@@ -47,7 +49,7 @@ public final class Frame extends JFrame {
   private InfoPanel infoPanel;
 
   /** The animator for this Frame */
-  private Animator animator;
+  private final Animator animator;
 
   /** The controller for this game */
   private GameController controller;
@@ -71,6 +73,9 @@ public final class Frame extends JFrame {
   @SuppressWarnings("rawtypes")
   private Cursor activeCursor;
 
+  /** A map from player index to ViewOptions. */
+  private final Map<Integer, ViewOptions> viewOptionsMap;
+
   /** Creates a new frame. */
   public Frame(int rows, int cols) {
     // Set frame defaults.
@@ -81,6 +86,7 @@ public final class Frame extends JFrame {
     this.originalRows = rows;
     this.originalCols = cols;
     zoomIndex = 2; // Use original number of rows and cols.
+    viewOptionsMap = new HashMap<>();
 
     // Set up menu
     JMenuBar menu = new JMenuBar();
@@ -175,9 +181,16 @@ public final class Frame extends JFrame {
       remove(headerPanel);
       remove(infoPanel);
       animator.clearAnimatables();
+      viewOptionsMap.clear();
     }
     controller = c;
-    // New Adding
+
+    // Non-visual setup.
+    for (Player p : controller.game.getRemainingPlayers()) {
+      viewOptionsMap.put(p.index, new ViewOptions(this, p.index));
+    }
+
+    // New Visual setup
     createGamePanel();
     HeaderPanel hp = new HeaderPanel(this);
     headerPanel = hp;
