@@ -1,12 +1,12 @@
 package model.unit;
 
+import java.util.LinkedList;
+import java.util.List;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
-
-import java.util.LinkedList;
 
 /**
  * Represents a model.unit that is able to move around the model.board.
@@ -92,6 +92,21 @@ public abstract class MovingUnit extends Unit {
       default:
         return Integer.MAX_VALUE;
     }
+  }
+
+  /**
+   * Return the total cost of traveling the given path for model.unit. Doesn't count the first tile
+   * - tile the model.unit is already on. Expects the first element to be the current location
+   * of the unit.
+   */
+  public int getTotalMovementCost(List<Tile> path) {
+    int c = 0;
+    boolean ignoreFirst = false;
+    for (Tile t : path) {
+      if (ignoreFirst) c += getMovementCost(t.terrain);
+      else ignoreFirst = true;
+    }
+    return c;
   }
 
   /** Returns true iff movementCost(t) <= getMovementCap() */

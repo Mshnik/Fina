@@ -72,20 +72,6 @@ public final class PathSelector extends LocationSelector implements Paintable, I
     return path.size();
   }
 
-  /**
-   * Return the total cost of traveling the given path for model.unit. Doesn't count the first tile
-   * - tile the model.unit is already on
-   */
-  public int getTotalCost() {
-    int c = 0;
-    boolean ignoreFirst = false;
-    for (Tile t : path) {
-      if (ignoreFirst) c += unit.getMovementCost(t.terrain);
-      else ignoreFirst = true;
-    }
-    return c;
-  }
-
   /** Adds the given Tile to the path, then removes cycle as necessary.
    * Returns true if this added to the path, false if it removed a cycle. */
   public boolean addToPath(Tile t) {

@@ -209,7 +209,7 @@ public final class Board implements Iterable<Tile>, Stringable {
 
     // Uses dist to hold remainingDistance as possible.
     if (ps.getPath().getLast() != ps.unit.getLocation())
-      start.dist = unit.getMovement() - ps.getTotalCost();
+      start.dist = unit.getMovement() - unit.getTotalMovementCost(ps.getPath());
     else start.dist = unit.getMovement();
 
     // frontier sorts with higher distance earlier
