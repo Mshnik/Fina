@@ -2,12 +2,20 @@ package model.board;
 
 import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Set;
 import model.game.Player;
 import model.game.Stringable;
 import model.unit.MovingUnit;
 import model.util.MPoint;
-
-import java.util.*;
 
 /**
  * A Board represents the whole model.board state for the model.game as a matrix of tiles and other
@@ -194,23 +202,17 @@ public final class Board implements Iterable<Tile>, Stringable {
   }
 
   /**
-   * Returns the set of tiles the given path selector could move to from its current location with
-   * its movement cap. Only counts enemy units as obstacles if they are visible.
+   * Helper for two getMovementCloud methods, using the given starting tile and unit. Assumes dist
+   * and prev fields of start have been set.
    */
-  public ArrayList<Tile> getMovementCloud(PathSelector ps) {
-    MovingUnit unit = ps.unit;
-    // Initialize
+  private ArrayList<Tile> getMovementCloud(Tile start, MovingUnit unit) {
+    // Initialize non-start tile.
     for (Tile t : this) {
-      t.dist = Integer.MIN_VALUE;
-      t.prev = null;
+      if (t != start) {
+        t.dist = Integer.MIN_VALUE;
+        t.prev = null;
+      }
     }
-
-    Tile start = ps.getPath().getLast();
-
-    // Uses dist to hold remainingDistance as possible.
-    if (ps.getPath().getLast() != ps.unit.getLocation())
-      start.dist = unit.getMovement() - unit.getTotalMovementCost(ps.getPath());
-    else start.dist = unit.getMovement();
 
     // frontier sorts with higher distance earlier
     PriorityQueue<Tile> frontier =
@@ -256,6 +258,31 @@ public final class Board implements Iterable<Tile>, Stringable {
       }
     }
     return settled;
+  }
+
+  /**
+   * Returns the set of tiles the given MovingUnit could move to from its current location with its
+   * movement cap. Only counts enemy units as obstacles if they are visible.
+   */
+  public ArrayList<Tile> getMovementCloud(MovingUnit u) {
+    u.getLocation().prev = null;
+    u.getLocation().dist = u.getMovement();
+    return getMovementCloud(u.getLocation(), u);
+  }
+
+  /**
+   * Returns the set of tiles the given path selector could move to from its current location with
+   * its movement cap. Only counts enemy units as obstacles if they are visible.
+   */
+  public ArrayList<Tile> getMovementCloud(PathSelector ps) {
+    MovingUnit unit = ps.unit;
+    Tile start = ps.getPath().getLast();
+
+    // Uses dist to hold remainingDistance as possible.
+    if (ps.getPath().getLast() != ps.unit.getLocation())
+      start.dist = unit.getMovement() - unit.getTotalMovementCost(ps.getPath());
+    else start.dist = unit.getMovement();
+    return getMovementCloud(start, unit);
   }
 
   /** Returns an iterator over the tiles in this Board */
