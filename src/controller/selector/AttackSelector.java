@@ -25,14 +25,7 @@ public final class AttackSelector extends LocationSelector {
 
   @Override
   protected void refreshPossibilitiesCloud() {
-    cloud =
-        ExpandableCloud.create(
-                ExpandableCloud.ExpandableCloudType.CIRCLE, attacker.getMaxAttackRange() + 1)
-            .difference(
-                ExpandableCloud.create(
-                    ExpandableCloud.ExpandableCloudType.CIRCLE, attacker.getMinAttackRange()))
-            .translate(attacker.getLocation().getPoint())
-            .toTileSet(controller.game.board);
+    cloud = attacker.getAttackableTiles();
     int i = 0;
     while (i < cloud.size()) {
       Tile t = cloud.get(i);

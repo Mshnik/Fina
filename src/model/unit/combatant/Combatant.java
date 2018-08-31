@@ -204,16 +204,25 @@ public abstract class Combatant extends MovingUnit {
     return canFight;
   }
 
-  /** Returns true iff there is at least one enemy unit within range and sight */
-  public boolean hasFightableTarget() {
-    List<Tile> tiles =
+  /** Returns the list of tiles this can attack from the given tile. */
+  public List<Tile> getAttackableTilesFrom(Tile tile) {
+    return
         ExpandableCloud.create(ExpandableCloud.ExpandableCloudType.CIRCLE, getMaxAttackRange() + 1)
             .difference(
                 ExpandableCloud.create(
                     ExpandableCloud.ExpandableCloudType.CIRCLE, getMinAttackRange()))
-            .translate(getLocation().getPoint())
+            .translate(tile.getPoint())
             .toTileSet(owner.game.board);
-    for (Tile t : tiles) {
+  }
+
+  /** Returns the list of tiles this can attack, given its current location. */
+  public List<Tile> getAttackableTiles() {
+    return getAttackableTilesFrom(getLocation());
+  }
+
+  /** Returns true iff there is at least one enemy unit within range and sight */
+  public boolean hasFightableTarget() {
+    for (Tile t : getAttackableTiles()) {
       if (t.isOccupied()) {
         Unit u = t.getOccupyingUnit();
         if (u.owner != owner && owner.canSee(u)) return true;
