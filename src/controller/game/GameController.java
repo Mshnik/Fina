@@ -1,5 +1,6 @@
 package controller.game;
 
+import ai.dummy.DoNothingAIController;
 import controller.audio.AudioController;
 import controller.decision.Choice;
 import controller.decision.Decision;
@@ -19,6 +20,7 @@ import java.util.Random;
 import java.util.Stack;
 import model.board.Board;
 import model.board.Tile;
+import model.game.AIPlayer;
 import model.game.Game;
 import model.game.Game.FogOfWar;
 import model.game.HumanPlayer;
@@ -131,7 +133,12 @@ public final class GameController {
 
     // Create players.
     for (int i = 0; i < numPlayers; i++) {
-      Player p = new HumanPlayer(g, playerColorsArr[i]);
+      Player p;
+      if (i < numPlayers - 1) {
+        p = new HumanPlayer(g, playerColorsArr[i]);
+      } else {
+        p = new AIPlayer(g, playerColorsArr[i], new DoNothingAIController(5000));
+      }
       gc.frame.createViewOptionsForPlayer(p);
       new DummyCommander(p, 4);
     }
@@ -433,7 +440,7 @@ public final class GameController {
     cancelDecision();
     switch (m) {
       case GameController.CONFIRM:
-        game.getCurrentPlayer().turnEnd();
+        game.getCurrentPlayer().endTurn();
         break;
     }
   }

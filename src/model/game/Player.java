@@ -535,7 +535,7 @@ public abstract class Player implements Stringable {
   protected abstract void turn();
 
   /** Called by the someone (the player / the model.game) when this player's turn should end. */
-  public abstract void turnEnd();
+  public abstract void endTurn();
 
   @Override
   public String toString() {

@@ -33,7 +33,7 @@ public class HumanPlayer extends Player {
    * end.
    */
   @Override
-  public void turnEnd() {
+  public void endTurn() {
     takingAction = false;
   }
 }

@@ -1,12 +1,9 @@
 package model.game;
 
 import controller.game.GameController;
-import java.util.Collections;
 import model.board.Board;
 import model.board.Tile;
 import model.unit.Unit;
-import model.unit.ability.Ability;
-import model.unit.commander.Commander;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -195,7 +192,6 @@ public final class Game implements Runnable, Stringable {
     if (ok) {
       controller.startTurnFor(p);
       p.turn();
-      p.turnEnd();
     } else {
       remainingPlayers.put(p, false);
     }
