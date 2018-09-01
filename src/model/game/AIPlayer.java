@@ -2,7 +2,13 @@ package model.game;
 
 import ai.AIAction;
 import ai.AIController;
+import model.board.Tile;
+import model.unit.MovingUnit;
+import model.unit.combatant.Combat;
+import model.unit.combatant.Combatant;
+
 import java.awt.Color;
+import java.util.LinkedList;
 
 /** A player controlled by an AI. */
 public final class AIPlayer extends Player {
@@ -24,7 +30,27 @@ public final class AIPlayer extends Player {
 
   /** Handles the given action. */
   private void handleAction(AIAction action) {
-    // TODO: handle action.
+    switch (action.actionType) {
+      case MOVE_UNIT:
+        MovingUnit movingUnit = (MovingUnit) action.actingUnit;
+        LinkedList<Tile> path = new LinkedList<>();
+        path.add(movingUnit.getLocation());
+        path.add(action.targetedTile);
+        movingUnit.move(path);
+        break;
+      case ATTACK:
+        Combat combat =
+            new Combat((Combatant) action.actingUnit, action.targetedTile.getOccupyingUnit());
+        combat.process(game.getController().getCombatRandom());
+        break;
+      case SUMMON_COMBATANT_OR_BUILD_BUILDING:
+        game.getController().summonUnit(action.actingUnit, action.targetedTile, action.unitToSummon);
+        break;
+      case CAST_SPELL:
+        throw new RuntimeException("Unimplemented");
+      default:
+        throw new RuntimeException("Got unhandled actionType: " + action);
+    }
   }
 
   /** Sleeps for a short period of time, for realism against human. */

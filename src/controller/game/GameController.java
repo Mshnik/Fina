@@ -1,6 +1,7 @@
 package controller.game;
 
 import ai.dummy.DoNothingAIController;
+import ai.dummy.MoveCommanderRandomlyAIController;
 import controller.audio.AudioController;
 import controller.decision.Choice;
 import controller.decision.Decision;
@@ -10,16 +11,6 @@ import controller.selector.CastSelector;
 import controller.selector.LocationSelector;
 import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Stack;
 import model.board.Board;
 import model.board.Tile;
 import model.game.AIPlayer;
@@ -39,6 +30,17 @@ import view.gui.Frame;
 import view.gui.decision.DecisionCursor;
 import view.gui.panel.BoardCursor;
 import view.gui.panel.GamePanel;
+
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EmptyStackException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Stack;
 
 /**
  * Overall controlling class that unites all classes. Should be run in its own thread, because some
@@ -142,6 +144,10 @@ public final class GameController {
         p = new HumanPlayer(g, playerColorsArr[i]);
       } else if (playerTypes.get(i).equals(DoNothingAIController.DO_NOTHING_AI_TYPE)) {
         p = new AIPlayer(g, playerColorsArr[i], new DoNothingAIController(5000));
+      } else if (playerTypes
+          .get(i)
+          .equals(MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE)) {
+        p = new AIPlayer(g, playerColorsArr[i], new MoveCommanderRandomlyAIController());
       } else {
         throw new RuntimeException("Don't know how to handle player type " + playerTypes.get(i));
       }
@@ -199,6 +205,11 @@ public final class GameController {
   public synchronized void restart() {
     kill();
     loadAndStart(game.board.filepath, playerTypes, game.getFogOfWar());
+  }
+
+  /** Returns the random to use for combat. */
+  public Random getCombatRandom() {
+    return random;
   }
 
   /** Returns the gamePanel located within frame */
@@ -593,16 +604,24 @@ public final class GameController {
     if (!t.equals(Toggle.SUMMON_SELECTION))
       throw new RuntimeException(
           "Can't cancel summon selection, currently toggling " + getToggle());
-    if (game.getCurrentPlayer() != null) {
-      game.getCurrentPlayer().spendCommanderAction();
-    }
-    Unit summonedUnit = summonSelector.toSummon.clone(summonSelector.summoner.owner, loc);
-    summonedUnit.copyPersonalModifiersFrom(summonSelector.toSummon);
-    summonedUnit.owner.recalculateState();
+    summonUnit(summonSelector.summoner, loc, summonSelector.toSummon);
     summonType = null;
     locationSelector = null;
     getGamePanel().boardCursor.setElm(loc); // Cause info update
     repaint();
+  }
+
+  /**
+   * Actually does the summoning effect - exposed so AI can do it without having to go through the
+   * selector process.
+   */
+  public void summonUnit(Unit summoner, Tile loc, Unit toSummon) {
+    if (game.getCurrentPlayer() != null) {
+      game.getCurrentPlayer().spendCommanderAction();
+    }
+    Unit summonedUnit = toSummon.clone(summoner.owner, loc);
+    summonedUnit.copyPersonalModifiersFrom(toSummon);
+    summonedUnit.owner.recalculateState();
   }
 
   /** Creates a getGamePanel().getDecisionPanel() for choosing a spell to cast */

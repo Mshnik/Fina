@@ -86,6 +86,11 @@ public final class Tile implements Comparable<Tile>, MatrixElement, Stringable {
     return null;
   }
 
+  /** Returns true iff this is adjacent (according to manhattan distance), false otherwise. */
+  public boolean isAdjacentTo(Tile other) {
+    return directionTo(other) != null;
+  }
+
   /** Returns the occupyingUnit, if there is one */
   public Unit getOccupyingUnit() {
     return occupyingUnit;
