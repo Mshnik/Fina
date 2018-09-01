@@ -254,7 +254,7 @@ public final class Game implements Runnable, Stringable {
     // If fog, pause and wait for transfer of computer.
     if (getFogOfWar().active) {
       Player nextTurnPlayer = getCurrentPlayer();
-      if (nextTurnPlayer.isLocalHumanPlayer()
+      if (nextTurnPlayer != null && nextTurnPlayer.isLocalHumanPlayer()
           && nextTurnPlayer.index != mostRecentHumanPlayerIndex) {
         betweenTurnsFog = true;
         controller.frame.showPlayerChangeAlert(nextTurnPlayer);

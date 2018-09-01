@@ -389,9 +389,11 @@ public final class ImageIndex {
     if (incrementColor != null) {
       g2d.setColor(incrementColor);
       g2d.setStroke(new BasicStroke(2));
-      for (int i = incrementVal; i < maxVal; i += incrementVal) {
-        int x = X + strokeWidth / 2 + (int) (BAR_WIDTH * (double) i / (double) maxVal);
-        g2d.drawLine(x, strokeWidth / 2 + Y + 1, x, Y + BAR_HEIGHT - strokeWidth / 2);
+      if (incrementVal > 0) {
+        for (int i = incrementVal; i < maxVal; i += incrementVal) {
+          int x = X + strokeWidth / 2 + (int) (BAR_WIDTH * (double) i / (double) maxVal);
+          g2d.drawLine(x, strokeWidth / 2 + Y + 1, x, Y + BAR_HEIGHT - strokeWidth / 2);
+        }
       }
     }
     if (text != null) {

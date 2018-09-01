@@ -48,8 +48,8 @@ public final class HeaderPanel extends JPanel {
   /** Color behind the bars if the bars aren't totally full */
   private static final Color BACK_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.2f);
 
-  /** Increments drawn with thin black lines along bar */
-  private static final int INCREMENT_VAL = 100;
+  /** Increments drawn with thin black lines along bar. If negative, not used. */
+  private static final int INCREMENT_VAL = -1;
 
   /** Color used to draw Increment lines - translucent black */
   private static final Color INCREMENT_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.5f);
