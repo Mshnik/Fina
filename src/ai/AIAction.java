@@ -128,7 +128,7 @@ public final class AIAction {
             combatant.canFight(),
             "Can't do ATTACK action on " + actingUnit + ", it can't fight right now");
         assertPrecondition(
-            combatant.getAttackableTiles().contains(targetedTile),
+            combatant.getAttackableTiles(true).contains(targetedTile),
             "Can't do ATTACK action to " + targetedTile + ", it isn't in the attack range");
         assertPrecondition(
             targetedTile.isOccupied() && targetedTile.getOccupyingUnit().owner != actingUnit.owner,

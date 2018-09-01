@@ -1,11 +1,9 @@
 package controller.selector;
 
 import controller.game.GameController;
-import model.board.Tile;
 import model.unit.combatant.Combatant;
-import model.util.ExpandableCloud;
 
-import java.awt.*;
+import java.awt.Color;
 
 /** A selector for choosing a model.unit to attack */
 public final class AttackSelector extends LocationSelector {
@@ -25,15 +23,7 @@ public final class AttackSelector extends LocationSelector {
 
   @Override
   protected void refreshPossibilitiesCloud() {
-    cloud = attacker.getAttackableTiles();
-    int i = 0;
-    while (i < cloud.size()) {
-      Tile t = cloud.get(i);
-      if (!attacker.owner.canSee(t)
-          || !t.isOccupied()
-          || t.getOccupyingUnit().owner == attacker.owner) cloud.remove(i);
-      else i++;
-    }
+    cloud = attacker.getAttackableTiles(true);
     controller.repaint();
   }
 }

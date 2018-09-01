@@ -1,8 +1,5 @@
 package model.unit.combatant;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
@@ -14,6 +11,10 @@ import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 import model.util.ExpandableCloud;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents a moving and fighting unit
@@ -216,20 +217,25 @@ public abstract class Combatant extends MovingUnit {
         .toTileSet(owner.game.board);
   }
 
-  /** Returns the list of tiles this can attack, given its current location. */
-  public List<Tile> getAttackableTiles() {
-    return getAttackableTilesFrom(getLocation());
+  /**
+   * Returns the list of tiles this can attack, given its current location. If filterForValidTargets
+   * is true, filters for tiles that contain an enemy unit that owner can see.
+   */
+  public List<Tile> getAttackableTiles(boolean filterForValidTargets) {
+    List<Tile> possibleTiles = getAttackableTilesFrom(getLocation());
+    if (filterForValidTargets) {
+      return possibleTiles
+          .stream()
+          .filter(t -> owner.canSee(t) && t.isOccupied() && t.getOccupyingUnit().owner != owner)
+          .collect(Collectors.toList());
+    } else {
+      return possibleTiles;
+    }
   }
 
   /** Returns true iff there is at least one enemy unit within range and sight */
   public boolean hasFightableTarget() {
-    for (Tile t : getAttackableTiles()) {
-      if (t.isOccupied()) {
-        Unit u = t.getOccupyingUnit();
-        if (u.owner != owner && owner.canSee(u)) return true;
-      }
-    }
-    return false;
+    return !getAttackableTiles(true).isEmpty();
   }
 
   @Override

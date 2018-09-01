@@ -6,6 +6,7 @@ import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
 import model.unit.Unit;
+import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 
 import java.util.ArrayList;
@@ -38,22 +39,16 @@ public final class FullRandomAIController implements AIController {
       return null;
     }
     AIAction nextMoveAction = getMoveAction(player);
+    AIAction nextAttackAction = getAttackAction(player);
     AIAction nextSummonAction = getSummonAction(player);
-    try {
-      Thread.sleep(150);
-    } catch (InterruptedException e) {
+    List<AIAction> actions =
+        Stream.of(nextAttackAction, nextMoveAction, nextSummonAction)
+            .filter(a -> a != null)
+            .collect(Collectors.toList());
+    if (actions.isEmpty()) {
       return null;
     }
-    if (nextMoveAction == null && nextSummonAction == null) {
-      return null;
-    }
-    if (nextMoveAction == null) {
-      return nextSummonAction;
-    }
-    if (nextSummonAction == null) {
-      return nextMoveAction;
-    }
-    return random.nextBoolean() ? nextMoveAction : nextSummonAction;
+    return actions.get(random.nextInt(actions.size()));
   }
 
   /**
@@ -82,11 +77,34 @@ public final class FullRandomAIController implements AIController {
     return AIAction.moveUnit(movableUnit, toMoveTo, player.game.board.getMovementPath(toMoveTo));
   }
 
+  /** Returns an action for a random unit to attack. Returns null if no unit can attack. */
+  private AIAction getAttackAction(Player player) {
+    List<Combatant> unitsThatCanAttack =
+        player
+            .getUnits()
+            .stream()
+            .filter(Unit::canFight)
+            .filter(u -> u instanceof Combatant)
+            .map(u -> (Combatant) u)
+            .filter(Combatant::hasFightableTarget)
+            .collect(Collectors.toList());
+    if (unitsThatCanAttack.isEmpty()) {
+      return null;
+    }
+    Combatant unitToAttackWith = unitsThatCanAttack.get(random.nextInt(unitsThatCanAttack.size()));
+    List<Tile> attackableTiles = unitToAttackWith.getAttackableTiles(true);
+    return AIAction.attack(
+        unitToAttackWith, attackableTiles.get(random.nextInt(attackableTiles.size())));
+  }
+
   /**
    * Returns a summon action if the commander can still summon. Returns null if it can't. (Out of
    * mana, out of actions, no room).
    */
   private AIAction getSummonAction(Player player) {
+    if (player.getCommanderActionsRemaining() == 0) {
+      return null;
+    }
     Commander commander = player.getCommander();
     Map<String, Unit> summonableUnits =
         Stream.concat(
