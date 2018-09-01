@@ -1,7 +1,7 @@
 package controller.game;
 
 import ai.dummy.DoNothingAIController;
-import ai.dummy.MoveAndSummonRandomlyAIController;
+import ai.dummy.FullRandomAIController;
 import ai.dummy.MoveCommanderRandomlyAIController;
 import controller.audio.AudioController;
 import controller.decision.Choice;
@@ -44,7 +44,7 @@ import java.util.Random;
 import java.util.Stack;
 
 import static ai.dummy.DoNothingAIController.DO_NOTHING_AI_TYPE;
-import static ai.dummy.MoveAndSummonRandomlyAIController.MOVE_AND_SUMMON_RANDOMLY_AI_TYPE;
+import static ai.dummy.FullRandomAIController.FULL_RANDOM_AI_TYPE;
 import static ai.dummy.MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE;
 import static model.game.HumanPlayer.HUMAN_PLAYER_TYPE;
 
@@ -156,8 +156,8 @@ public final class GameController {
         case MOVE_COMMANDER_RANDOMLY_AI_TYPE:
           p = new AIPlayer(g, playerColorsArr[i], new MoveCommanderRandomlyAIController());
           break;
-        case MOVE_AND_SUMMON_RANDOMLY_AI_TYPE:
-          p = new AIPlayer(g, playerColorsArr[i], new MoveAndSummonRandomlyAIController());
+        case FULL_RANDOM_AI_TYPE:
+          p = new AIPlayer(g, playerColorsArr[i], new FullRandomAIController());
           break;
         default:
           throw new RuntimeException("Don't know how to handle player type " + playerTypes.get(i));

@@ -15,11 +15,17 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/** A dummy AI controller that moves all units randomly and summons / builds new ones randomly. */
-public final class MoveAndSummonRandomlyAIController implements AIController {
+/**
+ * A dummy AI controller that moves all units randomly, summons / builds new ones randomly, and
+ * attacks units if possible.
+ */
+public final class FullRandomAIController implements AIController {
 
-  /** The string to show on the UI for selecting a MoveAndSummonRandomlyAIController as a player. */
-  public static final String MOVE_AND_SUMMON_RANDOMLY_AI_TYPE = "AI - Move And Summon Randomly";
+  /** The string to show on the UI for selecting a FullRandomAIController as a player. */
+  public static final String FULL_RANDOM_AI_TYPE = "AI - Full Random";
+
+  /** Chance to end turn even if there are actions available. */
+  private static final double END_TURN_EARLY_CHANCE = 0.2;
 
   /**
    * Random used to pick tiles for moving and summoning as well as which unit/building to summon.
@@ -28,10 +34,13 @@ public final class MoveAndSummonRandomlyAIController implements AIController {
 
   @Override
   public AIAction getNextAction(Player player) {
+    if (random.nextDouble() <= END_TURN_EARLY_CHANCE) {
+      return null;
+    }
     AIAction nextMoveAction = getMoveAction(player);
     AIAction nextSummonAction = getSummonAction(player);
     try {
-      Thread.sleep(2000);
+      Thread.sleep(150);
     } catch (InterruptedException e) {
       return null;
     }
@@ -66,6 +75,9 @@ public final class MoveAndSummonRandomlyAIController implements AIController {
             .stream()
             .filter(t -> !t.isOccupied())
             .collect(Collectors.toList());
+    if (movableTiles.isEmpty()) {
+      return null;
+    }
     Tile toMoveTo = movableTiles.get(random.nextInt(movableTiles.size()));
     return AIAction.moveUnit(movableUnit, toMoveTo, player.game.board.getMovementPath(toMoveTo));
   }
