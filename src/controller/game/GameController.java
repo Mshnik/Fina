@@ -12,9 +12,11 @@ import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
@@ -63,7 +65,6 @@ public final class GameController {
   public static final String CAST = "Magic";
   /** Text Suffix for toggling showing / unshowing the danger radius for this unit. */
   private static final String TOGGLE_DANGER_RADIUS = "Toggle Danger Zone";
-
   /**
    * Text representing into - the user can't click this, it changes the info panel when it is
    * hovered.
@@ -109,6 +110,9 @@ public final class GameController {
   /** The thread the game is running in. Null if the game isn't running right now. */
   private Thread gameThread;
 
+  /** The types of players in this game, in turn order. */
+  private final List<String> playerTypes;
+
   /** The game this is controlling */
   public final Game game;
 
@@ -119,8 +123,8 @@ public final class GameController {
   private LocationSelector locationSelector;
 
   /** Loads a board and starts the game in the same frame as this, then disposes of this. */
-  static void loadAndStart(String boardFilepath, int numPlayers, FogOfWar fogOfWar) {
-    if (numPlayers < 2) {
+  static void loadAndStart(String boardFilepath, List<String> playerTypes, FogOfWar fogOfWar) {
+    if (playerTypes.size() < 2) {
       throw new RuntimeException("Can't have game with less than 2 players");
     }
     Frame f = new Frame(10, 20);
@@ -129,15 +133,17 @@ public final class GameController {
     // Read board and create game.
     Board board = BoardReader.readBoard(boardFilepath);
     Game g = new Game(board, fogOfWar);
-    GameController gc = new GameController(g, f);
+    GameController gc = new GameController(g, f, playerTypes);
 
     // Create players.
-    for (int i = 0; i < numPlayers; i++) {
+    for (int i = 0; i < playerTypes.size(); i++) {
       Player p;
-      if (i < numPlayers - 1) {
+      if (playerTypes.get(i).equals(HumanPlayer.HUMAN_PLAYER_TYPE)) {
         p = new HumanPlayer(g, playerColorsArr[i]);
-      } else {
+      } else if (playerTypes.get(i).equals(DoNothingAIController.DO_NOTHING_AI_TYPE)) {
         p = new AIPlayer(g, playerColorsArr[i], new DoNothingAIController(5000));
+      } else {
+        throw new RuntimeException("Don't know how to handle player type " + playerTypes.get(i));
       }
       gc.frame.createViewOptionsForPlayer(p);
       new DummyCommander(p, 4);
@@ -148,8 +154,9 @@ public final class GameController {
   }
 
   /** Creates a new game controller for the given game and frame. */
-  private GameController(Game g, Frame f) {
+  private GameController(Game g, Frame f, List<String> playerTypes) {
     game = g;
+    this.playerTypes = Collections.unmodifiableList(playerTypes);
     game.setGameController(this);
     frame = f;
     frame.setController(this);
@@ -183,15 +190,15 @@ public final class GameController {
 
   /** Loads the given board and kills this. */
   public synchronized void loadAndKillThis(
-      String boardFilepath, int numPlayers, FogOfWar fogOfWar) {
+      String boardFilepath, List<String> playerTypes, FogOfWar fogOfWar) {
     kill();
-    loadAndStart(boardFilepath, numPlayers, fogOfWar);
+    loadAndStart(boardFilepath, playerTypes, fogOfWar);
   }
 
   /** Restarts this game by creating a new copy of this then disposing of this. */
   public synchronized void restart() {
     kill();
-    loadAndStart(game.board.filepath, playerColors.size(), game.getFogOfWar());
+    loadAndStart(game.board.filepath, playerTypes, game.getFogOfWar());
   }
 
   /** Returns the gamePanel located within frame */

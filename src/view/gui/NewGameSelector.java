@@ -1,15 +1,30 @@
 package view.gui;
 
+import ai.dummy.DoNothingAIController;
 import controller.game.BoardReader;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
+import java.awt.Window;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import model.board.Board;
 import model.board.Terrain;
 import model.game.Game.FogOfWar;
-
-import javax.swing.*;
-import java.awt.*;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
+import model.game.HumanPlayer;
 
 /** Blocking top-level selector that allows the user to create a new game. */
 final class NewGameSelector {
@@ -18,20 +33,20 @@ final class NewGameSelector {
   static final class NewGameOptions {
     final boolean cancelled;
     final String boardFilepath;
-    final int numPlayers;
+    final List<String> playerTypes;
     final FogOfWar fogOfWar;
 
     private NewGameOptions() {
       cancelled = true;
+      playerTypes = null;
       boardFilepath = null;
-      numPlayers = -1;
       fogOfWar = FogOfWar.NONE;
     }
 
-    private NewGameOptions(String boardFilepath, int numPlayers, FogOfWar fogOfWar) {
+    private NewGameOptions(String boardFilepath, List<String> playerTypes, FogOfWar fogOfWar) {
       cancelled = false;
+      this.playerTypes = playerTypes;
       this.boardFilepath = boardFilepath;
-      this.numPlayers = numPlayers;
       this.fogOfWar = fogOfWar;
     }
   }
@@ -44,6 +59,12 @@ final class NewGameSelector {
     private final Map<String, Board> boardsMap;
 
     private final BoardPreviewPanel boardPreviewPanel;
+    private final JPanel playerPanel;
+
+    private static final String[] PLAYER_TYPE_OPTIONS = {
+      HumanPlayer.HUMAN_PLAYER_TYPE, DoNothingAIController.DO_NOTHING_AI_TYPE
+    };
+    private final List<JComboBox<String>> playerTypeSelectorsList;
 
     NewGamePanel() {
       setLayout(new BorderLayout());
@@ -57,7 +78,20 @@ final class NewGameSelector {
       boardPreviewPanel = new BoardPreviewPanel();
 
       numPlayersSelector = new JComboBox<>(new Integer[] {2});
+      numPlayersSelector.addActionListener(
+          e -> {
+            if (numPlayersSelector.getSelectedItem() != null) {
+              updateNumPlayers();
+              Window window = SwingUtilities.getWindowAncestor(this);
+              if (window != null) {
+                window.pack();
+                repaint();
+              }
+            }
+          });
+
       fogOfWarSelector = new JComboBox<>(FogOfWar.values());
+
       boardSelector = new JComboBox<>(Paths.get(BoardReader.BOARDS_ROOT_FILEPATH).toFile().list());
       boardSelector.addActionListener(
           e -> {
@@ -73,14 +107,30 @@ final class NewGameSelector {
       add(boardSelector, BorderLayout.NORTH);
 
       boardPreviewPanel.setBoard(getSelectedBoard());
-      add(boardPreviewPanel, BorderLayout.CENTER);
+      JPanel centeringPanel = new JPanel();
+      centeringPanel.setLayout(new GridBagLayout());
+      centeringPanel.add(boardPreviewPanel);
+      add(centeringPanel, BorderLayout.CENTER);
+
+      JPanel playerHeaderPanel = new JPanel();
+      playerHeaderPanel.setLayout(new BoxLayout(playerHeaderPanel, BoxLayout.X_AXIS));
+      playerHeaderPanel.add(new JLabel("Players: "), BorderLayout.WEST);
+      playerHeaderPanel.add(numPlayersSelector, BorderLayout.CENTER);
+
+      playerPanel = new JPanel();
+      playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS));
+      playerTypeSelectorsList = new ArrayList<>();
+
+      JPanel fogOfWarPanel = new JPanel();
+      fogOfWarPanel.setLayout(new BoxLayout(fogOfWarPanel, BoxLayout.X_AXIS));
+      fogOfWarPanel.add(new JLabel("Fog of War: "));
+      fogOfWarPanel.add(fogOfWarSelector);
 
       JPanel bottomPanel = new JPanel();
-      bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
-      bottomPanel.add(new JLabel("Players: "));
-      bottomPanel.add(numPlayersSelector);
-      bottomPanel.add(new JLabel("Fog of War: "));
-      bottomPanel.add(fogOfWarSelector);
+      bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
+      bottomPanel.add(playerHeaderPanel);
+      bottomPanel.add(playerPanel);
+      bottomPanel.add(fogOfWarPanel);
       add(bottomPanel, BorderLayout.SOUTH);
 
       repaint();
@@ -93,6 +143,7 @@ final class NewGameSelector {
 
     /** Updates the valid number of players for the newly selected board. */
     private void updateNumPlayersValues() {
+      // Update selector.
       int playersSelectedIndex = numPlayersSelector.getSelectedIndex();
       int newMaxPlayers = getSelectedBoard().getMaxPlayers();
       numPlayersSelector.removeAllItems();
@@ -100,6 +151,43 @@ final class NewGameSelector {
         numPlayersSelector.addItem(i);
       }
       numPlayersSelector.setSelectedIndex(Math.min(newMaxPlayers - 2, playersSelectedIndex));
+
+      if (playersSelectedIndex != numPlayersSelector.getSelectedIndex()) {
+        updateNumPlayers();
+      }
+    }
+
+    /**
+     * Updates the player type (human / AI) for the newly selected number of players. Removes rows
+     * from end if number of players went down, adds rows to end if number of players went up.
+     */
+    private void updateNumPlayers() {
+      int numPlayers = (Integer) numPlayersSelector.getSelectedItem();
+      while (playerPanel.getComponentCount() > numPlayers) {
+        JPanel panelToRemove =
+            (JPanel) playerPanel.getComponent(playerPanel.getComponents().length - 1);
+        playerTypeSelectorsList.remove((JComboBox) panelToRemove.getComponent(1));
+        playerPanel.remove(panelToRemove);
+      }
+      for (int i = playerPanel.getComponentCount() + 1; i <= numPlayers; i++) {
+        JPanel playerSelectorPanel = new JPanel();
+        playerSelectorPanel.setLayout(new BoxLayout(playerSelectorPanel, BoxLayout.X_AXIS));
+        playerSelectorPanel.add(new JLabel(" > Player " + i));
+
+        JComboBox<String> comboBox = new JComboBox<>(PLAYER_TYPE_OPTIONS);
+        playerSelectorPanel.add(comboBox);
+        playerTypeSelectorsList.add(comboBox);
+
+        playerPanel.add(playerSelectorPanel);
+      }
+    }
+
+    /** Returns a list of player types of the current selections of the player type selectors. */
+    private List<String> getPlayerTypes() {
+      return playerTypeSelectorsList
+          .stream()
+          .map(s -> (String) s.getSelectedItem())
+          .collect(Collectors.toList());
     }
   }
 
@@ -150,17 +238,20 @@ final class NewGameSelector {
   /** Allows the user to create a new game - returns the options required to show a new game. */
   static NewGameOptions getNewGame(Frame frame) {
     NewGamePanel panel = new NewGamePanel();
+    panel.updateNumPlayersValues();
+    panel.updateNumPlayers();
     int returnOption =
         JOptionPane.showConfirmDialog(
             frame,
             panel,
             "New Game - Choose Board and Options",
             JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE);
+            JOptionPane.PLAIN_MESSAGE,
+            null);
     if (returnOption == JOptionPane.OK_OPTION) {
       return new NewGameOptions(
           BoardReader.BOARDS_ROOT_FILEPATH + panel.boardSelector.getSelectedItem(),
-          (int) panel.numPlayersSelector.getSelectedItem(),
+          panel.getPlayerTypes(),
           (FogOfWar) panel.fogOfWarSelector.getSelectedItem());
     } else {
       return new NewGameOptions();

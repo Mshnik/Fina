@@ -105,7 +105,7 @@ public final class Frame extends JFrame {
           NewGameOptions newGameOptions = NewGameSelector.getNewGame(this);
           if (!newGameOptions.cancelled) {
             controller.loadAndKillThis(
-                newGameOptions.boardFilepath, newGameOptions.numPlayers, newGameOptions.fogOfWar);
+                newGameOptions.boardFilepath, newGameOptions.playerTypes, newGameOptions.fogOfWar);
           }
         });
     gameMenu.add(newGameMenuItem);

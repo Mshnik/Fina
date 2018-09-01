@@ -5,8 +5,11 @@ import java.awt.*;
 /** A human controlled player */
 public class HumanPlayer extends Player {
 
+  /** String to show for selecting a player of this type on the new game UI. */
+  public static final String HUMAN_PLAYER_TYPE = "Human";
+
   /** Wait time between endAction checks */
-  public static final int SLEEP_TIME = 500;
+  private static final int SLEEP_TIME = 500;
 
   /** True while the player is performing action, false once they perform the end turn action. */
   private boolean takingAction;
