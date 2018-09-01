@@ -82,7 +82,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
    * The amount of research required to get to the next level for free. Index i = cost to get from
    * level i+1 to i+2 (because levels are 1 indexed).
    */
-  private static final int[] RESEARCH_REQS = {500, 1500, 2500, 10000};
+  private static final int[] RESEARCH_REQS = {500, 1500, 2500, 1000000};
 
   /** The highest level commanders can achieve */
   private static final int MAX_LEVEL = RESEARCH_REQS.length + 1;

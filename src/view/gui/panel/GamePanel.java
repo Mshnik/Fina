@@ -275,34 +275,36 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
     int x = getXPosition(u.getLocation());
     int y = getYPosition(u.getLocation());
 
-    // Draw model.unit
-    BufferedImage unitImg = ImageIndex.imageForUnit(u, controller.game.getCurrentPlayer());
-    if (u instanceof Commander) {
-      unitImg = ImageIndex.tint(unitImg, controller.getColorFor(u.owner));
-    }
-    g2d.drawImage(unitImg, x, y, cellSize(), cellSize(), null);
+    // Draw model.unit if it's alive.
+    if (u.isAlive()) {
+      BufferedImage unitImg = ImageIndex.imageForUnit(u, controller.game.getCurrentPlayer());
+      if (u instanceof Commander) {
+        unitImg = ImageIndex.tint(unitImg, controller.getColorFor(u.owner));
+      }
+      g2d.drawImage(unitImg, x, y, cellSize(), cellSize(), null);
 
-    // Draw health bar
-    final int marginX = 4; // Room from left side of tile
-    final int marginY = 4; // Room from BOTTOM side of tile
-    final int barX = x + marginX;
-    final int barY = y + cellSize() - marginY * 2;
-    ImageIndex.drawBar(
-        g2d,
-        barX,
-        barY,
-        cellSize() - marginX * 2,
-        marginY,
-        null,
-        null,
-        0,
-        u.getMaxHealth(),
-        DrawingBarSegment.listOf(Color.red, u.getHealthPercent()),
-        null,
-        null,
-        null,
-        null,
-        0);
+      // Draw health bar.
+      final int marginX = 4; // Room from left side of tile
+      final int marginY = 4; // Room from BOTTOM side of tile
+      final int barX = x + marginX;
+      final int barY = y + cellSize() - marginY * 2;
+      ImageIndex.drawBar(
+          g2d,
+          barX,
+          barY,
+          cellSize() - marginX * 2,
+          marginY,
+          null,
+          null,
+          0,
+          u.getMaxHealth(),
+          DrawingBarSegment.listOf(Color.red, u.getHealthPercent()),
+          null,
+          null,
+          null,
+          null,
+          0);
+    }
   }
 
   /** Returns the currently selected element */

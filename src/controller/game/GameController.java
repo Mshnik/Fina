@@ -194,6 +194,7 @@ public final class GameController {
   public synchronized void start() {
     if (isRunning() || game.isGameOver()) return;
     gameThread = new Thread(game);
+    gameThread.setName("Game Thread");
     gameThread.start();
   }
 
@@ -327,6 +328,7 @@ public final class GameController {
     Tile t = getGamePanel().boardCursor.getElm();
     if (!getGamePanel().boardCursor.canSelect()) return;
     if (t.getOccupyingUnit() == null
+        || !game.isRunning()
         || (t.getOccupyingUnit().owner != game.getCurrentPlayer())
             && !game.getCurrentPlayer().canSee(t)) {
       return;
@@ -336,7 +338,9 @@ public final class GameController {
     // Add choices based on the model.unit on this tile.
     ArrayList<Choice> choices = new ArrayList<>();
     // Actionable choices - requires active and local human player.
-    if (u.owner == game.getCurrentPlayer() && game.getCurrentPlayer().isLocalHumanPlayer()) {
+    if (game.isRunning()
+        && u.owner == game.getCurrentPlayer()
+        && game.getCurrentPlayer().isLocalHumanPlayer()) {
       if (u instanceof MovingUnit) {
         choices.add(new Choice(u.canMove(), MOVE, u));
       }

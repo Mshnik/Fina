@@ -6,8 +6,14 @@ import view.gui.Frame;
 import view.gui.image.ImageIndex;
 import view.gui.image.ImageIndex.DrawingBarSegment;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.HashMap;
 import java.util.List;
 
@@ -112,6 +118,8 @@ public final class HeaderPanel extends JPanel {
     g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, 20));
     if (game.getCurrentPlayer() == null) {
       g2d.drawString("Setup Phase", 20, 25);
+    } else if (game.isGameOver()) {
+      g2d.drawString("Player " + game.getRemainingPlayers().get(0).index + " wins", 20, 25);
     } else {
       Player p = game.getCurrentPlayer();
 
