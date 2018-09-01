@@ -276,7 +276,10 @@ public abstract class Unit implements Stringable {
   public final void changeHealth(int deltaHealth, Unit source) {
     health += deltaHealth;
     health = Math.min(health, getMaxHealth());
-    if (source.owner != owner && deltaHealth < 0) {
+    if (source.owner != owner
+        && source.owner != null
+        && source.owner.getCommander() != null
+        && deltaHealth < 0) {
       double bonusResearchRatio =
           (this instanceof Commander ? Commander.BONUS_DAMAGE_TO_RESEARCH_RATIO : 1);
       source.owner.getCommander().addResearch((int) (-deltaHealth * bonusResearchRatio));
@@ -314,7 +317,7 @@ public abstract class Unit implements Stringable {
 
   /** Returns the min attack strength of this model.unit. 0 if this is not a combatant. */
   public int getMinAttack() {
-    return Math.max(0,(Integer) stats.getStat(StatType.MIN_ATTACK));
+    return Math.max(0, (Integer) stats.getStat(StatType.MIN_ATTACK));
   }
 
   /** Returns the min attack of this unit, scaled by its current health percentage. */
@@ -324,7 +327,7 @@ public abstract class Unit implements Stringable {
 
   /** Returns the max attack strength of this model.unit. 0 if this is not a combatant. */
   public int getMaxAttack() {
-    return Math.max(0,(Integer) stats.getStat(StatType.MAX_ATTACK));
+    return Math.max(0, (Integer) stats.getStat(StatType.MAX_ATTACK));
   }
 
   /** Returns the max attack of this unit, scaled by its current health percentage. */
@@ -334,22 +337,22 @@ public abstract class Unit implements Stringable {
 
   /** Returns the min attack range of this model.unit. */
   public int getMinAttackRange() {
-    return Math.max(0,(Integer) stats.getStat(StatType.MIN_ATTACK_RANGE));
+    return Math.max(0, (Integer) stats.getStat(StatType.MIN_ATTACK_RANGE));
   }
 
   /** Returns the attack range of this model.unit. */
   public int getMaxAttackRange() {
-    return Math.max(0,(Integer) stats.getStat(StatType.MAX_ATTACK_RANGE));
+    return Math.max(0, (Integer) stats.getStat(StatType.MAX_ATTACK_RANGE));
   }
 
   /** Returns the vision range of this model.unit. */
   public int getVisionRange() {
-    return Math.max(0,(Integer) stats.getStat(StatType.VISION_RANGE));
+    return Math.max(0, (Integer) stats.getStat(StatType.VISION_RANGE));
   }
 
   /** Returns the summon range of this model.unit. */
   public int getSummonRange() {
-    return Math.max(0,(Integer) stats.getStat(StatType.SUMMON_RANGE));
+    return Math.max(0, (Integer) stats.getStat(StatType.SUMMON_RANGE));
   }
 
   /** Returns the mana per turn this model.unit costs/generates */
@@ -376,7 +379,10 @@ public abstract class Unit implements Stringable {
     return new ArrayList<>(modifiers);
   }
 
-  /** Returns the set of modifiers the player can see in the UI. Commander levelup modifiers should be filtered out. */
+  /**
+   * Returns the set of modifiers the player can see in the UI. Commander levelup modifiers should
+   * be filtered out.
+   */
   public abstract List<Modifier> getVisibleModifiers();
 
   /** Returns true if this unit has a modifier matching the given name, false otherwise. */

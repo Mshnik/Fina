@@ -1,9 +1,5 @@
 package model.unit.combatant;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 import model.unit.Unit;
 import model.unit.building.Building;
 import model.unit.combatant.Combatant.CombatantClass;
@@ -11,6 +7,11 @@ import model.unit.commander.Commander;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.Modifiers;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  * A class that describes a prospective combat between two given units and can process it. Used to
@@ -20,6 +21,9 @@ import model.unit.modifier.Modifiers;
  * @author Mshnik
  */
 public final class Combat {
+
+  /** True iff debug info should be logged to the console. */
+  private static final boolean DEBUG = false;
 
   /**
    * Percentage bonus in attack and defense a combatant gets against another when it has a class
@@ -302,11 +306,11 @@ public final class Combat {
       throw new IllegalArgumentException(
           this + " can't fight " + defender + ", it is too far away.");
 
-    System.out.println("Start combat ------");
+    if (DEBUG) System.out.println("Start combat ------");
 
     // Get damage in range [min,max]
     int damage = random.nextInt(getMaxAttack() + 1 - getMinAttack()) + getMinAttack();
-    System.out.println("Raw Attack damage: " + damage);
+    if (DEBUG) System.out.println("Raw Attack damage: " + damage);
 
     // True if a counterAttack is happening, false otherwise.
     boolean counterAttack = defenderCouldCounterAttack() && damage < defender.getHealth();
@@ -321,7 +325,7 @@ public final class Combat {
                 0,
                 damage * Math.max(0, 1 - getDefenderPercentageDamageReduction())
                     - getDefenderFlatDamageReduction());
-    System.out.println("Final Attack damage: " + finalDamage);
+    if (DEBUG) System.out.println("Final Attack damage: " + finalDamage);
     defender.changeHealth(-finalDamage, attacker);
 
     // If defender is still alive, can see the first unit,
@@ -331,7 +335,7 @@ public final class Combat {
       // Get damage in range [min,max]
       counterAttackDamage =
           random.nextInt(getMaxCounterAttack() + 1 - getMinCounterAttack()) + getMinCounterAttack();
-      System.out.println("Raw Counter damage: " + counterAttackDamage);
+      if (DEBUG) System.out.println("Raw Counter damage: " + counterAttackDamage);
 
       // Change this unit's health
       int finalCounterDamage =
@@ -340,7 +344,7 @@ public final class Combat {
                   0,
                   counterAttackDamage * Math.max(0, 1 - getAttackerPercentageDamageReduction())
                       - getAttackerFlatDamageReduction());
-      System.out.println("Final Counter damage: " + finalCounterDamage);
+      if (DEBUG) System.out.println("Final Counter damage: " + finalCounterDamage);
       attacker.changeHealth(Math.min(0, -finalCounterDamage), defender);
       counterAttack = true;
     }
@@ -359,7 +363,7 @@ public final class Combat {
     boolean defenderIsDead = !defender.isAlive();
 
     processed = true;
-    System.out.println("End combat ------");
+    if (DEBUG) System.out.println("End combat ------");
 
     return defenderIsDead;
   }
