@@ -202,6 +202,7 @@ public final class GameController {
   private synchronized void kill() {
     if (!isRunning()) return;
     frame.dispose();
+    game.kill();
     gameThread.interrupt();
     AudioController.stopMusic();
   }

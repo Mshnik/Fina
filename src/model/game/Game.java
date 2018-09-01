@@ -110,14 +110,21 @@ public final class Game implements Runnable, Stringable {
             .findFirst()
             .orElse(-1);
     try {
-      while (!isGameOver()) {
+      while (running && ! isGameOver()) {
         repaint();
         nextTurn();
       }
-      controller.frame.showGameOverAlert(getRemainingPlayers().get(0));
+      if (isGameOver()) {
+        controller.frame.showGameOverAlert(getRemainingPlayers().get(0));
+      }
     } finally {
       running = false;
     }
+  }
+
+  /** Stops the current game by setting currently running to false. */
+  public void kill() {
+    running = false;
   }
 
   /** Returns true if this is currently running - the run method is executing */

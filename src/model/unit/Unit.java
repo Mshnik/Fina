@@ -302,7 +302,7 @@ public abstract class Unit implements Stringable {
     }
     owner.removeUnit(this);
     location.removeOccupyingUnit();
-    if (killer.owner != owner) {
+    if (killer.owner != owner && killer.owner != null && killer.owner.getCommander() != null) {
       killer.owner.getCommander().addResearch((int) (level * Commander.LEVEL_TO_RESEARCH_RATIO));
     }
   }
