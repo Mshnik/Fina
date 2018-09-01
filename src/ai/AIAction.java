@@ -69,14 +69,14 @@ public final class AIAction {
    */
   public static <U extends Unit & Summoner> AIAction summonCombatantOrBuildBuilding(
       U summoningUnit, Tile tileToSummonOn, Unit unitToSummon) {
-    return new AIAction(AIActionType.ATTACK, summoningUnit, tileToSummonOn, null, unitToSummon);
+    return new AIAction(AIActionType.SUMMON_COMBATANT_OR_BUILD_BUILDING, summoningUnit, tileToSummonOn, null, unitToSummon);
   }
 
   /**
    * Creates an AIAction that has the given commander cast the given spell on the given tile target.
    */
   public static AIAction cast(Commander caster, Tile tileToTarget) {
-    return new AIAction(AIActionType.ATTACK, caster, tileToTarget, null, null);
+    return new AIAction(AIActionType.CAST_SPELL, caster, tileToTarget, null, null);
   }
 
   /** Constructs an AIAction and asserts that the inputs are valid. */

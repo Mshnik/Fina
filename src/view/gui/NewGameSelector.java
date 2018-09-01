@@ -1,6 +1,7 @@
 package view.gui;
 
 import ai.dummy.DoNothingAIController;
+import ai.dummy.MoveAndSummonRandomlyAIController;
 import ai.dummy.MoveCommanderRandomlyAIController;
 import controller.game.BoardReader;
 import model.board.Board;
@@ -66,7 +67,8 @@ final class NewGameSelector {
     private static final String[] PLAYER_TYPE_OPTIONS = {
       HumanPlayer.HUMAN_PLAYER_TYPE,
       DoNothingAIController.DO_NOTHING_AI_TYPE,
-      MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE
+      MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE,
+      MoveAndSummonRandomlyAIController.MOVE_AND_SUMMON_RANDOMLY_AI_TYPE
     };
     private final List<JComboBox<String>> playerTypeSelectorsList;
 

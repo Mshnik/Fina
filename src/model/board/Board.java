@@ -5,6 +5,8 @@ import controller.selector.SummonSelector;
 import model.game.Player;
 import model.game.Stringable;
 import model.unit.MovingUnit;
+import model.unit.Summoner;
+import model.unit.Unit;
 import model.util.MPoint;
 
 import java.util.ArrayList;
@@ -189,17 +191,22 @@ public final class Board implements Iterable<Tile>, Stringable {
     return tiles;
   }
 
-  /** Returns the set of tiles the given summon selector could choose to summon a new model.unit */
-  public ArrayList<Tile> getSummonCloud(SummonSelector ss) {
+  /** Returns the set of tiles the given summoner unit could choose to summon a new unit. */
+  public <U extends Unit & Summoner> List<Tile> getSummonCloud(U summoner, Unit toSummon) {
     ArrayList<Tile> radialTiles =
-        getRadialCloud(ss.summoner.getLocation(), ss.summoner.getSummonRange());
+        getRadialCloud(summoner.getLocation(), summoner.getSummonRange());
     HashSet<Tile> toRemove = new HashSet<Tile>();
     for (Tile t : radialTiles) {
-      if (!ss.summoner.owner.canSee(t) || t.isOccupied() || !ss.toSummon.canOccupy(t.terrain))
+      if (!summoner.owner.canSee(t) || t.isOccupied() || !toSummon.canOccupy(t.terrain))
         toRemove.add(t);
     }
     radialTiles.removeAll(toRemove);
     return radialTiles;
+  }
+
+  /** Returns the set of tiles the given summon selector could choose to summon a new model.unit */
+  public List<Tile> getSummonCloud(SummonSelector<?> ss) {
+    return getSummonCloud(ss.summoner, ss.toSummon);
   }
 
   /**

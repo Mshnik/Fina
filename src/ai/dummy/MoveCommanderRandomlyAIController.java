@@ -29,10 +29,12 @@ public final class MoveCommanderRandomlyAIController implements AIController {
           player
               .game
               .board
-              .getMovementCloud(commander, false);
-      movableTiles.remove(commander.getLocation());
+              .getMovementCloud(commander, false)
+              .stream()
+              .filter(t -> !t.isOccupied())
+              .collect(Collectors.toList());
       Tile toMoveTo = movableTiles.get(random.nextInt(movableTiles.size()));
-      try{
+      try {
         Thread.sleep(2000);
       } catch (InterruptedException e) {
         return null;

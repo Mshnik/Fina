@@ -1,6 +1,7 @@
 package controller.game;
 
 import ai.dummy.DoNothingAIController;
+import ai.dummy.MoveAndSummonRandomlyAIController;
 import ai.dummy.MoveCommanderRandomlyAIController;
 import controller.audio.AudioController;
 import controller.decision.Choice;
@@ -41,6 +42,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
+
+import static ai.dummy.DoNothingAIController.DO_NOTHING_AI_TYPE;
+import static ai.dummy.MoveAndSummonRandomlyAIController.MOVE_AND_SUMMON_RANDOMLY_AI_TYPE;
+import static ai.dummy.MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE;
+import static model.game.HumanPlayer.HUMAN_PLAYER_TYPE;
 
 /**
  * Overall controlling class that unites all classes. Should be run in its own thread, because some
@@ -140,16 +146,21 @@ public final class GameController {
     // Create players.
     for (int i = 0; i < playerTypes.size(); i++) {
       Player p;
-      if (playerTypes.get(i).equals(HumanPlayer.HUMAN_PLAYER_TYPE)) {
-        p = new HumanPlayer(g, playerColorsArr[i]);
-      } else if (playerTypes.get(i).equals(DoNothingAIController.DO_NOTHING_AI_TYPE)) {
-        p = new AIPlayer(g, playerColorsArr[i], new DoNothingAIController(5000));
-      } else if (playerTypes
-          .get(i)
-          .equals(MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE)) {
-        p = new AIPlayer(g, playerColorsArr[i], new MoveCommanderRandomlyAIController());
-      } else {
-        throw new RuntimeException("Don't know how to handle player type " + playerTypes.get(i));
+      switch (playerTypes.get(i)) {
+        case HUMAN_PLAYER_TYPE:
+          p = new HumanPlayer(g, playerColorsArr[i]);
+          break;
+        case DO_NOTHING_AI_TYPE:
+          p = new AIPlayer(g, playerColorsArr[i], new DoNothingAIController(5000));
+          break;
+        case MOVE_COMMANDER_RANDOMLY_AI_TYPE:
+          p = new AIPlayer(g, playerColorsArr[i], new MoveCommanderRandomlyAIController());
+          break;
+        case MOVE_AND_SUMMON_RANDOMLY_AI_TYPE:
+          p = new AIPlayer(g, playerColorsArr[i], new MoveAndSummonRandomlyAIController());
+          break;
+        default:
+          throw new RuntimeException("Don't know how to handle player type " + playerTypes.get(i));
       }
       gc.frame.createViewOptionsForPlayer(p);
       new DummyCommander(p, 4);
@@ -507,11 +518,16 @@ public final class GameController {
     LinkedList<Choice> choices = new LinkedList<Choice>();
     ArrayList<Unit> units = Unit.sortedList(creatables.values());
     Tile t = getGamePanel().boardCursor.getElm();
+    if (!(t.getOccupyingUnit() instanceof Summoner)) {
+      throw new RuntimeException(t.getOccupyingUnit() + " can't summon");
+    }
     for (Unit u : units) {
       choices.add(
           new Choice(
               u.getManaCostWithScalingAndDiscountsForPlayer(c.owner) <= c.getMana()
-                  && !new SummonSelector(this, t.getOccupyingUnit(), u).getCloud().isEmpty(),
+                  && !new SummonSelector<>(this, (Unit & Summoner) t.getOccupyingUnit(), u)
+                      .getCloud()
+                      .isEmpty(),
               u.name
                   + Choice.SEPERATOR
                   + " ("
