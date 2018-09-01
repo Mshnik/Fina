@@ -215,8 +215,8 @@ public final class Buildings {
             new ModifierBundle(Modifiers.strengthened(10), Modifiers.toughness(5)));
       case "Comms Tower":
         return EffectPair.of(
-            new ModifierBundle(Modifiers.farsight(2), Modifiers.quickness(1)),
-            new ModifierBundle(Modifiers.farsight(3), Modifiers.quickness(2)));
+            new ModifierBundle(Modifiers.communications(2, 1)),
+            new ModifierBundle(Modifiers.communications(3, 2)));
       case "Cemetery":
         return EffectPair.of(
             new ModifierBundle(Modifiers.bloodlust(.1)),
@@ -260,7 +260,8 @@ public final class Buildings {
                 PlayerModifierEffectType.BONUS_ACTIONS, 2, ancientGroundDescription));
       case "Laboratory":
         return EffectPair.of(
-            new PlayerModifierEffect(PlayerModifierEffectType.CAST_SELECT_BOOST, 1,nonAncientGroundDescription),
+            new PlayerModifierEffect(
+                PlayerModifierEffectType.CAST_SELECT_BOOST, 1, nonAncientGroundDescription),
             new PlayerModifierEffect(
                 PlayerModifierEffectType.CAST_CLOUD_BOOST, 1, ancientGroundDescription));
       case "Ritual Grounds":

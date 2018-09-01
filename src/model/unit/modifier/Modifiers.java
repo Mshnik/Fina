@@ -26,6 +26,7 @@ public final class Modifiers {
     list.add(new ModifierDescription(blinded(0)));
     list.add(new ModifierDescription(bloodlust(0)));
     list.add(new ModifierDescription(bornToFight(0)));
+    list.add(new ModifierDescription(communications(0, 0)));
     list.add(new ModifierDescription(disappearance()));
     list.add(new ModifierDescription(eagleEye()));
     list.add(new ModifierDescription(elusive(0)));
@@ -118,31 +119,59 @@ public final class Modifiers {
     return Collections.unmodifiableList(descriptions);
   }
 
-  /** Returns the ModifierBundle by name, with the given value. If the value is not used, it may be null. */
+  /**
+   * Returns the ModifierBundle by name, with the given value. If the value is not used, it may be
+   * null.
+   */
   public static ModifierBundle getBundleByName(String modName, Number modValue) {
     switch (modName) {
-      case "Armored": return new ModifierBundle(armored(modValue.doubleValue()));
-      case "Blinded": return new ModifierBundle(blinded(modValue.intValue()));
-      case "Bloodlust": return new ModifierBundle(bloodlust(modValue.doubleValue()));
-      case "Born to Fight": return new ModifierBundle(bornToFight(modValue.intValue()));
-      case "Disappearance": return new ModifierBundle(disappearance());
-      case "Eagle Eye": return new ModifierBundle(eagleEye());
-      case "Elusive": return new ModifierBundle(elusive(modValue.doubleValue()));
-      case "Farsight": return new ModifierBundle(farsight(modValue.intValue()));
-      case "Flight": return flight();
-      case "Hexproof": return new ModifierBundle(hexproof(modValue.doubleValue()));
-      case "Pathfinder": return new ModifierBundle(pathfinder(modValue.intValue()));
-      case "Patience": return new ModifierBundle(patience(modValue.doubleValue()));
-      case "Quickness": return new ModifierBundle(quickness(modValue.intValue()));
-      case "Shielded": return new ModifierBundle(shielded(modValue.doubleValue()));
-      case "Siege": return new ModifierBundle(siege(modValue.doubleValue()));
-      case "Sluggish": return new ModifierBundle(sluggish(modValue.intValue()));
-      case "Strengthened": return strengthened(modValue.intValue());
-      case "Tenacity": return new ModifierBundle(tenacity(modValue.intValue()));
-      case "Toughness": return new ModifierBundle(toughness(modValue.intValue()));
-      case "Trailblazer": return new ModifierBundle(trailblazer(modValue.intValue()));
-      case "Weakened": return new ModifierBundle(weakened(modValue.intValue()));
-      default: throw new RuntimeException("Unknown modName: " + modName);
+      case "Armored":
+        return new ModifierBundle(armored(modValue.doubleValue()));
+      case "Blinded":
+        return new ModifierBundle(blinded(modValue.intValue()));
+      case "Bloodlust":
+        return new ModifierBundle(bloodlust(modValue.doubleValue()));
+      case "Born to Fight":
+        return new ModifierBundle(bornToFight(modValue.intValue()));
+      case "Communications":
+        throw new RuntimeException(
+            "Communications instantiation not supported here because it requires two args");
+      case "Disappearance":
+        return new ModifierBundle(disappearance());
+      case "Eagle Eye":
+        return new ModifierBundle(eagleEye());
+      case "Elusive":
+        return new ModifierBundle(elusive(modValue.doubleValue()));
+      case "Farsight":
+        return new ModifierBundle(farsight(modValue.intValue()));
+      case "Flight":
+        return flight();
+      case "Hexproof":
+        return new ModifierBundle(hexproof(modValue.doubleValue()));
+      case "Pathfinder":
+        return new ModifierBundle(pathfinder(modValue.intValue()));
+      case "Patience":
+        return new ModifierBundle(patience(modValue.doubleValue()));
+      case "Quickness":
+        return new ModifierBundle(quickness(modValue.intValue()));
+      case "Shielded":
+        return new ModifierBundle(shielded(modValue.doubleValue()));
+      case "Siege":
+        return new ModifierBundle(siege(modValue.doubleValue()));
+      case "Sluggish":
+        return new ModifierBundle(sluggish(modValue.intValue()));
+      case "Strengthened":
+        return strengthened(modValue.intValue());
+      case "Tenacity":
+        return new ModifierBundle(tenacity(modValue.intValue()));
+      case "Toughness":
+        return new ModifierBundle(toughness(modValue.intValue()));
+      case "Trailblazer":
+        return new ModifierBundle(trailblazer(modValue.intValue()));
+      case "Weakened":
+        return new ModifierBundle(weakened(modValue.intValue()));
+      default:
+        throw new RuntimeException("Unknown modName: " + modName);
     }
   }
 
@@ -163,12 +192,12 @@ public final class Modifiers {
   /** Modifier that decreases vision range */
   public static Modifier blinded(int visionRangeDecreases) {
     return new StatModifier(
-        "Blinded",
-        Integer.MAX_VALUE,
-        StackMode.STACKABLE,
-        StatType.VISION_RANGE,
-        StatModifier.ModificationType.ADD,
-        -visionRangeDecreases)
+            "Blinded",
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            StatType.VISION_RANGE,
+            StatModifier.ModificationType.ADD,
+            -visionRangeDecreases)
         .uniqueCopy();
   }
 
@@ -189,15 +218,24 @@ public final class Modifiers {
   /** Modifier that gives life gain after dealing damage. */
   public static Modifier bornToFight(int healthGainedPerAttack) {
     return new CustomModifier(
-        "Born to Fight",
-        "After dealing damage, this unit gains -x- health",
-        healthGainedPerAttack,
-        Integer.MAX_VALUE,
-        StackMode.STACKABLE,
-        false,
-        false,
-        true)
+            "Born to Fight",
+            "After dealing damage, this unit gains -x- health",
+            healthGainedPerAttack,
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            false,
+            false,
+            true)
         .uniqueCopy();
+  }
+
+  /** ModifierBundle that increases both vision and movement under the name "Communications" */
+  public static ModifierBundle communications(int visionIncrease, int movementIncrease) {
+    return new ModifierBundle(
+        new CustomModifier(
+            "Communications", "", null, Integer.MAX_VALUE, StackMode.STACKABLE, false, true, true),
+        farsight(visionIncrease),
+        quickness(movementIncrease));
   }
 
   /** Modifier that slowly regenerates health. */
@@ -335,12 +373,12 @@ public final class Modifiers {
   /** Modifier that decreases total movement */
   public static Modifier sluggish(int totalMovementDecrease) {
     return new StatModifier(
-        "Sluggish",
-        Integer.MAX_VALUE,
-        StackMode.STACKABLE,
-        StatType.MOVEMENT_TOTAL,
-        StatModifier.ModificationType.ADD,
-        -totalMovementDecrease)
+            "Sluggish",
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            StatType.MOVEMENT_TOTAL,
+            StatModifier.ModificationType.ADD,
+            -totalMovementDecrease)
         .uniqueCopy();
   }
 
@@ -422,21 +460,21 @@ public final class Modifiers {
   public static ModifierBundle weakened(int attackDecrease) {
     return new ModifierBundle(
         new StatModifier(
-            "Weakened",
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            StatType.MIN_ATTACK,
-            StatModifier.ModificationType.ADD,
-            -attackDecrease)
+                "Weakened",
+                Integer.MAX_VALUE,
+                StackMode.STACKABLE,
+                StatType.MIN_ATTACK,
+                StatModifier.ModificationType.ADD,
+                -attackDecrease)
             .uniqueCopy(),
         new StatModifier(
-            // Empty so name doesn't occur twice.
-            "",
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            StatType.MAX_ATTACK,
-            StatModifier.ModificationType.ADD,
-            -attackDecrease)
+                // Empty so name doesn't occur twice.
+                "",
+                Integer.MAX_VALUE,
+                StackMode.STACKABLE,
+                StatType.MAX_ATTACK,
+                StatModifier.ModificationType.ADD,
+                -attackDecrease)
             .uniqueCopy());
   }
 }
