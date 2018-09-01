@@ -20,6 +20,11 @@ public class HumanPlayer extends Player {
   }
 
   @Override
+  public boolean isLocalHumanPlayer() {
+    return true;
+  }
+
+  @Override
   protected void turn() {
     takingAction = true;
     while (takingAction) {

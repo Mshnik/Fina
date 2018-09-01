@@ -99,10 +99,8 @@ public abstract class Player implements Stringable {
     return game.getCurrentPlayer() == this;
   }
 
-  /** Returns true if this is a human player, false otherwise */
-  public boolean isHumanPlayer() {
-    return this instanceof HumanPlayer;
-  }
+  /** Returns true if this is a local human player, false otherwise */
+  public abstract boolean isLocalHumanPlayer();
 
   // HEALTH AND MANA
   /** Returns true if this player is alive. */

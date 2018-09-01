@@ -63,6 +63,11 @@ public final class AIPlayer extends Player {
     }
   }
 
+  @Override
+  public boolean isLocalHumanPlayer() {
+    return false;
+  }
+
   /**
    * Executes the turn for the AI - executes next actions as long as there is one, then terminates.
    */

@@ -273,8 +273,10 @@ public final class Frame extends JFrame {
   /** Starts the turn for player p, making graphic updates as necessary */
   public void startTurnFor(Player p) {
     gamePanel.boardCursor.hide = false;
-    gamePanel.boardCursor.setElm(p.getCommander().getLocation());
-    gamePanel.boardCursor.moved();
+    if (p.isLocalHumanPlayer()) {
+      gamePanel.boardCursor.setElm(p.getCommander().getLocation());
+      gamePanel.boardCursor.moved();
+    }
   }
 
   /** Updates the info panel to show the given model.unit * */
