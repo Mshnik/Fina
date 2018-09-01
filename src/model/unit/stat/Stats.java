@@ -154,9 +154,9 @@ public class Stats implements Iterable<Stat> {
    * Returns an arrayList of the movement stats: - Move total - Grass cost - woods cost - mountain
    * cost
    */
-  public List<Stat> getMovementStatsList(boolean filterOmittableZeroes) {
+  public List<Stat> getMovementCostStatsList(boolean filterOmittableZeroes) {
     StatType[] t = {
-      StatType.MOVEMENT_TOTAL, StatType.GRASS_COST, StatType.WOODS_COST, StatType.MOUNTAIN_COST
+        StatType.GRASS_COST, StatType.WOODS_COST, StatType.MOUNTAIN_COST
     };
     return getStatsList(t, filterOmittableZeroes);
   }

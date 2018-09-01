@@ -327,7 +327,7 @@ public final class InfoPanel extends JPanel {
 
     if (!isMenu) {
       // Insert movement at top here
-      g2d.drawString("Movement", x, y);
+      g2d.drawString("Remaining Move", x, y);
 
       String movement = "0";
       if (unit instanceof MovingUnit) {
@@ -336,11 +336,23 @@ public final class InfoPanel extends JPanel {
       g2d.drawString(movement, x + 145, y);
       y += infoFont;
     }
+    g2d.drawString("Base Move", x, y);
+    g2d.drawString(((MovingUnit) unit).getMovementCap() + "", x + 145, y);
+    y += infoFont;
 
-    for (Stat s : unit.getStats().getMovementStatsList(true)) {
-      drawStat(g2d, s, x, y);
-      y += infoFont;
-    }
+    g2d.drawString("Move Costs", x, y);
+    g2d.drawString(
+        unit.getStats()
+            .getMovementCostStatsList(false)
+            .stream()
+            .map(
+                s ->
+                    s.name == StatType.MOUNTAIN_COST && (int) s.val > 100
+                        ? INF_CHAR + ""
+                        : s.val.toString())
+            .collect(Collectors.joining("/")),
+        x + 145,
+        y);
   }
 
   /** Continues drawing a unit for buildings. */
@@ -566,13 +578,7 @@ public final class InfoPanel extends JPanel {
     } else {
       g2d.drawString(s.name.toString(), x, y);
     }
-    String str;
-    if (s.name == StatType.MOUNTAIN_COST && (Integer) s.val > 100) {
-      str = INF_CHAR + "";
-    } else {
-      str = s.val.toString();
-    }
-    g2d.drawString(str, x + 145, y);
+    g2d.drawString(s.val.toString(), x + 145, y);
   }
 
   private void drawCombatColumn(Graphics2D g2d, Unit unit, int x) {
