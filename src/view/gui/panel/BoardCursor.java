@@ -7,7 +7,7 @@ import model.board.Direction;
 import model.board.Tile;
 import view.gui.Cursor;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 
 /** An instance represents the cursor on the GUI */
@@ -131,7 +131,7 @@ public final class BoardCursor extends Cursor<Tile, GamePanel> {
    * moved or elm set.
    */
   private void updateUnitHover() {
-    if (getElm().isOccupied() && panel.controller.game.getCurrentPlayer().canSee(getElm())) {
+    if (getElm().isOccupied() && panel.controller.game.isVisibleToMostRecentHumanPlayer(getElm())) {
       panel.getFrame().getInfoPanel().setUnit(getElm().getOccupyingUnit(), false, false);
     } else {
       panel.getFrame().getInfoPanel().setTile(getElm());
