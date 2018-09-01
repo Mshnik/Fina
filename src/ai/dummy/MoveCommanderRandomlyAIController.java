@@ -35,6 +35,11 @@ public final class MoveCommanderRandomlyAIController implements AIController {
               .collect(Collectors.toList());
       movableTiles.remove(commander.getLocation());
       Tile toMoveTo = movableTiles.get(random.nextInt(movableTiles.size()));
+      try{
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        return null;
+      }
       return AIAction.moveUnit(commander, toMoveTo);
     }
     return null;

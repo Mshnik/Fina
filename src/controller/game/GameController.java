@@ -324,8 +324,8 @@ public final class GameController {
 
     // Add choices based on the model.unit on this tile.
     ArrayList<Choice> choices = new ArrayList<>();
-    // Actionable choices - requires active player.
-    if (u.owner == game.getCurrentPlayer()) {
+    // Actionable choices - requires active and local human player.
+    if (u.owner == game.getCurrentPlayer() && game.getCurrentPlayer().isLocalHumanPlayer()) {
       if (u instanceof MovingUnit) {
         choices.add(new Choice(u.canMove(), MOVE, u));
       }
@@ -440,16 +440,18 @@ public final class GameController {
 
   /** Starts a getGamePanel().getDecisionPanel() for ending the current player's turn */
   void startEndTurnDecision() {
-    decision =
-        new Decision(
-            DecisionType.END_OF_TURN_DECISION,
-            false,
-            true,
-            new Choice(true, GameController.CANCEL),
-            new Choice(true, GameController.CONFIRM));
-    addToggle(Toggle.DECISION);
-    getGamePanel().fixDecisionPanel("End Turn?", game.getCurrentPlayer(), decision, true);
-    getGamePanel().moveDecisionPanel();
+    if (game.getCurrentPlayer().isLocalHumanPlayer()) {
+      decision =
+          new Decision(
+              DecisionType.END_OF_TURN_DECISION,
+              false,
+              true,
+              new Choice(true, GameController.CANCEL),
+              new Choice(true, GameController.CONFIRM));
+      addToggle(Toggle.DECISION);
+      getGamePanel().fixDecisionPanel("End Turn?", game.getCurrentPlayer(), decision, true);
+      getGamePanel().moveDecisionPanel();
+    }
   }
 
   /** Processes an endOfTurn Decision */
