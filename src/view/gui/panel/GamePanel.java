@@ -4,15 +4,6 @@ import controller.decision.Decision;
 import controller.game.GameController;
 import controller.selector.AttackSelector;
 import controller.selector.CastSelector;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
-import java.awt.image.BufferedImage;
-import java.util.List;
-import java.util.Set;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Game;
@@ -22,11 +13,21 @@ import model.unit.ability.Ability;
 import model.unit.commander.Commander;
 import model.util.ExpandableCloud;
 import view.gui.Frame;
-import view.gui.image.ImageIndex;
-import view.gui.image.ImageIndex.DrawingBarSegment;
 import view.gui.MatrixPanel;
 import view.gui.Paintable;
 import view.gui.decision.DecisionPanel;
+import view.gui.image.ImageIndex;
+import view.gui.image.ImageIndex.DrawingBarSegment;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
+import java.awt.image.BufferedImage;
+import java.util.List;
+import java.util.Set;
 
 /** Drawable wrapper for a model.board object */
 public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
@@ -162,7 +163,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
           Tile t =
               game.board.getTileAt(row + scrollY - marginRowTop, col + scrollX - marginColLeft);
           drawTile(g2d, t);
-          if (t.isOccupied() && game.isVisible(t)) {
+          if (t.isOccupied() && game.isVisibleToMostRecentHumanPlayer(t)) {
             drawUnit(g2d, t.getOccupyingUnit());
           }
           if (getFrame().DEBUG) {
@@ -173,9 +174,10 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
       }
     }
 
-    // Draw danger radius for active player. May be empty.
-    if (game.getCurrentPlayer() != null) {
-      Set<Tile> dangerRadius = getFrame().getViewOptionsForPlayer(game.getCurrentPlayer()).getDangerRadius();
+    // Draw danger radius for most recent human player player. May be empty.
+    if (game.getMostRecentHumanPlayer() != null) {
+      Set<Tile> dangerRadius =
+          getFrame().getViewOptionsForPlayer(game.getMostRecentHumanPlayer()).getDangerRadius();
       if (!dangerRadius.isEmpty()) {
         g2d.setColor(ATTACK_COLOR);
         g2d.setStroke(new BasicStroke(2));
@@ -255,14 +257,14 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
     // Draw terrain
     if (controller.game.getFogOfWar().hideAncientGround
         && t.terrain == Terrain.ANCIENT_GROUND
-        && !controller.game.isVisible(t)) {
+        && !controller.game.isVisibleToMostRecentHumanPlayer(t)) {
       g2d.drawImage(ImageIndex.imageForTerrain(Terrain.GRASS), x, y, cellSize(), cellSize(), null);
     } else {
       g2d.drawImage(ImageIndex.imageForTerrain(t.terrain), x, y, cellSize(), cellSize(), null);
     }
 
     // If the player can't see this tile, shade darkly.
-    if (!controller.game.isVisible(t)) {
+    if (!controller.game.isVisibleToMostRecentHumanPlayer(t)) {
       g2d.setColor(FOG_OF_WAR);
       g2d.fillRect(x, y, cellSize(), cellSize());
     }

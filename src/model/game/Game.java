@@ -8,6 +8,7 @@ import model.unit.Unit;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /** Unifying model that holds all sub-model classes */
 public final class Game implements Runnable, Stringable {
@@ -18,6 +19,9 @@ public final class Game implements Runnable, Stringable {
   /** The players currently playing this model.game */
   private LinkedList<Player> players;
 
+  /** The players currently playing this model.game, indexed by their playerIndex. */
+  private Map<Integer, Player> playersByIndex;
+
   /** The players remaining in the model.game */
   private HashMap<Player, Boolean> remainingPlayers;
 
@@ -26,6 +30,9 @@ public final class Game implements Runnable, Stringable {
    * players.size() - 1] afterwards
    */
   private int index;
+
+  /** The index of the most recent human player to take a turn. */
+  private int mostRecentHumanPlayerIndex;
 
   /** The model.board that represents this model.game */
   public final Board board;
@@ -68,9 +75,11 @@ public final class Game implements Runnable, Stringable {
     fogOfWar = fog;
     betweenTurnsFog = false;
     players = new LinkedList<>();
+    playersByIndex = new HashMap<>();
     remainingPlayers = new HashMap<>();
     running = false;
     index = -1;
+    mostRecentHumanPlayerIndex = -1;
   }
 
   /** Returns the controller for this Game */
@@ -93,6 +102,13 @@ public final class Game implements Runnable, Stringable {
   public void run() {
     running = true;
     index = 0;
+    mostRecentHumanPlayerIndex =
+        players
+            .stream()
+            .filter(Player::isLocalHumanPlayer)
+            .map(p -> p.index)
+            .findFirst()
+            .orElse(-1);
     try {
       while (!isGameOver()) {
         repaint();
@@ -114,6 +130,7 @@ public final class Game implements Runnable, Stringable {
     if (remainingPlayers.containsKey(p))
       throw new IllegalArgumentException("Game " + this + " already has player " + p);
     players.add(p);
+    playersByIndex.put(players.size(), p);
     remainingPlayers.put(p, true);
   }
 
@@ -124,6 +141,15 @@ public final class Game implements Runnable, Stringable {
   public Player getCurrentPlayer() {
     if (!running) return null;
     return players.getFirst();
+  }
+
+  /**
+   * Returns the most recent human player to taking a turn. Returns null if the model.game isn't
+   * running.
+   */
+  public Player getMostRecentHumanPlayer() {
+    if (!running) return null;
+    return playersByIndex.get(mostRecentHumanPlayerIndex);
   }
 
   /** Returns the remaining players in the model.game */
@@ -164,6 +190,19 @@ public final class Game implements Runnable, Stringable {
   }
 
   /**
+   * Returns true if the given tile is visible to the most recent human player to take a turn, false
+   * otherwise. Helper for painting fog of war and hiding units. If no human player, don't paint fog
+   * of war (but AIs will respect it).
+   */
+  public boolean isVisibleToMostRecentHumanPlayer(Tile t) {
+    return !getFogOfWar().active
+        || (!betweenTurnsFog
+            && getCurrentPlayer() != null
+            && (mostRecentHumanPlayerIndex == -1
+                || playersByIndex.get(mostRecentHumanPlayerIndex).canSee(t)));
+  }
+
+  /**
    * Returns true if this model.game is ended (one of the termination conditions is true), false
    * otherwise. Returns true if there are more than 1 remaining player.
    */
@@ -188,6 +227,9 @@ public final class Game implements Runnable, Stringable {
       throw new RuntimeException("Can't take turn for player - " + this + " isn't started");
     betweenTurnsFog = false;
     Player p = getCurrentPlayer();
+    if (p.isLocalHumanPlayer()) {
+      mostRecentHumanPlayerIndex = p.index;
+    }
     boolean ok = p.turnStart();
     if (ok) {
       controller.startTurnFor(p);
@@ -196,16 +238,20 @@ public final class Game implements Runnable, Stringable {
       remainingPlayers.put(p, false);
     }
 
-    // Move this player to the end, inc players index
+    // Move this player to the end, inc players index.
+    // Don't inc mostRecentHumanPlayerIndex yet.
     players.remove(0);
     players.add(p);
     index = (index + 1) % players.size();
 
     // If fog, pause and wait for transfer of computer.
     if (getFogOfWar().active) {
-      betweenTurnsFog = true;
       Player nextTurnPlayer = getCurrentPlayer();
-      controller.frame.showPlayerChangeAlert(nextTurnPlayer);
+      if (nextTurnPlayer.isLocalHumanPlayer()
+          && nextTurnPlayer.index != mostRecentHumanPlayerIndex) {
+        betweenTurnsFog = true;
+        controller.frame.showPlayerChangeAlert(nextTurnPlayer);
+      }
     }
   }
 
