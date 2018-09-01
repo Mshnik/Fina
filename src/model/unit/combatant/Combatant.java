@@ -233,13 +233,13 @@ public abstract class Combatant extends MovingUnit {
   }
 
   @Override
-  public void preMove(LinkedList<Tile> path) {}
+  public void preMove(List<Tile> path) {}
 
   /**
    * Called after moving - tell the frame that danger clouds including this need to be recomputed.
    */
   @Override
-  public void postMove(LinkedList<Tile> path) {
+  public void postMove(List<Tile> path) {
     if (path.size() > 0 && owner != null) {
       owner.game.getController().frame.unitDangerRadiusChanged(this);
       owner.maybeRemoveActionableUnit(this);

@@ -7,6 +7,9 @@ import model.unit.Unit;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 
+import java.util.Collections;
+import java.util.List;
+
 /** A data class representing an action to take by the AI. */
 public final class AIAction {
 
@@ -39,17 +42,25 @@ public final class AIAction {
    */
   public final Tile targetedTile;
 
+  /** The path to travel when moving to the targetedTile. Only non-null for moving. */
+  public final List<Tile> movePath;
+
   /** Unit to summon - should only be non-null for summoning. */
   public final Unit unitToSummon;
 
   /** Creates an AIAction that moves the given unit to the given adjacent tile. */
-  public static AIAction moveUnit(MovingUnit unitToMove, Tile moveToTile) {
-    return new AIAction(AIActionType.MOVE_UNIT, unitToMove, moveToTile, null);
+  public static AIAction moveUnit(MovingUnit unitToMove, Tile moveToTile, List<Tile> movePath) {
+    return new AIAction(
+        AIActionType.MOVE_UNIT,
+        unitToMove,
+        moveToTile,
+        Collections.unmodifiableList(movePath),
+        null);
   }
 
   /** Creates an AIAction that has the given unit attack the enemy unit on the given tile. */
   public static AIAction attack(Combatant attackingUnit, Tile tileToAttack) {
-    return new AIAction(AIActionType.ATTACK, attackingUnit, tileToAttack, null);
+    return new AIAction(AIActionType.ATTACK, attackingUnit, tileToAttack, null, null);
   }
 
   /**
@@ -58,21 +69,27 @@ public final class AIAction {
    */
   public static <U extends Unit & Summoner> AIAction summonCombatantOrBuildBuilding(
       U summoningUnit, Tile tileToSummonOn, Unit unitToSummon) {
-    return new AIAction(AIActionType.ATTACK, summoningUnit, tileToSummonOn, unitToSummon);
+    return new AIAction(AIActionType.ATTACK, summoningUnit, tileToSummonOn, null, unitToSummon);
   }
 
   /**
    * Creates an AIAction that has the given commander cast the given spell on the given tile target.
    */
   public static AIAction cast(Commander caster, Tile tileToTarget) {
-    return new AIAction(AIActionType.ATTACK, caster, tileToTarget, null);
+    return new AIAction(AIActionType.ATTACK, caster, tileToTarget, null, null);
   }
 
   /** Constructs an AIAction and asserts that the inputs are valid. */
-  private AIAction(AIActionType actionType, Unit actingUnit, Tile targetedTile, Unit unitToSummon) {
+  private AIAction(
+      AIActionType actionType,
+      Unit actingUnit,
+      Tile targetedTile,
+      List<Tile> movePath,
+      Unit unitToSummon) {
     this.actionType = actionType;
     this.actingUnit = actingUnit;
     this.targetedTile = targetedTile;
+    this.movePath = movePath;
     this.unitToSummon = unitToSummon;
 
     // Assert that this action construction is legal.
@@ -87,14 +104,20 @@ public final class AIAction {
             actingUnit instanceof MovingUnit,
             "Can't do MOVE_UNIT action on " + actingUnit + ", it can't move");
         assertPrecondition(
-            targetedTile.isAdjacentTo(actingUnit.getLocation()),
-            "Can't do MOVE_UNIT action to " + targetedTile + ", it isn't adjacent");
-        MovingUnit movingUnit = (MovingUnit) actingUnit;
+            movePath.size() >= 2,
+            "Can't do MOVE_UNIT action along " + movePath + ", it has fewer than two elements");
         assertPrecondition(
-            movingUnit.getMovement() >= movingUnit.getMovementCost(targetedTile.terrain),
-            "Can't do MOVE_UNIT action to "
-                + targetedTile
-                + ", unit doesn't have enough movement left.");
+            movePath.get(0) == actingUnit.getLocation(),
+            "Can't do MOVE_UNIT action along "
+                + movePath
+                + ", the unit isn't on the first location. It is on "
+                + actingUnit.getLocation());
+        assertPrecondition(
+            movePath.get(movePath.size() - 1) == targetedTile,
+            "Can't do MOVE_UNIT action along "
+                + movePath
+                + ", the final location isn't "
+                + targetedTile);
         return;
       case ATTACK:
         assertPrecondition(

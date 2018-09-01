@@ -412,11 +412,11 @@ public abstract class Commander extends MovingUnit implements Summoner {
   }
 
   @Override
-  public void preMove(LinkedList<Tile> path) {
+  public void preMove(List<Tile> path) {
   }
 
   @Override
-  public void postMove(LinkedList<Tile> path) {
+  public void postMove(List<Tile> path) {
     owner.maybeRemoveActionableUnit(this);
   }
 

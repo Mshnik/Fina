@@ -2,6 +2,11 @@ package model.board;
 
 import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
+import model.game.Player;
+import model.game.Stringable;
+import model.unit.MovingUnit;
+import model.util.MPoint;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,10 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
-import model.game.Player;
-import model.game.Stringable;
-import model.unit.MovingUnit;
-import model.util.MPoint;
 
 /**
  * A Board represents the whole model.board state for the model.game as a matrix of tiles and other
@@ -241,6 +242,7 @@ public final class Board implements Iterable<Tile>, Stringable {
                   && unit.owner.canSee(neighbor.getOccupyingUnit());
           if (nDist >= 0 && !unitObstacle && nDist > neighbor.dist) {
             neighbor.dist = nDist;
+            neighbor.prev = current;
             frontier.remove(neighbor);
             frontier.add(neighbor);
           }
@@ -285,6 +287,22 @@ public final class Board implements Iterable<Tile>, Stringable {
       start.dist = unit.getMovement() - unit.getTotalMovementCost(ps.getPath());
     else start.dist = unit.getMovement();
     return getMovementCloud(start, unit);
+  }
+
+  /**
+   * Returns the path to the given tile from the last computed movement cloud. Throws an exception
+   * if the given tile wasn't computed in the last movement cloud computation.
+   */
+  public List<Tile> getMovementPath(Tile destTile) {
+    if (destTile.prev == null) {
+      throw new RuntimeException(destTile + " wasn't in last movement cloud computation");
+    }
+    LinkedList<Tile> path = new LinkedList<>();
+    while (destTile != null) {
+      path.push(destTile);
+      destTile = destTile.prev;
+    }
+    return path;
   }
 
   /** Returns an iterator over the tiles in this Board */

@@ -32,11 +32,7 @@ public final class AIPlayer extends Player {
   private void handleAction(AIAction action) {
     switch (action.actionType) {
       case MOVE_UNIT:
-        MovingUnit movingUnit = (MovingUnit) action.actingUnit;
-        LinkedList<Tile> path = new LinkedList<>();
-        path.add(movingUnit.getLocation());
-        path.add(action.targetedTile);
-        movingUnit.move(path);
+        ((MovingUnit) action.actingUnit).move(action.movePath);
         break;
       case ATTACK:
         Combat combat =

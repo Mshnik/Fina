@@ -119,13 +119,13 @@ public abstract class MovingUnit extends Unit {
    * Processes a pre-move action that may be caused by modifiers. Still only called when the move is
    * valid.
    */
-  public abstract void preMove(LinkedList<Tile> path);
+  public abstract void preMove(List<Tile> path);
 
   /**
    * Processes a post-move action that may be caused by modifiers. Only called when the move is
    * valid.
    */
-  public abstract void postMove(LinkedList<Tile> path);
+  public abstract void postMove(List<Tile> path);
 
   /**
    * Attempts to move this model.unit along the given path.
@@ -137,11 +137,13 @@ public abstract class MovingUnit extends Unit {
    * @throws IllegalArgumentException if... - the first tile isn't location - The ending tile is
    *     occupied - the total cost of movement exceeds this' movement total
    */
-  public final Tile move(LinkedList<Tile> path) throws IllegalArgumentException, RuntimeException {
+  public final Tile move(List<Tile> path) throws IllegalArgumentException, RuntimeException {
     if (!canMove()) throw new RuntimeException(this + " can't move this turn");
     if (path.get(0) != location)
       throw new IllegalArgumentException(
           this + " can't travel path " + path + ", it is on " + location);
+    // Copy path into new list.
+    path = new LinkedList<>(path);
 
     // Ok, starting at current location. ok to drop starting tile
     path.remove(0);
