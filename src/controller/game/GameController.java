@@ -329,9 +329,9 @@ public final class GameController {
     Tile t = getGamePanel().boardCursor.getElm();
     if (!getGamePanel().boardCursor.canSelect()) return;
     if (t.getOccupyingUnit() == null
-        || !game.isRunning()
-        || (t.getOccupyingUnit().owner != game.getCurrentPlayer())
-            && !game.getCurrentPlayer().canSee(t)) {
+        || (game.isRunning()
+            && t.getOccupyingUnit().owner != game.getCurrentPlayer()
+            && !game.getCurrentPlayer().canSee(t))) {
       return;
     }
     Unit u = t.getOccupyingUnit();
@@ -456,7 +456,7 @@ public final class GameController {
 
   /** Starts a getGamePanel().getDecisionPanel() for ending the current player's turn */
   void startEndTurnDecision() {
-    if (game.getCurrentPlayer().isLocalHumanPlayer()) {
+    if (game.isRunning() && game.getCurrentPlayer().isLocalHumanPlayer()) {
       decision =
           new Decision(
               DecisionType.END_OF_TURN_DECISION,
