@@ -438,7 +438,7 @@ public abstract class Player implements Stringable {
       actionableUnits.clear();
       for (Unit u : units) {
         u.refreshForTurn();
-        if (u.canMove() || u.canFight() || u == getCommander()) {
+        if (u.canMove() || u.canFight() || u.canCast() || u.canSummon()) {
           actionableUnits.add(u);
         }
       }
