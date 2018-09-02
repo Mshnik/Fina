@@ -211,8 +211,8 @@ public final class Buildings {
     switch (buildingName) {
       case "Armory":
         return EffectPair.of(
-            Modifiers.strengthened(10),
-            new ModifierBundle(Modifiers.strengthened(10), Modifiers.toughness(5)));
+            Modifiers.strengthened(3),
+            new ModifierBundle(Modifiers.strengthened(5), Modifiers.toughness(3)));
       case "Comms Tower":
         return EffectPair.of(
             new ModifierBundle(Modifiers.communications(2, 1)),
@@ -240,7 +240,7 @@ public final class Buildings {
   private static EffectPair<PlayerModifierEffect> getPlayerModifierEffects(
       String buildingName, String nonAncientGroundDescription, String ancientGroundDescription) {
     switch (buildingName) {
-      case "Mine":
+      case "Well":
         return EffectPair.of(
             new PlayerModifierEffect(
                 PlayerModifierEffectType.MANA_GENERATION, 75, nonAncientGroundDescription),

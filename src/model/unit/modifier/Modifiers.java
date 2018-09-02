@@ -308,7 +308,7 @@ public final class Modifiers {
   public static Modifier hexproof(double spellDamageReductionPercent) {
     return new CustomModifier(
             "Hexproof",
-            "This unit takes -x%- damage from commander spells",
+            "This unit takes -x%- less damage from commander spells",
             spellDamageReductionPercent,
             Integer.MAX_VALUE,
             StackMode.STACKABLE,
@@ -360,7 +360,7 @@ public final class Modifiers {
   public static Modifier siege(double bonusDamageToBuildingPercent) {
     return new CustomModifier(
             "Siege",
-            "This unit deals -x%- damage to buildings",
+            "This unit deals -x%- more damage to buildings",
             bonusDamageToBuildingPercent,
             Integer.MAX_VALUE,
             StackMode.STACKABLE,
