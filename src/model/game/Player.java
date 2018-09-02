@@ -1,11 +1,5 @@
 package model.game;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.Unit;
@@ -20,6 +14,13 @@ import model.unit.modifier.Modifiers;
 import model.util.Cloud;
 import model.util.ExpandableCloud;
 import model.util.MPoint;
+
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * An instance is a player (not the commander piece). Extended to be either human controlled or AI.
@@ -330,17 +331,16 @@ public abstract class Player implements Stringable {
       Temple t = (Temple) u;
       temples.add(t);
     }
-    // If all unit modifier building, apply new modifiers to all units.
-    // Otherwise, apply modifiers from existing all unit modifier buildings to new unit.
+    // Apply modifiers from existing all unit modifier buildings to new unit.
+    // Then If all unit modifier building, apply new modifiers to all units.
+    for (AllUnitModifierBuilding allUnitModifierBuilding : allUnitModifierBuildings) {
+      allUnitModifierBuilding.applyModifiersTo(u);
+    }
     if (u instanceof AllUnitModifierBuilding) {
       for (Unit u2 : units) {
         ((AllUnitModifierBuilding) u).applyModifiersTo(u2);
       }
       allUnitModifierBuildings.add((AllUnitModifierBuilding) u);
-    } else {
-      for (AllUnitModifierBuilding allUnitModifierBuilding : allUnitModifierBuildings) {
-        allUnitModifierBuilding.applyModifiersTo(u);
-      }
     }
   }
 
