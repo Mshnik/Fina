@@ -1,6 +1,7 @@
 package model.unit.building;
 
 import model.board.Terrain;
+import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.modifier.Modifier;
@@ -93,8 +94,13 @@ public final class Temple extends Building<Void> {
 
   /** Creates a new Temple for the given owner, on the given location */
   @Override
-  protected Unit createClone(Player owner) {
+  protected Unit createClone(Player owner, Tile cloneLocation) {
     return new Temple(owner);
+  }
+
+  @Override
+  public boolean canSummon() {
+    return false;
   }
 
   /** Returns the index of this in its owners' temples */

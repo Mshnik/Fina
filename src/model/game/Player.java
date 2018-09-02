@@ -4,6 +4,7 @@ import model.board.Terrain;
 import model.board.Tile;
 import model.unit.Unit;
 import model.unit.building.AllUnitModifierBuilding;
+import model.unit.building.CommanderModifierBuilding;
 import model.unit.building.PlayerModifierBuilding;
 import model.unit.building.PlayerModifierBuilding.PlayerModifierEffectType;
 import model.unit.building.StartOfTurnEffectBuilding;
@@ -61,12 +62,6 @@ public abstract class Player implements Stringable {
 
   /** The Tiles in the model.board this player has vision of */
   private HashSet<Tile> visionCloud;
-
-  /** The sum of all actions per turn generations/costs this player owns */
-  private int commanderActionsPerTurn;
-
-  /** The number of actions remaining this turn. Reset at start of turn. */
-  private int commanderActionsRemaining;
 
   /** The sum of all the mana per turn generation/costs this player owns */
   private int manaPerTurn;
@@ -145,41 +140,6 @@ public abstract class Player implements Stringable {
     }
   }
 
-  /** Return the number of actions this player has remaining on this turn. */
-  public int getCommanderActionsRemaining() {
-    return commanderActionsRemaining;
-  }
-
-  /** Spends one commander action remaining. Throws if there were already zero. */
-  public void spendCommanderAction() {
-    if (commanderActionsRemaining <= 0) {
-      throw new RuntimeException("Can't spend commander action, already have none left");
-    }
-    commanderActionsRemaining--;
-    if (commanderActionsRemaining == 0) {
-      maybeRemoveActionableUnit(getCommander());
-    }
-  }
-
-  /**
-   * Updates the number of actions per turn this player has. Should be called at least at the start
-   * of every turn. If this results in a change, also updates the number of current actions this
-   * player has.
-   */
-  private void updateCommanderActionsPerTurn() {
-    int oldActionsPerTurn = commanderActionsPerTurn;
-    commanderActionsPerTurn = 0;
-    for (Unit u : units) {
-      commanderActionsPerTurn += u.getCommanderActionsPerTurn();
-      if (u instanceof PlayerModifierBuilding
-          && ((PlayerModifierBuilding) u).getEffect().effectType
-              == PlayerModifierEffectType.BONUS_ACTIONS) {
-        commanderActionsPerTurn += ((PlayerModifierBuilding) u).getEffect().value;
-      }
-    }
-    commanderActionsRemaining += commanderActionsPerTurn - oldActionsPerTurn;
-  }
-
   /** Returns the current level (not exp) of this player */
   public int getLevel() {
     return commander.getLevel();
@@ -249,9 +209,7 @@ public abstract class Player implements Stringable {
 
   /** Removes the given unit from the set of actionable units if it's no longer actionable. */
   public void maybeRemoveActionableUnit(Unit unit) {
-    if (!unit.canFight()
-        && !unit.canMove()
-        && (!(unit instanceof Commander) || commanderActionsRemaining == 0)) {
+    if (!unit.canFight() && !unit.canMove() && !unit.canSummon() && !unit.canCast()) {
       actionableUnits.remove(unit);
     }
   }
@@ -306,7 +264,6 @@ public abstract class Player implements Stringable {
     refreshVisionCloud();
     updateManaPerTurn();
     updateResearchPerTurn();
-    updateCommanderActionsPerTurn();
   }
 
   /**
@@ -331,6 +288,7 @@ public abstract class Player implements Stringable {
       Temple t = (Temple) u;
       temples.add(t);
     }
+
     // Apply modifiers from existing all unit modifier buildings to new unit.
     // Then If all unit modifier building, apply new modifiers to all units.
     for (AllUnitModifierBuilding allUnitModifierBuilding : allUnitModifierBuildings) {
@@ -341,6 +299,9 @@ public abstract class Player implements Stringable {
         ((AllUnitModifierBuilding) u).applyModifiersTo(u2);
       }
       allUnitModifierBuildings.add((AllUnitModifierBuilding) u);
+    }
+    if (u instanceof CommanderModifierBuilding) {
+      ((CommanderModifierBuilding) u).applyModifiersTo(getCommander());
     }
   }
 
@@ -488,10 +449,6 @@ public abstract class Player implements Stringable {
       // Add research per turn
       updateResearchPerTurn();
       commander.addResearch(researchPerTurn);
-
-      // Add actions
-      updateCommanderActionsPerTurn();
-      commanderActionsRemaining = commanderActionsPerTurn;
 
       // Update vision
       refreshVisionCloud();

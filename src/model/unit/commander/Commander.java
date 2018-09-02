@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.swing.Action;
+
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
@@ -60,7 +60,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
               LEVEL_UP_MODIFIER_PREFIX + " Actions",
               Integer.MAX_VALUE,
               StackMode.STACKABLE,
-              StatType.COMMANDER_ACTIONS_PER_TURN,
+              StatType.ACTIONS_PER_TURN,
               StatModifier.ModificationType.ADD,
               1),
           new StatModifier(
@@ -161,7 +161,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
 
   /** Throws a runtime exception - commanders are not clonable */
   @Override
-  protected Unit createClone(Player owner) {
+  protected Unit createClone(Player owner, Tile cloneLocation) {
     throw new RuntimeException("Can't clone commander " + this);
   }
 
@@ -177,16 +177,16 @@ public abstract class Commander extends MovingUnit implements Summoner {
     currentTurnCasts.clear();
   }
 
-  /** Commanders can always summon */
+  /** Commanders can summon if it has an action remaining. */
   @Override
   public boolean canSummon() {
-    return true;
+    return getActionsRemaining() > 0;
   }
 
-  /** Commanders can also cast */
+  /** Commanders can cast if it has an action remaining. */
   @Override
   public boolean canCast() {
-    return true;
+    return getActionsRemaining() > 0;
   }
 
   /**

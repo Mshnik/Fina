@@ -1,6 +1,7 @@
 package model.unit.building;
 
 import model.board.Terrain;
+import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.stat.Stats;
@@ -55,7 +56,7 @@ public final class NoEffectBuilding extends Building<Void> {
   }
 
   @Override
-  protected Unit createClone(Player owner) {
+  protected Unit createClone(Player owner, Tile cloneLocation) {
     return new NoEffectBuilding(
         owner,
         name,
@@ -65,5 +66,11 @@ public final class NoEffectBuilding extends Building<Void> {
         manaCostScaling,
         getValidTerrain(),
         getStats());
+  }
+
+  /** NoEffectBuilding can't summon. */
+  @Override
+  public boolean canSummon() {
+    return false;
   }
 }

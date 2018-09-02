@@ -5,6 +5,7 @@ import model.unit.building.PlayerModifierBuilding.PlayerModifierEffect;
 import model.unit.building.PlayerModifierBuilding.PlayerModifierEffectType;
 import model.unit.building.StartOfTurnEffectBuilding.StartOfTurnEffect;
 import model.unit.building.StartOfTurnEffectBuilding.StartOfTurnEffectType;
+import model.unit.building.SummonerBuilding.SummonerBuildingEffect;
 import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.Modifiers;
 import model.unit.stat.Stat;
@@ -78,7 +79,8 @@ public final class Buildings {
                       null, name, imageFilename, level, baseCost, costScaling, validTerrain, stats);
               break;
             case "SummonerBuilding":
-              EffectPair<Integer> summoningRadii = getSummoningRadii(name);
+              EffectPair<SummonerBuilding.SummonerBuildingEffect> summoningRadii =
+                  getSummoningEffects(name);
               building =
                   new SummonerBuilding(
                       null,
@@ -88,7 +90,7 @@ public final class Buildings {
                       baseCost,
                       costScaling,
                       validTerrain,
-                      stats,
+                      new Stats(stats, new Stat(StatType.ACTIONS_PER_TURN, 1)),
                       summoningRadii.nonAncientGroundEffect,
                       summoningRadii.ancientGroundEffect);
               break;
@@ -123,6 +125,22 @@ public final class Buildings {
                       stats,
                       allUnitModifierEffects.nonAncientGroundEffect,
                       allUnitModifierEffects.ancientGroundEffect);
+              break;
+            case "CommanderModifierBuilding":
+              EffectPair<ModifierBundle> commanderModifierEffects =
+                  getCommanderModifierEffects(name);
+              building =
+                  new CommanderModifierBuilding(
+                      null,
+                      name,
+                      imageFilename,
+                      level,
+                      baseCost,
+                      costScaling,
+                      validTerrain,
+                      stats,
+                      commanderModifierEffects.nonAncientGroundEffect,
+                      commanderModifierEffects.ancientGroundEffect);
               break;
             case "PlayerModifierBuilding":
               EffectPair<PlayerModifierEffect> playerModifierEffects =
@@ -176,10 +194,10 @@ public final class Buildings {
   }
 
   /** Helper to get summon radii by building name. Throws for unknown name. */
-  public static EffectPair<Integer> getSummoningRadii(String buildingName) {
+  private static EffectPair<SummonerBuildingEffect> getSummoningEffects(String buildingName) {
     switch (buildingName) {
       case "Portal":
-        return EffectPair.of(1, 3);
+        return EffectPair.of(new SummonerBuildingEffect(1, 1), new SummonerBuildingEffect(2, 2));
       default:
         throw new RuntimeException("Unknown building name " + buildingName);
     }
@@ -236,6 +254,17 @@ public final class Buildings {
     }
   }
 
+  /** Helper to get CommanderModifierEffects by building name. Throws for unknown name. */
+  private static EffectPair<ModifierBundle> getCommanderModifierEffects(String buildingName) {
+    switch (buildingName) {
+      case "Dojo":
+        return EffectPair.of(
+            new ModifierBundle(Modifiers.training(1)), new ModifierBundle(Modifiers.training(2)));
+      default:
+        throw new RuntimeException("Unknown building name " + buildingName);
+    }
+  }
+
   /** Helper to get PlayerModifier effects for the given building name. Throws for unknown name. */
   private static EffectPair<PlayerModifierEffect> getPlayerModifierEffects(
       String buildingName, String nonAncientGroundDescription, String ancientGroundDescription) {
@@ -252,12 +281,6 @@ public final class Buildings {
                 PlayerModifierEffectType.RESEARCH_GENERATION, 25, nonAncientGroundDescription),
             new PlayerModifierEffect(
                 PlayerModifierEffectType.RESEARCH_GENERATION, 50, ancientGroundDescription));
-      case "Dojo":
-        return EffectPair.of(
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.BONUS_ACTIONS, 1, nonAncientGroundDescription),
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.BONUS_ACTIONS, 2, ancientGroundDescription));
       case "Laboratory":
         return EffectPair.of(
             new PlayerModifierEffect(

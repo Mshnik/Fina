@@ -30,7 +30,7 @@ public class Stats implements Iterable<Stat> {
     // Base -> Null
     TEMPLATE.put(StatType.MAX_HEALTH, 0);
     TEMPLATE.put(StatType.MANA_PER_TURN, 0);
-    TEMPLATE.put(StatType.COMMANDER_ACTIONS_PER_TURN, 0);
+    TEMPLATE.put(StatType.ACTIONS_PER_TURN, 0);
     TEMPLATE.put(StatType.MIN_ATTACK, 0);
     TEMPLATE.put(StatType.MAX_ATTACK, 0);
     TEMPLATE.put(StatType.DAMAGE_REDUCTION, 0);
@@ -59,11 +59,23 @@ public class Stats implements Iterable<Stat> {
   private HashMap<StatType, Object> stats;
 
   /**
-   * Constructor for Stats. Can have a base or not. Input stats must not have no duplicates among
-   * type - will overwrite arbitrarily.
+   * Constructor for Stats with base zero stats. Input stats must not have no duplicates among type
+   * - will overwrite arbitrarily.
    */
   public Stats(Stat... stats) {
     this.stats = new HashMap<>(TEMPLATE);
+    for (Stat s : stats) {
+      this.stats.put(s.name, s.val);
+    }
+  }
+
+  /**
+   * Constructor for Stats by adding on top of given baseStats. Input stats must not have no
+   * duplicates among type - will overwrite arbitrarily.
+   */
+  public Stats(Stats baseStats, Stat... stats) {
+    this.stats = new HashMap<>(baseStats.stats);
+    this.stats.put(StatType.BASE, baseStats);
     for (Stat s : stats) {
       this.stats.put(s.name, s.val);
     }
@@ -155,9 +167,7 @@ public class Stats implements Iterable<Stat> {
    * cost
    */
   public List<Stat> getMovementCostStatsList(boolean filterOmittableZeroes) {
-    StatType[] t = {
-        StatType.GRASS_COST, StatType.WOODS_COST, StatType.MOUNTAIN_COST
-    };
+    StatType[] t = {StatType.GRASS_COST, StatType.WOODS_COST, StatType.MOUNTAIN_COST};
     return getStatsList(t, filterOmittableZeroes);
   }
 
@@ -181,8 +191,10 @@ public class Stats implements Iterable<Stat> {
     if (statTypeStatMap.containsKey(StatType.MAX_ATTACK_RANGE)) {
       lst.add(
           new StatPair(
-              statTypeStatMap.getOrDefault(StatType.MIN_ATTACK_RANGE, new Stat(StatType.MIN_ATTACK_RANGE, 0)),
-              statTypeStatMap.getOrDefault(StatType.MAX_ATTACK_RANGE, new Stat(StatType.MAX_ATTACK_RANGE, 0))));
+              statTypeStatMap.getOrDefault(
+                  StatType.MIN_ATTACK_RANGE, new Stat(StatType.MIN_ATTACK_RANGE, 0)),
+              statTypeStatMap.getOrDefault(
+                  StatType.MAX_ATTACK_RANGE, new Stat(StatType.MAX_ATTACK_RANGE, 0))));
     }
     return Collections.unmodifiableList(lst);
   }

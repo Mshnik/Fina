@@ -142,8 +142,8 @@ public final class AIAction {
             actingUnit instanceof Commander,
             "Can't do SUMMON_COMBATANT_OR_BUILD_BUILDING action on " + actingUnit);
         assertPrecondition(
-            actingUnit.owner.getCommanderActionsRemaining() > 0,
-            "Can't do a SUMMON_COMBATANT_OR_BUILD_BUILDING action right now, owner has no actions left");
+            actingUnit.getActionsRemaining() > 0,
+            "Can't do a SUMMON_COMBATANT_OR_BUILD_BUILDING action right now, unit has no actions left");
         assertPrecondition(
             actingUnit.getLocation().manhattanDistance(targetedTile) <= actingUnit.getSummonRange(),
             "Can't do SUMMON_COMBATANT_OR_BUILD_BUILDING action to "

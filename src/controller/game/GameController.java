@@ -163,7 +163,7 @@ public final class GameController {
           throw new RuntimeException("Don't know how to handle player type " + playerTypes.get(i));
       }
       gc.frame.createViewOptionsForPlayer(p);
-      new DummyCommander(p, 1);
+      new DummyCommander(p, 3);
     }
 
     // Start game.
@@ -349,7 +349,7 @@ public final class GameController {
         choices.add(new Choice(u.canFight() && ((Combatant) u).hasFightableTarget(), FIGHT, u));
       }
       if (u instanceof Commander || u instanceof Summoner) {
-        int actionsRemaining = u.owner.getCommanderActionsRemaining();
+        int actionsRemaining = u.getActionsRemaining();
         choices.add(
             new Choice(actionsRemaining > 0, COMMANDER_ACTION + " (" + actionsRemaining + ")", u));
       }
@@ -639,9 +639,7 @@ public final class GameController {
    * selector process.
    */
   public void summonUnit(Unit summoner, Tile loc, Unit toSummon) {
-    if (game.getCurrentPlayer() != null) {
-      game.getCurrentPlayer().spendCommanderAction();
-    }
+    summoner.spendAction();
     Unit summonedUnit = toSummon.clone(summoner.owner, loc);
     summonedUnit.copyPersonalModifiersFrom(toSummon);
     summonedUnit.owner.recalculateState();
@@ -719,7 +717,7 @@ public final class GameController {
     if (!t.equals(Toggle.CAST_SELECTION))
       throw new RuntimeException("Can't process cast selection, currently toggling " + getToggle());
     if (game.getCurrentPlayer() != null) {
-      game.getCurrentPlayer().spendCommanderAction();
+      game.getCurrentPlayer().getCommander().spendAction();
     }
     castSelector.toCast.cast(
         castSelector.caster, loc, castSelector.caster.owner.getCastCloudBoost(), random);

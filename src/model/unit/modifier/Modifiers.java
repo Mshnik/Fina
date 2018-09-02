@@ -444,6 +444,18 @@ public final class Modifiers {
         .uniqueCopy();
   }
 
+  /** Modifier that gives a unit bonus actions per turn. */
+  public static Modifier training(int bonusActions) {
+    return new StatModifier(
+            "Training",
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            StatType.ACTIONS_PER_TURN,
+            StatModifier.ModificationType.ADD,
+            bonusActions)
+        .uniqueCopy();
+  }
+
   /** Modifier that increases total movement */
   public static Modifier quickness(int totalMovementIncrease) {
     return new StatModifier(

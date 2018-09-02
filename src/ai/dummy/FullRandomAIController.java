@@ -102,7 +102,7 @@ public final class FullRandomAIController implements AIController {
    * mana, out of actions, no room).
    */
   private AIAction getSummonAction(Player player) {
-    if (player.getCommanderActionsRemaining() == 0) {
+    if (player.getCommander().getActionsRemaining() == 0) {
       return null;
     }
     Commander commander = player.getCommander();

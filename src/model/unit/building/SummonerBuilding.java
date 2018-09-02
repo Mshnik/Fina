@@ -5,6 +5,8 @@ import model.board.Tile;
 import model.game.Player;
 import model.unit.Summoner;
 import model.unit.Unit;
+import model.unit.stat.Stat;
+import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 
 import java.util.ArrayList;
@@ -17,19 +19,43 @@ import java.util.List;
  *
  * @author Mshnik
  */
-public final class SummonerBuilding extends Building<Integer> implements Summoner {
+public final class SummonerBuilding extends Building<SummonerBuilding.SummonerBuildingEffect>
+    implements Summoner {
 
-  /** Summon radius for this if this isn't on ancient ground. */
-  private final int nonAncientGroundSummonRadius;
+  /** An effect for a summoner building. */
+  static final class SummonerBuildingEffect {
 
-  /** Summon radius for this if this is on ancient ground. */
-  private final int ancientGroundSummonRadius;
+    /** How far away this building will be able to summon units. */
+    private final int summonRadius;
+
+    /** How many actions per turn this unit will have. */
+    private final int actionsPerTurn;
+
+    SummonerBuildingEffect(int summonRadius, int actionsPerTurn) {
+      this.summonRadius = summonRadius;
+      this.actionsPerTurn = actionsPerTurn;
+    }
+
+    @Override
+    public String toString() {
+      return "Can summon units at radius "
+          + summonRadius
+          + " "
+          + actionsPerTurn
+          + " time(s) per turn";
+    }
+  }
+
+  /** Effect this building grants if this isn't on ancient ground. */
+  private final SummonerBuildingEffect nonAncientGroundEffect;
+
+  /** Effect this building grants if this is on ancient ground. */
+  private final SummonerBuildingEffect ancientGroundEffect;
 
   /**
    * Constructor for Building. Also adds this model.unit to the tile it is on as an occupant, and
    * its owner as a model.unit that player owns, Subtracts manaCost from the owner, but throws a
-   * runtimeException if the owner doesn't have enough mana. Throws an illegalArgumentException if a
-   * building is constructed on land other than AncientGround
+   * runtimeException if the owner doesn't have enough mana.
    *
    * @param owner - the player owner of this model.unit
    * @param name - the name of this model.unit.
@@ -40,8 +66,8 @@ public final class SummonerBuilding extends Building<Integer> implements Summone
    *     the first. Should be a non-negative number.
    * @param validTerrain - types of terrain this can be built on.
    * @param stats - the base unmodified stats of this model.unit. stats that remain used are
-   * @param nonAncientGroundSummonRadius - summon radius for this if this is on ancient ground.
-   * @param ancientGroundSummonRadius - summon radius for this if this is on ancient ground.
+   * @param nonAncientGroundSummonerEffect - summon effect for this if this is on ancient ground.
+   * @param ancientGroundSummonerEffect - summon effect for this if this is on ancient ground.
    */
   SummonerBuilding(
       Player owner,
@@ -52,33 +78,33 @@ public final class SummonerBuilding extends Building<Integer> implements Summone
       int manaCostScaling,
       List<Terrain> validTerrain,
       Stats stats,
-      int nonAncientGroundSummonRadius,
-      int ancientGroundSummonRadius)
+      SummonerBuildingEffect nonAncientGroundSummonerEffect,
+      SummonerBuildingEffect ancientGroundSummonerEffect)
       throws RuntimeException, IllegalArgumentException {
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, stats);
-    this.nonAncientGroundSummonRadius = nonAncientGroundSummonRadius;
-    this.ancientGroundSummonRadius = ancientGroundSummonRadius;
+    this.nonAncientGroundEffect = nonAncientGroundSummonerEffect;
+    this.ancientGroundEffect = ancientGroundSummonerEffect;
   }
 
   @Override
-  public List<Integer> getPossibleEffectsList() {
-    LinkedList<Integer> list = new LinkedList<>();
-    list.add(nonAncientGroundSummonRadius);
-    list.add(ancientGroundSummonRadius);
+  public List<SummonerBuildingEffect> getPossibleEffectsList() {
+    LinkedList<SummonerBuildingEffect> list = new LinkedList<>();
+    list.add(nonAncientGroundEffect);
+    list.add(ancientGroundEffect);
     return Collections.unmodifiableList(list);
   }
 
   @Override
-  public Integer getEffect() {
+  public SummonerBuildingEffect getEffect() {
     return getLocation() != null && getLocation().terrain == Terrain.ANCIENT_GROUND
-        ? ancientGroundSummonRadius
-        : nonAncientGroundSummonRadius;
+        ? ancientGroundEffect
+        : nonAncientGroundEffect;
   }
 
   /** Override summon range to be determined by effect instead of stat. */
   @Override
   public int getSummonRange() {
-    return getEffect();
+    return getEffect().summonRadius;
   }
 
   @Override
@@ -98,13 +124,14 @@ public final class SummonerBuilding extends Building<Integer> implements Summone
     return false;
   }
 
+  /** Can summon if it has actions remaining. */
   @Override
   public boolean canSummon() {
-    return true;
+    return getActionsRemaining() > 0;
   }
 
   @Override
-  protected Unit createClone(Player owner) {
+  protected Unit createClone(Player owner, Tile cloneLocation) {
     return new SummonerBuilding(
         owner,
         name,
@@ -113,8 +140,14 @@ public final class SummonerBuilding extends Building<Integer> implements Summone
         manaCost,
         manaCostScaling,
         getValidTerrain(),
-        getStats(),
-        nonAncientGroundSummonRadius,
-        ancientGroundSummonRadius);
+        new Stats(
+            getStats(),
+            new Stat(
+                StatType.ACTIONS_PER_TURN,
+                cloneLocation.terrain == Terrain.ANCIENT_GROUND
+                    ? ancientGroundEffect.actionsPerTurn
+                    : nonAncientGroundEffect.actionsPerTurn)),
+        nonAncientGroundEffect,
+        ancientGroundEffect);
   }
 }

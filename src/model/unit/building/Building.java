@@ -102,6 +102,12 @@ public abstract class Building<E> extends Unit {
     return false;
   }
 
+  /** Buildings can't cast. */
+  @Override
+  public boolean canCast() {
+    return false;
+  }
+
   /** Buildings can occupy any terrain in their valid terrain. */
   public boolean canOccupy(Terrain t) {
     return validTerrain.contains(t);

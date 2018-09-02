@@ -1,6 +1,7 @@
 package model.unit.building;
 
 import model.board.Terrain;
+import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.building.StartOfTurnEffectBuilding.StartOfTurnEffect;
@@ -108,7 +109,7 @@ public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect>
   }
 
   @Override
-  protected Unit createClone(Player owner) {
+  protected Unit createClone(Player owner, Tile cloneLocation) {
     return new StartOfTurnEffectBuilding(
         owner,
         name,
@@ -120,5 +121,11 @@ public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect>
         getStats(),
         nonAncientGroundEffect,
         ancientGroundEffect);
+  }
+
+  /** StartOfTurnEffectBuilding can't summon. */
+  @Override
+  public boolean canSummon() {
+    return false;
   }
 }

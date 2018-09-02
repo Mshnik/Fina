@@ -1,6 +1,7 @@
 package model.unit.building;
 
 import model.board.Terrain;
+import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.building.PlayerModifierBuilding.PlayerModifierEffect;
@@ -19,8 +20,6 @@ public final class PlayerModifierBuilding extends Building<PlayerModifierEffect>
     MANA_GENERATION,
     /** Bonus research. */
     RESEARCH_GENERATION,
-    /** Bonus actions each turn. */
-    BONUS_ACTIONS,
     /** Percent discount on Summoning. */
     SUMMON_DISCOUNT,
     /** Percent discount on Building. */
@@ -112,7 +111,7 @@ public final class PlayerModifierBuilding extends Building<PlayerModifierEffect>
   }
 
   @Override
-  protected Unit createClone(Player owner) {
+  protected Unit createClone(Player owner, Tile cloneLocation) {
     return new PlayerModifierBuilding(
         owner,
         name,
@@ -124,5 +123,11 @@ public final class PlayerModifierBuilding extends Building<PlayerModifierEffect>
         getStats(),
         nonAncientGroundEffect,
         ancientGroundEffect);
+  }
+
+  /** PlayerModifierBuilding can't summon. */
+  @Override
+  public boolean canSummon() {
+    return false;
   }
 }

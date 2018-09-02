@@ -4,6 +4,7 @@ import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
+import model.unit.commander.Commander;
 import model.unit.modifier.ModifierBundle;
 import model.unit.stat.Stats;
 
@@ -12,12 +13,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * A building that grants all units the player controls a modifier as long as this building is
+ * A building that grants the commander the player controls a modifier as long as this building is
  * alive.
  *
  * @author Mshnik
  */
-public final class AllUnitModifierBuilding extends Building<ModifierBundle> {
+public final class CommanderModifierBuilding extends Building<ModifierBundle> {
 
   /** The modifiers granted to all units the player controls if this isn't on ancient ground */
   private final ModifierBundle nonAncientGroundModifierBundle;
@@ -45,7 +46,7 @@ public final class AllUnitModifierBuilding extends Building<ModifierBundle> {
    * @param ancientGroundModifierBundle - the bundle of modifiers to give to all units if this is on
    *     ancient ground.
    */
-  AllUnitModifierBuilding(
+  CommanderModifierBuilding(
       Player owner,
       String name,
       String imageFilename,
@@ -77,14 +78,14 @@ public final class AllUnitModifierBuilding extends Building<ModifierBundle> {
         : nonAncientGroundModifierBundle;
   }
 
-  /** Applies the modifiers in this building to the given unit. */
-  public void applyModifiersTo(Unit u) {
-    getEffect().clone(u, this);
+  /** Applies the modifiers in this building to the given commander. */
+  public void applyModifiersTo(Commander c) {
+    getEffect().clone(c, this);
   }
 
   @Override
   protected Unit createClone(Player owner, Tile cloneLocation) {
-    return new AllUnitModifierBuilding(
+    return new CommanderModifierBuilding(
         owner,
         name,
         getImgFilename(),
@@ -97,7 +98,7 @@ public final class AllUnitModifierBuilding extends Building<ModifierBundle> {
         new ModifierBundle(ancientGroundModifierBundle));
   }
 
-  /** AllUnitModifierBuildings can't summon. */
+  /** CommanderModifierBuildings can't summon. */
   @Override
   public boolean canSummon() {
     return false;

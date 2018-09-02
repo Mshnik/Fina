@@ -2,10 +2,10 @@ Name,Image Filename,Level,Cost,Cost Scaling,Type,Health,Vision,Valid Terrain,Bui
 Well,building_0_0.png,1,200,250,Utility,100,0,Grass-Woods-Ancient_Ground,PlayerModifierBuilding,+ 75 bonus mana gen / turn,+ 150 bonus mana gen / turn
 Library,building_0_1.png,1,100,300,Utility,125,0,Grass-Woods-Ancient_Ground,PlayerModifierBuilding,+ 25 exp / turn,+ 50 exp / turn
 Blockade,building_0_2.png,1,50,10,Defensive,100,0,Grass-Woods-Ancient_Ground,NoEffectBuilding,-,-
-Portal,building_0_3.png,1,150,300,Offensive,100,0,Grass-Woods-Ancient_Ground,SummonerBuilding,Summon radius 1,Summon radius 3
+Portal,building_0_3.png,1,150,300,Offensive,100,1,Grass-Woods-Ancient_Ground,SummonerBuilding,Summon radius 1,Summon radius 3
 ,,,,,,,,,,,
 Watchtower,building_1_0.png,2,80,20,Utility,150,2+Eagle Eye,Grass-Woods-Mountain-Ancient_Ground,NoEffectBuilding,--,--
-Dojo,building_1_1.png,2,250,400,Utility,125,0,Grass-Woods-Ancient_Ground,PlayerModifierBuilding,+ 1 action/turn,+ 2 actions/turn
+Dojo,building_1_1.png,2,250,400,Utility,125,0,Grass-Woods-Ancient_Ground,CommanderModifierBuilding,+ 1 action/turn,+ 2 actions/turn
 SKIP,Temple,building_1_2.png,2,300,150,Utility,75,0,Ancient_Ground,Temple,--,"All unit buffs, Varies by # of temples: 1: +2 vision 2: Strengthened +5 Toughness +5 3: +2 move 4: Tenacity 20 5: Strengthed +20 Toughness +10"
 Fountain,building_1_3.png,2,200,50,Defensive,175,0,Grass-Woods-Ancient_Ground,StartOfTurnEffectBuilding,Start of turn heal combatants in radius 1 by 15 health,Start of turn heal combatants in radius 2 by 25 health
 Armory,building_1_4.png,2,350,500,Offensive,150,0,Grass-Woods-Ancient_Ground,AllUnitModifierBuilding,All units Strengthened 3,All units Strengthened 5 + Toughness 3

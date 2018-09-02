@@ -7,6 +7,7 @@ import model.unit.Unit;
 import model.unit.ability.Ability;
 import model.unit.building.AllUnitModifierBuilding;
 import model.unit.building.Building;
+import model.unit.building.CommanderModifierBuilding;
 import model.unit.building.PlayerModifierBuilding;
 import model.unit.building.StartOfTurnEffectBuilding;
 import model.unit.building.SummonerBuilding;
@@ -413,13 +414,15 @@ public final class InfoPanel extends JPanel {
     }
 
     if (building instanceof PlayerModifierBuilding
-        || building instanceof StartOfTurnEffectBuilding) {
+        || building instanceof StartOfTurnEffectBuilding
+        || building instanceof SummonerBuilding) {
       g2d.drawString(effect.toString(), x, y);
-    } else if (building instanceof SummonerBuilding) {
-      g2d.drawString("Can summon units at radius " + effect, x, y);
     } else if (building instanceof AllUnitModifierBuilding) {
       ModifierBundle bundle = (ModifierBundle) effect;
-      g2d.drawString("All Units get " + bundle.toStatString(), x, y);
+      g2d.drawString("All your Units get " + bundle.toStatString(), x, y);
+    } else if (building instanceof CommanderModifierBuilding) {
+      ModifierBundle bundle = (ModifierBundle) effect;
+      g2d.drawString("Your commander gets " + bundle.toStatString(), x, y);
     }
   }
 
@@ -573,7 +576,7 @@ public final class InfoPanel extends JPanel {
   }
 
   private void drawStat(Graphics2D g2d, Stat s, int x, int y) {
-    if (s.name == StatType.COMMANDER_ACTIONS_PER_TURN) {
+    if (s.name == StatType.ACTIONS_PER_TURN) {
       g2d.drawString("Actions per Turn", x, y);
     } else {
       g2d.drawString(s.name.toString(), x, y);

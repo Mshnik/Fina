@@ -207,6 +207,18 @@ public abstract class Combatant extends MovingUnit {
     return canFight;
   }
 
+  /** Combatants can't summon. */
+  @Override
+  public boolean canSummon() {
+    return false;
+  }
+
+  /** Combatants can't cast. */
+  @Override
+  public boolean canCast() {
+    return false;
+  }
+
   /** Returns the list of tiles this can attack from the given tile. */
   public List<Tile> getAttackableTilesFrom(Tile tile) {
     return ExpandableCloud.create(

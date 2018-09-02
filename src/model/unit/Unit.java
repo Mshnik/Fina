@@ -63,7 +63,10 @@ public abstract class Unit implements Stringable {
    * The current stats of this model.unit. These are updated whenever unitModifiers are added or
    * removed. Should never be null, but may be empty-ish
    */
-  Stats stats;
+  protected Stats stats;
+
+  /** The number of actions remaining this turn for this unit. Reset at start of turn. */
+  private int actionsRemaining;
 
   /** The modifiers this is the source of */
   private List<Modifier> grantedModifiers;
@@ -103,7 +106,7 @@ public abstract class Unit implements Stringable {
     this.imageFilename = imageFilename;
     this.manaCost = manaCost;
     this.manaCostScaling = manaCostScaling;
-    this.stats = new Stats(stats, null);
+    this.stats = new Stats(stats, Collections.emptyList());
     health = getMaxHealth();
     modifiers = new ArrayList<>();
     grantedModifiers = new ArrayList<>();
@@ -143,7 +146,7 @@ public abstract class Unit implements Stringable {
     int cost = getManaCostWithScalingAndDiscountsForPlayer(owner);
     if (cost > 0 && owner.getMana() < cost)
       throw new RuntimeException(owner + " can't afford to summon model.unit with cost " + cost);
-    Unit u = createClone(owner);
+    Unit u = createClone(owner, location);
     u.location = location;
     location.addOccupyingUnit(u);
     owner.addUnit(u);
@@ -154,7 +157,7 @@ public abstract class Unit implements Stringable {
   }
 
   /** Create a copy of this for the given player. Used internally in clone. */
-  protected abstract Unit createClone(Player owner);
+  protected abstract Unit createClone(Player owner, Tile cloneLocation);
 
   /** Returns the level of this unit */
   public int getLevel() {
@@ -194,6 +197,9 @@ public abstract class Unit implements Stringable {
       refreshStats();
     }
 
+    // Give actions, if any.
+    actionsRemaining = getActionsPerTurn();
+
     // Start of turn modifiers.
     for (Modifier m : getModifiersByName(Modifiers.tenacity(0))) {
       changeHealth(((CustomModifier) m).val.intValue(), this);
@@ -224,20 +230,16 @@ public abstract class Unit implements Stringable {
   public abstract boolean canFight();
 
   /**
-   * Returns true if this model.unit can summon this turn. Returns false, should be overriden by
-   * subclasses that can summon
+   * Returns true if this model.unit can currently summon this turn. Shouldn't check for valid
+   * summon location, just that the unit can still summon.
    */
-  public boolean canSummon() {
-    return false;
-  }
+  public abstract boolean canSummon();
 
   /**
-   * Returns true if this model.unit can cast this turn. Returns false, should be overriden by
-   * subclasses that cast (Commanders)
+   * Returns true if this model.unit can currently cast this turn. Shouldn't check for valid cast
+   * location, just that the unit can still summon.
    */
-  public boolean canCast() {
-    return false;
-  }
+  public abstract boolean canCast();
 
   // STATS
   /** Returns the max health of this model.unit */
@@ -312,7 +314,7 @@ public abstract class Unit implements Stringable {
    * anything to this model.unit
    */
   public Stats getStats() {
-    return new Stats(stats, null);
+    return new Stats(stats, Collections.emptyList());
   }
 
   /** Returns the min attack strength of this model.unit. 0 if this is not a combatant. */
@@ -360,9 +362,23 @@ public abstract class Unit implements Stringable {
     return (Integer) stats.getStat(StatType.MANA_PER_TURN);
   }
 
-  /** Returns the actions per turn this model.unit costs/generates */
-  public int getCommanderActionsPerTurn() {
-    return (Integer) stats.getStat(StatType.COMMANDER_ACTIONS_PER_TURN);
+  /** Returns the actions per turn this unit can take */
+  public int getActionsPerTurn() {
+    return (Integer) stats.getStat(StatType.ACTIONS_PER_TURN);
+  }
+
+  /** Returns the number of actions remaining for this unit. */
+  public int getActionsRemaining() {
+    return actionsRemaining;
+  }
+
+  /** Spends an action. Throws if actions for this unit is already 0. */
+  public void spendAction() {
+    if (actionsRemaining <= 0) {
+      throw new RuntimeException("Can't spend action, already none left");
+    }
+    actionsRemaining--;
+    owner.maybeRemoveActionableUnit(this);
   }
 
   // MODIFIERS
