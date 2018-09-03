@@ -1,13 +1,5 @@
 package model.unit.ability;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 import model.unit.Unit;
 import model.unit.building.Building;
 import model.unit.combatant.Combatant;
@@ -17,6 +9,15 @@ import model.unit.modifier.Modifiers;
 import model.util.ExpandableCloud;
 import model.util.ExpandableCloud.ExpandableCloudType;
 import util.TextIO;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /** Index of abilities commanders can use. */
 public final class Abilities {
@@ -133,6 +134,8 @@ public final class Abilities {
         return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.farsight(3)));
       case "Sacrifice":
         return Collections.singletonList(AbilityEffect.destroyUnit());
+      case "Research":
+        return Collections.singletonList(AbilityEffect.research(100));
       case "Cone of Flame":
         return Collections.singletonList(AbilityEffect.damage(30, 45));
       case "Strengthen":

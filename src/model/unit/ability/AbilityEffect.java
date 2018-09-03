@@ -33,6 +33,9 @@ public final class AbilityEffect {
   /** True if this effect refreshes movement and attack of a unit. */
   private final boolean refreshUnit;
 
+  /** True if this effect gains research for the targeted commander. */
+  private final int research;
+
   /** Number of turns all modifiers granted through abilities last. */
   private static final int MODIFIER_TURN_DURATION = 3;
 
@@ -47,6 +50,7 @@ public final class AbilityEffect {
       double healPercentageOfMaxHp,
       boolean destroyUnit,
       boolean refreshUnit,
+      int research,
       ModifierBundle modifierEffect) {
     this.minDamage = minDamage;
     this.maxDamage = maxDamage;
@@ -54,32 +58,38 @@ public final class AbilityEffect {
     this.healPercentageOfMaxHp = healPercentageOfMaxHp;
     this.destroyUnit = destroyUnit;
     this.refreshUnit = refreshUnit;
+    this.research = research;
     this.modifierEffect = modifierEffect;
   }
 
   /** Creates an ability effect that deals damage. */
   static AbilityEffect damage(int minDamage, int maxDamage) {
-    return new AbilityEffect(minDamage, maxDamage, 0, 0, false, false, null);
+    return new AbilityEffect(minDamage, maxDamage, 0, 0, false, false, 0, null);
   }
 
   /** Creates an ability effect that heals constant hp. */
   static AbilityEffect healConstantHp(int healConstantHp) {
-    return new AbilityEffect(0, 0, healConstantHp, 0, false, false, null);
+    return new AbilityEffect(0, 0, healConstantHp, 0, false, false, 0, null);
   }
 
   /** Creates an ability effect that heals a percentage of max hp. */
   static AbilityEffect healPercentageOfMaxHp(double percentageOfMaxHp) {
-    return new AbilityEffect(0, 0, 0, percentageOfMaxHp, false, false, null);
+    return new AbilityEffect(0, 0, 0, percentageOfMaxHp, false, false, 0, null);
   }
 
   /** Creates an ability effect that destroys a unit. */
   static AbilityEffect destroyUnit() {
-    return new AbilityEffect(0, 0, 0, 0, true, false, null);
+    return new AbilityEffect(0, 0, 0, 0, true, false, 0, null);
   }
 
   /** Creates an ability effect that refreshes a unit. */
   static AbilityEffect refreshUnit() {
-    return new AbilityEffect(0, 0, 0, 0, false, true, null);
+    return new AbilityEffect(0, 0, 0, 0, false, true, 0, null);
+  }
+
+  /** Creates an ability effect that gains the commander research. */
+  static AbilityEffect research(int research) {
+    return new AbilityEffect(0, 0, 0, 0, false, false, research, null);
   }
 
   /**
@@ -102,6 +112,7 @@ public final class AbilityEffect {
         0,
         false,
         false,
+        0,
         new ModifierBundle(
             modifiers
                 .stream()
@@ -126,6 +137,8 @@ public final class AbilityEffect {
       if (u instanceof Combatant) {
         ((Combatant) u).setCanFight(true);
       }
+    } else if (research > 0) {
+      caster.addResearch(research);
     } else if (modifierEffect != null) {
       modifierEffect.clone(u, caster);
     } else {
