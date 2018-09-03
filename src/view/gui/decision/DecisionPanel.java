@@ -4,11 +4,18 @@ import controller.decision.Choice;
 import controller.decision.Decision;
 import controller.game.GameController;
 import model.game.Player;
+import model.unit.combatant.Combatant;
 import view.gui.Frame;
 import view.gui.MatrixPanel;
 import view.gui.Paintable;
+import view.gui.image.ImageIndex;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 /**
  * Panel on the bottom of the frame that shows text as necessary for decisions
@@ -49,6 +56,9 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
 
   /** The drawing height of a Decision */
   private static final int DECISION_HEIGHT = 40;
+
+  /** The size of combatant classes on summoning decisions. */
+  private static final int ICON_SIZE = 24;
 
   /** The drawing width of an Decision */
   public final int DECISION_WIDTH;
@@ -187,24 +197,39 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
       for (int r = scrollY; r < scrollY + Math.min(super.getShowedRows(), getMatrixHeight()); r++) {
         if (decision.get(r).isSelectable()) g2d.setColor(TEXT_COLOR);
         else g2d.setColor(TEXT_COLOR.darker());
-        g2d.drawString(
-            decision.get(r).getMessage(),
-            TEXT_X + x,
-            TEXT_Y + y + (r - scrollY) * DECISION_HEIGHT + titleHeight);
+        int textX = TEXT_X + x;
+        int textY = TEXT_Y + y + (r - scrollY) * DECISION_HEIGHT + titleHeight;
+        g2d.drawString(decision.get(r).getMessage(), textX, textY);
+        if (decision.get(r).getVal() instanceof Combatant) {
+          paintCombatantClasses(
+              g2d, x + DECISION_WIDTH - TEXT_X * 2, textY, (Combatant) decision.get(r).getVal());
+        }
       }
     } else {
       for (int c = scrollX; c < scrollX + Math.min(super.getShowedCols(), getMatrixWidth()); c++) {
         if (decision.get(c).isSelectable()) g2d.setColor(TEXT_COLOR);
         else g2d.setColor(TEXT_COLOR.darker());
-        g2d.drawString(
-            decision.get(c).getMessage(),
-            TEXT_X + x + (c - scrollX) * DECISION_WIDTH,
-            TEXT_Y + y + titleHeight);
+        int textX = TEXT_X + x + (c - scrollX) * DECISION_WIDTH;
+        int textY = TEXT_Y + y + titleHeight;
+        g2d.drawString(decision.get(c).getMessage(), textX, textY);
+        if (decision.get(c).getVal() instanceof Combatant) {
+          paintCombatantClasses(
+              g2d, x + DECISION_WIDTH - TEXT_X * 2, textY, (Combatant) decision.get(c).getVal());
+        }
       }
     }
 
     // Draw cursor
     cursor.paintComponent(g);
+  }
+
+  private void paintCombatantClasses(Graphics2D g2d, int x, int y, Combatant combatant) {
+    int spacing = (int) (ICON_SIZE * 1.1);
+    for (Combatant.CombatantClass combatantClass : combatant.combatantClasses) {
+      g2d.drawImage(
+          ImageIndex.imageForCombatantClass(combatantClass), x, y - 18, ICON_SIZE, ICON_SIZE, null);
+      x -= spacing;
+    }
   }
 
   /** If vertical, the width is 1. Otherwise it is the number of decisions. */

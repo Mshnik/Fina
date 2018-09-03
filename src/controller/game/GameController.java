@@ -163,7 +163,7 @@ public final class GameController {
           throw new RuntimeException("Don't know how to handle player type " + playerTypes.get(i));
       }
       gc.frame.createViewOptionsForPlayer(p);
-      new DummyCommander(p, 1);
+      new DummyCommander(p, 4);
     }
 
     // Start game.
