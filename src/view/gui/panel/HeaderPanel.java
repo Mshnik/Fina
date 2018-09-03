@@ -180,7 +180,7 @@ public final class HeaderPanel extends JPanel {
           p.getResearchRequirement(),
           DrawingBarSegment.listOf(
               EXP_FILL,
-              (double) p.getResearch() / p.getResearchRequirement(),
+              Math.min(1, (double) p.getResearch() / p.getResearchRequirement()),
               EXP_PER_TURN_FILL,
               Math.min(p.getResearchPerTurn(), p.getResearchRemaining())
                   / (double) p.getResearchRequirement()),

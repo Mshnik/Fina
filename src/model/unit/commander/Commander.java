@@ -1,12 +1,5 @@
 package model.unit.commander;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
@@ -25,6 +18,13 @@ import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Represents a commander for a player. Each player should have one.
@@ -172,9 +172,16 @@ public abstract class Commander extends MovingUnit implements Summoner {
   @Override
   public void refreshForTurn() {
     super.refreshForTurn();
+    currentTurnCasts.clear();
+  }
+
+  /** Checks for level up, and levels up if need be (may be multiple times if that acutally happens). */
+  public void checkForLevelUp() {
     addResearch(outOfTurnResearch);
     outOfTurnResearch = 0;
-    currentTurnCasts.clear();
+    while (research >= getResearchRequirement()) {
+      levelUp();
+    }
   }
 
   /** Commanders can summon if it has an action remaining. */
@@ -310,12 +317,11 @@ public abstract class Commander extends MovingUnit implements Summoner {
   }
 
   /**
-   * Adds the given amount of research to research, capping at the requirement. Called when reserach
-   * is gained during this commander's turn Input must be positive (you can only gain research)
+   * Adds the given amount of research to research. Called when research is gained during this
+   * commander's turn Input must be positive (you can only gain research)
    */
   private void addInTurnResearch(int deltaResearch) {
-    research = Math.min(research + deltaResearch, getResearchRequirement());
-    if (research == getResearchRequirement()) levelUp();
+    research += deltaResearch;
   }
 
   /** Adds the amount of out of turn research. Called when it is not this commander's turn */
@@ -330,7 +336,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
    */
   private void levelUp() {
     if (level < MAX_LEVEL) {
-      research = 0;
+      research -= getResearchRequirement();
       level++;
       LEVELUP.clone(this, this);
       owner.updateManaPerTurn();
@@ -346,9 +352,14 @@ public abstract class Commander extends MovingUnit implements Summoner {
     abilityChoices[level - 1] = i;
   }
 
-  /** Returns the set of modifiers the player can see in the UI. Commander levelup modifiers should be filtered out. */
+  /**
+   * Returns the set of modifiers the player can see in the UI. Commander levelup modifiers should
+   * be filtered out.
+   */
   public List<Modifier> getVisibleModifiers() {
-    return getModifiers().stream().filter(m -> ! m.name.contains(LEVEL_UP_MODIFIER_PREFIX))
+    return getModifiers()
+        .stream()
+        .filter(m -> !m.name.contains(LEVEL_UP_MODIFIER_PREFIX))
         .collect(Collectors.toList());
   }
 
@@ -412,8 +423,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
   }
 
   @Override
-  public void preMove(List<Tile> path) {
-  }
+  public void preMove(List<Tile> path) {}
 
   @Override
   public void postMove(List<Tile> path) {
@@ -421,12 +431,10 @@ public abstract class Commander extends MovingUnit implements Summoner {
   }
 
   @Override
-  public void preCounterFight(Combatant other) {
-  }
+  public void preCounterFight(Combatant other) {}
 
   @Override
-  public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {
-  }
+  public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {}
 
   @Override
   public String toStringFull() {

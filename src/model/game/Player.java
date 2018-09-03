@@ -437,6 +437,13 @@ public abstract class Player implements Stringable {
    */
   final boolean turnStart() {
     try {
+      // Add research per turn
+      updateResearchPerTurn();
+      commander.addResearch(researchPerTurn);
+
+      // Check for leveling up first and add out of turn research.
+      getCommander().checkForLevelUp();
+
       // Refresh for turn and refresh actionable units
       actionableUnits.clear();
       for (Unit u : units) {
@@ -448,10 +455,6 @@ public abstract class Player implements Stringable {
       // Add base mana per turn
       updateManaPerTurn();
       commander.addMana(manaPerTurn);
-
-      // Add research per turn
-      updateResearchPerTurn();
-      commander.addResearch(researchPerTurn);
 
       // Update vision
       refreshVisionCloud();
