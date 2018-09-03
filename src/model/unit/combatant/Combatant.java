@@ -27,14 +27,14 @@ public abstract class Combatant extends MovingUnit {
   public enum CombatantClass {
     // Mid health mid-high damage standard melee
     FIGHTER,
-    // Mid health mid damage mid range
-    RANGER,
     // Low health high damage, counter range
     ASSASSIN,
-    // High health mid damage, counter melee
-    TANK,
     // Low health high damage high range, counter ranger + tank
-    MAGE;
+    MAGE,
+    // Mid health mid damage mid range
+    RANGER,
+    // High health mid damage, counter melee
+    TANK;
 
     /** Returns the CombatantClass from the given short string. */
     public static CombatantClass valueOfShort(String s) {
