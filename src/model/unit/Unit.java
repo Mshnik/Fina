@@ -223,6 +223,11 @@ public abstract class Unit implements Stringable {
     return location;
   }
 
+  /** Returns true if this unit can take some action this turn, false otherwise. */
+  public boolean canAct() {
+    return canMove() || canFight() || canSummon() || canCast();
+  }
+
   /** Returns whether this can move this turn. Non-movable things should always return false * */
   public abstract boolean canMove();
 

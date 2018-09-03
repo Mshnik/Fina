@@ -1,5 +1,17 @@
 package view.gui.image;
 
+import model.board.Direction;
+import model.board.Terrain;
+import model.board.Tile;
+import model.game.Player;
+import model.unit.Unit;
+import model.unit.building.Building;
+import model.unit.combatant.Combatant;
+import model.unit.combatant.Combatant.CombatantClass;
+import model.unit.commander.Commander;
+import view.gui.panel.GamePanel;
+
+import javax.imageio.ImageIO;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -12,17 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import javax.imageio.ImageIO;
-import model.board.Direction;
-import model.board.Terrain;
-import model.board.Tile;
-import model.game.Player;
-import model.unit.Unit;
-import model.unit.building.Building;
-import model.unit.combatant.Combatant;
-import model.unit.combatant.Combatant.CombatantClass;
-import model.unit.commander.Commander;
-import view.gui.panel.GamePanel;
 
 /** Library for lookup of different image resources. Also some drawing functionality */
 public final class ImageIndex {
@@ -80,7 +81,7 @@ public final class ImageIndex {
   private static HashMap<String, BufferedImage> readUnits;
 
   /** Tinted units thus far */
-  private static HashMap<BufferedImage, HashMap<Color, BufferedImage>> tintedUnits;
+  private static HashMap<String, HashMap<Color, BufferedImage>> tintedUnits;
 
   /* Static initializer for the Image Class - do all image reading here */
   static {
@@ -193,14 +194,21 @@ public final class ImageIndex {
   /**
    * Tints the given image with the given color.
    *
-   * @param loadImg - the image to paint and tint
+   * @param unit - the image to paint and tint
+   * @param activePlayer - the active player to draw the unit for.
    * @param color - the color to tint. Alpha value of input color isn't used.
    * @return A tinted version of loadImg
    */
-  public static BufferedImage tint(BufferedImage loadImg, Color color) {
-    if (tintedUnits.containsKey(loadImg) && tintedUnits.get(loadImg).containsKey(color))
-      return tintedUnits.get(loadImg).get(color);
-
+  public static BufferedImage tint(Unit unit, Player activePlayer, Color color) {
+    String tintKey =
+        unit.getImgFilename()
+            + "-"
+            + (unit.owner == null ? activePlayer.index : unit.owner.index)
+            + "t:"
+            + color.toString();
+    if (tintedUnits.containsKey(tintKey) && tintedUnits.get(tintKey).containsKey(color))
+      return tintedUnits.get(tintKey).get(color);
+    BufferedImage loadImg = imageForUnit(unit, activePlayer);
     BufferedImage img =
         new BufferedImage(loadImg.getWidth(), loadImg.getHeight(), BufferedImage.TRANSLUCENT);
     final float tintOpacity = 0.45f;
@@ -225,9 +233,8 @@ public final class ImageIndex {
     }
     g2d.dispose();
 
-    if (!tintedUnits.containsKey(loadImg))
-      tintedUnits.put(loadImg, new HashMap<Color, BufferedImage>());
-    tintedUnits.get(loadImg).put(color, img);
+    if (!tintedUnits.containsKey(tintKey)) tintedUnits.put(tintKey, new HashMap<>());
+    tintedUnits.get(tintKey).put(color, img);
     return img;
   }
 

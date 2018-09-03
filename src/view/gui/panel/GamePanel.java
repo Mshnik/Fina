@@ -8,8 +8,10 @@ import model.board.Terrain;
 import model.board.Tile;
 import model.game.Game;
 import model.game.Player;
+import model.unit.Summoner;
 import model.unit.Unit;
 import model.unit.ability.Ability;
+import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.util.ExpandableCloud;
 import view.gui.Frame;
@@ -277,9 +279,16 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
 
     // Draw model.unit if it's alive.
     if (u.isAlive()) {
-      BufferedImage unitImg = ImageIndex.imageForUnit(u, controller.game.getCurrentPlayer());
+      BufferedImage unitImg;
       if (u instanceof Commander) {
-        unitImg = ImageIndex.tint(unitImg, controller.getColorFor(u.owner));
+        unitImg =
+            ImageIndex.tint(u, controller.game.getCurrentPlayer(), controller.getColorFor(u.owner));
+      } else if ((u instanceof Combatant || u instanceof Summoner)
+          && !u.canAct()
+          && u.owner == controller.game.getCurrentPlayer()) {
+        unitImg = ImageIndex.tint(u, controller.game.getCurrentPlayer(), Color.GRAY);
+      } else {
+        unitImg = ImageIndex.imageForUnit(u, controller.game.getCurrentPlayer());
       }
       g2d.drawImage(unitImg, x, y, cellSize(), cellSize(), null);
 
