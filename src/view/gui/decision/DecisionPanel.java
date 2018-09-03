@@ -200,7 +200,8 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
         int textX = TEXT_X + x;
         int textY = TEXT_Y + y + (r - scrollY) * DECISION_HEIGHT + titleHeight;
         g2d.drawString(decision.get(r).getMessage(), textX, textY);
-        if (decision.get(r).getVal() instanceof Combatant) {
+        if (decision.get(r).getVal() instanceof Combatant
+            && ((Combatant) decision.get(r).getVal()).owner == null) {
           paintCombatantClasses(
               g2d, x + DECISION_WIDTH - TEXT_X * 2, textY, (Combatant) decision.get(r).getVal());
         }
@@ -212,7 +213,8 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
         int textX = TEXT_X + x + (c - scrollX) * DECISION_WIDTH;
         int textY = TEXT_Y + y + titleHeight;
         g2d.drawString(decision.get(c).getMessage(), textX, textY);
-        if (decision.get(c).getVal() instanceof Combatant) {
+        if (decision.get(c).getVal() instanceof Combatant
+            && ((Combatant) decision.get(c).getVal()).owner == null) {
           paintCombatantClasses(
               g2d, x + DECISION_WIDTH - TEXT_X * 2, textY, (Combatant) decision.get(c).getVal());
         }
