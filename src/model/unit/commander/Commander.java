@@ -36,7 +36,7 @@ import model.unit.stat.Stats;
 public abstract class Commander extends MovingUnit implements Summoner {
 
   /** Base level of health for lvl1 commanders */
-  static final int BASE_HEALTH = 500;
+  static final int BASE_HEALTH = 250;
 
   /** Base starting level of mana per turn for lvl1 commanders */
   static final int BASE_MANA_PT = 200;
