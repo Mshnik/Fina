@@ -1,5 +1,6 @@
 package model.unit.commander;
 
+import model.board.Tile;
 import model.game.Player;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
@@ -20,7 +21,20 @@ public final class DummyCommander extends Commander {
           new Stat(StatType.WOODS_COST, 2),
           new Stat(StatType.MOUNTAIN_COST, 9999));
 
-  public DummyCommander(Player owner, int startingLevel) {
-    super("Dummy", "mario.png", owner, STATS, startingLevel);
+  public DummyCommander() {
+    this(null, null);
+  }
+
+  private DummyCommander(Player owner, Tile location) {
+    super(owner, location, "Dummy", "mario.png", STATS);
+  }
+
+  @Override
+  protected Commander createClone(Player owner, Tile cloneLocation) {
+    if (this.owner != null) {
+      throw new RuntimeException(
+          "Shouldn't make a clone of an already on the board commander " + this);
+    }
+    return new DummyCommander(owner, cloneLocation);
   }
 }

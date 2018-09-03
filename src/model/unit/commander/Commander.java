@@ -131,38 +131,38 @@ public abstract class Commander extends MovingUnit implements Summoner {
    * @param stats - the stats of this commander. Notably, because of restrictions on commander, the
    *     attack, counterattack, and attackType Attributes are unused, because they are either
    *     unnecessary or calculated elsewhere.
-   * @param startingLevel - the level this commander starts at.
    */
-  public Commander(String name, String imageFilename, Player owner, Stats stats, int startingLevel)
+  public Commander(Player owner, Tile location, String name, String imageFilename, Stats stats)
       throws RuntimeException, IllegalArgumentException {
     super(owner, name, imageFilename, 0, 0, stats);
-    if (startingLevel > MAX_LEVEL) {
-      throw new RuntimeException("Can't start at level above max level");
-    }
     research = 0;
-    currentTurnCasts = new LinkedList<Ability>();
+    level = 1;
+    currentTurnCasts = new LinkedList<>();
     setHealth(getMaxHealth(), this);
     setMana(0);
+    this.location = location;
 
     abilityChoices = new int[MAX_LEVEL];
     for (int i = 1; i < MAX_LEVEL; i++) { // leave abilityChoices[0] = 0
       abilityChoices[i] = -1;
     }
-    location = owner.game.board.getCommanderStartLocation(owner);
-    location.addOccupyingUnit(this);
-    owner.addUnit(this);
-
-    // Give research to level up to starting level.
-    level = 1;
-    for (int i = 1; i < startingLevel; i++) {
-      research += RESEARCH_REQS[i-1];
-    }
   }
 
-  /** Throws a runtime exception - commanders are not clonable */
+  /** Forces implementing methods to return a commander. */
   @Override
-  protected Unit createClone(Player owner, Tile cloneLocation) {
-    throw new RuntimeException("Can't clone commander " + this);
+  protected abstract Commander createClone(Player p, Tile cloneLocation);
+
+  /**
+   * Creates a clone of this Commander for the commander for the given player, at the given starting
+   * level.
+   */
+  public void createForPlayer(Player p, int startingLevel) {
+    Commander commander = createClone(p, p.game.board.getCommanderStartLocation(p));
+    commander.getLocation().addOccupyingUnit(commander);
+    p.addUnit(commander);
+    for (int i = 1; i < startingLevel; i++) {
+      commander.research += RESEARCH_REQS[i - 1];
+    }
   }
 
   /**
@@ -175,7 +175,9 @@ public abstract class Commander extends MovingUnit implements Summoner {
     currentTurnCasts.clear();
   }
 
-  /** Checks for level up, and levels up if need be (may be multiple times if that acutally happens). */
+  /**
+   * Checks for level up, and levels up if need be (may be multiple times if that acutally happens).
+   */
   public void checkForLevelUp() {
     addResearch(outOfTurnResearch);
     outOfTurnResearch = 0;
