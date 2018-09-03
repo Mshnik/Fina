@@ -223,10 +223,11 @@ public final class Frame extends JFrame {
   }
 
   /** Called when a unit's danger radius changes. Propagates changes to ViewOptions */
-  public void unitDangerRadiusChanged(Combatant c) {
+  public void unitDangerRadiusChanged(Unit u) {
     for (ViewOptions viewOptions : viewOptionsMap.values()) {
-      viewOptions.unitDangerRadiusChanged(c);
+      viewOptions.unitDangerRadiusChanged(u);
     }
+    viewOptionsMap.get(u.owner.index).unitDangerRadiusChanged();
   }
 
   /** Helper to create the game panel for this. If old game panel existed, dispose first. */

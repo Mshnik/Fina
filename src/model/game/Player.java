@@ -303,6 +303,9 @@ public abstract class Player implements Stringable {
     if (u instanceof CommanderModifierBuilding) {
       ((CommanderModifierBuilding) u).applyModifiersTo(getCommander());
     }
+
+    // Recalculate view options as needed.
+    game.getController().frame.unitDangerRadiusChanged(u);
   }
 
   /**

@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import model.board.Tile;
 import model.game.Player;
+import model.unit.Unit;
 import model.unit.combatant.Combatant;
 
 /**
@@ -60,11 +61,18 @@ public final class ViewOptions {
   }
 
   /**
+   * Called when a player's danger radius changes. Always recompute danger Radius here.
+   */
+  void unitDangerRadiusChanged() {
+    dangerRadius = null;
+  }
+
+  /**
    * Called when a unit's danger radius changes. If this contains the given unit, set to recalculate
    * danger radius.
    */
-  void unitDangerRadiusChanged(Combatant c) {
-    if (paintDangerRadiusUnits.contains(c)) {
+  void unitDangerRadiusChanged(Unit u) {
+    if (paintDangerRadiusUnits.contains(u)) {
       dangerRadius = null;
     }
   }
