@@ -35,6 +35,7 @@ import view.gui.panel.GamePanel;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import static ai.dummy.DoNothingAIController.DO_NOTHING_AI_TYPE;
 import static ai.dummy.FullRandomAIController.FULL_RANDOM_AI_TYPE;
@@ -519,14 +521,13 @@ public final class GameController {
   }
 
   /** Creates a getGamePanel().getDecisionPanel() for creating either units or buildings */
-  private void startSummonDecision(Commander c, Map<String, ? extends Unit> creatables) {
+  private void startSummonDecision(Commander c, List<? extends Unit> creatables) {
     LinkedList<Choice> choices = new LinkedList<Choice>();
-    ArrayList<Unit> units = Unit.sortedList(creatables.values());
     Tile t = getGamePanel().boardCursor.getElm();
     if (!(t.getOccupyingUnit() instanceof Summoner)) {
       throw new RuntimeException(t.getOccupyingUnit() + " can't summon");
     }
-    for (Unit u : units) {
+    for (Unit u : creatables) {
       choices.add(
           new Choice(
               u.getManaCostWithScalingAndDiscountsForPlayer(c.owner) <= c.getMana()
@@ -559,7 +560,16 @@ public final class GameController {
     Player p = game.getCurrentPlayer();
     Commander c = p.getCommander();
     summonType = SummonType.UNIT;
-    startSummonDecision(c, c.getSummonables());
+    startSummonDecision(
+        c,
+        c.getSummonables()
+            .values()
+            .stream()
+            .sorted(
+                Comparator.comparing((Combatant combatant) -> combatant.combatantClasses.get(0))
+                    .thenComparing(
+                        combatant -> combatant.getManaCostWithScalingAndDiscountsForPlayer(p)))
+            .collect(Collectors.toList()));
   }
 
   /** Creates a getGamePanel().getDecisionPanel() for summoning new buildings */
@@ -567,7 +577,15 @@ public final class GameController {
     Player p = game.getCurrentPlayer();
     Commander c = p.getCommander();
     summonType = SummonType.BUILDING;
-    startSummonDecision(c, c.getBuildables());
+    startSummonDecision(
+        c,
+        c.getBuildables()
+            .values()
+            .stream()
+            .sorted(
+                Comparator.comparingInt(
+                    building -> building.getManaCostWithScalingAndDiscountsForPlayer(p)))
+            .collect(Collectors.toList()));
   }
 
   /**

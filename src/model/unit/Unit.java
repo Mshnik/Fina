@@ -549,19 +549,6 @@ public abstract class Unit implements Stringable {
   public abstract String getIdentifierString();
 
   // UTIL
-  /** Returns an Arraylist of the given units, sorted by name */
-  public static ArrayList<Unit> sortedList(Collection<? extends Unit> units) {
-    ArrayList<Unit> arr = new ArrayList<Unit>(units);
-    Collections.sort(
-        arr,
-        new Comparator<Unit>() {
-          public int compare(Unit o1, Unit o2) {
-            return o1.name.compareTo(o2.name);
-          }
-        });
-    return arr;
-  }
-
   @Override
   public String toString() {
     return name;
