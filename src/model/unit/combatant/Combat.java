@@ -144,6 +144,14 @@ public final class Combat {
   }
 
   /**
+   * Returns the minimum percent damage the attacker could do after scaling by combat classes and
+   * account for modifiers.
+   */
+  public double getMinAttackPercent() {
+    return (double) getMinAttack() / defender.getMaxHealth();
+  }
+
+  /**
    * Returns the maximum damage the attacker could do after scaling by combat classes and account
    * for modifiers.
    */
@@ -152,6 +160,14 @@ public final class Combat {
     return Math.max(
         0,
         (int) (attacker.getMaxAttackScaled() * classBonus * getTypeBonusRatio(attacker, defender)));
+  }
+
+  /**
+   * Returns the maximum percent damage the attacker could do after scaling by combat classes and
+   * account for modifiers.
+   */
+  public double getMaXAttackPercent() {
+    return (double) getMaxAttack() / defender.getMaxHealth();
   }
 
   /** Returns the sum of all percentage damage reduction for the defender, for the given combat. */
@@ -259,6 +275,15 @@ public final class Combat {
   }
 
   /**
+   * Returns the projected minimum percent damage the defender could do after scaling by combat
+   * classes and account for modifiers along with change in health Should only be used for
+   * projections, not actual combat.
+   */
+  public double getProjectedMinCounterAttackPercent() {
+    return (double) getProjectedMinCounterAttack() / attacker.getMaxHealth();
+  }
+
+  /**
    * Returns the maximum damage the defender could do after scaling by combat classes and account
    * for modifiers along with change in health. Should only be used for projections, not actual
    * combat.
@@ -275,6 +300,15 @@ public final class Combat {
             * maxProjectedHealthPercentage
             * (1 - COMBAT_CLASS_BONUS * getClassBonus())
             * getDefenderCounterAttackBonusRatio());
+  }
+
+  /**
+   * Returns the projected maximum percent damage the defender could do after scaling by combat
+   * classes and account for modifiers along with change in health Should only be used for
+   * projections, not actual combat.
+   */
+  public double getProjectedMaxCounterAttackPercent() {
+    return (double) getProjectedMaxCounterAttack() / attacker.getMaxHealth();
   }
 
   /**
