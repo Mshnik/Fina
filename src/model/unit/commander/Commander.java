@@ -152,10 +152,10 @@ public abstract class Commander extends MovingUnit implements Summoner {
     location.addOccupyingUnit(this);
     owner.addUnit(this);
 
-    // Level up to starting level.
+    // Give research to level up to starting level.
     level = 1;
     for (int i = 1; i < startingLevel; i++) {
-      levelUp();
+      research += RESEARCH_REQS[i-1];
     }
   }
 

@@ -11,6 +11,7 @@ import model.game.Player;
 import model.unit.Summoner;
 import model.unit.Unit;
 import model.unit.ability.Ability;
+import model.unit.building.StartOfTurnEffectBuilding;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.util.ExpandableCloud;
@@ -190,6 +191,18 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
     // Draw the locationSelector, if there is one
     if (controller.getLocationSelector() != null) {
       controller.getLocationSelector().paintComponent(g);
+    }
+
+    // Draw cloud of hovered start of turn building, if any
+    if (controller.getLocationSelector() == null
+        && getElm().isOccupied()
+        && getElm().getOccupyingUnit() instanceof StartOfTurnEffectBuilding) {
+      StartOfTurnEffectBuilding building = (StartOfTurnEffectBuilding) getElm().getOccupyingUnit();
+      List<Tile> cloud =
+          building.getEffect().cloud.translate(getElm().getPoint()).toTileSet(game.board);
+      g2d.setColor(SUMMON_COLOR);
+      g2d.setStroke(new BasicStroke(2));
+      ImageIndex.trace(cloud, this, g2d);
     }
 
     // Depending on the decision panel, draw ranges as applicable.
