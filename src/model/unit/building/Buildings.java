@@ -197,7 +197,7 @@ public final class Buildings {
   private static EffectPair<SummonerBuildingEffect> getSummoningEffects(String buildingName) {
     switch (buildingName) {
       case "Portal":
-        return EffectPair.of(new SummonerBuildingEffect(1, 1), new SummonerBuildingEffect(2, 2));
+        return EffectPair.of(new SummonerBuildingEffect(1, 1), new SummonerBuildingEffect(3, 3));
       default:
         throw new RuntimeException("Unknown building name " + buildingName);
     }
@@ -211,12 +211,12 @@ public final class Buildings {
         return EffectPair.of(
             new StartOfTurnEffect(
                 StartOfTurnEffectType.HEAL_COMBATANT,
-                15,
+                5,
                 ExpandableCloud.create(ExpandableCloudType.CIRCLE, 1),
                 nonAncientGroundDescription),
             new StartOfTurnEffect(
                 StartOfTurnEffectType.HEAL_COMBATANT,
-                25,
+                20,
                 ExpandableCloud.create(ExpandableCloudType.CIRCLE, 2),
                 ancientGroundDescription));
       default:
@@ -229,26 +229,26 @@ public final class Buildings {
     switch (buildingName) {
       case "Armory":
         return EffectPair.of(
-            Modifiers.strengthened(3),
+            Modifiers.strengthened(2),
             new ModifierBundle(Modifiers.strengthened(5), Modifiers.toughness(3)));
       case "Comms Tower":
         return EffectPair.of(
-            new ModifierBundle(Modifiers.communications(2, 1)),
+            new ModifierBundle(Modifiers.communications(1, 0)),
             new ModifierBundle(Modifiers.communications(3, 2)));
       case "Cemetery":
         return EffectPair.of(
-            new ModifierBundle(Modifiers.bloodlust(.1)),
+            new ModifierBundle(Modifiers.bloodlust(.05)),
             new ModifierBundle(Modifiers.bloodlust(.2)));
       case "Siege Works":
         return EffectPair.of(
-            new ModifierBundle(Modifiers.siege(.5)), new ModifierBundle(Modifiers.siege(1)));
+            new ModifierBundle(Modifiers.siege(.25)), new ModifierBundle(Modifiers.siege(1)));
       case "Military Academy":
         return EffectPair.of(
-            new ModifierBundle(Modifiers.patience(.1)), new ModifierBundle(Modifiers.patience(.2)));
+            new ModifierBundle(Modifiers.patience(.05)), new ModifierBundle(Modifiers.patience(.2)));
       case "Sanctuary":
         return EffectPair.of(
-            new ModifierBundle(Modifiers.hexproof(.15)),
-            new ModifierBundle(Modifiers.hexproof(.3)));
+            new ModifierBundle(Modifiers.hexproof(.1)),
+            new ModifierBundle(Modifiers.hexproof(.4)));
       default:
         throw new RuntimeException("Unknown building name " + buildingName);
     }
@@ -259,7 +259,7 @@ public final class Buildings {
     switch (buildingName) {
       case "Dojo":
         return EffectPair.of(
-            new ModifierBundle(Modifiers.training(1)), new ModifierBundle(Modifiers.training(2)));
+            new ModifierBundle(Modifiers.training(1)), new ModifierBundle(Modifiers.training(3)));
       default:
         throw new RuntimeException("Unknown building name " + buildingName);
     }
@@ -272,7 +272,7 @@ public final class Buildings {
       case "Well":
         return EffectPair.of(
             new PlayerModifierEffect(
-                PlayerModifierEffectType.MANA_GENERATION, 75, nonAncientGroundDescription),
+                PlayerModifierEffectType.MANA_GENERATION, 50, nonAncientGroundDescription),
             new PlayerModifierEffect(
                 PlayerModifierEffectType.MANA_GENERATION, 150, ancientGroundDescription));
       case "Library":
@@ -280,7 +280,7 @@ public final class Buildings {
             new PlayerModifierEffect(
                 PlayerModifierEffectType.RESEARCH_GENERATION, 25, nonAncientGroundDescription),
             new PlayerModifierEffect(
-                PlayerModifierEffectType.RESEARCH_GENERATION, 50, ancientGroundDescription));
+                PlayerModifierEffectType.RESEARCH_GENERATION, 75, ancientGroundDescription));
       case "Laboratory":
         return EffectPair.of(
             new PlayerModifierEffect(
@@ -290,19 +290,19 @@ public final class Buildings {
       case "Ritual Grounds":
         return EffectPair.of(
             new PlayerModifierEffect(
-                PlayerModifierEffectType.SUMMON_DISCOUNT, 15, nonAncientGroundDescription),
+                PlayerModifierEffectType.SUMMON_DISCOUNT, 10, nonAncientGroundDescription),
             new PlayerModifierEffect(
                 PlayerModifierEffectType.SUMMON_DISCOUNT, 30, ancientGroundDescription));
       case "Archive":
         return EffectPair.of(
             new PlayerModifierEffect(
-                PlayerModifierEffectType.CAST_DISCOUNT, 20, nonAncientGroundDescription),
+                PlayerModifierEffectType.CAST_DISCOUNT, 15, nonAncientGroundDescription),
             new PlayerModifierEffect(
                 PlayerModifierEffectType.CAST_DISCOUNT, 40, ancientGroundDescription));
       case "Studio":
         return EffectPair.of(
             new PlayerModifierEffect(
-                PlayerModifierEffectType.BUILD_DISCOUNT, 20, nonAncientGroundDescription),
+                PlayerModifierEffectType.BUILD_DISCOUNT, 15, nonAncientGroundDescription),
             new PlayerModifierEffect(
                 PlayerModifierEffectType.BUILD_DISCOUNT, 40, ancientGroundDescription));
       default:
