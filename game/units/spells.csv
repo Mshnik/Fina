@@ -16,7 +16,7 @@ Cone of Electricity,3,200,Offensive,Cone-1,Yes,1,Combatant/Commander,Yes,Yes,Uni
 Mass Heal,3,150,Defensive,Circle-1,Yes,0,Combatant,Yes,No,Unit gains 25% of max health,
 Resolution,3,175,Defensive,Circle-1,Yes,0,Combatant,Yes,No,Unit gains Tenacity 15 for 5 turns,
 Refresh,3,200,Utility,Circle-0,No,1,Combatant,Yes,No,Unit regains movement and attack for turn.,
-Spacial Shift,3,150,Utility,Circle-0,No,3,Combatant/Commander/Building,Yes,Yes,Switch locations of commander and the chosen unit.,Resulting locations must be legal for both units
+Spacial Shift,3,150,Utility,Circle-0,No,3,Combatant,Yes,Yes,Switch locations of commander and the chosen unit.,Resulting locations must be legal for both units
 ,,,,,,,,,,,
 Cone of Light,4,300,Offensive,Cone-1,Yes,1,Combatant/Commander,Yes,Yes,Unit takes 45-90 damage and gains Blinded 2 for 3 turns,
 Mana Shield,4,250,Defensive,Circle-1,Yes,0,Combatant/Building,Yes,No,Unit gains Shielded 25 for 3 turns then heal unit 50 health,
