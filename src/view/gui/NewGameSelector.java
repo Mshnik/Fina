@@ -6,12 +6,14 @@ import model.board.Board;
 import model.board.Terrain;
 import model.game.Game.FogOfWar;
 import model.game.HumanPlayer;
+import model.unit.commander.Commander;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -26,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /** Blocking top-level selector that allows the user to create a new game. */
 final class NewGameSelector {
@@ -36,19 +39,26 @@ final class NewGameSelector {
     final String boardFilepath;
     final List<String> playerTypes;
     final FogOfWar fogOfWar;
+    final int startingCommanderLevel;
 
     private NewGameOptions() {
       cancelled = true;
       playerTypes = null;
       boardFilepath = null;
       fogOfWar = FogOfWar.NONE;
+      startingCommanderLevel = -1;
     }
 
-    private NewGameOptions(String boardFilepath, List<String> playerTypes, FogOfWar fogOfWar) {
+    private NewGameOptions(
+        String boardFilepath,
+        List<String> playerTypes,
+        FogOfWar fogOfWar,
+        int startingCommanderLevel) {
       cancelled = false;
       this.playerTypes = playerTypes;
       this.boardFilepath = boardFilepath;
       this.fogOfWar = fogOfWar;
+      this.startingCommanderLevel = startingCommanderLevel;
     }
   }
 
@@ -56,6 +66,7 @@ final class NewGameSelector {
   private static final class NewGamePanel extends JPanel {
     private final JComboBox<String> boardSelector;
     private final JComboBox<Integer> numPlayersSelector;
+    private final JComboBox<Integer> startingCommanderLevelSelector;
     private final JComboBox<FogOfWar> fogOfWarSelector;
     private final Map<String, Board> boardsMap;
 
@@ -109,6 +120,13 @@ final class NewGameSelector {
             }
           });
 
+      startingCommanderLevelSelector =
+          new JComboBox<>(
+              Stream.iterate(1, i -> i + 1)
+                  .limit(Commander.MAX_LEVEL - 1)
+                  .collect(Collectors.toList())
+                  .toArray(new Integer[Commander.MAX_LEVEL - 1]));
+
       add(boardSelector, BorderLayout.NORTH);
 
       boardPreviewPanel.setBoard(getSelectedBoard());
@@ -126,6 +144,11 @@ final class NewGameSelector {
       playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS));
       playerTypeSelectorsList = new ArrayList<>();
 
+      JPanel commanderStartLevelPanel = new JPanel();
+      commanderStartLevelPanel.setLayout(new BoxLayout(commanderStartLevelPanel, BoxLayout.X_AXIS));
+      commanderStartLevelPanel.add(new JLabel("Starting Commander Level: "));
+      commanderStartLevelPanel.add(startingCommanderLevelSelector);
+
       JPanel fogOfWarPanel = new JPanel();
       fogOfWarPanel.setLayout(new BoxLayout(fogOfWarPanel, BoxLayout.X_AXIS));
       fogOfWarPanel.add(new JLabel("Fog of War: "));
@@ -133,8 +156,11 @@ final class NewGameSelector {
 
       JPanel bottomPanel = new JPanel();
       bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
+      bottomPanel.add(new JSeparator());
       bottomPanel.add(playerHeaderPanel);
       bottomPanel.add(playerPanel);
+      bottomPanel.add(commanderStartLevelPanel);
+      bottomPanel.add(new JSeparator());
       bottomPanel.add(fogOfWarPanel);
       add(bottomPanel, BorderLayout.SOUTH);
 
@@ -257,7 +283,8 @@ final class NewGameSelector {
       return new NewGameOptions(
           BoardReader.BOARDS_ROOT_FILEPATH + panel.boardSelector.getSelectedItem(),
           panel.getPlayerTypes(),
-          (FogOfWar) panel.fogOfWarSelector.getSelectedItem());
+          (FogOfWar) panel.fogOfWarSelector.getSelectedItem(),
+          (int) panel.startingCommanderLevelSelector.getSelectedItem());
     } else {
       return new NewGameOptions();
     }

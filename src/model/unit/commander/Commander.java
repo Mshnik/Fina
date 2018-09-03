@@ -85,7 +85,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
   private static final int[] RESEARCH_REQS = {500, 2000, 10000, 1000000};
 
   /** The highest level commanders can achieve */
-  private static final int MAX_LEVEL = RESEARCH_REQS.length + 1;
+  public static final int MAX_LEVEL = RESEARCH_REQS.length + 1;
 
   /** The bonus ratio of damage -> research for damaging a commander. */
   public static final double BONUS_DAMAGE_TO_RESEARCH_RATIO = 1.25;

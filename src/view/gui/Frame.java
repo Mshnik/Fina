@@ -6,7 +6,6 @@ import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;
 import model.unit.combatant.Combat;
-import model.unit.combatant.Combatant;
 import view.gui.NewGameSelector.NewGameOptions;
 import view.gui.panel.GamePanel;
 import view.gui.panel.HeaderPanel;
@@ -113,7 +112,10 @@ public final class Frame extends JFrame {
           NewGameOptions newGameOptions = NewGameSelector.getNewGame(this);
           if (!newGameOptions.cancelled) {
             controller.loadAndKillThis(
-                newGameOptions.boardFilepath, newGameOptions.playerTypes, newGameOptions.fogOfWar);
+                newGameOptions.boardFilepath,
+                newGameOptions.playerTypes,
+                newGameOptions.fogOfWar,
+                newGameOptions.startingCommanderLevel);
           }
         });
     gameMenu.add(newGameMenuItem);

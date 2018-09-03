@@ -126,6 +126,9 @@ public final class GameController {
   /** The game this is controlling */
   public final Game game;
 
+  /** The level commanders start at in this game. */
+  private final int startingCommanderLevel;
+
   /** The random instance used for generating combat damage. */
   private final Random random;
 
@@ -133,7 +136,11 @@ public final class GameController {
   private LocationSelector locationSelector;
 
   /** Loads a board and starts the game in the same frame as this, then disposes of this. */
-  static void loadAndStart(String boardFilepath, List<String> playerTypes, FogOfWar fogOfWar) {
+  static void loadAndStart(
+      String boardFilepath,
+      List<String> playerTypes,
+      FogOfWar fogOfWar,
+      int startingCommanderLevel) {
     if (playerTypes.size() < 2) {
       throw new RuntimeException("Can't have game with less than 2 players");
     }
@@ -143,7 +150,7 @@ public final class GameController {
     // Read board and create game.
     Board board = BoardReader.readBoard(boardFilepath);
     Game g = new Game(board, fogOfWar);
-    GameController gc = new GameController(g, f, playerTypes);
+    GameController gc = new GameController(g, f, playerTypes, startingCommanderLevel);
 
     // Create players.
     for (int i = 0; i < playerTypes.size(); i++) {
@@ -165,7 +172,7 @@ public final class GameController {
           throw new RuntimeException("Don't know how to handle player type " + playerTypes.get(i));
       }
       gc.frame.createViewOptionsForPlayer(p);
-      new DummyCommander(p, 4);
+      new DummyCommander(p, startingCommanderLevel);
     }
 
     // Start game.
@@ -173,8 +180,9 @@ public final class GameController {
   }
 
   /** Creates a new game controller for the given game and frame. */
-  private GameController(Game g, Frame f, List<String> playerTypes) {
+  private GameController(Game g, Frame f, List<String> playerTypes, int startingCommanderLevel) {
     game = g;
+    this.startingCommanderLevel = startingCommanderLevel;
     this.playerTypes = Collections.unmodifiableList(playerTypes);
     game.setGameController(this);
     frame = f;
@@ -211,15 +219,18 @@ public final class GameController {
 
   /** Loads the given board and kills this. */
   public synchronized void loadAndKillThis(
-      String boardFilepath, List<String> playerTypes, FogOfWar fogOfWar) {
+      String boardFilepath,
+      List<String> playerTypes,
+      FogOfWar fogOfWar,
+      int startingCommanderLevel) {
     kill();
-    loadAndStart(boardFilepath, playerTypes, fogOfWar);
+    loadAndStart(boardFilepath, playerTypes, fogOfWar, startingCommanderLevel);
   }
 
   /** Restarts this game by creating a new copy of this then disposing of this. */
   public synchronized void restart() {
     kill();
-    loadAndStart(game.board.filepath, playerTypes, game.getFogOfWar());
+    loadAndStart(game.board.filepath, playerTypes, game.getFogOfWar(), startingCommanderLevel);
   }
 
   /** Returns the random to use for combat. */
