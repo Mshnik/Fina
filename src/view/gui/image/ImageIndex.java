@@ -52,8 +52,6 @@ public final class ImageIndex {
 
   /** The image for margin outside of the board */
   private static BufferedImage MARGIN;
-  /** The image for the whole sheet of terrain. */
-  private static BufferedImage TERRAIN_SHEET;
 
   /** The image for grassy terrain */
   private static BufferedImage GRASS;
@@ -92,12 +90,12 @@ public final class ImageIndex {
       SANDSTONE = ImageIO.read(new File(IMAGE_ROOT + "sandstone.jpg"));
 
       // Terrain
-      TERRAIN_SHEET = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "Sheet.png"));
+      BufferedImage terrainSheet = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "Sheet.png"));
       MARGIN = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "margin.jpg"));
-      GRASS = TERRAIN_SHEET.getSubimage(20, 26, 16, 16);
-      MOUNTAINS = TERRAIN_SHEET.getSubimage(55, 7, 16, 16);
-      WOODS = TERRAIN_SHEET.getSubimage(247, 26, 16, 16);
-      ANCIENT_GROUND = TERRAIN_SHEET.getSubimage(20,98,16,16);
+      GRASS = terrainSheet.getSubimage(20, 26, 16, 16);
+      MOUNTAINS = terrainSheet.getSubimage(55, 7, 16, 16);
+      WOODS = terrainSheet.getSubimage(247, 26, 16, 16);
+      ANCIENT_GROUND = terrainSheet.getSubimage(20,98,16,16);
 
       // Class Icons
       FIGHTER_ICON = ImageIO.read(new File(IMAGE_ROOT + CLASS_ICONS_ROOT + "weapon_icon_1_0.png"));
