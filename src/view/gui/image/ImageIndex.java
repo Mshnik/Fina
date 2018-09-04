@@ -97,7 +97,7 @@ public final class ImageIndex {
       GRASS = TERRAIN_SHEET.getSubimage(20, 26, 16, 16);
       MOUNTAINS = TERRAIN_SHEET.getSubimage(55, 7, 16, 16);
       WOODS = TERRAIN_SHEET.getSubimage(247, 26, 16, 16);
-      ANCIENT_GROUND = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "gold.jpg"));
+      ANCIENT_GROUND = TERRAIN_SHEET.getSubimage(20,98,16,16);
 
       // Class Icons
       FIGHTER_ICON = ImageIO.read(new File(IMAGE_ROOT + CLASS_ICONS_ROOT + "weapon_icon_1_0.png"));
