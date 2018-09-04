@@ -1,17 +1,5 @@
 package view.gui.image;
 
-import model.board.Direction;
-import model.board.Terrain;
-import model.board.Tile;
-import model.game.Player;
-import model.unit.Unit;
-import model.unit.building.Building;
-import model.unit.combatant.Combatant;
-import model.unit.combatant.Combatant.CombatantClass;
-import model.unit.commander.Commander;
-import view.gui.panel.GamePanel;
-
-import javax.imageio.ImageIO;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -24,6 +12,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import javax.imageio.ImageIO;
+import model.board.Direction;
+import model.board.Terrain;
+import model.board.Tile;
+import model.game.Player;
+import model.unit.Unit;
+import model.unit.building.Building;
+import model.unit.combatant.Combatant;
+import model.unit.combatant.Combatant.CombatantClass;
+import model.unit.commander.Commander;
+import view.gui.panel.GamePanel;
 
 /** Library for lookup of different image resources. Also some drawing functionality */
 public final class ImageIndex {
@@ -53,6 +52,9 @@ public final class ImageIndex {
 
   /** The image for margin outside of the board */
   private static BufferedImage MARGIN;
+  /** The image for the whole sheet of terrain. */
+  private static BufferedImage TERRAIN_SHEET;
+
   /** The image for grassy terrain */
   private static BufferedImage GRASS;
   /** The image for mountain terrain */
@@ -90,10 +92,11 @@ public final class ImageIndex {
       SANDSTONE = ImageIO.read(new File(IMAGE_ROOT + "sandstone.jpg"));
 
       // Terrain
+      TERRAIN_SHEET = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "Sheet.png"));
       MARGIN = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "margin.jpg"));
-      GRASS = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "grass.png"));
-      MOUNTAINS = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "mountain.png"));
-      WOODS = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "woods.png"));
+      GRASS = TERRAIN_SHEET.getSubimage(20, 26, 16, 16);
+      MOUNTAINS = TERRAIN_SHEET.getSubimage(55, 7, 16, 16);
+      WOODS = TERRAIN_SHEET.getSubimage(247, 26, 16, 16);
       ANCIENT_GROUND = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "gold.jpg"));
 
       // Class Icons
