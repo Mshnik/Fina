@@ -5,6 +5,7 @@ public enum Terrain {
   GRASS,
   WOODS,
   MOUNTAIN,
+  SEA,
   ANCIENT_GROUND;
 
   /** Parses the given short string to a Terrain. */
@@ -16,6 +17,8 @@ public enum Terrain {
         return WOODS;
       case "M":
         return MOUNTAIN;
+      case "S":
+        return SEA;
       case "A":
         return ANCIENT_GROUND;
       default:

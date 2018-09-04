@@ -47,7 +47,9 @@ public enum StatType {
   /** Woods movement cost */
   WOODS_COST,
   /** Mountain movement cost */
-  MOUNTAIN_COST;
+  MOUNTAIN_COST,
+  /** Sea movement cost */
+  SEA_COST;
 
   /** Overrides traditional enum tostring - returns camel case, no underscores */
   @Override
@@ -84,7 +86,8 @@ public enum StatType {
     return this == MOVEMENT_TOTAL
         || this == GRASS_COST
         || this == WOODS_COST
-        || this == MOUNTAIN_COST;
+        || this == MOUNTAIN_COST
+        || this == SEA_COST;
   }
 
   /**
@@ -108,6 +111,7 @@ public enum StatType {
       case GRASS_COST:
       case WOODS_COST:
       case MOUNTAIN_COST:
+      case SEA_COST:
         return true;
       default:
         return false;
@@ -131,6 +135,7 @@ public enum StatType {
       case SUMMON_RANGE:
       case VISION_RANGE:
       case WOODS_COST:
+      case SEA_COST:
         return Integer.class;
       case BASE:
         return Stats.class;

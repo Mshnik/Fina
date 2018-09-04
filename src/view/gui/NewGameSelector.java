@@ -247,6 +247,8 @@ final class NewGameSelector {
           return new Color(17, 134, 15);
         case MOUNTAIN:
           return new Color(188, 93, 30);
+        case SEA:
+          return new Color(30, 81, 193);
         default:
           return Color.WHITE;
       }

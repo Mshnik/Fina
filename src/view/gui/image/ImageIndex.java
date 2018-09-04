@@ -57,6 +57,8 @@ public final class ImageIndex {
   private static BufferedImage GRASS;
   /** The image for mountain terrain */
   private static BufferedImage MOUNTAINS;
+  /** The image for sea terrain */
+  private static BufferedImage SEA;
   /** The image for woods terrain */
   private static BufferedImage WOODS;
   /** The image for ancient ground terrain */
@@ -95,6 +97,7 @@ public final class ImageIndex {
       GRASS = terrainSheet.getSubimage(20, 26, 16, 16);
       MOUNTAINS = terrainSheet.getSubimage(55, 7, 16, 16);
       WOODS = terrainSheet.getSubimage(247, 26, 16, 16);
+      SEA = terrainSheet.getSubimage(143,26,16,16);
       ANCIENT_GROUND = terrainSheet.getSubimage(20,98,16,16);
 
       // Class Icons
@@ -126,6 +129,8 @@ public final class ImageIndex {
         return MOUNTAINS;
       case WOODS:
         return WOODS;
+      case SEA:
+        return SEA;
       case ANCIENT_GROUND:
         return ANCIENT_GROUND;
       default:

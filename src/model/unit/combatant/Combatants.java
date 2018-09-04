@@ -80,6 +80,7 @@ public final class Combatants {
           costs.put(Terrain.ANCIENT_GROUND, 1); // Same as grass cost.
           costs.put(Terrain.WOODS, 2);
           costs.put(Terrain.MOUNTAIN, 99999); // No crossing.
+          costs.put(Terrain.SEA, 99999); // No crossing.
 
           Stats stats =
               new Stats(

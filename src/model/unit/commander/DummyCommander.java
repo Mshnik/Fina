@@ -19,7 +19,8 @@ public final class DummyCommander extends Commander {
           new Stat(StatType.MOVEMENT_TOTAL, 2),
           new Stat(StatType.GRASS_COST, 1),
           new Stat(StatType.WOODS_COST, 2),
-          new Stat(StatType.MOUNTAIN_COST, 9999));
+          new Stat(StatType.MOUNTAIN_COST, 9999),
+          new Stat(StatType.SEA_COST, 9999));
 
   public DummyCommander() {
     this(null, null);

@@ -42,6 +42,7 @@ public class Stats implements Iterable<Stat> {
     TEMPLATE.put(StatType.GRASS_COST, 0);
     TEMPLATE.put(StatType.WOODS_COST, 0);
     TEMPLATE.put(StatType.MOUNTAIN_COST, 0);
+    TEMPLATE.put(StatType.SEA_COST, 0);
   }
 
   /** Utility class for a pair of stats. */
