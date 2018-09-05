@@ -1,6 +1,7 @@
 package model.board;
 
 import controller.game.KeyboardListener;
+import model.util.MPoint;
 
 /** Cardinal directions */
 public enum Direction {
@@ -39,6 +40,11 @@ public enum Direction {
       default:
         return 0;
     }
+  }
+
+  /** Returns a point that corresponds to this direction as a vector. */
+  public MPoint toPoint() {
+    return new MPoint(dRow(), dCol());
   }
 
   /**

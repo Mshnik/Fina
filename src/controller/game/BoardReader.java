@@ -1,15 +1,14 @@
 package controller.game;
 
-import model.board.Board;
-import model.board.Terrain;
-import model.util.MPoint;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import model.board.Board;
+import model.board.Terrain;
+import model.util.MPoint;
 
 /**
  * Input class to read a board by filepath into memory.
@@ -39,19 +38,22 @@ public final class BoardReader {
     int rows = fileLines.size();
 
     Terrain[][] terrainArr = new Terrain[rows][];
+    String[][] additionalInfo = new String[rows][];
     List<MPoint> playerStartLocations = new ArrayList<>();
 
     int row = 0;
     for (String line : fileLines) {
       String[] terrainRow = line.split(",");
       terrainArr[row] = new Terrain[terrainRow.length];
+      additionalInfo[row] = new String[terrainRow.length];
       for (int col = 0; col < terrainRow.length; col++) {
         String str = terrainRow[col].toUpperCase();
-        if (PLAYER_START_STRING.equals(str)) {
+        if (PLAYER_START_STRING.equals(str.substring(0, PLAYER_START_STRING.length()))) {
           terrainArr[row][col] = PLAYER_START_TERRAIN;
           playerStartLocations.add(new MPoint(row, col));
         } else {
-          terrainArr[row][col] = Terrain.valueOfShort(str);
+          terrainArr[row][col] = Terrain.valueOfShort(str.substring(0, 1));
+          additionalInfo[row][col] = str.length() > 1 ? str.substring(1) : null;
         }
       }
       row++;
@@ -60,6 +62,6 @@ public final class BoardReader {
     // Randomize starting locations.
     Collections.shuffle(playerStartLocations);
 
-    return new Board(boardFilepath, terrainArr, playerStartLocations);
+    return new Board(boardFilepath, terrainArr, additionalInfo, playerStartLocations);
   }
 }

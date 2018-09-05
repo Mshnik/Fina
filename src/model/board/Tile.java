@@ -1,11 +1,13 @@
 package model.board;
 
 import controller.game.MatrixElement;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import model.game.Stringable;
 import model.unit.Unit;
 import model.util.MPoint;
-
-import java.util.Set;
 
 /**
  * A Tile is a single square in the model.board. Maintains information about its location, what kind
@@ -29,6 +31,9 @@ public final class Tile implements Comparable<Tile>, MatrixElement, Stringable {
   /** The terrain type of this tile. */
   public final Terrain terrain;
 
+  /** If this is sea, the index of sea terrain to paint. Only used if sea. */
+  public final int seaTerrainIndex;
+
   /** The model.unit on this tile, if any */
   private Unit occupyingUnit;
 
@@ -51,11 +56,12 @@ public final class Tile implements Comparable<Tile>, MatrixElement, Stringable {
    * @param c - the column of this tile in the model.board matrix it belongs to
    * @param t - the terrain type of this tile.
    */
-  public Tile(Board b, int r, int c, Terrain t) {
+  public Tile(Board b, int r, int c, Terrain t, int seaTerrainIndex) {
     board = b;
     row = r;
     col = c;
     terrain = t;
+    this.seaTerrainIndex = seaTerrainIndex;
   }
 
   /**

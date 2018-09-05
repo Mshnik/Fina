@@ -2,13 +2,6 @@ package model.board;
 
 import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
-import model.game.Player;
-import model.game.Stringable;
-import model.unit.MovingUnit;
-import model.unit.Summoner;
-import model.unit.Unit;
-import model.util.MPoint;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,6 +12,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
+import model.game.Player;
+import model.game.Stringable;
+import model.unit.MovingUnit;
+import model.unit.Summoner;
+import model.unit.Unit;
+import model.util.MPoint;
 
 /**
  * A Board represents the whole model.board state for the model.game as a matrix of tiles and other
@@ -45,7 +44,11 @@ public final class Board implements Iterable<Tile>, Stringable {
    * Construct a simple model.board of just terrain Throws IllegalArgumentException if input array
    * is jagged.
    */
-  public Board(String filepath, Terrain[][] terrain, List<MPoint> commanderStartLocations)
+  public Board(
+      String filepath,
+      Terrain[][] terrain,
+      String[][] additionalInfo,
+      List<MPoint> commanderStartLocations)
       throws IllegalArgumentException {
     this.filepath = filepath;
     tiles = new Tile[terrain.length][terrain[0].length];
@@ -56,7 +59,13 @@ public final class Board implements Iterable<Tile>, Stringable {
             "Jagged Array passed into model.board constructor " + Arrays.deepToString(terrain));
 
       for (int j = 0; j < terrain[i].length; j++) {
-        tiles[i][j] = new Tile(this, i, j, terrain[i][j]);
+        tiles[i][j] =
+            new Tile(
+                this,
+                i,
+                j,
+                terrain[i][j],
+                terrain[i][j] == Terrain.SEA ? Integer.parseInt(additionalInfo[i][j]) : -1);
       }
     }
     this.commanderStartLocations = Collections.unmodifiableList(commanderStartLocations);
@@ -90,40 +99,45 @@ public final class Board implements Iterable<Tile>, Stringable {
   public Tile getTileAt(MPoint loc) {
     return getTileAt(loc.row, loc.col);
   }
+
   /**
    * Return the tile in the given direction from this tile. If oob, returns null or if direction
    * invalid.
    */
-  public Tile getTileInDirection(Tile t, Direction d) {
+  public Tile getTileInDirection(Tile t, Direction... d) {
+    MPoint delta = new MPoint(d);
     try {
-      switch (d) {
-        case DOWN:
-          return getTileAt(t.row + 1, t.col);
-        case LEFT:
-          return getTileAt(t.row, t.col - 1);
-        case RIGHT:
-          return getTileAt(t.row, t.col + 1);
-        case UP:
-          return getTileAt(t.row - 1, t.col);
-        default:
-          return null;
-      }
+      return getTileAt(t.row + delta.row, t.col + delta.col);
     } catch (IllegalArgumentException e) {
       return null;
     }
   }
+
   /**
-   * Returns an array of neighbors of the given tile, null for oob spaces. Returns in order [left,
-   * up, right, down]
+   * Returns an array of neighbors of the given tile, null for oob spaces. If includeDiagonal is
+   * false, Returns in order [left, up, right, down]. If true, returns [left, left-up, up, right-up,
+   * right, down-right, down, down-left].
    */
-  public Tile[] getTileNeighbors(Tile t) {
-    Tile[] neighbors = {
-      getTileInDirection(t, Direction.LEFT),
-      getTileInDirection(t, Direction.UP),
-      getTileInDirection(t, Direction.RIGHT),
-      getTileInDirection(t, Direction.DOWN)
-    };
-    return neighbors;
+  public Tile[] getTileNeighbors(Tile t, boolean includeDiagonal) {
+    if (includeDiagonal) {
+      return new Tile[] {
+        getTileInDirection(t, Direction.LEFT),
+        getTileInDirection(t, Direction.UP, Direction.LEFT),
+        getTileInDirection(t, Direction.UP),
+        getTileInDirection(t, Direction.UP, Direction.RIGHT),
+        getTileInDirection(t, Direction.RIGHT),
+        getTileInDirection(t, Direction.DOWN, Direction.RIGHT),
+        getTileInDirection(t, Direction.DOWN),
+        getTileInDirection(t, Direction.LEFT, Direction.DOWN),
+      };
+    } else {
+      return new Tile[] {
+        getTileInDirection(t, Direction.LEFT),
+        getTileInDirection(t, Direction.UP),
+        getTileInDirection(t, Direction.RIGHT),
+        getTileInDirection(t, Direction.DOWN)
+      };
+    }
   }
 
   /** Returns the maximum number of players this board can support. */
@@ -193,8 +207,7 @@ public final class Board implements Iterable<Tile>, Stringable {
 
   /** Returns the set of tiles the given summoner unit could choose to summon a new unit. */
   public <U extends Unit & Summoner> List<Tile> getSummonCloud(U summoner, Unit toSummon) {
-    ArrayList<Tile> radialTiles =
-        getRadialCloud(summoner.getLocation(), summoner.getSummonRange());
+    ArrayList<Tile> radialTiles = getRadialCloud(summoner.getLocation(), summoner.getSummonRange());
     HashSet<Tile> toRemove = new HashSet<Tile>();
     for (Tile t : radialTiles) {
       if (!summoner.owner.canSee(t) || t.isOccupied() || !toSummon.canOccupy(t.terrain))
@@ -240,7 +253,7 @@ public final class Board implements Iterable<Tile>, Stringable {
     while (!frontier.isEmpty()) {
       Tile current = frontier.poll();
       settled.add(current);
-      for (Tile neighbor : getTileNeighbors(current)) {
+      for (Tile neighbor : getTileNeighbors(current, false)) {
         if (neighbor != null) {
           int nDist = current.dist - unit.getMovementCost(neighbor.terrain);
           boolean unitObstacle =

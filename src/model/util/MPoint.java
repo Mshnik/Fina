@@ -1,11 +1,12 @@
 package model.util;
 
-import model.util.ExpandableCloud.ExpandableCloudType;
-
-import java.awt.*;
+import java.awt.Point;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
+import model.board.Direction;
+import model.util.ExpandableCloud.ExpandableCloudType;
 
 public final class MPoint {
 
@@ -47,6 +48,13 @@ public final class MPoint {
   public MPoint(Point p) {
     row = p.y;
     col = p.x;
+  }
+
+  /** Constructor from an array of directions, creating a resulting delta. */
+  public MPoint(Direction... d) {
+    MPoint p = Arrays.stream(d).map(Direction::toPoint).reduce(MPoint.ORIGIN, MPoint::add);
+    row = p.row;
+    col = p.col;
   }
 
   /** Creates a new point from adding the row and col to this. */

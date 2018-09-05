@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.File;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import model.board.Direction;
 import model.board.Terrain;
@@ -57,8 +59,8 @@ public final class ImageIndex {
   private static BufferedImage GRASS;
   /** The image for mountain terrain */
   private static BufferedImage MOUNTAINS;
-  /** The image for sea terrain */
-  private static BufferedImage SEA;
+  /** The images for sea terrain */
+  private static ArrayList<BufferedImage> SEA;
   /** The image for woods terrain */
   private static BufferedImage WOODS;
   /** The image for ancient ground terrain */
@@ -92,13 +94,20 @@ public final class ImageIndex {
       SANDSTONE = ImageIO.read(new File(IMAGE_ROOT + "sandstone.jpg"));
 
       // Terrain
-      BufferedImage terrainSheet = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "Sheet.png"));
+      BufferedImage terrainSheet =
+          ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "Sheet.png"));
       MARGIN = ImageIO.read(new File(IMAGE_ROOT + TERRAIN_IMAGE_ROOT + "margin.jpg"));
       GRASS = terrainSheet.getSubimage(20, 26, 16, 16);
       MOUNTAINS = terrainSheet.getSubimage(55, 7, 16, 16);
       WOODS = terrainSheet.getSubimage(247, 26, 16, 16);
-      SEA = terrainSheet.getSubimage(143,26,16,16);
-      ANCIENT_GROUND = terrainSheet.getSubimage(20,98,16,16);
+      SEA = new ArrayList<>();
+      SEA.add(terrainSheet.getSubimage(143, 26, 16, 16));
+      SEA.addAll(createTileSheetPoints(terrainSheet, 178, 9, 17, 17, 3, 3, 16, 16));
+      SEA.addAll(createTileSheetPoints(terrainSheet, 230, 9, 17, 17, 3, 3, 16, 16));
+      SEA.addAll(createTileSheetPoints(terrainSheet, 282, 9, 17, 17, 3, 3, 16, 16));
+      SEA.addAll(createTileSheetPoints(terrainSheet, 335, 3, 17, 17, 1, 4, 16, 16));
+      SEA.addAll(createTileSheetPoints(terrainSheet, 352, 10, 17, 17, 3, 1, 16, 16));
+      ANCIENT_GROUND = terrainSheet.getSubimage(20, 98, 16, 16);
 
       // Class Icons
       FIGHTER_ICON = ImageIO.read(new File(IMAGE_ROOT + CLASS_ICONS_ROOT + "weapon_icon_1_0.png"));
@@ -115,12 +124,34 @@ public final class ImageIndex {
     }
   }
 
+  /** Helper to compute locations given start x,y and increment. */
+  private static List<BufferedImage> createTileSheetPoints(
+      BufferedImage sheet,
+      int xStart,
+      int yStart,
+      int xInc,
+      int yInc,
+      int xCount,
+      int yCount,
+      int height,
+      int width) {
+    ArrayList<Point> list = new ArrayList<>();
+    for (int j = 0; j < yCount; j++) {
+      for (int i = 0; i < xCount; i++) {
+        list.add(new Point(xStart + i * xInc, yStart + j * yInc));
+      }
+    }
+    return list.stream()
+        .map(p -> sheet.getSubimage(p.x, p.y, width, height))
+        .collect(Collectors.toList());
+  }
+
   /** Returns the margin image file for painting outside of the board. */
   public static BufferedImage margin() {
     return MARGIN;
   }
 
-  /** Returns the image file corresponding to the given terrain type */
+  /** Returns the image file corresponding to the given terrain. */
   public static BufferedImage imageForTerrain(Terrain t) {
     switch (t) {
       case GRASS:
@@ -130,11 +161,31 @@ public final class ImageIndex {
       case WOODS:
         return WOODS;
       case SEA:
-        return SEA;
+        throw new RuntimeException("Use imageForTile for sea");
       case ANCIENT_GROUND:
         return ANCIENT_GROUND;
       default:
         throw new RuntimeException("Unsupported terrain: " + t);
+    }
+  }
+
+  /**
+   * Returns the image file corresponding to the given tile. May use surrounding tiles to get type.
+   */
+  public static BufferedImage imageForTile(Tile tile) {
+    switch (tile.terrain) {
+      case GRASS:
+        return GRASS;
+      case MOUNTAIN:
+        return MOUNTAINS;
+      case WOODS:
+        return WOODS;
+      case SEA:
+        return SEA.get(tile.seaTerrainIndex);
+      case ANCIENT_GROUND:
+        return ANCIENT_GROUND;
+      default:
+        throw new RuntimeException("Unsupported tile: " + tile);
     }
   }
 

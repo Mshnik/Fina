@@ -4,6 +4,15 @@ import controller.decision.Decision;
 import controller.game.GameController;
 import controller.selector.AttackSelector;
 import controller.selector.CastSelector;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
+import java.awt.image.BufferedImage;
+import java.util.List;
+import java.util.Set;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Game;
@@ -21,16 +30,6 @@ import view.gui.Paintable;
 import view.gui.decision.DecisionPanel;
 import view.gui.image.ImageIndex;
 import view.gui.image.ImageIndex.DrawingBarSegment;
-
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
-import java.awt.image.BufferedImage;
-import java.util.List;
-import java.util.Set;
 
 /** Drawable wrapper for a model.board object */
 public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
@@ -275,7 +274,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
         && !controller.game.isVisibleToMostRecentHumanPlayer(t)) {
       g2d.drawImage(ImageIndex.imageForTerrain(Terrain.GRASS), x, y, cellSize(), cellSize(), null);
     } else {
-      g2d.drawImage(ImageIndex.imageForTerrain(t.terrain), x, y, cellSize(), cellSize(), null);
+      g2d.drawImage(ImageIndex.imageForTile(t), x, y, cellSize(), cellSize(), null);
     }
 
     // If the player can't see this tile, shade darkly.
