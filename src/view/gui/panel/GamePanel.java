@@ -139,6 +139,69 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
   public void paintComponent(Graphics g) {
     Game game = controller.game;
     Graphics2D g2d = (Graphics2D) g;
+    drawTilesAndUnits(g2d, game);
+
+    // Draw danger radius for most recent human player player. May be empty.
+    if (game.getMostRecentHumanPlayer() != null) {
+      drawDangerRadius(g2d, game);
+    }
+
+    // Draw the locationSelector, if there is one
+    if (controller.getLocationSelector() != null) {
+      controller.getLocationSelector().paintComponent(g);
+    }
+
+    // Draw cloud of hovered start of turn building, if any
+    if (controller.getLocationSelector() == null
+        && getElm().isOccupied()
+        && getElm().getOccupyingUnit() instanceof StartOfTurnEffectBuilding) {
+      drawStartOfTurnBuildingRadius(g2d, game);
+    }
+
+    // Depending on the decision panel, draw ranges as applicable.
+    // This happens when the action menu is up
+    if (decisionPanel != null
+        && controller.getDecisionType() == Decision.DecisionType.ACTION_DECISION) {
+      g2d.setStroke(RADIUS_STROKE);
+      switch (decisionPanel.cursor.getElm().getMessage()) {
+        case GameController.FIGHT:
+          drawAttackCloud(g2d);
+          break;
+        case GameController.BUILD:
+        case GameController.SUMMON:
+          drawSummonOrBuildCloud(g2d);
+          break;
+      }
+    } else if (decisionPanel != null
+            && controller.getDecisionType() == Decision.DecisionType.CAST_DECISION
+        || controller.getLocationSelector() != null
+            && controller.getToggle() == GameController.Toggle.CAST_SELECTION) {
+      Ability a = null;
+      if (decisionPanel != null) {
+        a = (Ability) decisionPanel.getElm().getVal();
+      } else {
+        CastSelector selector = (CastSelector) controller.getLocationSelector();
+        g2d.setStroke(RADIUS_STROKE);
+        g2d.setColor(CAST_FILL_COLOR);
+        ImageIndex.fill(selector.effectCloud, this, g2d);
+        g2d.setColor(CAST_BORDER_COLOR);
+        ImageIndex.trace(selector.effectCloud, this, g2d);
+      }
+    }
+
+    // Draw the cursor if it's not hidden.
+    if (!boardCursor.hide) {
+      boardCursor.paintComponent(g);
+    }
+
+    // Draw the decisionPanel
+    if (decisionPanel != null) {
+      decisionPanel.paintComponent(g);
+    }
+  }
+
+  /** Draws the board of tiles and units. */
+  private void drawTilesAndUnits(Graphics2D g2d, Game game) {
     // Paint the model.board itself, painting the portion within
     // [scrollY ... scrollY + maxY - 1],
     // [scrollX ... scrollX + maxX - 1]
@@ -174,93 +237,6 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
           }
         }
       }
-    }
-
-    // Draw danger radius for most recent human player player. May be empty.
-    if (game.getMostRecentHumanPlayer() != null) {
-      Set<Tile> dangerRadius =
-          getFrame().getViewOptionsForPlayer(game.getMostRecentHumanPlayer()).getDangerRadius();
-      if (!dangerRadius.isEmpty()) {
-        g2d.setColor(ATTACK_COLOR);
-        g2d.setStroke(new BasicStroke(2));
-        ImageIndex.trace(dangerRadius, this, g2d);
-      }
-    }
-
-    // Draw the locationSelector, if there is one
-    if (controller.getLocationSelector() != null) {
-      controller.getLocationSelector().paintComponent(g);
-    }
-
-    // Draw cloud of hovered start of turn building, if any
-    if (controller.getLocationSelector() == null
-        && getElm().isOccupied()
-        && getElm().getOccupyingUnit() instanceof StartOfTurnEffectBuilding) {
-      StartOfTurnEffectBuilding building = (StartOfTurnEffectBuilding) getElm().getOccupyingUnit();
-      List<Tile> cloud =
-          building.getEffect().cloud.translate(getElm().getPoint()).toTileSet(game.board);
-      g2d.setColor(SUMMON_COLOR);
-      g2d.setStroke(new BasicStroke(2));
-      ImageIndex.trace(cloud, this, g2d);
-    }
-
-    // Depending on the decision panel, draw ranges as applicable.
-    // This happens when the action menu is up
-    if (decisionPanel != null
-        && controller.getDecisionType() == Decision.DecisionType.ACTION_DECISION) {
-      g2d.setStroke(RADIUS_STROKE);
-      switch (decisionPanel.cursor.getElm().getMessage()) {
-        case GameController.FIGHT:
-          List<Tile> tiles =
-              ExpandableCloud.create(
-                      ExpandableCloud.ExpandableCloudType.CIRCLE,
-                      boardCursor.getElm().getOccupyingUnit().getMaxAttackRange() + 1)
-                  .difference(
-                      ExpandableCloud.create(
-                          ExpandableCloud.ExpandableCloudType.CIRCLE,
-                          boardCursor.getElm().getOccupyingUnit().getMinAttackRange()))
-                  .translate(boardCursor.getElm().getPoint())
-                  .toTileSet(controller.game.board);
-          g2d.setColor(AttackSelector.SHADE_COLOR);
-          ImageIndex.fill(tiles, this, g2d);
-          g2d.setColor(ATTACK_COLOR);
-          ImageIndex.trace(tiles, this, g2d);
-          break;
-        case GameController.BUILD:
-        case GameController.SUMMON:
-          g2d.setColor(SUMMON_COLOR);
-          ImageIndex.trace(
-              controller.game.board.getRadialCloud(
-                  boardCursor.getElm(), boardCursor.getElm().getOccupyingUnit().getSummonRange()),
-              this,
-              g2d);
-          break;
-      }
-    } else if (decisionPanel != null
-            && controller.getDecisionType() == Decision.DecisionType.CAST_DECISION
-        || controller.getLocationSelector() != null
-            && controller.getToggle() == GameController.Toggle.CAST_SELECTION) {
-      Ability a = null;
-      if (decisionPanel != null) {
-        a = (Ability) decisionPanel.getElm().getVal();
-      } else {
-        CastSelector selector = (CastSelector) controller.getLocationSelector();
-        g2d.setStroke(RADIUS_STROKE);
-        g2d.setColor(CAST_FILL_COLOR);
-        ImageIndex.fill(selector.effectCloud, this, g2d);
-        g2d.setColor(CAST_BORDER_COLOR);
-        ImageIndex.trace(selector.effectCloud, this, g2d);
-      }
-    }
-
-    // Draw the cursor if it's not hidden.
-    if (!boardCursor.hide) {
-      boardCursor.paintComponent(g);
-    }
-
-    // Draw the decisionPanel
-    if (decisionPanel != null) {
-      decisionPanel.paintComponent(g);
     }
   }
 
@@ -326,6 +302,61 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
           null,
           0);
     }
+  }
+
+  /**
+   * Draws the danger radius for the most recent human player. Should only be called if
+   * mostRecentHumanPlayer isn't null.
+   */
+  private void drawDangerRadius(Graphics2D g2d, Game game) {
+    Set<Tile> dangerRadius =
+        getFrame().getViewOptionsForPlayer(game.getMostRecentHumanPlayer()).getDangerRadius();
+    if (!dangerRadius.isEmpty()) {
+      g2d.setColor(ATTACK_COLOR);
+      g2d.setStroke(new BasicStroke(2));
+      ImageIndex.trace(dangerRadius, this, g2d);
+    }
+  }
+
+  /**
+   * Draw hovered start of turn building. Should only be called if there is a hovered start of turn
+   * building.
+   */
+  private void drawStartOfTurnBuildingRadius(Graphics2D g2d, Game game) {
+    StartOfTurnEffectBuilding building = (StartOfTurnEffectBuilding) getElm().getOccupyingUnit();
+    List<Tile> cloud =
+        building.getEffect().cloud.translate(getElm().getPoint()).toTileSet(game.board);
+    g2d.setColor(SUMMON_COLOR);
+    g2d.setStroke(new BasicStroke(2));
+    ImageIndex.trace(cloud, this, g2d);
+  }
+
+  /** Draws the attack cloud for the hovered unit. */
+  private void drawAttackCloud(Graphics2D g2d) {
+    List<Tile> tiles =
+        ExpandableCloud.create(
+                ExpandableCloud.ExpandableCloudType.CIRCLE,
+                boardCursor.getElm().getOccupyingUnit().getMaxAttackRange() + 1)
+            .difference(
+                ExpandableCloud.create(
+                    ExpandableCloud.ExpandableCloudType.CIRCLE,
+                    boardCursor.getElm().getOccupyingUnit().getMinAttackRange()))
+            .translate(boardCursor.getElm().getPoint())
+            .toTileSet(controller.game.board);
+    g2d.setColor(AttackSelector.SHADE_COLOR);
+    ImageIndex.fill(tiles, this, g2d);
+    g2d.setColor(ATTACK_COLOR);
+    ImageIndex.trace(tiles, this, g2d);
+  }
+
+  /** Draws the summon/build cloud for the hovered unit. */
+  private void drawSummonOrBuildCloud(Graphics2D g2d) {
+    g2d.setColor(SUMMON_COLOR);
+    ImageIndex.trace(
+        controller.game.board.getRadialCloud(
+            boardCursor.getElm(), boardCursor.getElm().getOccupyingUnit().getSummonRange()),
+        this,
+        g2d);
   }
 
   /** Returns the currently selected element */
