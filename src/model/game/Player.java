@@ -419,6 +419,7 @@ public abstract class Player implements Stringable {
       case GRASS:
       case ANCIENT_GROUND:
       case MOUNTAIN:
+      case SEA:
         visionCloud.add(tile);
         break;
       case WOODS:
