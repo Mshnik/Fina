@@ -2,13 +2,12 @@ package ai.dummy;
 
 import ai.AIAction;
 import ai.AIController;
-import model.board.Tile;
-import model.game.Player;
-import model.unit.commander.Commander;
-
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import model.board.Tile;
+import model.game.Player;
+import model.unit.commander.Commander;
 
 /**
  * A dummy AI controller that just moves the commander randomly to valid terrain, then ends turn.
@@ -39,7 +38,8 @@ public final class MoveCommanderRandomlyAIController implements AIController {
       } catch (InterruptedException e) {
         return null;
       }
-      return AIAction.moveUnit(commander, toMoveTo, player.game.board.getMovementPath(toMoveTo));
+      return AIAction.moveUnit(
+          player, commander, toMoveTo, player.game.board.getMovementPath(toMoveTo));
     }
     return null;
   }

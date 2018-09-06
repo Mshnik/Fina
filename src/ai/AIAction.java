@@ -1,14 +1,14 @@
 package ai;
 
+import java.util.Collections;
+import java.util.List;
 import model.board.Tile;
+import model.game.Player;
 import model.unit.MovingUnit;
 import model.unit.Summoner;
 import model.unit.Unit;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
-
-import java.util.Collections;
-import java.util.List;
 
 /** A data class representing an action to take by the AI. */
 public final class AIAction {
@@ -20,6 +20,9 @@ public final class AIAction {
     SUMMON_COMBATANT_OR_BUILD_BUILDING,
     CAST_SPELL
   }
+
+  /** The player performing the action. */
+  public final Player player;
 
   /**
    * The type of action to execute. Corresponds to the subclass of AIAction this should be processed
@@ -49,8 +52,10 @@ public final class AIAction {
   public final Unit unitToSummon;
 
   /** Creates an AIAction that moves the given unit to the given adjacent tile. */
-  public static AIAction moveUnit(MovingUnit unitToMove, Tile moveToTile, List<Tile> movePath) {
+  public static AIAction moveUnit(
+      Player player, MovingUnit unitToMove, Tile moveToTile, List<Tile> movePath) {
     return new AIAction(
+        player,
         AIActionType.MOVE_UNIT,
         unitToMove,
         moveToTile,
@@ -59,8 +64,8 @@ public final class AIAction {
   }
 
   /** Creates an AIAction that has the given unit attack the enemy unit on the given tile. */
-  public static AIAction attack(Combatant attackingUnit, Tile tileToAttack) {
-    return new AIAction(AIActionType.ATTACK, attackingUnit, tileToAttack, null, null);
+  public static AIAction attack(Player player, Combatant attackingUnit, Tile tileToAttack) {
+    return new AIAction(player, AIActionType.ATTACK, attackingUnit, tileToAttack, null, null);
   }
 
   /**
@@ -68,24 +73,32 @@ public final class AIAction {
    * tile.
    */
   public static <U extends Unit & Summoner> AIAction summonCombatantOrBuildBuilding(
-      U summoningUnit, Tile tileToSummonOn, Unit unitToSummon) {
-    return new AIAction(AIActionType.SUMMON_COMBATANT_OR_BUILD_BUILDING, summoningUnit, tileToSummonOn, null, unitToSummon);
+      Player player, U summoningUnit, Tile tileToSummonOn, Unit unitToSummon) {
+    return new AIAction(
+        player,
+        AIActionType.SUMMON_COMBATANT_OR_BUILD_BUILDING,
+        summoningUnit,
+        tileToSummonOn,
+        null,
+        unitToSummon);
   }
 
   /**
    * Creates an AIAction that has the given commander cast the given spell on the given tile target.
    */
-  public static AIAction cast(Commander caster, Tile tileToTarget) {
-    return new AIAction(AIActionType.CAST_SPELL, caster, tileToTarget, null, null);
+  public static AIAction cast(Player player, Commander caster, Tile tileToTarget) {
+    return new AIAction(player, AIActionType.CAST_SPELL, caster, tileToTarget, null, null);
   }
 
   /** Constructs an AIAction and asserts that the inputs are valid. */
   private AIAction(
+      Player player,
       AIActionType actionType,
       Unit actingUnit,
       Tile targetedTile,
       List<Tile> movePath,
       Unit unitToSummon) {
+    this.player = player;
     this.actionType = actionType;
     this.actingUnit = actingUnit;
     this.targetedTile = targetedTile;

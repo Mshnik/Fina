@@ -2,19 +2,18 @@ package ai.dummy;
 
 import ai.AIAction;
 import ai.AIController;
-import model.board.Tile;
-import model.game.Player;
-import model.unit.MovingUnit;
-import model.unit.Unit;
-import model.unit.combatant.Combatant;
-import model.unit.commander.Commander;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import model.board.Tile;
+import model.game.Player;
+import model.unit.MovingUnit;
+import model.unit.Unit;
+import model.unit.combatant.Combatant;
+import model.unit.commander.Commander;
 
 /**
  * A dummy AI controller that moves all units randomly, summons / builds new ones randomly, and
@@ -74,7 +73,8 @@ public final class FullRandomAIController implements AIController {
       return null;
     }
     Tile toMoveTo = movableTiles.get(random.nextInt(movableTiles.size()));
-    return AIAction.moveUnit(movableUnit, toMoveTo, player.game.board.getMovementPath(toMoveTo));
+    return AIAction.moveUnit(
+        player, movableUnit, toMoveTo, player.game.board.getMovementPath(toMoveTo));
   }
 
   /** Returns an action for a random unit to attack. Returns null if no unit can attack. */
@@ -94,7 +94,7 @@ public final class FullRandomAIController implements AIController {
     Combatant unitToAttackWith = unitsThatCanAttack.get(random.nextInt(unitsThatCanAttack.size()));
     List<Tile> attackableTiles = unitToAttackWith.getAttackableTiles(true);
     return AIAction.attack(
-        unitToAttackWith, attackableTiles.get(random.nextInt(attackableTiles.size())));
+        player, unitToAttackWith, attackableTiles.get(random.nextInt(attackableTiles.size())));
   }
 
   /**
@@ -125,6 +125,7 @@ public final class FullRandomAIController implements AIController {
     Unit unitToSummon = summonableUnits.get(unitToSummonName);
     List<Tile> summonableLocations = player.game.board.getSummonCloud(commander, unitToSummon);
     return AIAction.summonCombatantOrBuildBuilding(
+        player,
         commander,
         summonableLocations.get(random.nextInt(summonableLocations.size())),
         unitToSummon);
