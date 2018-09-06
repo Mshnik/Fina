@@ -1,5 +1,16 @@
 package view.gui.panel;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.swing.JPanel;
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.MovingUnit;
@@ -23,18 +34,6 @@ import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 import view.gui.Frame;
 import view.gui.image.ImageIndex;
-
-import javax.swing.JPanel;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public final class InfoPanel extends JPanel {
   /** */
@@ -558,17 +557,18 @@ public final class InfoPanel extends JPanel {
     g2d.drawString(
         String.format(
             "%d - %d  (%d%% - %d%%)",
-            combat.getMinAttack(),
-            combat.getMaxAttack(),
-            (int) (combat.getMinAttackPercent() * 100),
-            (int) (combat.getMaXAttackPercent() * 100)),
+            combat.getProjectedMinAttack(),
+            combat.getProjectedMaxAttack(),
+            (int) (combat.getProjectedMinAttackPercent() * 100),
+            (int) (combat.getProjectedMaxAttackPercent() * 100)),
         x,
         y);
 
     y += smallFontSizeWithMargin;
     String willCounterAttack;
     if (combat.defenderCouldCounterAttack()) {
-      willCounterAttack = combat.getMaxAttack() >= combat.defender.getHealth() ? "Maybe" : "Yes";
+      willCounterAttack =
+          combat.getProjectedMaxAttack() >= combat.defender.getHealth() ? "Maybe" : "Yes";
     } else {
       willCounterAttack = "No";
     }

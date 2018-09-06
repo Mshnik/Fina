@@ -1,5 +1,9 @@
 package model.unit.combatant;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import model.unit.Unit;
 import model.unit.building.Building;
 import model.unit.combatant.Combatant.CombatantClass;
@@ -7,11 +11,6 @@ import model.unit.commander.Commander;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.Modifiers;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 
 /**
  * A class that describes a prospective combat between two given units and can process it. Used to
@@ -136,7 +135,7 @@ public final class Combat {
    * Returns the minimum damage the attacker could do after scaling by combat classes and account
    * for modifiers.
    */
-  public int getMinAttack() {
+  private int getMinAttack() {
     double classBonus = 1 + COMBAT_CLASS_BONUS * getClassBonus();
     return Math.max(
         0,
@@ -144,18 +143,30 @@ public final class Combat {
   }
 
   /**
+   * Returns the projected minimum damage the attacker could do after scaling by combat classes and
+   * account for modifiers. Should only be used for projections, not actual combat.
+   */
+  public int getProjectedMinAttack() {
+    return (int)
+        Math.max(
+            0,
+            getMinAttack() * Math.max(0, 1 - getDefenderPercentageDamageReduction())
+                - getDefenderFlatDamageReduction());
+  }
+
+  /**
    * Returns the minimum percent damage the attacker could do after scaling by combat classes and
    * account for modifiers.
    */
-  public double getMinAttackPercent() {
-    return (double) getMinAttack() / defender.getMaxHealth();
+  public double getProjectedMinAttackPercent() {
+    return (double) getProjectedMinAttack() / defender.getMaxHealth();
   }
 
   /**
    * Returns the maximum damage the attacker could do after scaling by combat classes and account
    * for modifiers.
    */
-  public int getMaxAttack() {
+  private int getMaxAttack() {
     double classBonus = 1 + COMBAT_CLASS_BONUS * getClassBonus();
     return Math.max(
         0,
@@ -163,10 +174,22 @@ public final class Combat {
   }
 
   /**
+   * Returns the projected maximum damage the attacker could do after scaling by combat classes and
+   * account for modifiers. Should only be used for projections, not actual combat.
+   */
+  public int getProjectedMaxAttack() {
+    return (int)
+        Math.max(
+            0,
+            getMaxAttack() * Math.max(0, 1 - getDefenderPercentageDamageReduction())
+                - getDefenderFlatDamageReduction());
+  }
+
+  /**
    * Returns the maximum percent damage the attacker could do after scaling by combat classes and
    * account for modifiers.
    */
-  public double getMaXAttackPercent() {
+  public double getProjectedMaxAttackPercent() {
     return (double) getMaxAttack() / defender.getMaxHealth();
   }
 
