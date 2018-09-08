@@ -85,7 +85,7 @@ public final class ImageIndex {
   private static HashMap<String, BufferedImage> readUnits;
 
   /** Tinted units thus far */
-  private static HashMap<String, HashMap<Color, BufferedImage>> tintedUnits;
+  private static HashMap<String, HashMap<String, BufferedImage>> tintedUnits;
 
   /* Static initializer for the Image Class - do all image reading here */
   static {
@@ -257,14 +257,11 @@ public final class ImageIndex {
    * @return A tinted version of loadImg
    */
   public static BufferedImage tint(Unit unit, Player activePlayer, Color color) {
-    String tintKey =
-        unit.getImgFilename()
-            + "-"
-            + (unit.owner == null ? activePlayer.index : unit.owner.index)
-            + "t:"
-            + color.toString();
-    if (tintedUnits.containsKey(tintKey) && tintedUnits.get(tintKey).containsKey(color))
-      return tintedUnits.get(tintKey).get(color);
+    String imageKey = getImageKey(unit, activePlayer);
+    if (tintedUnits.containsKey(imageKey)
+        && tintedUnits.get(imageKey).containsKey(color.toString())) {
+      return tintedUnits.get(imageKey).get(color.toString());
+    }
     BufferedImage loadImg = imageForUnit(unit, activePlayer);
     BufferedImage img =
         new BufferedImage(loadImg.getWidth(), loadImg.getHeight(), BufferedImage.TRANSLUCENT);
@@ -283,15 +280,17 @@ public final class ImageIndex {
     for (int x = data.getMinX(); x < data.getWidth(); x++) {
       for (int y = data.getMinY(); y < data.getHeight(); y++) {
         int[] pixel = data.getPixel(x, y, new int[4]);
-        if (pixel[3] > 0) { // If pixel isn't full alpha. Could also be pixel[3]==255
+        if (pixel[0] + pixel[1] + pixel[2] + pixel[3] > 0) { // If pixel isn't full alpha. Could also be pixel[3]==255
           g2d.fillRect(x, y, 1, 1);
         }
       }
     }
     g2d.dispose();
 
-    if (!tintedUnits.containsKey(tintKey)) tintedUnits.put(tintKey, new HashMap<>());
-    tintedUnits.get(tintKey).put(color, img);
+    if (!tintedUnits.containsKey(imageKey)) {
+      tintedUnits.put(imageKey, new HashMap<>());
+    }
+    tintedUnits.get(imageKey).put(color.toString(), img);
     return img;
   }
 

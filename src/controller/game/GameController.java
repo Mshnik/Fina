@@ -83,7 +83,7 @@ public final class GameController {
 
   /** Colors that will be used to tint player units. */
   private static final Color[] playerColorsArr = {
-    Color.GREEN, Color.MAGENTA, Color.YELLOW, Color.BLUE
+    Color.BLUE, Color.MAGENTA, Color.YELLOW, Color.GREEN
   };
 
   /** Different possiblities for toggle options */
