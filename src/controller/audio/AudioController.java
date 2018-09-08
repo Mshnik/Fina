@@ -88,8 +88,8 @@ public final class AudioController {
 
   /** Plays the music for the given commander. */
   public static void playMusicForTurn(Player player) {
-    playMusic(
-        MUSIC_MAP.getOrDefault(player.getCommander().getClass(), Music.DUMMY_COMMANDER_THEME));
+//    playMusic(
+//        MUSIC_MAP.getOrDefault(player.getCommander().getClass(), Music.DUMMY_COMMANDER_THEME));
   }
 
   /** Stops music. */
