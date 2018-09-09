@@ -11,6 +11,7 @@ import model.game.Stringable;
 import model.unit.Unit;
 import model.unit.building.Building;
 import model.unit.building.PlayerModifierBuilding;
+import model.unit.building.PlayerModifierBuilding.PlayerModifierEffectType;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.util.Cloud;
@@ -122,13 +123,9 @@ public class Ability implements Stringable {
                 - p.getUnits()
                         .stream()
                         .filter(u -> u instanceof PlayerModifierBuilding)
-                        .map(u -> (PlayerModifierBuilding) u)
-                        .filter(
-                            b ->
-                                b.getEffect().effectType
-                                    == PlayerModifierBuilding.PlayerModifierEffectType
-                                        .CAST_DISCOUNT)
-                        .mapToInt(b -> b.getEffect().value)
+                        .flatMap(u -> ((PlayerModifierBuilding) u).getEffect().stream())
+                        .filter(e -> e.effectType == PlayerModifierEffectType.CAST_DISCOUNT)
+                        .mapToInt(e -> e.value)
                         .sum()
                     / 100.0));
   }

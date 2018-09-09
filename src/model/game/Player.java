@@ -1,11 +1,18 @@
 package model.game;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.Unit;
 import model.unit.building.AllUnitModifierBuilding;
 import model.unit.building.CommanderModifierBuilding;
 import model.unit.building.PlayerModifierBuilding;
+import model.unit.building.PlayerModifierBuilding.PlayerModifierEffect;
 import model.unit.building.PlayerModifierBuilding.PlayerModifierEffectType;
 import model.unit.building.StartOfTurnEffectBuilding;
 import model.unit.building.Temple;
@@ -15,13 +22,6 @@ import model.unit.modifier.Modifiers;
 import model.util.Cloud;
 import model.util.ExpandableCloud;
 import model.util.MPoint;
-
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * An instance is a player (not the commander piece). Extended to be either human controlled or AI.
@@ -132,10 +132,12 @@ public abstract class Player implements Stringable {
     manaPerTurn = 0;
     for (Unit u : units) {
       manaPerTurn += u.getManaPerTurn();
-      if (u instanceof PlayerModifierBuilding
-          && ((PlayerModifierBuilding) u).getEffect().effectType
-              == PlayerModifierEffectType.MANA_GENERATION) {
-        manaPerTurn += ((PlayerModifierBuilding) u).getEffect().value;
+      if (u instanceof PlayerModifierBuilding) {
+        for (PlayerModifierEffect effect : ((PlayerModifierBuilding) u).getEffect()) {
+          if (effect.effectType == PlayerModifierEffectType.MANA_GENERATION) {
+            manaPerTurn += effect.value;
+          }
+        }
       }
     }
   }
@@ -172,10 +174,12 @@ public abstract class Player implements Stringable {
   private void updateResearchPerTurn() {
     researchPerTurn = 0;
     for (Unit u : units) {
-      if (u instanceof PlayerModifierBuilding
-          && ((PlayerModifierBuilding) u).getEffect().effectType
-              == PlayerModifierEffectType.RESEARCH_GENERATION) {
-        researchPerTurn += ((PlayerModifierBuilding) u).getEffect().value;
+      if (u instanceof PlayerModifierBuilding) {
+        for (PlayerModifierEffect effect : ((PlayerModifierBuilding) u).getEffect()) {
+          if (effect.effectType == PlayerModifierEffectType.RESEARCH_GENERATION) {
+            manaPerTurn += effect.value;
+          }
+        }
       }
     }
   }
@@ -232,11 +236,9 @@ public abstract class Player implements Stringable {
     return units
         .stream()
         .filter(u -> u instanceof PlayerModifierBuilding)
-        .filter(
-            u ->
-                ((PlayerModifierBuilding) u).getEffect().effectType
-                    == PlayerModifierEffectType.CAST_SELECT_BOOST)
-        .mapToInt(u -> ((PlayerModifierBuilding) u).getEffect().value)
+        .flatMap(u -> ((PlayerModifierBuilding) u).getEffect().stream())
+        .filter(e -> e.effectType == PlayerModifierEffectType.CAST_SELECT_BOOST)
+        .mapToInt(e -> e.value)
         .sum();
   }
 
@@ -245,11 +247,9 @@ public abstract class Player implements Stringable {
     return units
         .stream()
         .filter(u -> u instanceof PlayerModifierBuilding)
-        .filter(
-            u ->
-                ((PlayerModifierBuilding) u).getEffect().effectType
-                    == PlayerModifierEffectType.CAST_CLOUD_BOOST)
-        .mapToInt(u -> ((PlayerModifierBuilding) u).getEffect().value)
+        .flatMap(u -> ((PlayerModifierBuilding) u).getEffect().stream())
+        .filter(e -> e.effectType == PlayerModifierEffectType.CAST_CLOUD_BOOST)
+        .mapToInt(e -> e.value)
         .sum();
   }
 

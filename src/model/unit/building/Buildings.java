@@ -1,5 +1,12 @@
 package model.unit.building;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.unit.building.PlayerModifierBuilding.PlayerModifierEffect;
 import model.unit.building.PlayerModifierBuilding.PlayerModifierEffectType;
@@ -14,14 +21,6 @@ import model.unit.stat.Stats;
 import model.util.ExpandableCloud;
 import model.util.ExpandableCloud.ExpandableCloudType;
 import util.TextIO;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /** Index of buildings read from storage. */
 public final class Buildings {
@@ -143,7 +142,7 @@ public final class Buildings {
                       commanderModifierEffects.ancientGroundEffect);
               break;
             case "PlayerModifierBuilding":
-              EffectPair<PlayerModifierEffect> playerModifierEffects =
+              EffectPair<List<PlayerModifierEffect>> playerModifierEffects =
                   getPlayerModifierEffects(
                       name, nonAncientGroundEffectDescription, ancientGroundEffectDescription);
               building =
@@ -244,11 +243,11 @@ public final class Buildings {
             new ModifierBundle(Modifiers.siege(.25)), new ModifierBundle(Modifiers.siege(1)));
       case "Military Academy":
         return EffectPair.of(
-            new ModifierBundle(Modifiers.patience(.05)), new ModifierBundle(Modifiers.patience(.2)));
+            new ModifierBundle(Modifiers.patience(.05)),
+            new ModifierBundle(Modifiers.patience(.2)));
       case "Sanctuary":
         return EffectPair.of(
-            new ModifierBundle(Modifiers.hexproof(.1)),
-            new ModifierBundle(Modifiers.hexproof(.4)));
+            new ModifierBundle(Modifiers.hexproof(.1)), new ModifierBundle(Modifiers.hexproof(.4)));
       default:
         throw new RuntimeException("Unknown building name " + buildingName);
     }
@@ -266,45 +265,57 @@ public final class Buildings {
   }
 
   /** Helper to get PlayerModifier effects for the given building name. Throws for unknown name. */
-  private static EffectPair<PlayerModifierEffect> getPlayerModifierEffects(
+  private static EffectPair<List<PlayerModifierEffect>> getPlayerModifierEffects(
       String buildingName, String nonAncientGroundDescription, String ancientGroundDescription) {
     switch (buildingName) {
       case "Well":
         return EffectPair.of(
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.MANA_GENERATION, 50, nonAncientGroundDescription),
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.MANA_GENERATION, 150, ancientGroundDescription));
+            Collections.singletonList(
+                new PlayerModifierEffect(
+                    PlayerModifierEffectType.MANA_GENERATION, 50, nonAncientGroundDescription)),
+            Collections.singletonList(
+                new PlayerModifierEffect(
+                    PlayerModifierEffectType.MANA_GENERATION, 150, ancientGroundDescription)));
       case "Library":
         return EffectPair.of(
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.RESEARCH_GENERATION, 25, nonAncientGroundDescription),
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.RESEARCH_GENERATION, 75, ancientGroundDescription));
+            Collections.singletonList(
+                new PlayerModifierEffect(
+                    PlayerModifierEffectType.RESEARCH_GENERATION, 25, nonAncientGroundDescription)),
+            Collections.singletonList(
+                new PlayerModifierEffect(
+                    PlayerModifierEffectType.RESEARCH_GENERATION, 75, ancientGroundDescription)));
       case "Laboratory":
         return EffectPair.of(
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.CAST_SELECT_BOOST, 1, nonAncientGroundDescription),
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.CAST_CLOUD_BOOST, 1, ancientGroundDescription));
+            Collections.singletonList(
+                new PlayerModifierEffect(
+                    PlayerModifierEffectType.CAST_SELECT_BOOST, 1, nonAncientGroundDescription)),
+            Collections.singletonList(
+                new PlayerModifierEffect(
+                    PlayerModifierEffectType.CAST_CLOUD_BOOST, 1, ancientGroundDescription)));
       case "Ritual Grounds":
         return EffectPair.of(
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.SUMMON_DISCOUNT, 10, nonAncientGroundDescription),
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.SUMMON_DISCOUNT, 30, ancientGroundDescription));
+            Collections.singletonList(
+                new PlayerModifierEffect(
+                    PlayerModifierEffectType.SUMMON_DISCOUNT, 10, nonAncientGroundDescription)),
+            Collections.singletonList(
+                new PlayerModifierEffect(
+                    PlayerModifierEffectType.SUMMON_DISCOUNT, 30, ancientGroundDescription)));
       case "Archive":
         return EffectPair.of(
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.CAST_DISCOUNT, 15, nonAncientGroundDescription),
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.CAST_DISCOUNT, 40, ancientGroundDescription));
+            Collections.singletonList(
+                new PlayerModifierEffect(
+                    PlayerModifierEffectType.CAST_DISCOUNT, 15, nonAncientGroundDescription)),
+            Collections.singletonList(
+                new PlayerModifierEffect(
+                    PlayerModifierEffectType.CAST_DISCOUNT, 40, ancientGroundDescription)));
       case "Studio":
         return EffectPair.of(
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.BUILD_DISCOUNT, 15, nonAncientGroundDescription),
-            new PlayerModifierEffect(
-                PlayerModifierEffectType.BUILD_DISCOUNT, 40, ancientGroundDescription));
+            Collections.singletonList(
+                new PlayerModifierEffect(
+                    PlayerModifierEffectType.BUILD_DISCOUNT, 15, nonAncientGroundDescription)),
+            Collections.singletonList(
+                new PlayerModifierEffect(
+                    PlayerModifierEffectType.BUILD_DISCOUNT, 40, ancientGroundDescription)));
       default:
         throw new RuntimeException("Unknown building name " + buildingName);
     }

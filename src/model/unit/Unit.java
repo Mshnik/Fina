@@ -1,5 +1,11 @@
 package model.unit;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
@@ -14,15 +20,6 @@ import model.unit.modifier.Modifiers;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Represents any thing that can be owned by a player. Maintains its health and stats, and
@@ -132,9 +129,9 @@ public abstract class Unit implements Stringable {
             - p.getUnits()
                     .stream()
                     .filter(u -> u instanceof PlayerModifierBuilding)
-                    .map(u -> (PlayerModifierBuilding) u)
-                    .filter(b -> b.getEffect().effectType == discountType)
-                    .mapToInt(b -> b.getEffect().value)
+                    .flatMap(u -> ((PlayerModifierBuilding) u).getEffect().stream())
+                    .filter(e -> e.effectType == discountType)
+                    .mapToInt(e -> e.value)
                     .sum()
                 / 100.0;
 
