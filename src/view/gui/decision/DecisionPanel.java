@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import model.game.Player;
+import model.unit.ability.Ability;
 import model.unit.combatant.Combatant;
 import view.gui.Frame;
 import view.gui.MatrixPanel;
@@ -75,7 +76,7 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
   public final Player player;
 
   /** True iff this should layout vertically, false for horizontally. */
-  public final boolean verticalLayout;
+  final boolean verticalLayout;
 
   public DecisionPanel(
       GameController g,
@@ -95,7 +96,7 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
     for (Choice c : decision) {
       maxWidth = Math.max(maxWidth, controller.frame.getTextWidth(TEXT_FONT, c.getMessage()));
     }
-    DECISION_WIDTH = maxWidth + TEXT_X * 2; // Add margins for either side
+    DECISION_WIDTH = maxWidth + TEXT_X * 2 + ICON_SIZE; // Add margins for either side
 
     cursor = new DecisionCursor(this);
     cursor.moved();
@@ -203,6 +204,9 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
             && ((Combatant) decision.get(r).getVal()).owner == null) {
           paintCombatantClasses(
               g2d, x + DECISION_WIDTH - TEXT_X * 2, textY, (Combatant) decision.get(r).getVal());
+        } else if (decision.get(r).getVal() instanceof Ability) {
+          paintAbilityType(
+              g2d, x + DECISION_WIDTH - TEXT_X * 2, textY, (Ability) decision.get(r).getVal());
         }
       }
     } else {
@@ -216,6 +220,9 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
             && ((Combatant) decision.get(c).getVal()).owner == null) {
           paintCombatantClasses(
               g2d, x + DECISION_WIDTH - TEXT_X * 2, textY, (Combatant) decision.get(c).getVal());
+        } else if (decision.get(c).getVal() instanceof Ability) {
+          paintAbilityType(
+              g2d, x + DECISION_WIDTH - TEXT_X * 2, textY, (Ability) decision.get(c).getVal());
         }
       }
     }
@@ -224,6 +231,7 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
     cursor.paintComponent(g);
   }
 
+  /** Draws a combatant class (or multiple) when hovering a summon decision. */
   private void paintCombatantClasses(Graphics2D g2d, int x, int y, Combatant combatant) {
     int spacing = (int) (ICON_SIZE * 1.1);
     for (Combatant.CombatantClass combatantClass : combatant.combatantClasses) {
@@ -231,6 +239,11 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
           ImageIndex.imageForCombatantClass(combatantClass), x, y - 18, ICON_SIZE, ICON_SIZE, null);
       x -= spacing;
     }
+  }
+
+  /** Draws a ability symbol when hovering a cast decision. */
+  private void paintAbilityType(Graphics2D g2d, int x, int y, Ability ability) {
+    g2d.drawImage(ImageIndex.imageForAbility(ability), x, y - 18, ICON_SIZE, ICON_SIZE, null);
   }
 
   /** If vertical, the width is 1. Otherwise it is the number of decisions. */

@@ -20,6 +20,7 @@ import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
+import model.unit.ability.Ability;
 import model.unit.building.Building;
 import model.unit.combatant.Combatant;
 import model.unit.combatant.Combatant.CombatantClass;
@@ -40,6 +41,9 @@ public final class ImageIndex {
 
   /** Location of class icons within image root */
   private static final String CLASS_ICONS_ROOT = "icons/weapons/";
+
+  /** Location of ability icons within image root */
+  private static final String ABILITY_ICONS_ROOT = "icons/spell/";
 
   /** Image root for commanders within image root */
   private static final String COMMANDER_IMAGE_ROOT = "unit/";
@@ -87,6 +91,9 @@ public final class ImageIndex {
   /** Tinted units thus far */
   private static HashMap<String, HashMap<String, BufferedImage>> tintedUnits;
 
+  /** Read in ability icons thus far. */
+  private static HashMap<String, BufferedImage> readAbilityIcons;
+
   /* Static initializer for the Image Class - do all image reading here */
   static {
     try {
@@ -116,9 +123,10 @@ public final class ImageIndex {
       RANGER_ICON = ImageIO.read(new File(IMAGE_ROOT + CLASS_ICONS_ROOT + "weapon_icon_6_0.png"));
       TANK_ICON = ImageIO.read(new File(IMAGE_ROOT + CLASS_ICONS_ROOT + "weapon_icon_9_0.png"));
 
-      // Units
+      // Units and abilities
       readUnits = new HashMap<>();
       tintedUnits = new HashMap<>();
+      readAbilityIcons = new HashMap<>();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -207,6 +215,21 @@ public final class ImageIndex {
     }
   }
 
+  /** Returns the image file for the given ability. */
+  public static BufferedImage imageForAbility(Ability ability) {
+    if (readAbilityIcons.containsKey(ability.imageFilename)) {
+      return readAbilityIcons.get(ability.imageFilename);
+    }
+    BufferedImage image;
+    try {
+      image = ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + ability.imageFilename));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    readAbilityIcons.put(ability.imageFilename, image);
+    return image;
+  }
+
   /** Returns the key for the given unit in the readUnits map. */
   private static String getImageKey(Unit unit, Player activePlayer) {
     return unit.getImgFilename()
@@ -280,7 +303,8 @@ public final class ImageIndex {
     for (int x = data.getMinX(); x < data.getWidth(); x++) {
       for (int y = data.getMinY(); y < data.getHeight(); y++) {
         int[] pixel = data.getPixel(x, y, new int[4]);
-        if (pixel[0] + pixel[1] + pixel[2] + pixel[3] > 0) { // If pixel isn't full alpha. Could also be pixel[3]==255
+        if (pixel[0] + pixel[1] + pixel[2] + pixel[3]
+            > 0) { // If pixel isn't full alpha. Could also be pixel[3]==255
           g2d.fillRect(x, y, 1, 1);
         }
       }

@@ -1,12 +1,11 @@
 package model.unit.ability;
 
+import java.util.List;
+import java.util.Random;
 import model.board.Tile;
 import model.unit.Unit;
 import model.unit.commander.Commander;
 import model.util.ExpandableCloud;
-
-import java.util.List;
-import java.util.Random;
 
 /**
  * A special ability that causes the caster to gain mana.
@@ -25,6 +24,7 @@ final class Sacrifice extends Ability {
    * Ability Constructor
    *
    * @param name - the name of this ability.
+   * @param imageFilename - the image to show when hovering this ability in the menu.
    * @param level - the level of the ability.
    * @param manaCost - the mana cost of using this ability. 0 if passive
    * @param effectCloud - the cloud of tiles this ability effects.
@@ -40,6 +40,7 @@ final class Sacrifice extends Ability {
    */
   Sacrifice(
       String name,
+      String imageFilename,
       int level,
       int manaCost,
       ExpandableCloud effectCloud,
@@ -52,6 +53,7 @@ final class Sacrifice extends Ability {
       List<AbilityEffect> abilityEffects) {
     super(
         name,
+        imageFilename,
         level,
         manaCost,
         effectCloud,

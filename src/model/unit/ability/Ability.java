@@ -1,5 +1,9 @@
 package model.unit.ability;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import model.board.Direction;
 import model.board.Tile;
 import model.game.Player;
@@ -13,16 +17,14 @@ import model.util.Cloud;
 import model.util.ExpandableCloud;
 import model.util.ExpandableCloud.ExpandableCloudType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
 /** Parent class of abilities useable by Commanders. */
 public class Ability implements Stringable {
 
   /** The name of this ability */
   public final String name;
+
+  /** The image to show when this ability is being hovered in a decision menu. */
+  public final String imageFilename;
 
   /** The level of the ability */
   public final int level;
@@ -63,6 +65,7 @@ public class Ability implements Stringable {
    * Ability Constructor
    *
    * @param name - the Name of this ability
+   * @param imageFilename - the image to show when hovering this ability in the menu.
    * @param level - the level of the ability.
    * @param manaCost - the mana cost of using this ability. 0 if passive
    * @param effectCloud - the cloud of tiles this ability effects.
@@ -78,6 +81,7 @@ public class Ability implements Stringable {
    */
   Ability(
       String name,
+      String imageFilename,
       int level,
       int manaCost,
       ExpandableCloud effectCloud,
@@ -89,6 +93,7 @@ public class Ability implements Stringable {
       String description,
       List<AbilityEffect> effects) {
     this.name = name;
+    this.imageFilename = imageFilename;
     this.level = level;
     this.effectCloud = effectCloud;
     this.canBeCloudBoosted = canBeCloudBoosted;

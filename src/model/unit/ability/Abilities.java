@@ -41,17 +41,18 @@ public final class Abilities {
 
         try {
           String name = comps[0];
-          int level = Integer.parseInt(comps[1]);
-          int manaCost = Integer.parseInt(comps[2]);
+          String imageFilename = comps[1];
+          int level = Integer.parseInt(comps[2]);
+          int manaCost = Integer.parseInt(comps[3]);
 
-          String[] cloudComps = comps[4].split("-");
+          String[] cloudComps = comps[5].split("-");
           ExpandableCloudType cloudType = ExpandableCloudType.valueOf(cloudComps[0].toUpperCase());
           int cloudRadius = Integer.parseInt(cloudComps[1]);
-          boolean canBeCloudBoosted = comps[5].equals("Yes");
+          boolean canBeCloudBoosted = comps[6].equals("Yes");
 
-          int castDist = Integer.parseInt(comps[6]);
+          int castDist = Integer.parseInt(comps[7]);
           List<String> affectedUnitTypeStrings =
-              Arrays.stream(comps[7].split("/")).collect(Collectors.toList());
+              Arrays.stream(comps[8].split("/")).collect(Collectors.toList());
           List<Class<? extends Unit>> affectedUnitTypes = new ArrayList<>();
           if (affectedUnitTypeStrings.contains("Combatant")) {
             affectedUnitTypes.add(Combatant.class);
@@ -63,10 +64,10 @@ public final class Abilities {
             affectedUnitTypes.add(Commander.class);
           }
 
-          boolean affectsAllied = comps[8].equals("Yes");
-          boolean affectsEnemy = comps[9].equals("Yes");
+          boolean affectsAllied = comps[9].equals("Yes");
+          boolean affectsEnemy = comps[10].equals("Yes");
 
-          String description = comps[10];
+          String description = comps[11];
 
           AbilityConstructor constructor;
           switch (name) {
@@ -83,6 +84,7 @@ public final class Abilities {
           abilities.add(
               constructor.create(
                   name,
+                  imageFilename,
                   level,
                   manaCost,
                   ExpandableCloud.create(cloudType, cloudRadius),
@@ -111,6 +113,7 @@ public final class Abilities {
     /** Creates a new ability instance from the given values. */
     A create(
         String name,
+        String imageFilename,
         int level,
         int manaCost,
         ExpandableCloud effectCloud,
