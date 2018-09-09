@@ -289,9 +289,10 @@ public final class Buildings {
             Collections.singletonList(
                 new PlayerModifierEffect(
                     PlayerModifierEffectType.CAST_SELECT_BOOST, 1, nonAncientGroundDescription)),
-            Collections.singletonList(
+            Arrays.asList(
                 new PlayerModifierEffect(
-                    PlayerModifierEffectType.CAST_CLOUD_BOOST, 1, ancientGroundDescription)));
+                    PlayerModifierEffectType.CAST_SELECT_BOOST, 1, ancientGroundDescription),
+                new PlayerModifierEffect(PlayerModifierEffectType.CAST_CLOUD_BOOST, 1, "")));
       case "Ritual Grounds":
         return EffectPair.of(
             Collections.singletonList(
