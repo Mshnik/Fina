@@ -25,7 +25,6 @@ import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -679,8 +678,15 @@ public final class GameController {
   void startCastDecision() {
     LinkedList<Choice> choices = new LinkedList<Choice>();
     Commander c = (Commander) getGamePanel().boardCursor.getElm().getOccupyingUnit();
-    Map<String, Ability> abilities = c.getCastables();
-    for (Ability a : abilities.values()) {
+    List<Ability> abilities =
+        c.getCastables()
+            .values()
+            .stream()
+            .sorted(
+                Comparator.comparing((Ability a) -> a.abilityType)
+                    .thenComparing(a -> a.getManaCostWithDiscountsForPlayer(c.owner)))
+            .collect(Collectors.toList());
+    for (Ability a : abilities) {
       choices.add(
           new Choice(
               a.getManaCostWithDiscountsForPlayer(c.owner) <= c.getMana()
