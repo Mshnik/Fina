@@ -72,7 +72,7 @@ public final class ImageIndex {
   /** The image for sandstone texture */
   public static BufferedImage SANDSTONE;
 
-  // ICONS
+  // UNIT ICONS
 
   /** The image for the Fighter icon. */
   private static BufferedImage FIGHTER_ICON;
@@ -85,14 +85,22 @@ public final class ImageIndex {
   /** The image for the Tank icon. */
   private static BufferedImage TANK_ICON;
 
+  // ABILITY ICONS
+
+  /** The image for an attack ability. */
+  private static BufferedImage ATTACK_ABILITY_ICON;
+  /** The image for a heal ability. */
+  private static BufferedImage HEAL_ABILITY_ICON;
+  /** The image for a buff ability. */
+  private static BufferedImage BUFF_ABILITY_ICON;
+  /** The image for a utility ability. */
+  private static BufferedImage UTILITY_ABILITY_ICON;
+
   /** Read in units thus far */
   private static HashMap<String, BufferedImage> readUnits;
 
   /** Tinted units thus far */
   private static HashMap<String, HashMap<String, BufferedImage>> tintedUnits;
-
-  /** Read in ability icons thus far. */
-  private static HashMap<String, BufferedImage> readAbilityIcons;
 
   /* Static initializer for the Image Class - do all image reading here */
   static {
@@ -123,10 +131,17 @@ public final class ImageIndex {
       RANGER_ICON = ImageIO.read(new File(IMAGE_ROOT + CLASS_ICONS_ROOT + "weapon_icon_6_0.png"));
       TANK_ICON = ImageIO.read(new File(IMAGE_ROOT + CLASS_ICONS_ROOT + "weapon_icon_9_0.png"));
 
-      // Units and abilities
+      // Ability Icons
+      ATTACK_ABILITY_ICON =
+          ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_0_1.png"));
+      HEAL_ABILITY_ICON = ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_2_3.png"));
+      BUFF_ABILITY_ICON = ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_0_5.png"));
+      UTILITY_ABILITY_ICON =
+          ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_3_5.png"));
+
+      // Units
       readUnits = new HashMap<>();
       tintedUnits = new HashMap<>();
-      readAbilityIcons = new HashMap<>();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -217,17 +232,18 @@ public final class ImageIndex {
 
   /** Returns the image file for the given ability. */
   public static BufferedImage imageForAbility(Ability ability) {
-    if (readAbilityIcons.containsKey(ability.imageFilename)) {
-      return readAbilityIcons.get(ability.imageFilename);
+    switch (ability.abilityType) {
+      case ATTACK:
+        return ATTACK_ABILITY_ICON;
+      case HEAL:
+        return HEAL_ABILITY_ICON;
+      case BUFF:
+        return BUFF_ABILITY_ICON;
+      case UTILITY:
+        return UTILITY_ABILITY_ICON;
+      default:
+        throw new RuntimeException("Unsupported ability type " + ability.abilityType);
     }
-    BufferedImage image;
-    try {
-      image = ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + ability.imageFilename));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    readAbilityIcons.put(ability.imageFilename, image);
-    return image;
   }
 
   /** Returns the key for the given unit in the readUnits map. */

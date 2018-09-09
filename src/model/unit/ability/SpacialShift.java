@@ -21,7 +21,7 @@ public final class SpacialShift extends Ability {
    * Ability Constructor
    *
    * @param name - the Name of this ability
-   * @param imageFilename - the image to show when hovering this ability in the menu.
+   * @param abilityType - the type of this ability
    * @param level - the level of the ability.
    * @param manaCost - the mana cost of using this ability. 0 if passive
    * @param effectCloud - the cloud of tiles this ability effects.
@@ -37,7 +37,7 @@ public final class SpacialShift extends Ability {
    */
   SpacialShift(
       String name,
-      String imageFilename,
+      AbilityType abilityType,
       int level,
       int manaCost,
       ExpandableCloud effectCloud,
@@ -50,7 +50,7 @@ public final class SpacialShift extends Ability {
       List<AbilityEffect> effects) {
     super(
         name,
-        imageFilename,
+        abilityType,
         level,
         manaCost,
         effectCloud,

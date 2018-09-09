@@ -23,8 +23,16 @@ public class Ability implements Stringable {
   /** The name of this ability */
   public final String name;
 
-  /** The image to show when this ability is being hovered in a decision menu. */
-  public final String imageFilename;
+  /** Types of abilities. */
+  public enum AbilityType {
+    ATTACK,
+    HEAL,
+    BUFF,
+    UTILITY;
+  }
+
+  /** The type of this Ability. */
+  public final AbilityType abilityType;
 
   /** The level of the ability */
   public final int level;
@@ -65,7 +73,7 @@ public class Ability implements Stringable {
    * Ability Constructor
    *
    * @param name - the Name of this ability
-   * @param imageFilename - the image to show when hovering this ability in the menu.
+   * @param abilityType - the Type of this ability.
    * @param level - the level of the ability.
    * @param manaCost - the mana cost of using this ability. 0 if passive
    * @param effectCloud - the cloud of tiles this ability effects.
@@ -81,7 +89,7 @@ public class Ability implements Stringable {
    */
   Ability(
       String name,
-      String imageFilename,
+      AbilityType abilityType,
       int level,
       int manaCost,
       ExpandableCloud effectCloud,
@@ -93,7 +101,7 @@ public class Ability implements Stringable {
       String description,
       List<AbilityEffect> effects) {
     this.name = name;
-    this.imageFilename = imageFilename;
+    this.abilityType = abilityType;
     this.level = level;
     this.effectCloud = effectCloud;
     this.canBeCloudBoosted = canBeCloudBoosted;

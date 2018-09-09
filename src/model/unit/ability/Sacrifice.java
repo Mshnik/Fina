@@ -24,7 +24,7 @@ final class Sacrifice extends Ability {
    * Ability Constructor
    *
    * @param name - the name of this ability.
-   * @param imageFilename - the image to show when hovering this ability in the menu.
+   * @param abilityType - the type of this ability.
    * @param level - the level of the ability.
    * @param manaCost - the mana cost of using this ability. 0 if passive
    * @param effectCloud - the cloud of tiles this ability effects.
@@ -40,7 +40,7 @@ final class Sacrifice extends Ability {
    */
   Sacrifice(
       String name,
-      String imageFilename,
+      AbilityType abilityType,
       int level,
       int manaCost,
       ExpandableCloud effectCloud,
@@ -53,7 +53,7 @@ final class Sacrifice extends Ability {
       List<AbilityEffect> abilityEffects) {
     super(
         name,
-        imageFilename,
+        abilityType,
         level,
         manaCost,
         effectCloud,
