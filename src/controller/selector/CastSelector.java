@@ -1,13 +1,12 @@
 package controller.selector;
 
 import controller.game.GameController;
+import java.util.ArrayList;
+import java.util.List;
 import model.board.Tile;
 import model.unit.ability.Ability;
 import model.unit.ability.SpacialShift;
 import model.unit.commander.Commander;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class CastSelector extends LocationSelector {
   /** The commander doing the casting */
@@ -27,11 +26,16 @@ public final class CastSelector extends LocationSelector {
     refreshPossibilitiesCloud();
   }
 
+  /** Returns the cloud boost for the spell to cast and the player casting. */
+  private int getCloudBoost() {
+    return toCast.canBeCloudBoosted ? 0 : caster.owner.getCastSelectBoost();
+  }
+
   /** Refreshes the possible cast locations for this castSelector */
   @Override
   protected void refreshPossibilitiesCloud() {
-    int castDist =
-        toCast.castDist + (toCast.canBeCloudBoosted ? 0 : caster.owner.getCastSelectBoost());
+    int cloudBoost = getCloudBoost();
+    int castDist = toCast.castDist + cloudBoost;
 
     cloud = controller.game.board.getRadialCloud(caster.getLocation(), castDist);
     // If cast dist is greater than 0, can't cast on commander location.
@@ -41,7 +45,7 @@ public final class CastSelector extends LocationSelector {
     List<Tile> toRemove = new ArrayList<>();
     for (Tile t : cloud) {
       if (toCast
-          .getTranslatedEffectCloud(caster, t, caster.owner.getCastCloudBoost())
+          .getTranslatedEffectCloud(caster, t, cloudBoost)
           .stream()
           .noneMatch(
               tile ->
@@ -72,9 +76,7 @@ public final class CastSelector extends LocationSelector {
   public void refreshEffectCloud() {
     effectCloud =
         toCast.getTranslatedEffectCloud(
-            caster,
-            controller.frame.getGamePanel().boardCursor.getElm(),
-            caster.owner.getCastCloudBoost());
+            caster, controller.frame.getGamePanel().boardCursor.getElm(), getCloudBoost());
     controller.repaint();
   }
 }
