@@ -67,7 +67,7 @@ public final class DecisionCursor extends Cursor<Choice, DecisionPanel> {
 
   /** Needs to have the gamePanel repaint */
   @Override
-  protected void moved() {
+  public void moved() {
     super.moved();
 
     // Check for having linked object. If so, inspect it

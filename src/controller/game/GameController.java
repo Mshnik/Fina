@@ -145,7 +145,9 @@ public final class GameController {
       throw new RuntimeException("Can't have game with less than 2 players");
     }
     Frame f = new Frame(10, 20);
-    KeyboardListener.setFrame(f);
+    InputController.setFrame(f);
+    KeyboardListener.attachToFrame(f);
+    MouseListener.attachToFrame(f);
 
     // Read board and create game.
     Board board = BoardReader.readBoard(boardFilepath);

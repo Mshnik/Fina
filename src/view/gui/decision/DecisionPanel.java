@@ -3,19 +3,18 @@ package view.gui.decision;
 import controller.decision.Choice;
 import controller.decision.Decision;
 import controller.game.GameController;
-import model.game.Player;
-import model.unit.combatant.Combatant;
-import view.gui.Frame;
-import view.gui.MatrixPanel;
-import view.gui.Paintable;
-import view.gui.image.ImageIndex;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import model.game.Player;
+import model.unit.combatant.Combatant;
+import view.gui.Frame;
+import view.gui.MatrixPanel;
+import view.gui.Paintable;
+import view.gui.image.ImageIndex;
 
 /**
  * Panel on the bottom of the frame that shows text as necessary for decisions
@@ -55,7 +54,7 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
   private Decision decision;
 
   /** The drawing height of a Decision */
-  private static final int DECISION_HEIGHT = 40;
+  public static final int DECISION_HEIGHT = 40;
 
   /** The size of combatant classes on summoning decisions. */
   private static final int ICON_SIZE = 24;
@@ -76,7 +75,7 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
   public final Player player;
 
   /** True iff this should layout vertically, false for horizontally. */
-  final boolean verticalLayout;
+  public final boolean verticalLayout;
 
   public DecisionPanel(
       GameController g,
@@ -254,6 +253,16 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
     }
   }
 
+  /** Returns the x component of the top-left of where this DecisionPanel is drawn. */
+  public int getDrawingX() {
+    return x;
+  }
+
+  /** Returns the y component of the top-left of where this DecisionPanel is drawn. */
+  public int getDrawingY() {
+    return y;
+  }
+
   /** Returns the action at the given index. Col must be 0 */
   @Override
   public Choice getElmAt(int row, int col) throws IllegalArgumentException {
@@ -272,6 +281,14 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
         throw new IllegalArgumentException("Can't get decision at col " + col + ": OOB");
       }
     }
+  }
+
+  /**
+   * Like getElmAt, but includes scrolling. Thus returns the effective visual nth element instead of
+   * the real one.
+   */
+  public Choice getElmAtWithScrolling(int row, int col) throws IllegalArgumentException {
+    return getElmAt(row + scrollY, col + scrollX);
   }
 
   /** Returns DecisionPanel.DECISION_HEIGHT */

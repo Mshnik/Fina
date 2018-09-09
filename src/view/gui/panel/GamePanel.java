@@ -364,10 +364,16 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
     return boardCursor.getElm();
   }
 
-  /** Returns the tile at the given row and col. Ignores scrolling for this. */
+  /** Returns the tile at the given row and col. Ignores scrolling and margins for this. */
   @Override
   public Tile getElmAt(int row, int col) throws IllegalArgumentException {
     return controller.game.board.getTileAt(row, col);
+  }
+
+  /** Returns the tile at the given row and col, including scrolling and margins. */
+  public Tile getElmAtWithScrollingAndMargins(int row, int col) throws IllegalArgumentException {
+    return controller.game.board.getTileAt(
+        row - marginY / 2 + scrollY, col - marginX /  2 + scrollX);
   }
 
   /** Returns the width of the model.board's matrix */
