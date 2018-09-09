@@ -4,6 +4,7 @@ import controller.decision.Decision;
 import controller.game.GameController;
 import controller.selector.AttackSelector;
 import controller.selector.CastSelector;
+import controller.selector.LocationSelector;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -176,17 +177,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
             && controller.getDecisionType() == Decision.DecisionType.CAST_DECISION
         || controller.getLocationSelector() != null
             && controller.getToggle() == GameController.Toggle.CAST_SELECTION) {
-      Ability a = null;
-      if (decisionPanel != null) {
-        a = (Ability) decisionPanel.getElm().getVal();
-      } else {
-        CastSelector selector = (CastSelector) controller.getLocationSelector();
-        g2d.setStroke(RADIUS_STROKE);
-        g2d.setColor(CAST_FILL_COLOR);
-        ImageIndex.fill(selector.effectCloud, this, g2d);
-        g2d.setColor(CAST_BORDER_COLOR);
-        ImageIndex.trace(selector.effectCloud, this, g2d);
-      }
+      drawCastCloud(g2d);
     }
 
     // Draw the cursor if it's not hidden.
@@ -359,6 +350,48 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
         g2d);
   }
 
+  /** Draws the cast cloud for the hovered ability. */
+  private void drawCastCloud(Graphics2D g2d) {
+    g2d.setStroke(RADIUS_STROKE);
+    if (decisionPanel == null) {
+      // Draw active casting.
+      CastSelector selector = (CastSelector) controller.getLocationSelector();
+      g2d.setColor(CAST_FILL_COLOR);
+      ImageIndex.fill(selector.effectCloud, this, g2d);
+      g2d.setColor(CAST_BORDER_COLOR);
+      ImageIndex.trace(selector.effectCloud, this, g2d);
+      return;
+    }
+    // Hovering ability in decision panel.
+    Ability a = (Ability) decisionPanel.getElm().getVal();
+
+    if (a.castDist == 0) {
+      List<Tile> cloud =
+          a.effectCloud.translate(boardCursor.getElm().getPoint()).toTileSet(controller.game.board);
+      g2d.setColor(CAST_FILL_COLOR);
+      ImageIndex.fill(cloud, this, g2d);
+      g2d.setColor(CAST_BORDER_COLOR);
+      ImageIndex.trace(cloud, this, g2d);
+    } else {
+      List<Tile> selectableTiles =
+          controller.game.board.getRadialCloud(boardCursor.getElm(), a.castDist);
+      selectableTiles.remove(boardCursor.getElm());
+      if (selectableTiles.size() > 0) {
+        List<Tile> sampleCloud =
+            a.getTranslatedEffectCloud(
+                (Commander) boardCursor.getElm().getOccupyingUnit(),
+                selectableTiles.get(0),
+                boardCursor.getElm().getOccupyingUnit().owner.getCastCloudBoost());
+        g2d.setColor(LocationSelector.DEFAULT_COLOR);
+        ImageIndex.fill(selectableTiles, this, g2d);
+        g2d.setColor(CAST_FILL_COLOR);
+        ImageIndex.fill(sampleCloud, this, g2d);
+        g2d.setColor(CAST_BORDER_COLOR);
+        ImageIndex.trace(sampleCloud, this, g2d);
+      }
+    }
+  }
+
   /** Returns the currently selected element */
   public Tile getElm() {
     return boardCursor.getElm();
@@ -373,7 +406,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
   /** Returns the tile at the given row and col, including scrolling and margins. */
   public Tile getElmAtWithScrollingAndMargins(int row, int col) throws IllegalArgumentException {
     return controller.game.board.getTileAt(
-        row - marginY / 2 + scrollY, col - marginX /  2 + scrollX);
+        row - marginY / 2 + scrollY, col - marginX / 2 + scrollX);
   }
 
   /** Returns the width of the model.board's matrix */

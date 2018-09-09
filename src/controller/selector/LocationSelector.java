@@ -1,15 +1,22 @@
 package controller.selector;
 
 import controller.game.GameController;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.List;
 import model.board.Tile;
 import view.gui.Paintable;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-
 /** An instance represents a selector for any location with a given criteria */
 public abstract class LocationSelector implements Paintable {
+  /**
+   * The default color for shading possible selectable locations in a LocationSelector. A
+   * translucent white.
+   */
+  public static final Color DEFAULT_COLOR = new Color(1, 1, 1, 0.5f);
+
   /** The controller this is selecting in */
   public final GameController controller;
 
@@ -17,11 +24,11 @@ public abstract class LocationSelector implements Paintable {
   protected List<Tile> cloud;
 
   /** Color for Cloud Drawing - translucent white - can be changed by subclasses */
-  Color cloudColor = new Color(1, 1, 1, 0.5f);
+  Color cloudColor = DEFAULT_COLOR;
 
   /**
-   * Constructor for Location Selector. Implementing classes should refresh possibilities cloud at end of
-   * construction
+   * Constructor for Location Selector. Implementing classes should refresh possibilities cloud at
+   * end of construction
    */
   LocationSelector(GameController gc) {
     controller = gc;
@@ -32,8 +39,8 @@ public abstract class LocationSelector implements Paintable {
   protected abstract void refreshPossibilitiesCloud();
 
   /**
-   * Returns the possible cloud. This is pass-by-value, so editing the returned set won't
-   * change the PathSelector.
+   * Returns the possible cloud. This is pass-by-value, so editing the returned set won't change the
+   * PathSelector.
    */
   public ArrayList<Tile> getCloud() {
     return new ArrayList<>(cloud);
