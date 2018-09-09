@@ -3,6 +3,7 @@ package controller.game;
 import controller.audio.AudioController;
 import controller.decision.Choice;
 import controller.decision.Decision;
+import controller.selector.PathSelector;
 import model.board.Direction;
 import model.board.Tile;
 import model.unit.Unit;
@@ -55,11 +56,21 @@ public final class InputController {
     if (currentElem == destTile) {
       return;
     }
-    if (frame.getController().getLocationSelector() == null
-        || frame.getController().getLocationSelector().getCloud().contains(destTile)) {
-      boardCursor.setElm(destTile);
-      boardCursor.moved();
+    if (frame.getController().getLocationSelector() instanceof PathSelector) {
+      PathSelector pathSelector = (PathSelector) frame.getController().getLocationSelector();
+      if (!pathSelector.contains(destTile)
+          && (currentElem.directionTo(destTile) == null
+              || !frame.getController().getLocationSelector().getCloud().contains(destTile))) {
+        // Force adjacency or move backwards when movement selector is open.
+        return;
+      }
+    } else if (frame.getController().getLocationSelector() != null
+        && !frame.getController().getLocationSelector().getCloud().contains(destTile)) {
+      // Other clouds - force element of cloud.
+      return;
     }
+    boardCursor.setElm(destTile);
+    boardCursor.moved();
   }
 
   /** Handles the mouse move event when the active cursor is a decision cursor. */

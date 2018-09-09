@@ -61,6 +61,11 @@ public final class PathSelector extends LocationSelector implements Paintable, I
     return new LinkedList<Tile>(path);
   }
 
+  /** Returns true iff the given tile is an element of this path. */
+  public boolean contains(Tile t) {
+    return path.contains(t);
+  }
+
   /** Returns a toString for this PathSelector as the toString of its list of tiles */
   @Override
   public String toString() {
