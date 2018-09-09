@@ -28,7 +28,7 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
   private static final long serialVersionUID = 1L;
 
   /** Background color for DecisionPanel */
-  private static final Color BACKGROUND = new Color(117, 74, 0);
+  private static final Color BACKGROUND = new Color(117f / 255f, 74f / 255f, 0 / 255f, 0.5f);
 
   /** Border color for DecisionPanel */
   private static final Color BORDER = new Color(145, 116, 0);
