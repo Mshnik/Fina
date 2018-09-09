@@ -191,7 +191,8 @@ public class Ability implements Stringable {
     if (castDist == 0 && !location.getPoint().equals(caster.getLocation().getPoint())) {
       throw new RuntimeException(
           "Can't Cast " + this + " at " + location + "; must be on commander's location");
-    } else if (location.manhattanDistance(caster.getLocation()) > castDist) {
+    } else if (location.manhattanDistance(caster.getLocation())
+        > castDist + caster.owner.getCastSelectBoost()) {
       throw new RuntimeException(
           "Can't Cast " + this + " at " + location + "; too far away from commander");
     }

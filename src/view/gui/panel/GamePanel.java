@@ -364,24 +364,30 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
     }
     // Hovering ability in decision panel.
     Ability a = (Ability) decisionPanel.getElm().getVal();
+    Player caster = boardCursor.getElm().getOccupyingUnit().owner;
 
     if (a.castDist == 0) {
       List<Tile> cloud =
-          a.effectCloud.translate(boardCursor.getElm().getPoint()).toTileSet(controller.game.board);
+          a.effectCloud
+              .expand(a.canBeCloudBoosted ? caster.getCastCloudBoost() : 0)
+              .translate(boardCursor.getElm().getPoint())
+              .toTileSet(controller.game.board);
       g2d.setColor(CAST_FILL_COLOR);
       ImageIndex.fill(cloud, this, g2d);
       g2d.setColor(CAST_BORDER_COLOR);
       ImageIndex.trace(cloud, this, g2d);
     } else {
       List<Tile> selectableTiles =
-          controller.game.board.getRadialCloud(boardCursor.getElm(), a.castDist);
+          controller.game.board.getRadialCloud(
+              boardCursor.getElm(),
+              a.castDist + (a.canBeCloudBoosted ? 0 : caster.getCastSelectBoost()));
       selectableTiles.remove(boardCursor.getElm());
       if (selectableTiles.size() > 0) {
         List<Tile> sampleCloud =
             a.getTranslatedEffectCloud(
                 (Commander) boardCursor.getElm().getOccupyingUnit(),
                 selectableTiles.get(0),
-                boardCursor.getElm().getOccupyingUnit().owner.getCastCloudBoost());
+                caster.getCastCloudBoost());
         g2d.setColor(LocationSelector.DEFAULT_COLOR);
         ImageIndex.fill(selectableTiles, this, g2d);
         g2d.setColor(CAST_FILL_COLOR);

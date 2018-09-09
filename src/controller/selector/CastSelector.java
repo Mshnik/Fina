@@ -26,16 +26,11 @@ public final class CastSelector extends LocationSelector {
     refreshPossibilitiesCloud();
   }
 
-  /** Returns the cloud boost for the spell to cast and the player casting. */
-  private int getCloudBoost() {
-    return toCast.canBeCloudBoosted ? 0 : caster.owner.getCastSelectBoost();
-  }
-
   /** Refreshes the possible cast locations for this castSelector */
   @Override
   protected void refreshPossibilitiesCloud() {
-    int cloudBoost = getCloudBoost();
-    int castDist = toCast.castDist + cloudBoost;
+    int castDist =
+        toCast.castDist + (toCast.canBeCloudBoosted ? 0 : caster.owner.getCastSelectBoost());
 
     cloud = controller.game.board.getRadialCloud(caster.getLocation(), castDist);
     // If cast dist is greater than 0, can't cast on commander location.
@@ -45,7 +40,7 @@ public final class CastSelector extends LocationSelector {
     List<Tile> toRemove = new ArrayList<>();
     for (Tile t : cloud) {
       if (toCast
-          .getTranslatedEffectCloud(caster, t, cloudBoost)
+          .getTranslatedEffectCloud(caster, t, caster.owner.getCastCloudBoost())
           .stream()
           .noneMatch(
               tile ->
@@ -76,7 +71,9 @@ public final class CastSelector extends LocationSelector {
   public void refreshEffectCloud() {
     effectCloud =
         toCast.getTranslatedEffectCloud(
-            caster, controller.frame.getGamePanel().boardCursor.getElm(), getCloudBoost());
+            caster,
+            controller.frame.getGamePanel().boardCursor.getElm(),
+            caster.owner.getCastCloudBoost());
     controller.repaint();
   }
 }
