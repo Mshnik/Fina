@@ -71,8 +71,13 @@ public final class GameController {
   public static final String BUILD = "Build";
   /** Text representing casting (Using active abilities) */
   public static final String CAST = "Magic";
+  /** Text Suffix for clearing the danger radius for all units. */
+  private static final String CLEAR_DANGER_RADIUS = "Clear Danger Zone";
   /** Text Suffix for toggling showing / unshowing the danger radius for this unit. */
   private static final String TOGGLE_DANGER_RADIUS = "Toggle Danger Zone";
+  /** Text for ending the turn. */
+  private static final String END_TURN = "End Turn";
+
   /**
    * Text representing into - the user can't click this, it changes the info panel when it is
    * hovered.
@@ -467,8 +472,43 @@ public final class GameController {
     }
   }
 
+  /** Stats a decision panel for player actions, including ending the turn. */
+  void startPlayerActionDecision() {
+    decision =
+        new Decision(
+            DecisionType.PLAYER_ACTIONS_DECISION,
+            false,
+            true,
+            new Choice(true, GameController.END_TURN),
+            new Choice(
+                game.getMostRecentHumanPlayer() != null
+                    && frame
+                        .getViewOptionsForPlayer(game.getMostRecentHumanPlayer())
+                        .hasNonEmptyDangerRadius(),
+                GameController.CLEAR_DANGER_RADIUS));
+    addToggle(Toggle.DECISION);
+    getGamePanel().fixDecisionPanel("Player", game.getCurrentPlayer(), decision, true);
+    getGamePanel().moveDecisionPanel();
+  }
+
+  /** Processes the given player action decision. */
+  void processPlayerActionDecision(Choice c) {
+    String choice = c.getMessage();
+    cancelDecision();
+    switch (choice) {
+      case END_TURN:
+        startEndTurnDecision();
+        break;
+      case CLEAR_DANGER_RADIUS:
+        frame.clearDangerRadiusForPlayer(game.getMostRecentHumanPlayer());
+        break;
+      default:
+        throw new RuntimeException("Don't know how to handle this choice " + choice);
+    }
+  }
+
   /** Starts a getGamePanel().getDecisionPanel() for ending the current player's turn */
-  void startEndTurnDecision() {
+  private void startEndTurnDecision() {
     if (game.isRunning() && game.getCurrentPlayer().isLocalHumanPlayer()) {
       decision =
           new Decision(
@@ -478,7 +518,7 @@ public final class GameController {
               new Choice(true, GameController.CANCEL),
               new Choice(true, GameController.CONFIRM));
       addToggle(Toggle.DECISION);
-      getGamePanel().fixDecisionPanel("End Turn?", game.getCurrentPlayer(), decision, true);
+      getGamePanel().fixDecisionPanel("Player > End Turn", game.getCurrentPlayer(), decision, true);
       getGamePanel().moveDecisionPanel();
     }
   }

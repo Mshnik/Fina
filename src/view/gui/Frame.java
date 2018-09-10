@@ -224,6 +224,11 @@ public final class Frame extends JFrame {
     return viewOptionsMap.get(p.index);
   }
 
+  /** Clears the danger radius view options for the given player. */
+  public void clearDangerRadiusForPlayer(Player p) {
+    viewOptionsMap.get(p.index).clearDangerRadiusUnits();
+  }
+
   /** Called when a unit's danger radius changes. Propagates changes to ViewOptions */
   public void unitDangerRadiusChanged(Unit u) {
     for (ViewOptions viewOptions : viewOptionsMap.values()) {

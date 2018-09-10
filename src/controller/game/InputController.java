@@ -117,7 +117,7 @@ public final class InputController {
           gc.startActionDecision();
         } else {
           AudioController.playEffect(AudioController.SoundEffect.CLICK_YES);
-          gc.startEndTurnDecision();
+          gc.startPlayerActionDecision();
         }
         break;
         // Process the decision.
@@ -135,6 +135,9 @@ public final class InputController {
               break;
             case COMMANDER_ACTION_DECISION:
               gc.processCommanderActionDecision(decision);
+              break;
+            case PLAYER_ACTIONS_DECISION:
+              gc.processPlayerActionDecision(decision);
               break;
             case END_OF_TURN_DECISION:
               gc.processEndTurnDecision(decision);

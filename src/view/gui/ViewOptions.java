@@ -60,9 +60,7 @@ public final class ViewOptions {
     }
   }
 
-  /**
-   * Called when a player's danger radius changes. Always recompute danger Radius here.
-   */
+  /** Called when a player's danger radius changes. Always recompute danger Radius here. */
   void unitDangerRadiusChanged() {
     dangerRadius = null;
   }
@@ -86,6 +84,11 @@ public final class ViewOptions {
       this.unit = unit;
       this.tile = tile;
     }
+  }
+
+  /** Returns true if the danger radius has at least one tile in it. */
+  public boolean hasNonEmptyDangerRadius() {
+    return !getDangerRadius().isEmpty();
   }
 
   /**
