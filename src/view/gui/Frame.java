@@ -2,6 +2,20 @@ package view.gui;
 
 import controller.audio.AudioController;
 import controller.game.GameController;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;
@@ -10,21 +24,6 @@ import view.gui.NewGameSelector.NewGameOptions;
 import view.gui.panel.GamePanel;
 import view.gui.panel.HeaderPanel;
 import view.gui.panel.InfoPanel;
-
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.util.HashMap;
-import java.util.Map;
 
 /** The visual frame that manages showing the model.game */
 public final class Frame extends JFrame {
@@ -63,10 +62,10 @@ public final class Frame extends JFrame {
   private GameController controller;
 
   /** The number of rows of tiles to show when this was created. May be zoomed in/out. */
-  private final int originalRows;
+  private final int rows;
 
-  /** The number of colos of tiles to show when this was created. May be zoomed in/out. */
-  private final int originalCols;
+  /** The number of cols of tiles to show when this was created. May be zoomed in/out. */
+  private final int cols;
 
   /** Increment of zoom, in multiplication/division. */
   private static final double[] ZOOM = {0.25, 0.5, 0.75, 1, 1.5, 2};
@@ -88,11 +87,10 @@ public final class Frame extends JFrame {
   public Frame(int rows, int cols) {
     // Set frame defaults.
     setLayout(new BorderLayout());
-    setResizable(false);
     setLocation(100, 100);
     animator = new Animator();
-    this.originalRows = rows;
-    this.originalCols = cols;
+    this.rows = rows;
+    this.cols = cols;
     zoomIndex = 2; // Use original number of rows and cols.
     viewOptionsMap = new HashMap<>();
 
@@ -243,8 +241,7 @@ public final class Frame extends JFrame {
       animator.removeAnimatable(gamePanel.boardCursor);
       remove(gamePanel);
     }
-    GamePanel gp =
-        new GamePanel(this, (int) (originalRows / getZoom()), (int) (originalCols / getZoom()));
+    GamePanel gp = new GamePanel(this, (int) (rows / getZoom()), (int) (cols / getZoom()));
     add(gp, BorderLayout.CENTER);
     gamePanel = gp;
     activeCursor = gamePanel.boardCursor;

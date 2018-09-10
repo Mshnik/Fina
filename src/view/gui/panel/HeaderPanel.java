@@ -1,12 +1,5 @@
 package view.gui.panel;
 
-import model.game.Game;
-import model.game.Player;
-import view.gui.Frame;
-import view.gui.image.ImageIndex;
-import view.gui.image.ImageIndex.DrawingBarSegment;
-
-import javax.swing.JPanel;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,6 +9,12 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.JPanel;
+import model.game.Game;
+import model.game.Player;
+import view.gui.Frame;
+import view.gui.image.ImageIndex;
+import view.gui.image.ImageIndex.DrawingBarSegment;
 
 /**
  * The panel at the top of the frame that shows basic information and the current player's turn
@@ -90,8 +89,7 @@ public final class HeaderPanel extends JPanel {
   public HeaderPanel(Frame f) {
     frame = f;
     maxMana = new HashMap<>();
-    GamePanel gp = f.getGamePanel();
-    setPreferredSize(new Dimension(gp.getShowedCols() * frame.getGamePanel().cellSize(), HEIGHT));
+    setPreferredSize(new Dimension(0, HEIGHT));
   }
 
   /** Draws the HeaderPanel */

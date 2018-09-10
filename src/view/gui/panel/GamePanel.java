@@ -11,9 +11,12 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Set;
+import javax.swing.Timer;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Game;
@@ -33,7 +36,7 @@ import view.gui.image.ImageIndex;
 import view.gui.image.ImageIndex.DrawingBarSegment;
 
 /** Drawable wrapper for a model.board object */
-public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
+public final class GamePanel extends MatrixPanel<Tile> implements Paintable, ComponentListener {
 
   /** */
   private static final long serialVersionUID = 1L;
@@ -65,6 +68,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
   /** The DecisionPanel that is currently active. Null if none */
   private DecisionPanel decisionPanel;
 
+  /** Timer to trigger a resize to nearest square event, if one is running. */
+  private Timer resizeTimer;
+
   /**
    * Constructor for GamePanel
    *
@@ -82,7 +88,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
         Math.max(0, maxCols - f.getController().game.board.getWidth()),
         Math.max(0, maxRows - f.getController().game.board.getHeight()));
     boardCursor = new BoardCursor(this);
+    resizeTimer = null;
     setPreferredSize(new Dimension(getShowedCols() * cellSize(), getShowedRows() * cellSize()));
+    addComponentListener(this);
   }
 
   /** Sets the decisionPanel */
@@ -443,4 +451,51 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable {
   public int getElementWidth() {
     return cellSize();
   }
+
+  @Override
+  public void componentResized(ComponentEvent e) {
+    double heightInRows = (double) getHeight() / getElementHeight();
+    double widthInCols = (double) getWidth() / getElementWidth();
+    int rows = (int) Math.ceil(heightInRows);
+    int cols = (int) Math.ceil(widthInCols);
+    scrollX =
+        Math.min(scrollX, Math.max(0, getFrame().getController().game.board.getWidth() - cols));
+    scrollY =
+        Math.min(scrollY, Math.max(0, getFrame().getController().game.board.getHeight() - rows));
+    marginX = Math.max(0, cols - getFrame().getController().game.board.getWidth());
+    marginY = Math.max(0, rows - getFrame().getController().game.board.getHeight());
+    setShowedRows(rows);
+    setShowedCols(cols);
+
+    // If not exactly a factor of cell size, fire a resize timer.
+    if ((int) heightInRows != rows || (int) widthInCols != cols) {
+      if (resizeTimer != null) {
+        resizeTimer.restart();
+      } else {
+        resizeTimer = new Timer(1000, event -> resizeToNearestCellSizeIncrement());
+        resizeTimer.start();
+      }
+    }
+  }
+
+  /**
+   * Triggers an after the fact resizing to make the panel to the nearest increment of correct size.
+   */
+  private void resizeToNearestCellSizeIncrement() {
+    setPreferredSize(
+        new Dimension(
+            Math.round((float) getWidth() / getElementWidth()) * getElementWidth(),
+            Math.round((float) getHeight() / getElementHeight()) * getElementHeight()));
+    getFrame().pack();
+    resizeTimer = null;
+  }
+
+  @Override
+  public void componentMoved(ComponentEvent e) {}
+
+  @Override
+  public void componentShown(ComponentEvent e) {}
+
+  @Override
+  public void componentHidden(ComponentEvent e) {}
 }
