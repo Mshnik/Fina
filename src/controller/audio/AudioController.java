@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -23,6 +22,9 @@ import model.unit.commander.DummyCommander;
  * @author Mshnik
  */
 public final class AudioController {
+
+  /** True iff debug info should be printed. */
+  private static final boolean DEBUG = false;
 
   /** Valid sound effects. */
   public enum SoundEffect {
@@ -52,6 +54,9 @@ public final class AudioController {
         Clip clip = AudioSystem.getClip();
         clip.open(audioInputStream);
         clips.add(clip);
+        if (DEBUG) {
+          System.out.println(this + " Created clip " + clips.size());
+        }
         return clip;
       } catch (Exception e) {
         throw new RuntimeException(e);
@@ -63,14 +68,8 @@ public final class AudioController {
      * playing. Otherwise, doesn't play the clip on this call.
      */
     private void play() {
-      Optional<Clip> freeClip = clips.stream().filter(c -> !c.isActive()).findAny();
-      Clip clip;
-      if (freeClip.isPresent()) {
-        clip = freeClip.get();
-      } else {
-        clip = readIntoNewClip();
-        System.out.println("Created new clip");
-      }
+      Clip clip =
+          clips.stream().filter(c -> !c.isActive()).findAny().orElseGet(this::readIntoNewClip);
       clip.setFramePosition(0);
       clip.start();
     }
@@ -137,10 +136,23 @@ public final class AudioController {
 
   /** Sets the mute setting and stops any currently playing music. */
   public static void setMute(boolean mute) {
+    // Stop media player.
     if (mediaPlayer != null && mute) {
       mediaPlayer.pause();
     } else if (mediaPlayer != null) {
       mediaPlayer.play();
+    }
+    // Clean up sound effect resources.
+    if (mute) {
+      for (SoundEffect effect : SoundEffect.values()) {
+        for (Clip clip : effect.clips) {
+          clip.close();
+          if (DEBUG) {
+            System.out.println(effect + " Sound clip closed");
+          }
+        }
+        effect.clips.clear();
+      }
     }
     MUTE = mute;
   }
