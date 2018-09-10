@@ -1,6 +1,5 @@
 package controller.game;
 
-import controller.audio.AudioController;
 import java.util.ArrayList;
 import java.util.List;
 import model.game.Game.FogOfWar;

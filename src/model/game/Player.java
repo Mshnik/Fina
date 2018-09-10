@@ -177,7 +177,7 @@ public abstract class Player implements Stringable {
       if (u instanceof PlayerModifierBuilding) {
         for (PlayerModifierEffect effect : ((PlayerModifierBuilding) u).getEffect()) {
           if (effect.effectType == PlayerModifierEffectType.RESEARCH_GENERATION) {
-            manaPerTurn += effect.value;
+            researchPerTurn += effect.value;
           }
         }
       }

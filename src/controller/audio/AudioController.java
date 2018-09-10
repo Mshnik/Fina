@@ -1,18 +1,21 @@
 package controller.audio;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.swing.SwingUtilities;
 import model.game.Player;
 import model.unit.commander.Commander;
 import model.unit.commander.DummyCommander;
-
-import javax.sound.sampled.*;
-import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Controller for managing audio, including both repeating music and sound effects.
@@ -27,10 +30,49 @@ public final class AudioController {
     CLICK_NO("click_no.wav"),
     CURSOR_MOVE("cursor_move.wav");
 
-    private final String filepath;
+    /** The filepath to the sound effect file. */
+    private final String filePath;
 
+    /**
+     * The sound clip for this SoundEffect. Multiple clips are maintained so the sound effect can
+     * play multiple times concurrently.
+     */
+    private final List<Clip> clips;
+
+    /** Constructs a new sound effect from the given filename. */
     private SoundEffect(String filename) {
-      filepath = "sound/effects/" + filename;
+      clips = new ArrayList<>();
+      filePath = "sound/effects/" + filename;
+    }
+
+    /** Reads this sound effect into a new clip and adds it into clips. */
+    private Clip readIntoNewClip() {
+      try {
+        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath));
+        Clip clip = AudioSystem.getClip();
+        clip.open(audioInputStream);
+        clips.add(clip);
+        return clip;
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    /**
+     * Plays this sound effect once. If forceReplay is true, restarts the clip if it is currently
+     * playing. Otherwise, doesn't play the clip on this call.
+     */
+    private void play() {
+      Optional<Clip> freeClip = clips.stream().filter(c -> !c.isActive()).findAny();
+      Clip clip;
+      if (freeClip.isPresent()) {
+        clip = freeClip.get();
+      } else {
+        clip = readIntoNewClip();
+        System.out.println("Created new clip");
+      }
+      clip.setFramePosition(0);
+      clip.start();
     }
   }
 
@@ -62,14 +104,7 @@ public final class AudioController {
   /** Plays the given sound effect. */
   public static void playEffect(SoundEffect effect) {
     if (!MUTE) {
-      try {
-        Clip clip = AudioSystem.getClip();
-        AudioInputStream ais = AudioSystem.getAudioInputStream(new File(effect.filepath));
-        clip.open(ais);
-        clip.loop(0);
-      } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
-        throw new RuntimeException(e);
-      }
+      effect.play();
     }
   }
 
@@ -88,8 +123,9 @@ public final class AudioController {
 
   /** Plays the music for the given commander. */
   public static void playMusicForTurn(Player player) {
-//    playMusic(
-//        MUSIC_MAP.getOrDefault(player.getCommander().getClass(), Music.DUMMY_COMMANDER_THEME));
+    //    playMusic(
+    //        MUSIC_MAP.getOrDefault(player.getCommander().getClass(),
+    // Music.DUMMY_COMMANDER_THEME));
   }
 
   /** Stops music. */

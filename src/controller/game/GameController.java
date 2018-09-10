@@ -142,7 +142,7 @@ public final class GameController {
     if (playerTypes.size() < 2) {
       throw new RuntimeException("Can't have game with less than 2 players");
     }
-    Frame f = new Frame(10, 20);
+    Frame f = new Frame(13, 28);
     InputController.setFrame(f);
     KeyboardListener.attachToFrame(f);
     MouseListener.attachToFrame(f);
