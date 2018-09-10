@@ -458,12 +458,10 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     double widthInCols = (double) getWidth() / getElementWidth();
     int rows = (int) Math.ceil(heightInRows);
     int cols = (int) Math.ceil(widthInCols);
-    scrollX =
-        Math.min(scrollX, Math.max(0, getFrame().getController().game.board.getWidth() - cols));
-    scrollY =
-        Math.min(scrollY, Math.max(0, getFrame().getController().game.board.getHeight() - rows));
-    marginX = Math.max(0, cols - getFrame().getController().game.board.getWidth());
-    marginY = Math.max(0, rows - getFrame().getController().game.board.getHeight());
+    scrollX = Math.min(scrollX, Math.max(0, getMatrixWidth() - cols));
+    scrollY = Math.min(scrollY, Math.max(0, getMatrixHeight() - rows));
+    marginX = Math.max(0, cols - getMatrixWidth());
+    marginY = Math.max(0, rows - getMatrixHeight());
     setShowedRows(rows);
     setShowedCols(cols);
 

@@ -22,6 +22,6 @@ public final class Main {
     defaultPlayerTypes.add(HumanPlayer.HUMAN_PLAYER_TYPE);
     defaultPlayerTypes.add(HumanPlayer.HUMAN_PLAYER_TYPE);
     GameController.loadAndStart(
-        "game/boards/" + boardFilename, defaultPlayerTypes, FogOfWar.REGULAR, 1);
+        "game/boards/" + boardFilename, defaultPlayerTypes, FogOfWar.REGULAR, 1, 10, 18, 3);
   }
 }

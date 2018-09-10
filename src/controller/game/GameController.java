@@ -143,11 +143,14 @@ public final class GameController {
       String boardFilepath,
       List<String> playerTypes,
       FogOfWar fogOfWar,
-      int startingCommanderLevel) {
+      int startingCommanderLevel,
+      int frameRows,
+      int frameCols,
+      int frameZoom) {
     if (playerTypes.size() < 2) {
       throw new RuntimeException("Can't have game with less than 2 players");
     }
-    Frame f = new Frame(10, 20);
+    Frame f = new Frame(frameZoom);
     InputController.setFrame(f);
     KeyboardListener.attachToFrame(f);
     MouseListener.attachToFrame(f);
@@ -155,7 +158,8 @@ public final class GameController {
     // Read board and create game.
     Board board = BoardReader.readBoard(boardFilepath);
     Game g = new Game(board, fogOfWar);
-    GameController gc = new GameController(g, f, playerTypes, startingCommanderLevel);
+    GameController gc =
+        new GameController(g, f, playerTypes, startingCommanderLevel, frameRows, frameCols);
 
     // Create players.
     for (int i = 0; i < playerTypes.size(); i++) {
@@ -185,13 +189,19 @@ public final class GameController {
   }
 
   /** Creates a new game controller for the given game and frame. */
-  private GameController(Game g, Frame f, List<String> playerTypes, int startingCommanderLevel) {
+  private GameController(
+      Game g,
+      Frame f,
+      List<String> playerTypes,
+      int startingCommanderLevel,
+      int frameRows,
+      int frameCols) {
     game = g;
     this.startingCommanderLevel = startingCommanderLevel;
     this.playerTypes = Collections.unmodifiableList(playerTypes);
     game.setGameController(this);
     frame = f;
-    frame.setController(this);
+    frame.setController(this, frameRows, frameCols);
     random = new Random();
 
     playerColors = new HashMap<>();
@@ -229,13 +239,27 @@ public final class GameController {
       FogOfWar fogOfWar,
       int startingCommanderLevel) {
     kill();
-    loadAndStart(boardFilepath, playerTypes, fogOfWar, startingCommanderLevel);
+    loadAndStart(
+        boardFilepath,
+        playerTypes,
+        fogOfWar,
+        startingCommanderLevel,
+        frame.getGamePanel().getShowedRows(),
+        frame.getGamePanel().getShowedCols(),
+        frame.getZoomIndex());
   }
 
   /** Restarts this game by creating a new copy of this then disposing of this. */
   public synchronized void restart() {
     kill();
-    loadAndStart(game.board.filepath, playerTypes, game.getFogOfWar(), startingCommanderLevel);
+    loadAndStart(
+        game.board.filepath,
+        playerTypes,
+        game.getFogOfWar(),
+        startingCommanderLevel,
+        frame.getGamePanel().getShowedRows(),
+        frame.getGamePanel().getShowedCols(),
+        frame.getZoomIndex());
   }
 
   /** Returns the random to use for combat. */
