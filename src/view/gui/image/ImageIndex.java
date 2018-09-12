@@ -133,11 +133,11 @@ public final class ImageIndex {
 
       // Ability Icons
       ATTACK_ABILITY_ICON =
-          ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_0_1.png"));
-      HEAL_ABILITY_ICON = ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_2_3.png"));
-      BUFF_ABILITY_ICON = ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_0_5.png"));
+          ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_0_8.png"));
+      HEAL_ABILITY_ICON = ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_7_10.png"));
+      BUFF_ABILITY_ICON = ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_0_12.png"));
       UTILITY_ABILITY_ICON =
-          ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_3_5.png"));
+          ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_8_12.png"));
 
       // Units
       readUnits = new HashMap<>();
