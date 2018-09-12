@@ -1,13 +1,13 @@
 package view.gui.decision;
 
 import controller.decision.Choice;
+import java.awt.Color;
 import model.board.Direction;
 import model.unit.Unit;
 import model.unit.ability.Ability;
 import model.unit.combatant.Combat;
+import model.unit.modifier.Modifiers.ModifierDescription;
 import view.gui.Cursor;
-
-import java.awt.Color;
 
 /** A default cursor implementation for when no special cursor actions are necessary */
 public final class DecisionCursor extends Cursor<Choice, DecisionPanel> {
@@ -74,12 +74,14 @@ public final class DecisionCursor extends Cursor<Choice, DecisionPanel> {
     Object obj = getElm().getVal();
     if (obj != null) {
       if (obj instanceof Unit) {
-        panel
-            .getFrame()
-            .showUnitStats(
-                (Unit) obj, getElm().getMessage().contains(SHOW_EXTENDED_MODIFIERS_INFO_MESSAGE));
-      } else if (obj instanceof Ability) panel.getFrame().showAbilityStats((Ability) obj);
-      else if (obj instanceof Combat) panel.getFrame().showCombatStats((Combat) obj);
+        panel.getFrame().showUnitStats((Unit) obj);
+      } else if (obj instanceof ModifierDescription) {
+        panel.getFrame().showModifierDescription((ModifierDescription) obj);
+      } else if (obj instanceof Ability) {
+        panel.getFrame().showAbilityStats((Ability) obj);
+      } else if (obj instanceof Combat) {
+        panel.getFrame().showCombatStats((Combat) obj);
+      }
     }
 
     panel.getFrame().repaint();

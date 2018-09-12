@@ -15,6 +15,7 @@ public final class Decision extends ArrayList<Choice> {
     SUMMON_DECISION,
     CAST_DECISION,
     NEW_ABILITY_DECISION,
+    INFO_HOVER_DECISION,
     PLAYER_ACTIONS_DECISION,
     END_OF_TURN_DECISION
   }

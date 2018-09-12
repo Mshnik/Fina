@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import model.unit.Unit;
 import model.unit.modifier.Modifier.StackMode;
 import model.unit.stat.StatType;
 
@@ -53,6 +54,7 @@ public final class Modifiers {
     private final String formattedVal;
     private final String description;
     private final int turnsRemaining;
+    public final Unit unit;
 
     private ModifierDescription(Modifier m) {
       this.name = m.name;
@@ -60,6 +62,7 @@ public final class Modifiers {
       this.formattedVal = m.getValueFormatted();
       this.description = m.toStatString();
       this.turnsRemaining = m.getRemainingTurns();
+      this.unit = m.unit;
     }
 
     private ModifierDescription(ModifierBundle m) {
@@ -68,6 +71,7 @@ public final class Modifiers {
       this.formattedVal = m.getModifier(0).getValueFormatted();
       this.description = m.toStatString().trim();
       this.turnsRemaining = m.getTurnsRemaining();
+      this.unit = m.getModifier(0).unit;
     }
 
     /**

@@ -43,6 +43,8 @@ import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 import model.unit.commander.DummyCommander;
+import model.unit.modifier.Modifiers;
+import model.unit.modifier.Modifiers.ModifierDescription;
 import view.gui.Frame;
 import view.gui.decision.DecisionCursor;
 import view.gui.panel.BoardCursor;
@@ -340,7 +342,7 @@ public final class GameController {
     decision = null;
     frame.getGamePanel().setDecisionPanel(null);
     frame.setActiveCursor(getGamePanel().boardCursor);
-    frame.getInfoPanel().clearExtendedModifiersInfo();
+    frame.getInfoPanel().clearModifierDescription();
     repaint();
   }
 
@@ -422,9 +424,6 @@ public final class GameController {
   void processActionDecision(Choice c) throws RuntimeException {
     String choice = c.getMessage().replaceAll(" \\([0-9]*\\)", "");
     Object val = c.getVal();
-    if (choice.contains(INFO_PREFIX)) {
-      return;
-    }
     cancelDecision();
     switch (choice) {
       case MOVE:
@@ -440,6 +439,9 @@ public final class GameController {
         frame
             .getViewOptionsForPlayer(game.getCurrentPlayer())
             .toggleDangerRadiusUnit((Combatant) val);
+        break;
+      case INFO_PREFIX + DecisionCursor.SHOW_EXTENDED_MODIFIERS_INFO_MESSAGE:
+        startModifierInfoHover();
         break;
       default:
         throw new RuntimeException("Don't know how to handle this choice " + choice);
@@ -954,5 +956,25 @@ public final class GameController {
         }
         break;
     }
+  }
+
+  /** Starts a hover over the modifiers on the selected unit. */
+  private void startModifierInfoHover() {
+    Unit occupyingUnit = getGamePanel().boardCursor.getElm().getOccupyingUnit();
+
+    List<ModifierDescription> modifierDescriptions =
+        Modifiers.getModifierDescriptions(occupyingUnit.getVisibleModifiers());
+    decision =
+        new Decision(
+            DecisionType.INFO_HOVER_DECISION,
+            false,
+            true,
+            modifierDescriptions
+                .stream()
+                .map(m -> new Choice(true, m.toStringShort(), m))
+                .collect(Collectors.toList()));
+    addToggle(Toggle.DECISION);
+    getGamePanel().fixDecisionPanel("Info: Modifiers", game.getCurrentPlayer(), decision, true);
+    getGamePanel().moveDecisionPanel();
   }
 }

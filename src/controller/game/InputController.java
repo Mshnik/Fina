@@ -2,7 +2,7 @@ package controller.game;
 
 import controller.audio.AudioController;
 import controller.decision.Choice;
-import controller.decision.Decision;
+import controller.decision.Decision.DecisionType;
 import controller.selector.PathSelector;
 import model.board.Direction;
 import model.board.Tile;
@@ -165,13 +165,14 @@ public final class InputController {
         } else {
           AudioController.playEffect(AudioController.SoundEffect.CLICK_NO);
           if (!gc.isDecisionManditory()) {
-            if (gc.getDecisionType() == Decision.DecisionType.SUMMON_DECISION
-                || gc.getDecisionType() == Decision.DecisionType.CAST_DECISION) {
+            if (gc.getDecisionType() == DecisionType.SUMMON_DECISION
+                || gc.getDecisionType() == DecisionType.CAST_DECISION) {
               gc.cancelDecision();
               gc.startCommanderActionDecision(
                   gc.frame.getGamePanel().boardCursor.getElm().getOccupyingUnit()
                       instanceof Commander);
-            } else if (gc.getDecisionType() == Decision.DecisionType.COMMANDER_ACTION_DECISION) {
+            } else if (gc.getDecisionType() == DecisionType.COMMANDER_ACTION_DECISION
+                || gc.getDecisionType() == DecisionType.INFO_HOVER_DECISION) {
               gc.cancelDecision();
               gc.startActionDecision();
             } else {

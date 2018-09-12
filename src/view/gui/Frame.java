@@ -20,6 +20,7 @@ import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;
 import model.unit.combatant.Combat;
+import model.unit.modifier.Modifiers.ModifierDescription;
 import view.gui.NewGameSelector.NewGameOptions;
 import view.gui.panel.GamePanel;
 import view.gui.panel.HeaderPanel;
@@ -297,8 +298,13 @@ public final class Frame extends JFrame {
   }
 
   /** Updates the info panel to show the given model.unit * */
-  public void showUnitStats(Unit u, boolean extendedModifiersInfo) {
-    infoPanel.setUnit(u, true, extendedModifiersInfo);
+  public void showUnitStats(Unit u) {
+    infoPanel.setUnit(u, true);
+  }
+
+  /** Updates the info panel to show the given ModifierDescription for the given unit. */
+  public void showModifierDescription(ModifierDescription modifierDescription) {
+    infoPanel.setModifierDescription(modifierDescription);
   }
 
   /** Updates the info panel to show the given ability * */

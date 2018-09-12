@@ -12,6 +12,7 @@ import java.awt.RenderingHints;
 import model.game.Player;
 import model.unit.ability.Ability;
 import model.unit.combatant.Combatant;
+import model.unit.modifier.Modifiers.ModifierDescription;
 import view.gui.Frame;
 import view.gui.MatrixPanel;
 import view.gui.Paintable;
@@ -207,6 +208,12 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
         } else if (decision.get(r).getVal() instanceof Ability) {
           paintAbilityType(
               g2d, x + DECISION_WIDTH - TEXT_X * 2, textY, (Ability) decision.get(r).getVal());
+        } else if (decision.get(r).getVal() instanceof ModifierDescription) {
+          paintModifier(
+              g2d,
+              x + DECISION_WIDTH - TEXT_X * 2,
+              textY,
+              (ModifierDescription) decision.get(r).getVal());
         }
       }
     } else {
@@ -223,6 +230,12 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
         } else if (decision.get(c).getVal() instanceof Ability) {
           paintAbilityType(
               g2d, x + DECISION_WIDTH - TEXT_X * 2, textY, (Ability) decision.get(c).getVal());
+        } else if (decision.get(c).getVal() instanceof ModifierDescription) {
+          paintModifier(
+              g2d,
+              x + DECISION_WIDTH - TEXT_X * 2,
+              textY,
+              (ModifierDescription) decision.get(c).getVal());
         }
       }
     }
@@ -244,6 +257,18 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
   /** Draws a ability symbol when hovering a cast decision. */
   private void paintAbilityType(Graphics2D g2d, int x, int y, Ability ability) {
     g2d.drawImage(ImageIndex.imageForAbility(ability), x, y - 18, ICON_SIZE, ICON_SIZE, null);
+  }
+
+  /** Draws the modifier symbol when hovering a modifier. */
+  private void paintModifier(
+      Graphics2D g2d, int x, int y, ModifierDescription modifierDescription) {
+    g2d.drawImage(
+        ImageIndex.imageForModifierDescription(modifierDescription),
+        x,
+        y - 18,
+        ICON_SIZE,
+        ICON_SIZE,
+        null);
   }
 
   /** If vertical, the width is 1. Otherwise it is the number of decisions. */

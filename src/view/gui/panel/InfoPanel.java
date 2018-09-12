@@ -70,8 +70,8 @@ public final class InfoPanel extends JPanel {
   /** The Unit (if any) this InfoPanel is currently drawing info for */
   private Unit unit;
 
-  /** True if extended modifier info should be drawn instead of general unit info. */
-  private boolean extendedModifiersInfo;
+  /** The modifier info this InfoPanel is currently drawing info for */
+  private ModifierDescription modifierDescription;
 
   /** The Ability (if any) this InfoPanel is currently drawing info for */
   private Ability ability;
@@ -101,19 +101,29 @@ public final class InfoPanel extends JPanel {
   }
 
   /** Sets the unit this InfoPanel is to draw info for, and causes a repaint */
-  public void setUnit(Unit u, boolean isMenu, boolean extendedModifiersInfo) {
+  public void setUnit(Unit u, boolean isMenu) {
     unit = u;
     this.isMenu = isMenu;
-    this.extendedModifiersInfo = extendedModifiersInfo;
     ability = null;
     tile = null;
     combat = null;
     repaint();
   }
 
-  /** Clears the extendedModifiersInfo bit. */
-  public void clearExtendedModifiersInfo() {
-    extendedModifiersInfo = false;
+  /** Clears the extendedModifiersInfo field. */
+  public void clearModifierDescription() {
+    modifierDescription = null;
+    repaint();
+  }
+
+  /** Sets the ModifierDescription this InfoPanel is to draw info for, and causes a repaint */
+  public void setModifierDescription(ModifierDescription modifierDescription) {
+    unit = modifierDescription.unit;
+    isMenu = true;
+    this.modifierDescription = modifierDescription;
+    ability = null;
+    tile = null;
+    combat = null;
     repaint();
   }
 
@@ -165,7 +175,7 @@ public final class InfoPanel extends JPanel {
         RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
     g2d.setFont(BIG_FONT);
 
-    if (unit != null && extendedModifiersInfo) {
+    if (unit != null && modifierDescription != null) {
       drawUnitPrefix(g2d);
       drawExtendedModifierInfo(g2d);
     } else if (unit != null) {
@@ -267,7 +277,7 @@ public final class InfoPanel extends JPanel {
       g2d.drawImage(
           ImageIndex.imageForModifierDescription(modifier),
           x,
-          y  - modifierIconSize/2 - 2,
+          y - modifierIconSize / 2 - 2,
           modifierIconSize,
           modifierIconSize,
           null);
@@ -396,30 +406,18 @@ public final class InfoPanel extends JPanel {
 
   /** Draws extended modifier info for a unit. */
   private void drawExtendedModifierInfo(Graphics2D g2d) {
-    g2d.setFont(SMALL_FONT);
-    final int xInc = 250;
-    final int yInc = (int) (MEDIUM_FONT.getSize() * 1.5);
-    final int modifierIconSize = 22;
-    int x = XMARGIN + xInc - 50;
-    int y = YMARGIN - 5;
-    int count = 0;
-    for (Modifiers.ModifierDescription description :
-        Modifiers.getModifierDescriptions(unit.getVisibleModifiers())) {
-      g2d.drawImage(
-          ImageIndex.imageForModifierDescription(description),
-          x,
-          y  - modifierIconSize/2 - 4,
-          modifierIconSize,
-          modifierIconSize,
-          null);
-      g2d.drawString(description.toString(), x + modifierIconSize + 2, y);
-      y += yInc;
-      count++;
-      if (count == 4) {
-        x += xInc * 2;
-        y = YMARGIN - 5;
-      }
-    }
+    g2d.setFont(MEDIUM_FONT);
+    final int modifierIconSize = 48;
+    int x = XMARGIN + 200;
+    int y = YMARGIN + 10;
+    g2d.drawImage(
+        ImageIndex.imageForModifierDescription(modifierDescription),
+        x,
+        y - modifierIconSize / 2 - 4,
+        modifierIconSize,
+        modifierIconSize,
+        null);
+    g2d.drawString(modifierDescription.toString(), x + modifierIconSize + 5, y);
   }
 
   /** Draws a building's effect at the given x,y. */
