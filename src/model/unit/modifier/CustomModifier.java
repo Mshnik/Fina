@@ -35,6 +35,8 @@ public final class CustomModifier extends Modifier {
    * Constructor for dummy instance
    *
    * @param name - the name of this modifier
+   * @param imageFilename - the image to draw for this CustomModifier. Only draws if it's the first
+   *     modifier in the bundle.
    * @param description - a description of this modifier
    * @param val - the magnitude of the modifier, as needed
    * @param turns - the total duration of this modifier (turns after this one). Can be
@@ -46,6 +48,7 @@ public final class CustomModifier extends Modifier {
    */
   CustomModifier(
       String name,
+      String imageFilename,
       String description,
       Number val,
       int turns,
@@ -53,7 +56,7 @@ public final class CustomModifier extends Modifier {
       boolean buildings,
       boolean commanders,
       boolean combatants) {
-    super(name, turns, stackable);
+    super(name, imageFilename, turns, stackable);
     this.val = val;
     this.appliesToBuildings = buildings;
     this.appliesToCommanders = commanders;
@@ -84,7 +87,7 @@ public final class CustomModifier extends Modifier {
         this.description = description;
       }
     } else {
-      this.description = description.replaceAll("-","");
+      this.description = description.replaceAll("-", "");
     }
   }
 
@@ -117,6 +120,7 @@ public final class CustomModifier extends Modifier {
     }
     return new CustomModifier(
         name,
+        imageFilename,
         description,
         val,
         getRemainingTurns(),
@@ -133,6 +137,7 @@ public final class CustomModifier extends Modifier {
     }
     return new CustomModifier(
         name,
+        imageFilename,
         description,
         val,
         remainingTurns,

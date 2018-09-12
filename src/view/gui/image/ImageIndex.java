@@ -25,6 +25,9 @@ import model.unit.building.Building;
 import model.unit.combatant.Combatant;
 import model.unit.combatant.Combatant.CombatantClass;
 import model.unit.commander.Commander;
+import model.unit.modifier.Modifier;
+import model.unit.modifier.ModifierBundle;
+import model.unit.modifier.Modifiers.ModifierDescription;
 import view.gui.panel.GamePanel;
 
 /** Library for lookup of different image resources. Also some drawing functionality */
@@ -44,6 +47,9 @@ public final class ImageIndex {
 
   /** Location of ability icons within image root */
   private static final String ABILITY_ICONS_ROOT = "icons/spell/";
+
+  /** Location of modifier icons within image root */
+  private static final String MODIFIER_ICONS_ROOT = "icons/spell/";
 
   /** Image root for commanders within image root */
   private static final String COMMANDER_IMAGE_ROOT = "unit/";
@@ -96,9 +102,15 @@ public final class ImageIndex {
   /** The image for a utility ability. */
   private static BufferedImage UTILITY_ABILITY_ICON;
 
+  // MODIFIERS
+
+  /** Read in modifiers thus far. */
+  private static HashMap<String, BufferedImage> readModifiers;
+
+  // UNITS
+
   /** Read in units thus far */
   private static HashMap<String, BufferedImage> readUnits;
-
   /** Tinted units thus far */
   private static HashMap<String, HashMap<String, BufferedImage>> tintedUnits;
 
@@ -134,10 +146,15 @@ public final class ImageIndex {
       // Ability Icons
       ATTACK_ABILITY_ICON =
           ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_0_8.png"));
-      HEAL_ABILITY_ICON = ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_7_10.png"));
-      BUFF_ABILITY_ICON = ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_0_12.png"));
+      HEAL_ABILITY_ICON =
+          ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_7_10.png"));
+      BUFF_ABILITY_ICON =
+          ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_0_14.png"));
       UTILITY_ABILITY_ICON =
-          ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_8_12.png"));
+          ImageIO.read(new File(IMAGE_ROOT + ABILITY_ICONS_ROOT + "spell_8_13.png"));
+
+      // Modifiers
+      readModifiers = new HashMap<>();
 
       // Units
       readUnits = new HashMap<>();
@@ -244,6 +261,27 @@ public final class ImageIndex {
       default:
         throw new RuntimeException("Unsupported ability type " + ability.abilityType);
     }
+  }
+
+  /** Returns the image file for the given Modifier filename. */
+  private static BufferedImage imageForModifier(String modifierFilename) {
+    String filename = IMAGE_ROOT + MODIFIER_ICONS_ROOT + modifierFilename;
+    if (readModifiers.containsKey(filename)) {
+      return readModifiers.get(filename);
+    }
+
+    try {
+      BufferedImage image = ImageIO.read(new File(filename));
+      readModifiers.put(filename, image);
+      return image;
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /** Returns the image file for the given ModifierBundle. */
+  public static BufferedImage imageForModifierDescription(ModifierDescription modifierDescription) {
+    return imageForModifier(modifierDescription.imageFilename);
   }
 
   /** Returns the key for the given unit in the readUnits map. */

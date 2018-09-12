@@ -95,6 +95,11 @@ public final class ModifierBundle implements Collection<Modifier> {
     return b;
   }
 
+  /** Returns the modifier at the given index. */
+  public Modifier getModifier(int index) {
+    return modifiers.get(index);
+  }
+
   /** Returns a copy of the list represented by this modifierBundle */
   public LinkedList<Modifier> getModifiers() {
     return new LinkedList<Modifier>(modifiers);

@@ -56,10 +56,37 @@ public final class StatModifier extends Modifier {
       StatType stat,
       ModificationType modType,
       Object modVal) {
-    super(name, turns, stackable);
+    super(name, getImageFilename(stat, ((Number) modVal).doubleValue()), turns, stackable);
     modifiedStat = stat;
     this.modType = modType;
     val = modVal;
+  }
+
+  /**
+   * Helper method for construction to get the image filename depending on the modified stat and the
+   * mod value.
+   */
+  private static String getImageFilename(StatType statType, double modVal) {
+    switch (statType) {
+      case MAX_HEALTH:
+        return modVal > 0 ? "spell_2_0.png" : "spell_3_0.png";
+      case MIN_ATTACK:
+        return modVal > 0 ? "spell_2_2.png" : "spell_3_2.png";
+      case MAX_ATTACK:
+        return modVal > 0 ? "spell_2_2.png" : "spell_3_2.png";
+      case DAMAGE_REDUCTION:
+        return modVal > 0 ? "spell_2_3.png" : "spell_3_3.png";
+      case MOVEMENT_TOTAL:
+        return modVal > 0 ? "spell_2_6.png" : "spell_3_6.png";
+      case VISION_RANGE:
+        return modVal > 0 ? "spell_2_8.png" : "spell_3_8.png";
+      case WOODS_COST:
+        return "spell_29_3.png";
+      case MOUNTAIN_COST:
+        return "spell_29_4.png";
+      default:
+        return null;
+    }
   }
 
   /**
@@ -121,9 +148,10 @@ public final class StatModifier extends Modifier {
   @Override
   public String toStatString() {
     if (modType == ModificationType.MULTIPLY) {
-      return String.format("%s: +%d%%",modifiedStat, (int)((double)val * 100 - 100));
+      return String.format(
+          "%s%d%% %s", (double) val < 0 ? "" : "+", (int) ((double) val * 100 - 100), modifiedStat);
     } else {
-      return String.format("%s: %s%s",modifiedStat,modType.toSymbolString(),val);
+      return String.format("%s%s %s", modType.toSymbolString(), val, modifiedStat);
     }
   }
 

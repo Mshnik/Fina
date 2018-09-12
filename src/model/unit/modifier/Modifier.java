@@ -1,9 +1,8 @@
 package model.unit.modifier;
 
+import java.util.Collection;
 import model.game.Stringable;
 import model.unit.Unit;
-
-import java.util.Collection;
 
 /** A Modifier for a model.unit - a buff or nerf, etc. */
 public abstract class Modifier implements Stringable {
@@ -13,6 +12,9 @@ public abstract class Modifier implements Stringable {
 
   /** The name of this modifier */
   public final String name;
+
+  /** The image filename to draw for this modifier. Only draws if it's the first in the bundle. */
+  public final String imageFilename;
 
   /** The model.unit this is modifying */
   public final Unit unit;
@@ -47,13 +49,16 @@ public abstract class Modifier implements Stringable {
    * Constructor for dummy instance
    *
    * @param name - the name of this modifier
+   * @param imageFilename - the image to draw for this modifier. Only draws if this is the first in
+   *     the bundle.
    * @param turns - the total duration of this modifier (turns after this one). Can be
    *     Integer.MAX_VAL - interpreted as forever rather than the actual val
    * @param stacking - the stack mode of this Modifier that determines how it interacts with
    *     modifiers of the same name.
    */
-  public Modifier(String name, int turns, StackMode stacking) {
+  public Modifier(String name, String imageFilename, int turns, StackMode stacking) {
     this.name = name;
+    this.imageFilename = imageFilename;
     unit = null;
     remainingTurns = turns;
     source = null;
@@ -78,6 +83,7 @@ public abstract class Modifier implements Stringable {
   public Modifier(Unit unit, Unit source, Modifier dummy) {
     attached = false;
     this.name = dummy.name;
+    this.imageFilename = dummy.imageFilename;
     this.unit = unit;
     this.source = source;
     this.stacking = dummy.stacking;
@@ -95,9 +101,10 @@ public abstract class Modifier implements Stringable {
   String getValueFormatted() {
     Object val = getValue();
     if (val instanceof Double) {
-      return String.format("%d%%", (int)(((double) val) * 100) - (this instanceof StatModifier ? 100 : 0));
+      return String.format(
+          "%d%%", (int) (((double) val) * 100) - (this instanceof StatModifier ? 100 : 0));
     } else if (val instanceof Integer && ((int) val) < 0) {
-      return Integer.toString(-(int)val);
+      return Integer.toString(-(int) val);
     } else if (val != null) {
       return val.toString();
     } else {

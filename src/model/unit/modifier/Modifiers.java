@@ -1,12 +1,11 @@
 package model.unit.modifier;
 
-import model.unit.modifier.Modifier.StackMode;
-import model.unit.stat.StatType;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import model.unit.modifier.Modifier.StackMode;
+import model.unit.stat.StatType;
 
 /**
  * Listing of Modifier instances. Each time a method is called it returns a unique copy for the
@@ -50,20 +49,23 @@ public final class Modifiers {
   /** A description of a modifier or bundle, for showing in UI. */
   public static final class ModifierDescription {
     private final String name;
+    public final String imageFilename;
     private final String formattedVal;
     private final String description;
     private final int turnsRemaining;
 
     private ModifierDescription(Modifier m) {
       this.name = m.name;
+      this.imageFilename = m.imageFilename;
       this.formattedVal = m.getValueFormatted();
       this.description = m.toStatString();
       this.turnsRemaining = m.getRemainingTurns();
     }
 
     private ModifierDescription(ModifierBundle m) {
-      this.name = m.getModifiers().get(0).name;
-      this.formattedVal = m.getModifiers().get(0).getValueFormatted();
+      this.name = m.getModifier(0).name;
+      this.imageFilename = m.getModifier(0).imageFilename;
+      this.formattedVal = m.getModifier(0).getValueFormatted();
       this.description = m.toStatString().trim();
       this.turnsRemaining = m.getTurnsRemaining();
     }
@@ -179,6 +181,7 @@ public final class Modifiers {
   public static Modifier armored(double damageReduction) {
     return new CustomModifier(
             "Armored",
+            "spell_10_10.png",
             "This unit takes -x%- less damage from melee attacks",
             damageReduction,
             Integer.MAX_VALUE,
@@ -205,6 +208,7 @@ public final class Modifiers {
   public static Modifier bloodlust(double bonusDamageToCommanderPercent) {
     return new CustomModifier(
             "Bloodlust",
+            "spell_32_5.png",
             "This unit deals -x%- more damage to commanders",
             bonusDamageToCommanderPercent,
             Integer.MAX_VALUE,
@@ -219,6 +223,7 @@ public final class Modifiers {
   public static Modifier bornToFight(int healthGainedPerAttack) {
     return new CustomModifier(
             "Born to Fight",
+            "spell_30_11.png",
             "After dealing damage, this unit gains -x- health",
             healthGainedPerAttack,
             Integer.MAX_VALUE,
@@ -233,7 +238,15 @@ public final class Modifiers {
   public static ModifierBundle communications(int visionIncrease, int movementIncrease) {
     return new ModifierBundle(
         new CustomModifier(
-            "Communications", "", null, Integer.MAX_VALUE, StackMode.STACKABLE, false, true, true),
+            "Communications",
+            "spell_14_11.png",
+            "",
+            null,
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            false,
+            true,
+            true),
         farsight(visionIncrease),
         quickness(movementIncrease));
   }
@@ -242,6 +255,7 @@ public final class Modifiers {
   public static Modifier disappearance() {
     return new CustomModifier(
             "Disappearance",
+            "spell_29_2.png",
             "This unit can move after attacking",
             null,
             Integer.MAX_VALUE,
@@ -256,6 +270,7 @@ public final class Modifiers {
   public static Modifier eagleEye() {
     return new CustomModifier(
             "Eagle Eye",
+            "spell_17_14.png",
             "This unit can see into woods and past mountains.",
             null,
             Integer.MAX_VALUE,
@@ -270,6 +285,7 @@ public final class Modifiers {
   public static Modifier elusive(double damageReductionPercent) {
     return new CustomModifier(
             "Elusive",
+            "spell_11_7.png",
             "This unit takes -x%- less damage from ranged attacks",
             damageReductionPercent,
             Integer.MAX_VALUE,
@@ -298,7 +314,15 @@ public final class Modifiers {
   public static ModifierBundle flight() {
     return new ModifierBundle(
         new CustomModifier(
-            "Flight", "", null, Integer.MAX_VALUE, StackMode.STACKABLE, false, true, true),
+            "Flight",
+            "spell_21_0.png",
+            "",
+            null,
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            false,
+            true,
+            true),
         eagleEye(),
         trailblazer(1),
         pathfinder(1));
@@ -308,6 +332,7 @@ public final class Modifiers {
   public static Modifier hexproof(double spellDamageReductionPercent) {
     return new CustomModifier(
             "Hexproof",
+            "spell_28_3.png",
             "This unit takes -x%- less damage from commander spells",
             spellDamageReductionPercent,
             Integer.MAX_VALUE,
@@ -334,6 +359,7 @@ public final class Modifiers {
   public static Modifier patience(double bonusCounterAttackDamagePercent) {
     return new CustomModifier(
             "Patience",
+            "spell_30_14.png",
             "This unit deals -x%- more damage when counter attacking",
             bonusCounterAttackDamagePercent,
             Integer.MAX_VALUE,
@@ -360,6 +386,7 @@ public final class Modifiers {
   public static Modifier siege(double bonusDamageToBuildingPercent) {
     return new CustomModifier(
             "Siege",
+            "spell_28_11.png",
             "This unit deals -x%- more damage to buildings",
             bonusDamageToBuildingPercent,
             Integer.MAX_VALUE,
@@ -408,6 +435,7 @@ public final class Modifiers {
   public static Modifier tenacity(int healthGainedPerTurn) {
     return new CustomModifier(
             "Tenacity",
+            "spell_32_3.png",
             "This unit gains -x- health each turn",
             healthGainedPerTurn,
             Integer.MAX_VALUE,
@@ -422,6 +450,7 @@ public final class Modifiers {
   public static Modifier toughness(int damageReduction) {
     return new CustomModifier(
             "Toughness",
+            "spell_0_13.png",
             "This unit takes -x- less damage from all sources",
             damageReduction,
             Integer.MAX_VALUE,

@@ -29,6 +29,7 @@ import model.unit.combatant.Combatant.CombatantClass;
 import model.unit.commander.Commander;
 import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.Modifiers;
+import model.unit.modifier.Modifiers.ModifierDescription;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
@@ -258,12 +259,22 @@ public final class InfoPanel extends JPanel {
     y = YMARGIN + infoFont * 4;
     String modifierTitle = "Modifiers: ";
     g2d.drawString(modifierTitle, x, y);
-    String modString =
-        Modifiers.getModifierDescriptions(unit.getVisibleModifiers())
-            .stream()
-            .map(Modifiers.ModifierDescription::toStringShort)
-            .collect(Collectors.joining(", "));
-    g2d.drawString(modString, x + frame.getTextWidth(MEDIUM_FONT, modifierTitle) + 15, y);
+    x += frame.getTextWidth(SMALL_FONT, modifierTitle);
+
+    int modifierIconSize = 22;
+    for (ModifierDescription modifier :
+        Modifiers.getModifierDescriptions(unit.getVisibleModifiers())) {
+      g2d.drawImage(
+          ImageIndex.imageForModifierDescription(modifier),
+          x,
+          y  - modifierIconSize/2 - 2,
+          modifierIconSize,
+          modifierIconSize,
+          null);
+      x += 3;
+      g2d.drawString(modifier.toStringShort(), x + modifierIconSize, y);
+      x += frame.getTextWidth(MEDIUM_FONT, modifier.toStringShort()) + 10;
+    }
 
     x = XMARGIN + 2 * xInc;
 
@@ -386,17 +397,25 @@ public final class InfoPanel extends JPanel {
   /** Draws extended modifier info for a unit. */
   private void drawExtendedModifierInfo(Graphics2D g2d) {
     g2d.setFont(SMALL_FONT);
-    final int infoFont = MEDIUM_FONT.getSize();
     final int xInc = 250;
+    final int yInc = (int) (MEDIUM_FONT.getSize() * 1.5);
+    final int modifierIconSize = 22;
     int x = XMARGIN + xInc - 50;
     int y = YMARGIN - 5;
     int count = 0;
     for (Modifiers.ModifierDescription description :
         Modifiers.getModifierDescriptions(unit.getVisibleModifiers())) {
-      g2d.drawString(description.toString(), x, y);
-      y += infoFont;
+      g2d.drawImage(
+          ImageIndex.imageForModifierDescription(description),
+          x,
+          y  - modifierIconSize/2 - 4,
+          modifierIconSize,
+          modifierIconSize,
+          null);
+      g2d.drawString(description.toString(), x + modifierIconSize + 2, y);
+      y += yInc;
       count++;
-      if (count == 6) {
+      if (count == 4) {
         x += xInc * 2;
         y = YMARGIN - 5;
       }
