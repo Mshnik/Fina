@@ -2,6 +2,7 @@ package view.gui;
 
 import controller.audio.AudioController;
 import controller.game.GameController;
+import controller.game.MouseListener;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -121,6 +122,24 @@ public final class Frame extends JFrame {
         KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.META_DOWN_MASK));
     quitGameMenuItem.addActionListener(e -> System.exit(0));
     gameMenu.add(quitGameMenuItem);
+
+    // Input menu - input control.
+    JMenu inputMenu = new JMenu("Input");
+    menu.add(inputMenu);
+
+    JCheckBoxMenuItem mouseControlInputMenuItem = new JCheckBoxMenuItem("Enable Mouse Input");
+    mouseControlInputMenuItem.setSelected(true);
+    mouseControlInputMenuItem.setAccelerator(
+        KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.META_DOWN_MASK));
+    mouseControlInputMenuItem.addActionListener(
+        e -> {
+          if (mouseControlInputMenuItem.isSelected()) {
+            MouseListener.attachToFrame(Frame.this);
+          } else {
+            MouseListener.detachFromFrame(Frame.this);
+          }
+        });
+    inputMenu.add(mouseControlInputMenuItem);
 
     // Window menu - visual functionality.
     JMenu windowMenu = new JMenu("Window");

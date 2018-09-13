@@ -5,13 +5,24 @@ import javax.swing.event.MouseInputListener;
 import view.gui.Frame;
 
 /** A controller that allows the player to control the game with the mouse. */
-final class MouseListener implements MouseInputListener {
+public final class MouseListener implements MouseInputListener {
+
+  /**
+   * Instance attached to frames. Only one created to prevent having two different mouse listeners
+   * listening.
+   */
+  private static final MouseListener instance = new MouseListener();
 
   /** Attach a MouseListener to the given frame. */
-  static void attachToFrame(Frame frame) {
-    MouseListener mouseListener = new MouseListener();
-    frame.addMouseListener(mouseListener);
-    frame.addMouseMotionListener(mouseListener);
+  public static void attachToFrame(Frame frame) {
+    frame.addMouseListener(instance);
+    frame.addMouseMotionListener(instance);
+  }
+
+  /** Detaches the MouseListener from the given frame. */
+  public static void detachFromFrame(Frame frame) {
+    frame.removeMouseListener(instance);
+    frame.removeMouseMotionListener(instance);
   }
 
   /** Prevent instantiation. */
