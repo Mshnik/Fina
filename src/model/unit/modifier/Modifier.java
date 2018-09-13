@@ -140,7 +140,12 @@ public abstract class Modifier implements Stringable {
     if (isDummy() || attached)
       throw new RuntimeException("Can't attach a dummy or already attached modifier");
     boolean ok = unit.addModifier(this);
-    if (ok) source.addGrantedModifier(this);
+    if (ok) {
+      source.addGrantedModifier(this);
+      if (unit.owner != null) {
+        unit.owner.game.getController().frame.getGamePanel().refreshModifierIconFor(unit);
+      }
+    }
   }
 
   /**

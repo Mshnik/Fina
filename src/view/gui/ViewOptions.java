@@ -7,6 +7,7 @@ import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.combatant.Combatant;
+import view.gui.modifier.ModifierIcon.FilterType;
 
 /**
  * View options for a given player. Used to customize the UI while persisting through turns. A
@@ -18,6 +19,20 @@ public final class ViewOptions {
 
   /** The index of the player these ViewOptions correspond to. */
   private final Player player;
+
+  /** The FilterType on ModifierIcons to paint for this player. */
+  private FilterType modifierIconsFilterType;
+
+  /** View types for modifiers icons on units. */
+  public enum ModifierViewType {
+    /** Show modifiers only on the unit the cursor is on. */
+    CURSOR_ONLY,
+    /** Show modifiers on all units. */
+    VIEW_ALL,
+  }
+
+  /** The ModifierViewType to paint for this player. */
+  private ModifierViewType modifierIconViewType;
 
   /**
    * Enemy units to paint the danger radius for. Units no longer on the board will be automatically
@@ -33,11 +48,36 @@ public final class ViewOptions {
     this.frame = frame;
     this.player = player;
     paintDangerRadiusUnits = new HashSet<>();
+    modifierIconsFilterType = FilterType.ONLY_NON_INFINITE_VISIBLE;
+    modifierIconViewType = ModifierViewType.CURSOR_ONLY;
     dangerRadius = null;
   }
 
+  /** Returns the current ModifierIcon FilterType. */
+  public FilterType getModifierIconsFilterType() {
+    return modifierIconsFilterType;
+  }
+
+  /** Cycles to the next display type. */
+  public void cycleModifierIconsDisplayType() {
+    modifierIconsFilterType =
+        FilterType.values()[(modifierIconsFilterType.ordinal() + 1) % FilterType.values().length];
+  }
+
+  /** Returns the current ModifierIcon ViewType. */
+  public ModifierViewType getModifierIconsViewType() {
+    return modifierIconViewType;
+  }
+
+  /** Cycles to the next view type. */
+  public void cycleModifierIconsViewType() {
+    modifierIconViewType =
+        ModifierViewType.values()[
+            (modifierIconViewType.ordinal() + 1) % ModifierViewType.values().length];
+  }
+
   /** Clears all units from the paintDangerRadiusUnits. */
-  void clearDangerRadiusUnits() {
+  public void clearDangerRadiusUnits() {
     paintDangerRadiusUnits.clear();
     dangerRadius = null;
   }

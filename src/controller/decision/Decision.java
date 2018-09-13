@@ -17,7 +17,8 @@ public final class Decision extends ArrayList<Choice> {
     NEW_ABILITY_DECISION,
     INFO_HOVER_DECISION,
     PLAYER_ACTIONS_DECISION,
-    END_OF_TURN_DECISION
+    END_OF_TURN_DECISION,
+    VIEW_OPTIONS_DECISION
   }
 
   /** True iff this choice will be layed out vertically, false otherwise. */

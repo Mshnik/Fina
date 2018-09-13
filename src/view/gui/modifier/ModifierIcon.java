@@ -1,6 +1,7 @@
 package view.gui.modifier;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import model.unit.Unit;
 import model.unit.modifier.Modifier;
@@ -28,16 +29,18 @@ public abstract class ModifierIcon implements Animatable {
    */
   private List<ModifierDescription> modifierDescriptions;
 
-  /** Display types for what subset of modifiers to show for a ModifierIcon. */
-  public enum DisplayType {
-    /** Show all visible modifiers. */
+  /** Filter types for what subset of modifiers to show for a ModifierIcon. */
+  public enum FilterType {
+    /** Show no modifiers. */
+    NONE,
+    /** Show all visible modifiers. Default */
     ALL_VISIBLE,
     /** Show only visible modifiers that have non-infinite duration. */
     ONLY_NON_INFINITE_VISIBLE
   }
 
-  /** The current display type for this ModifierIcon. */
-  private DisplayType displayType;
+  /** The current filterType type for this ModifierIcon. */
+  private FilterType filterType;
 
   /** The gamePanel this is drawing for. Reference kept so repaint events can occur. */
   final GamePanel gamePanel;
@@ -47,7 +50,7 @@ public abstract class ModifierIcon implements Animatable {
     this.gamePanel = gamePanel;
     this.unit = unit;
     this.modifierDescriptions = new ArrayList<>();
-    this.displayType = DisplayType.ALL_VISIBLE;
+    this.filterType = FilterType.ALL_VISIBLE;
 
     refreshModifiers();
   }
@@ -58,7 +61,10 @@ public abstract class ModifierIcon implements Animatable {
    */
   public void refreshModifiers() {
     List<Modifier> modifiers;
-    switch (displayType) {
+    switch (filterType) {
+      case NONE:
+        modifiers = Collections.emptyList();
+        break;
       case ALL_VISIBLE:
         modifiers = unit.getVisibleModifiers();
         break;
@@ -66,7 +72,7 @@ public abstract class ModifierIcon implements Animatable {
         modifiers = unit.getVisibleTemporaryModifiers();
         break;
       default:
-        throw new RuntimeException("Unexpected displayType " + displayType);
+        throw new RuntimeException("Unexpected filterType " + filterType);
     }
     modifierDescriptions = Modifiers.getModifierDescriptions(modifiers);
     if (hasModifiers()) {
@@ -74,10 +80,12 @@ public abstract class ModifierIcon implements Animatable {
     }
   }
 
-  /** Sets the displayType for this ModifierIcon. Also causes a refresh. */
-  public void setDisplayType(DisplayType displayType) {
-    this.displayType = displayType;
-    refreshModifiers();
+  /** Sets the filterType for this ModifierIcon. Also causes a refresh if this was a change. */
+  public void setFilterType(FilterType filterType) {
+    if (this.filterType != filterType) {
+      this.filterType = filterType;
+      refreshModifiers();
+    }
   }
 
   /** Returns true iff this has at least one modifier. */

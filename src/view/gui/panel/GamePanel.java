@@ -35,12 +35,14 @@ import model.util.ExpandableCloud;
 import view.gui.Frame;
 import view.gui.MatrixPanel;
 import view.gui.Paintable;
+import view.gui.ViewOptions;
+import view.gui.ViewOptions.ModifierViewType;
 import view.gui.decision.DecisionPanel;
 import view.gui.image.ImageIndex;
 import view.gui.image.ImageIndex.DrawingBarSegment;
 import view.gui.modifier.AnimatedModifierIcon;
 import view.gui.modifier.ModifierIcon;
-import view.gui.modifier.ModifierIcon.DisplayType;
+import view.gui.modifier.ModifierIcon.FilterType;
 
 /** Drawable wrapper for a model.board object */
 public final class GamePanel extends MatrixPanel<Tile> implements Paintable, ComponentListener {
@@ -75,9 +77,6 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
   /** Map of Unit -> ModifierIcon drawing for that unit. */
   private final Map<Unit, ModifierIcon> unitToModifierIconMap;
 
-  /** The current ModifierIcon DisplayType set for all ModifierIcons. */
-  private DisplayType modifierIconDisplayType;
-
   /** The DecisionPanel that is currently active. Null if none */
   private DecisionPanel decisionPanel;
 
@@ -102,7 +101,6 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
         Math.max(0, maxRows - f.getController().game.board.getHeight()));
     boardCursor = new BoardCursor(this);
     unitToModifierIconMap = new HashMap<>();
-    modifierIconDisplayType = DisplayType.ALL_VISIBLE;
     resizeTimer = null;
     setPreferredSize(new Dimension(getShowedCols() * cellSize(), getShowedRows() * cellSize()));
     addComponentListener(this);
@@ -158,26 +156,40 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     repaint();
   }
 
-  /** Removes the modifierIcon for the given unit, if any. */
-  private void removeModifierIconForUnit(Unit u) {
-    unitToModifierIconMap.remove(u);
-  }
-
   /** Creates a ModifierIcon for the given unit and adds it to the map, then returns it. */
-  private ModifierIcon createModifierIconFor(Unit u) {
+  private ModifierIcon createModifierIconFor(Unit u, FilterType modifierIconFilterType) {
     ModifierIcon modifierIcon = new AnimatedModifierIcon(this, u);
-    modifierIcon.setDisplayType(modifierIconDisplayType);
+    modifierIcon.setFilterType(modifierIconFilterType);
     getFrame().getAnimator().addAnimatable(modifierIcon);
     unitToModifierIconMap.put(u, modifierIcon);
     return modifierIcon;
   }
 
-  /** Sets the current ModifierIcon DisplayType and updates all existing panels. */
-  public void setModifierIconDisplayType(DisplayType modifierIconDisplayType) {
-    this.modifierIconDisplayType = modifierIconDisplayType;
-    for (ModifierIcon modifierIcon : unitToModifierIconMap.values()) {
-      modifierIcon.setDisplayType(modifierIconDisplayType);
+  /**
+   * Refreshes the modifierIcon for the given unit. Does nothing if the modifierIcon doesn't exist
+   * yet.
+   */
+  public void refreshModifierIconFor(Unit u) {
+    if (unitToModifierIconMap.containsKey(u)) {
+      unitToModifierIconMap.get(u).refreshModifiers();
     }
+  }
+
+  /**
+   * Cleans up modifierIcons. Given the set of units, removes all panels that relate to a unit not
+   * in the set.
+   */
+  private void cleanupModifierIcons(Set<Unit> units) {
+    unitToModifierIconMap
+        .keySet()
+        .stream()
+        .filter(u -> !units.contains(u))
+        .collect(Collectors.toSet())
+        .forEach(
+            u -> {
+              getFrame().getAnimator().removeAnimatable(unitToModifierIconMap.get(u));
+              unitToModifierIconMap.remove(u);
+            });
   }
 
   /** Paints this GamePanel, for use in the frame it is in. */
@@ -247,6 +259,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     int marginColLeft = marginX / 2;
     int marginColRight = marginX - marginColLeft;
     HashSet<Unit> units = new HashSet<>();
+    ViewOptions viewOptions = getFrame().getViewOptionsForPlayer(game.getMostRecentHumanPlayer());
 
     for (int row = 0; row < getShowedRows(); row++) {
       for (int col = 0; col < getShowedCols(); col++) {
@@ -271,12 +284,17 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
             ModifierIcon modifierIcon;
             if (unitToModifierIconMap.containsKey(unit)) {
               modifierIcon = unitToModifierIconMap.get(unit);
+              modifierIcon.setFilterType(viewOptions.getModifierIconsFilterType());
             } else {
-              modifierIcon = createModifierIconFor(unit);
+              modifierIcon = createModifierIconFor(unit, viewOptions.getModifierIconsFilterType());
             }
             if (game.isVisibleToMostRecentHumanPlayer(t)) {
               drawUnit(g2d, unit);
-              modifierIcon.paintComponent(g2d);
+              if (viewOptions.getModifierIconsViewType() == ModifierViewType.VIEW_ALL
+                  || viewOptions.getModifierIconsViewType() == ModifierViewType.CURSOR_ONLY
+                      && boardCursor.getElm() == unit.getLocation()) {
+                modifierIcon.paintComponent(g2d);
+              }
             }
           }
           if (getFrame().DEBUG) {
@@ -287,17 +305,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
       }
     }
 
-    // Clean up unused modifierIcons.
-    unitToModifierIconMap
-        .keySet()
-        .stream()
-        .filter(u -> !units.contains(u))
-        .collect(Collectors.toSet())
-        .forEach(
-            u -> {
-              getFrame().getAnimator().removeAnimatable(unitToModifierIconMap.get(u));
-              unitToModifierIconMap.remove(u);
-            });
+    cleanupModifierIcons(units);
   }
 
   /** Draws the given tile. Doesn't do any model.unit drawing. */

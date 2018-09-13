@@ -46,6 +46,7 @@ import model.unit.commander.DummyCommander;
 import model.unit.modifier.Modifiers;
 import model.unit.modifier.Modifiers.ModifierDescription;
 import view.gui.Frame;
+import view.gui.ViewOptions;
 import view.gui.decision.DecisionCursor;
 import view.gui.panel.BoardCursor;
 import view.gui.panel.GamePanel;
@@ -73,9 +74,15 @@ public final class GameController {
   public static final String BUILD = "Build";
   /** Text representing casting (Using active abilities) */
   public static final String CAST = "Magic";
-  /** Text Suffix for clearing the danger radius for all units. */
+  /** Text for altering view options. */
+  private static final String ALTER_VIEW_OPTIONS = "View Options";
+  /** Text for the current ModifierIcon filter setting. */
+  private static final String MODIFIER_ICON_FILTER = "Modifier Icon Filter";
+  /** Text for the current ModifierIcon display setting. */
+  private static final String MODIFIER_ICON_VIEW = "Modifier Icon Display";
+  /** Text for clearing the danger radius for all units. */
   private static final String CLEAR_DANGER_RADIUS = "Clear Danger Zone";
-  /** Text Suffix for toggling showing / unshowing the danger radius for this unit. */
+  /** Text for toggling showing / unshowing the danger radius for this unit. */
   private static final String TOGGLE_DANGER_RADIUS = "Toggle Danger Zone";
   /** Text for ending the turn. */
   private static final String END_TURN = "End Turn";
@@ -505,13 +512,8 @@ public final class GameController {
             DecisionType.PLAYER_ACTIONS_DECISION,
             false,
             true,
-            new Choice(true, GameController.END_TURN),
-            new Choice(
-                game.getMostRecentHumanPlayer() != null
-                    && frame
-                        .getViewOptionsForPlayer(game.getMostRecentHumanPlayer())
-                        .hasNonEmptyDangerRadius(),
-                GameController.CLEAR_DANGER_RADIUS));
+            new Choice(game.getMostRecentHumanPlayer() != null, GameController.END_TURN),
+            new Choice(game.getMostRecentHumanPlayer() != null, GameController.ALTER_VIEW_OPTIONS));
     addToggle(Toggle.DECISION);
     getGamePanel().fixDecisionPanel("Player", game.getCurrentPlayer(), decision, true);
     getGamePanel().moveDecisionPanel();
@@ -525,8 +527,8 @@ public final class GameController {
       case END_TURN:
         startEndTurnDecision();
         break;
-      case CLEAR_DANGER_RADIUS:
-        frame.clearDangerRadiusForPlayer(game.getMostRecentHumanPlayer());
+      case ALTER_VIEW_OPTIONS:
+        startViewOptionsDecision();
         break;
       default:
         throw new RuntimeException("Don't know how to handle this choice " + choice);
@@ -557,6 +559,54 @@ public final class GameController {
       case GameController.CONFIRM:
         game.getCurrentPlayer().endTurn();
         break;
+    }
+  }
+
+  /** Starts a decision panel for view options. */
+  private void startViewOptionsDecision() {
+    ViewOptions viewOptions = frame.getViewOptionsForPlayer(game.getMostRecentHumanPlayer());
+    decision =
+        new Decision(
+            DecisionType.VIEW_OPTIONS_DECISION,
+            false,
+            true,
+            new Choice(
+                true,
+                MODIFIER_ICON_VIEW + ": " + viewOptions.getModifierIconsViewType(),
+                viewOptions),
+            new Choice(
+                true,
+                MODIFIER_ICON_FILTER + ": " + viewOptions.getModifierIconsFilterType(),
+                viewOptions),
+            new Choice(
+                viewOptions.hasNonEmptyDangerRadius(),
+                GameController.CLEAR_DANGER_RADIUS,
+                viewOptions));
+    addToggle(Toggle.DECISION);
+    getGamePanel()
+        .fixDecisionPanel("Player > View Options", game.getCurrentPlayer(), decision, true);
+    getGamePanel().moveDecisionPanel();
+  }
+
+  /** Processes the given view options decision. */
+  void processViewOptionsDecision(Choice c) {
+    String choice = c.getMessage().replaceAll(":.*", "");
+    ViewOptions viewOptions = (ViewOptions) c.getVal();
+    cancelDecision();
+    switch (choice) {
+      case CLEAR_DANGER_RADIUS:
+        viewOptions.clearDangerRadiusUnits();
+        break;
+      case MODIFIER_ICON_VIEW:
+        viewOptions.cycleModifierIconsViewType();
+        startViewOptionsDecision();
+        break;
+      case MODIFIER_ICON_FILTER:
+        viewOptions.cycleModifierIconsDisplayType();
+        startViewOptionsDecision();
+        break;
+      default:
+        throw new RuntimeException("Don't know how to handle this choice " + choice);
     }
   }
 

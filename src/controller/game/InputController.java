@@ -142,6 +142,9 @@ public final class InputController {
             case END_OF_TURN_DECISION:
               gc.processEndTurnDecision(decision);
               break;
+            case VIEW_OPTIONS_DECISION:
+              gc.processViewOptionsDecision(decision);
+              break;
             case SUMMON_DECISION:
               boolean startedDecision = gc.startSummonSelection(decision);
               if (startedDecision) {
@@ -175,6 +178,10 @@ public final class InputController {
                 || gc.getDecisionType() == DecisionType.INFO_HOVER_DECISION) {
               gc.cancelDecision();
               gc.startActionDecision();
+            } else if (gc.getDecisionType() == DecisionType.END_OF_TURN_DECISION
+                || gc.getDecisionType() == DecisionType.VIEW_OPTIONS_DECISION) {
+              gc.cancelDecision();
+              gc.startPlayerActionDecision();
             } else {
               gc.cancelDecision();
             }
