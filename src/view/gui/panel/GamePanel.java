@@ -14,8 +14,12 @@ import java.awt.Stroke;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.swing.Timer;
 import model.board.Terrain;
 import model.board.Tile;
@@ -34,6 +38,9 @@ import view.gui.Paintable;
 import view.gui.decision.DecisionPanel;
 import view.gui.image.ImageIndex;
 import view.gui.image.ImageIndex.DrawingBarSegment;
+import view.gui.modifier.AnimatedModifierIcon;
+import view.gui.modifier.ModifierIcon;
+import view.gui.modifier.ModifierIcon.DisplayType;
 
 /** Drawable wrapper for a model.board object */
 public final class GamePanel extends MatrixPanel<Tile> implements Paintable, ComponentListener {
@@ -65,6 +72,12 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
   /** The BoardCursor for this GamePanel */
   public final BoardCursor boardCursor;
 
+  /** Map of Unit -> ModifierIcon drawing for that unit. */
+  private final Map<Unit, ModifierIcon> unitToModifierIconMap;
+
+  /** The current ModifierIcon DisplayType set for all ModifierIcons. */
+  private DisplayType modifierIconDisplayType;
+
   /** The DecisionPanel that is currently active. Null if none */
   private DecisionPanel decisionPanel;
 
@@ -88,6 +101,8 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
         Math.max(0, maxCols - f.getController().game.board.getWidth()),
         Math.max(0, maxRows - f.getController().game.board.getHeight()));
     boardCursor = new BoardCursor(this);
+    unitToModifierIconMap = new HashMap<>();
+    modifierIconDisplayType = DisplayType.ALL_VISIBLE;
     resizeTimer = null;
     setPreferredSize(new Dimension(getShowedCols() * cellSize(), getShowedRows() * cellSize()));
     addComponentListener(this);
@@ -143,7 +158,29 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     repaint();
   }
 
-  /** Paints this boardpanel, for use in the frame it is in. */
+  /** Removes the modifierIcon for the given unit, if any. */
+  private void removeModifierIconForUnit(Unit u) {
+    unitToModifierIconMap.remove(u);
+  }
+
+  /** Creates a ModifierIcon for the given unit and adds it to the map, then returns it. */
+  private ModifierIcon createModifierIconFor(Unit u) {
+    ModifierIcon modifierIcon = new AnimatedModifierIcon(this, u);
+    modifierIcon.setDisplayType(modifierIconDisplayType);
+    getFrame().getAnimator().addAnimatable(modifierIcon);
+    unitToModifierIconMap.put(u, modifierIcon);
+    return modifierIcon;
+  }
+
+  /** Sets the current ModifierIcon DisplayType and updates all existing panels. */
+  public void setModifierIconDisplayType(DisplayType modifierIconDisplayType) {
+    this.modifierIconDisplayType = modifierIconDisplayType;
+    for (ModifierIcon modifierIcon : unitToModifierIconMap.values()) {
+      modifierIcon.setDisplayType(modifierIconDisplayType);
+    }
+  }
+
+  /** Paints this GamePanel, for use in the frame it is in. */
   @Override
   public void paintComponent(Graphics g) {
     Game game = controller.game;
@@ -199,7 +236,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     }
   }
 
-  /** Draws the board of tiles and units. */
+  /** Draws the board of tiles and units. Also creates / tears down ModifierIcons as needed. */
   private void drawTilesAndUnits(Graphics2D g2d, Game game) {
     // Paint the model.board itself, painting the portion within
     // [scrollY ... scrollY + maxY - 1],
@@ -209,6 +246,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     int marginRowBottom = marginY - marginRowTop;
     int marginColLeft = marginX / 2;
     int marginColRight = marginX - marginColLeft;
+    HashSet<Unit> units = new HashSet<>();
 
     for (int row = 0; row < getShowedRows(); row++) {
       for (int col = 0; col < getShowedCols(); col++) {
@@ -227,8 +265,19 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
           Tile t =
               game.board.getTileAt(row + scrollY - marginRowTop, col + scrollX - marginColLeft);
           drawTile(g2d, t);
-          if (t.isOccupied() && game.isVisibleToMostRecentHumanPlayer(t)) {
-            drawUnit(g2d, t.getOccupyingUnit());
+          if (t.isOccupied()) {
+            Unit unit = t.getOccupyingUnit();
+            units.add(unit);
+            ModifierIcon modifierIcon;
+            if (unitToModifierIconMap.containsKey(unit)) {
+              modifierIcon = unitToModifierIconMap.get(unit);
+            } else {
+              modifierIcon = createModifierIconFor(unit);
+            }
+            if (game.isVisibleToMostRecentHumanPlayer(t)) {
+              drawUnit(g2d, unit);
+              modifierIcon.paintComponent(g2d);
+            }
           }
           if (getFrame().DEBUG) {
             g2d.setColor(Color.RED);
@@ -237,6 +286,18 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
         }
       }
     }
+
+    // Clean up unused modifierIcons.
+    unitToModifierIconMap
+        .keySet()
+        .stream()
+        .filter(u -> !units.contains(u))
+        .collect(Collectors.toSet())
+        .forEach(
+            u -> {
+              getFrame().getAnimator().removeAnimatable(unitToModifierIconMap.get(u));
+              unitToModifierIconMap.remove(u);
+            });
   }
 
   /** Draws the given tile. Doesn't do any model.unit drawing. */

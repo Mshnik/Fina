@@ -403,6 +403,17 @@ public abstract class Unit implements Stringable {
    */
   public abstract List<Modifier> getVisibleModifiers();
 
+  /**
+   * Returns the set of visible, temporary modifiers. Specifically, modifiers from
+   * getVisibleModifiers() that have a non-infinite duration.
+   */
+  public List<Modifier> getVisibleTemporaryModifiers() {
+    return getVisibleModifiers()
+        .stream()
+        .filter(m -> !m.isInfiniteDuration())
+        .collect(Collectors.toList());
+  }
+
   /** Returns true if this unit has a modifier matching the given name, false otherwise. */
   public boolean hasModifierByName(Modifier modifier) {
     return getModifierByName(modifier.name) != null;

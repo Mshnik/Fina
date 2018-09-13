@@ -28,7 +28,7 @@ public final class Animator {
   }
 
   /** Adds the given Animatable to this Animator, and starts it animating. */
-  void addAnimatable(final Animatable a) {
+  public void addAnimatable(final Animatable a) {
     if (!animates.contains(a)) {
       final Timer t = new Timer(a.getStateLength(), null);
       t.addActionListener(

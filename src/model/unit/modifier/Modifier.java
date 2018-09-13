@@ -161,6 +161,11 @@ public abstract class Modifier implements Stringable {
     return unit == null;
   }
 
+  /** Returns true iff this Modifier has infinite duration. */
+  public boolean isInfiniteDuration () {
+    return remainingTurns == Integer.MAX_VALUE;
+  }
+
   /** Returns the remaining turns of this modifier */
   public int getRemainingTurns() {
     return remainingTurns;
@@ -178,7 +183,7 @@ public abstract class Modifier implements Stringable {
    * @return true iff this is is now dead (remainingTurns <= 0)
    */
   public boolean decRemainingTurns() {
-    if (remainingTurns == Integer.MAX_VALUE || isDummy()) return false;
+    if (isInfiniteDuration() || isDummy()) return false;
     remainingTurns--;
     return remainingTurns <= 0;
   }

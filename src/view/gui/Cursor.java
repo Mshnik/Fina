@@ -2,9 +2,11 @@ package view.gui;
 
 import controller.audio.AudioController;
 import controller.game.MatrixElement;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import model.board.Direction;
-
-import java.awt.*;
 
 /**
  * An abstract cursor implementation that is able to select things in any matrix
@@ -156,12 +158,6 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>>
     }
   }
 
-  /** Cursors have a state length of some fraction of a second. */
-  @Override
-  public int getStateLength() {
-    return 75;
-  }
-
   /** Cursors have 7 states */
   @Override
   public int getStateCount() {
@@ -172,6 +168,7 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>>
   @Override
   public void setState(int state) {
     animationState = state % getStateCount();
+    panel.getFrame().repaint();
   }
 
   /** Returns the animation state this cursor is on */
