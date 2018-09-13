@@ -1,5 +1,6 @@
 package view.gui.modifier;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import model.board.Tile;
@@ -9,6 +10,10 @@ import view.gui.panel.GamePanel;
 
 /** ModifierIcon that cycles through icons with animation. */
 public final class AnimatedModifierIcon extends ModifierIcon {
+
+  /** Color to draw as a background behind a AnimatedModifierIcon. */
+  private static final Color BACKGROUND_COLOR =
+      new Color(246 / 255f, 246 / 255f, 246 / 255f, 0.75f);
 
   /** The state of animation this is currently on. */
   private int animationState;
@@ -45,14 +50,17 @@ public final class AnimatedModifierIcon extends ModifierIcon {
     if (hasModifiers()) {
       Graphics2D g2d = (Graphics2D) g;
       Tile tile = unit.getLocation();
-      int tileX = gamePanel.getXPosition(tile);
-      int tileY = gamePanel.getYPosition(tile);
-      int iconSize = 24;
+      int iconSize = gamePanel.cellSize() / 4;
+      int margin = iconSize / 6;
+      int xPosition = gamePanel.getXPosition(tile);
+      int yPosition = gamePanel.getYPosition(tile);
 
+      g2d.setColor(BACKGROUND_COLOR);
+      g2d.fillRect(xPosition, yPosition, iconSize + margin * 2, iconSize + margin * 2);
       g2d.drawImage(
           ImageIndex.imageForModifierDescription(getModifiers().get(getState())),
-          tileX,
-          tileY,
+          xPosition + margin,
+          yPosition + margin,
           iconSize,
           iconSize,
           null);
