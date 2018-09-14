@@ -17,36 +17,6 @@ import model.unit.stat.StatType;
 public final class Modifiers {
   private Modifiers() {}
 
-  /** A list of all modifier descriptions in the game. */
-  private static final List<ModifierDescription> MODIFIER_DESCRIPTIONS;
-
-  static {
-    ArrayList<ModifierDescription> list = new ArrayList<>();
-    list.add(new ModifierDescription(armored(0)));
-    list.add(new ModifierDescription(blinded(0)));
-    list.add(new ModifierDescription(bloodlust(0)));
-    list.add(new ModifierDescription(bornToFight(0)));
-    list.add(new ModifierDescription(communications(0, 0)));
-    list.add(new ModifierDescription(disappearance()));
-    list.add(new ModifierDescription(eagleEye()));
-    list.add(new ModifierDescription(elusive(0)));
-    list.add(new ModifierDescription(farsight(0)));
-    list.add(new ModifierDescription(flight()));
-    list.add(new ModifierDescription(hexproof(0)));
-    list.add(new ModifierDescription(pathfinder(0)));
-    list.add(new ModifierDescription(patience(0)));
-    list.add(new ModifierDescription(shielded(0)));
-    list.add(new ModifierDescription(siege(0)));
-    list.add(new ModifierDescription(sluggish(0)));
-    list.add(new ModifierDescription(strengthened(0)));
-    list.add(new ModifierDescription(tenacity(0)));
-    list.add(new ModifierDescription(toughness(0)));
-    list.add(new ModifierDescription(trailblazer(0)));
-    list.add(new ModifierDescription(quickness(0)));
-    list.add(new ModifierDescription(weakened(0)));
-    MODIFIER_DESCRIPTIONS = Collections.unmodifiableList(list);
-  }
-
   /** A description of a modifier or bundle, for showing in UI. */
   public static final class ModifierDescription {
     private final String name;
@@ -100,11 +70,6 @@ public final class Modifiers {
           + description
           + getTurnsRemainingString();
     }
-  }
-
-  /** Returns a list of all modifier descriptions. */
-  public static List<ModifierDescription> getModifierDescriptions() {
-    return MODIFIER_DESCRIPTIONS;
   }
 
   /** Returns a list of all modifier descriptions for the given list of modifiers */
@@ -410,6 +375,21 @@ public final class Modifiers {
             StatType.MOVEMENT_TOTAL,
             StatModifier.ModificationType.ADD,
             -totalMovementDecrease)
+        .uniqueCopy();
+  }
+
+  /** Modifier that reduces incoming ranged damage from units that don't have siege */
+  public static Modifier solid(double damageReductionPercent) {
+    return new CustomModifier(
+            "Solid",
+            "spell_6_4.png",
+            "This unit takes -x%- less damage from ranged attacks from units without Siege",
+            damageReductionPercent,
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            true,
+            true,
+            true)
         .uniqueCopy();
   }
 

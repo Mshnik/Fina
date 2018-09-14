@@ -252,11 +252,22 @@ public final class Combat {
 
   /** Returns the sum of all percentage damage reduction for the defender, for the given combat. */
   private double getDefenderPercentageDamageReduction() {
-    return defender
-        .getModifiersByName(isRanged() ? Modifiers.elusive(0) : Modifiers.armored(0))
-        .stream()
-        .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
-        .sum();
+    double basePercentDamageReduction =
+        defender
+            .getModifiersByName(isRanged() ? Modifiers.elusive(0) : Modifiers.armored(0))
+            .stream()
+            .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
+            .sum();
+    if (isRanged() && !attacker.hasModifierByName(Modifiers.siege(0))) {
+      return basePercentDamageReduction
+          + defender
+              .getModifiersByName(Modifiers.solid(0))
+              .stream()
+              .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
+              .sum();
+    } else {
+      return basePercentDamageReduction;
+    }
   }
 
   /** Returns the sum of all damage reduction for the defender. */

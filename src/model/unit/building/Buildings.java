@@ -161,6 +161,7 @@ public final class Buildings {
             default:
               throw new RuntimeException("Got unknown building type: " + buildingType);
           }
+          Modifiers.solid(.35).clone(building);
           if (hasEagleEye) {
             Modifiers.eagleEye().clone(building);
           }
