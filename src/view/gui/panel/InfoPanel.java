@@ -43,10 +43,10 @@ public final class InfoPanel extends JPanel {
   private static final long serialVersionUID = 1L;
 
   /** The Height of the InfoPanel */
-  protected static final int HEIGHT = 125;
+  private static final int HEIGHT = 125;
 
   /** The color of the border surrounding the headerPanel */
-  protected static final Color BORDER_COLOR = new Color(74, 47, 12);
+  private static final Color BORDER_COLOR = new Color(96, 66, 5);
 
   /** Distance (in pixels) between the left of the InfoPanel and the left of the bars */
   private static final int XMARGIN = 25;
@@ -165,14 +165,14 @@ public final class InfoPanel extends JPanel {
     // Background painting
     if (getHeight() == 0) return;
     for (int i = 0; i <= getWidth(); i += getHeight()) {
-      g2d.drawImage(ImageIndex.SANDSTONE, i, 0, getHeight(), getHeight(), null);
+      g2d.drawImage(ImageIndex.PARCHMENT, i, 0, getHeight(), getHeight(), null);
     }
     g2d.setColor(BORDER_COLOR);
     int width = 7;
     g2d.setStroke(new BasicStroke(width));
     g2d.drawRect(width / 2, width / 2, getWidth() - width, getHeight() - width);
 
-    g2d.setColor(Color.black);
+    g2d.setColor(Color.BLACK);
     g2d.setRenderingHint(
         RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
     g2d.setFont(BIG_FONT);

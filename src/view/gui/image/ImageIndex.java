@@ -25,8 +25,6 @@ import model.unit.building.Building;
 import model.unit.combatant.Combatant;
 import model.unit.combatant.Combatant.CombatantClass;
 import model.unit.commander.Commander;
-import model.unit.modifier.Modifier;
-import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.Modifiers.ModifierDescription;
 import view.gui.panel.GamePanel;
 
@@ -77,6 +75,10 @@ public final class ImageIndex {
   private static BufferedImage ANCIENT_GROUND;
   /** The image for sandstone texture */
   public static BufferedImage SANDSTONE;
+  /** The image for mosaic texture */
+  public static BufferedImage MOSAIC;
+  /** The image for parchment texture */
+  public static BufferedImage PARCHMENT;
 
   // UNIT ICONS
 
@@ -119,6 +121,8 @@ public final class ImageIndex {
     try {
       // Assorted other
       SANDSTONE = ImageIO.read(new File(IMAGE_ROOT + "sandstone.jpg"));
+      MOSAIC = ImageIO.read(new File(IMAGE_ROOT + "mosaic_seaml_1_590.jpg"));
+      PARCHMENT = ImageIO.read(new File(IMAGE_ROOT + "parchment.jpg"));
 
       // Terrain
       BufferedImage terrainSheet =

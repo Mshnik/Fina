@@ -30,7 +30,7 @@ public final class HeaderPanel extends JPanel {
   private static final int HEIGHT = 50;
 
   /** The color of the border surrounding the headerPanel */
-  private static final Color BORDER_COLOR = new Color(74, 47, 12);
+  private static final Color BORDER_COLOR = new Color(96, 66, 5);
 
   /** Distance (in pixels) between the top of the HeaderPanel and the top of the bars */
   private static final int MARGIN = 15;
@@ -100,15 +100,15 @@ public final class HeaderPanel extends JPanel {
     Graphics2D g2d = (Graphics2D) g;
     if (getHeight() == 0) return;
     for (int i = 0; i <= getWidth(); i += getHeight()) {
-      g2d.drawImage(ImageIndex.SANDSTONE, i, 0, getHeight(), getHeight(), null);
+      g2d.drawImage(ImageIndex.PARCHMENT, i, 0, getHeight(), getHeight(), null);
     }
     g2d.setColor(BORDER_COLOR);
     int width = 6;
     g2d.setStroke(new BasicStroke(width));
     g2d.drawRect(width / 2, width / 2, getWidth() - width, getHeight() - width);
 
+    g2d.setColor(Color.BLACK);
     if (frame.DEBUG) {
-      g2d.setColor(Color.black);
       g2d.drawString(frame.getController().getToggle().toString(), MARGIN, MARGIN);
     }
     g2d.setRenderingHint(
