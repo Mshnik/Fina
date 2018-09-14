@@ -3,6 +3,7 @@ package view.gui.modifier;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.RoundRectangle2D;
 import model.board.Tile;
 import model.unit.Unit;
 import view.gui.image.ImageIndex;
@@ -56,7 +57,9 @@ public final class AnimatedModifierIcon extends ModifierIcon {
       int yPosition = gamePanel.getYPosition(tile);
 
       g2d.setColor(BACKGROUND_COLOR);
-      g2d.fillRect(xPosition, yPosition, iconSize + margin * 2, iconSize + margin * 2);
+      g2d.fill(
+          new RoundRectangle2D.Float(
+              xPosition, yPosition, iconSize + margin * 2, iconSize + margin * 2, margin*2, margin*2));
       g2d.drawImage(
           ImageIndex.imageForModifierDescription(getModifiers().get(getState())),
           xPosition + margin,
