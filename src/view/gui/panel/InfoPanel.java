@@ -653,7 +653,7 @@ public final class InfoPanel extends JPanel {
         builder.append(' ');
         index++;
       }
-      if (index <= startIndex) {
+      if (index <= startIndex + 1) {
         throw new RuntimeException("Word is too big for line " + words[startIndex]);
       }
 
