@@ -100,7 +100,7 @@ public abstract class ModifierIcon implements Animatable {
 
   @Override
   public int getStateLength() {
-    return 1050;
+    return 20;
   }
 
   @Override

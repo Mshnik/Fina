@@ -1,11 +1,10 @@
 package view.gui;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import javax.swing.Timer;
 
 /**
  * An instance holds the timers for changing the animations of Animatable objects with animation
@@ -15,46 +14,88 @@ import java.util.Set;
  */
 public final class Animator {
 
+  /** Length of an animation frame in milliseconds. */
+  private static final int FRAME_LENGTH_IN_MILLIS = 50;
+
   /** True if this animator is paused - stop animating all things while this is true. */
-  public boolean paused;
+  private boolean paused;
 
   /** Animatables to that are animated by this */
-  private Set<Animatable> animates;
+  private final Map<Animatable, Integer> animates;
+
+  private final Timer timer;
 
   /** Constructor for an Animator */
   Animator() {
     paused = false;
-    animates = Collections.synchronizedSet(new HashSet<Animatable>());
+    animates = Collections.synchronizedMap(new HashMap<>());
+    timer = new Timer(FRAME_LENGTH_IN_MILLIS, e -> animate());
+    timer.start();
+  }
+
+  /**
+   * Callback that causes animation. Animates all animatables at 0 remaining frame counts and resets
+   * to max, then decrements remaining frame count for each animatable
+   */
+  private void animate() {
+    synchronized (animates) {
+      // First animate animatables at 0 frames remaining and reset to max.
+      animates
+          .entrySet()
+          .stream()
+          .filter(e -> e.getValue() == 0)
+          .map(Entry::getKey)
+          .filter(Animatable::isActive)
+          .forEach(
+              a -> {
+                a.advanceState();
+                animates.put(a, a.getStateLength());
+              });
+
+      // Then decrement all animatables.
+      animates
+          .keySet()
+          .stream()
+          .filter(Animatable::isActive)
+          .forEach(a -> animates.put(a, animates.get(a) - 1));
+    }
+    timer.restart();
+  }
+
+  /** Sets the paused state. If this causes a change, resumes / stops the timer. */
+  public void setPaused(boolean pause) {
+    if (pause == this.paused) {
+      return;
+    }
+
+    this.paused = pause;
+    if (paused) {
+      timer.stop();
+    } else {
+      timer.start();
+    }
   }
 
   /** Adds the given Animatable to this Animator, and starts it animating. */
   public void addAnimatable(final Animatable a) {
-    if (!animates.contains(a)) {
-      final Timer t = new Timer(a.getStateLength(), null);
-      t.addActionListener(
-          new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              // Check if this is still to be animated. If not, exit.
-              if (!animates.contains(a)) return;
-              if (!paused) {
-                if (a.isActive()) a.advanceState();
-              }
-              t.restart();
-            }
-          });
-      animates.add(a);
-      t.start();
+    synchronized (animates) {
+      if (!animates.containsKey(a)) {
+        animates.put(a, a.getStateLength());
+      }
     }
   }
 
   /** Removes the given Animatable from this Animator */
   public void removeAnimatable(Animatable a) {
-    animates.remove(a);
+    synchronized (animates) {
+      animates.remove(a);
+    }
   }
 
   /** Clears all animatables. */
   public void clearAnimatables() {
-    animates.clear();
+    synchronized (animates) {
+      animates.clear();
+    }
   }
 }

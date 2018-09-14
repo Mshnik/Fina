@@ -100,7 +100,7 @@ public final class Frame extends JFrame {
         KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.META_DOWN_MASK));
     newGameMenuItem.addActionListener(
         e -> {
-          animator.paused = true;
+          animator.setPaused(true);
           NewGameOptions newGameOptions = NewGameSelector.getNewGame(this);
           if (!newGameOptions.cancelled) {
             controller.loadAndKillThis(
@@ -109,7 +109,7 @@ public final class Frame extends JFrame {
                 newGameOptions.fogOfWar,
                 newGameOptions.startingCommanderLevel);
           } else {
-            animator.paused = false;
+            animator.setPaused(false);
           }
         });
     gameMenu.add(newGameMenuItem);
