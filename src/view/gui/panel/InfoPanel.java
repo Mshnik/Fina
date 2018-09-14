@@ -4,9 +4,11 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -417,7 +419,8 @@ public final class InfoPanel extends JPanel {
         modifierIconSize,
         modifierIconSize,
         null);
-    g2d.drawString(modifierDescription.toString(), x + modifierIconSize + 5, y);
+    drawStringAsMultilineText(
+        g2d, modifierDescription.toString(), x + modifierIconSize + 5, y, 600);
   }
 
   /** Draws a building's effect at the given x,y. */
@@ -428,16 +431,19 @@ public final class InfoPanel extends JPanel {
       return;
     }
 
+    int maxDescriptionWidth = 250;
     if (building instanceof PlayerModifierBuilding
         || building instanceof StartOfTurnEffectBuilding
         || building instanceof SummonerBuilding) {
-      g2d.drawString(effect.toString(), x, y);
+      drawStringAsMultilineText(g2d, effect.toString(), x, y, maxDescriptionWidth);
     } else if (building instanceof AllUnitModifierBuilding) {
       ModifierBundle bundle = (ModifierBundle) effect;
-      g2d.drawString("All your Units get " + bundle.toStatString(), x, y);
+      drawStringAsMultilineText(
+          g2d, "All your Units get " + bundle.toStatString(), x, y, maxDescriptionWidth);
     } else if (building instanceof CommanderModifierBuilding) {
       ModifierBundle bundle = (ModifierBundle) effect;
-      g2d.drawString("Your commander gets " + bundle.toStatString(), x, y);
+      drawStringAsMultilineText(
+          g2d, "Your commander gets " + bundle.toStatString(), x, y, maxDescriptionWidth);
     }
   }
 
@@ -628,5 +634,37 @@ public final class InfoPanel extends JPanel {
     y += MEDIUM_FONT.getSize();
     // TODO
     g2d.drawString("TODO", x, y);
+  }
+
+  /**
+   * Draws the given text on multiple lines, splitting by word and fitting within the given
+   * maxWidth.
+   */
+  private void drawStringAsMultilineText(Graphics2D g2d, String text, int x, int y, int maxWidth) {
+    FontMetrics fontMetrics = g2d.getFontMetrics();
+    String[] words = text.split(" ");
+
+    int index = 0;
+    while (index < words.length) {
+      int startIndex = index;
+      StringBuilder builder = new StringBuilder();
+      while (index < words.length && fontMetrics.stringWidth(builder.toString()) <= maxWidth) {
+        builder.append(words[index]);
+        builder.append(' ');
+        index++;
+      }
+      if (index <= startIndex) {
+        throw new RuntimeException("Word is too big for line " + words[startIndex]);
+      }
+
+      g2d.drawString(
+          Arrays.stream(words)
+              .skip(startIndex)
+              .limit(index - startIndex)
+              .collect(Collectors.joining(" ")),
+          x,
+          y);
+      y += fontMetrics.getHeight();
+    }
   }
 }
