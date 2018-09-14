@@ -313,6 +313,7 @@ public final class Frame extends JFrame {
   public void startTurnFor(Player p) {
     gamePanel.boardCursor.hide = false;
     if (p.isLocalHumanPlayer()) {
+      gamePanel.recreateModifierIconsForViewOptions(viewOptionsMap.get(p.index));
       gamePanel.boardCursor.setElm(p.getCommander().getLocation());
       gamePanel.boardCursor.moved();
     }

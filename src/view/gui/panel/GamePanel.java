@@ -40,9 +40,7 @@ import view.gui.ViewOptions.ModifierViewType;
 import view.gui.decision.DecisionPanel;
 import view.gui.image.ImageIndex;
 import view.gui.image.ImageIndex.DrawingBarSegment;
-import view.gui.modifier.AnimatedModifierIcon;
 import view.gui.modifier.ModifierIcon;
-import view.gui.modifier.ModifierIcon.FilterType;
 
 /** Drawable wrapper for a model.board object */
 public final class GamePanel extends MatrixPanel<Tile> implements Paintable, ComponentListener {
@@ -156,13 +154,17 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     repaint();
   }
 
-  /** Creates a ModifierIcon for the given unit and adds it to the map, then returns it. */
-  private ModifierIcon createModifierIconFor(Unit u, FilterType modifierIconFilterType) {
-    ModifierIcon modifierIcon = new AnimatedModifierIcon(this, u);
-    modifierIcon.setFilterType(modifierIconFilterType);
-    getFrame().getAnimator().addAnimatable(modifierIcon);
-    unitToModifierIconMap.put(u, modifierIcon);
-    return modifierIcon;
+  /**
+   * Recreates all modifierIcons for the given viewOptions. Should be called at the start of turn
+   * and if a player changes their view options.
+   */
+  public void recreateModifierIconsForViewOptions(ViewOptions viewOptions) {
+    for (Unit u : unitToModifierIconMap.keySet()) {
+      getFrame().getAnimator().removeAnimatable(unitToModifierIconMap.get(u));
+      ModifierIcon modifierIcon = viewOptions.createModifierIconFor(this, u);
+      getFrame().getAnimator().addAnimatable(modifierIcon);
+      unitToModifierIconMap.put(u, modifierIcon);
+    }
   }
 
   /**
@@ -286,7 +288,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
               modifierIcon = unitToModifierIconMap.get(unit);
               modifierIcon.setFilterType(viewOptions.getModifierIconsFilterType());
             } else {
-              modifierIcon = createModifierIconFor(unit, viewOptions.getModifierIconsFilterType());
+              modifierIcon = viewOptions.createModifierIconFor(this, unit);
+              getFrame().getAnimator().addAnimatable(modifierIcon);
+              unitToModifierIconMap.put(unit, modifierIcon);
             }
             if (game.isVisibleToMostRecentHumanPlayer(t)) {
               drawUnit(g2d, unit);

@@ -76,6 +76,8 @@ public final class GameController {
   public static final String CAST = "Magic";
   /** Text for altering view options. */
   private static final String ALTER_VIEW_OPTIONS = "View Options";
+  /** Text for the current ModifierIcon type setting. */
+  private static final String MODIFIER_ICON_TYPE = "Modifier Icon TYPE";
   /** Text for the current ModifierIcon filter setting. */
   private static final String MODIFIER_ICON_FILTER = "Modifier Icon Filter";
   /** Text for the current ModifierIcon display setting. */
@@ -571,6 +573,8 @@ public final class GameController {
             false,
             true,
             new Choice(
+                true, MODIFIER_ICON_TYPE + ": " + viewOptions.getModifierIconType(), viewOptions),
+            new Choice(
                 true,
                 MODIFIER_ICON_VIEW + ": " + viewOptions.getModifierIconsViewType(),
                 viewOptions),
@@ -596,6 +600,11 @@ public final class GameController {
     switch (choice) {
       case CLEAR_DANGER_RADIUS:
         viewOptions.clearDangerRadiusUnits();
+        break;
+      case MODIFIER_ICON_TYPE:
+        viewOptions.cycleModifierIconType();
+        frame.getGamePanel().recreateModifierIconsForViewOptions(viewOptions);
+        startViewOptionsDecision();
         break;
       case MODIFIER_ICON_VIEW:
         viewOptions.cycleModifierIconsViewType();

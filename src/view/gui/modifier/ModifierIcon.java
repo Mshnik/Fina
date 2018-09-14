@@ -1,5 +1,6 @@
 package view.gui.modifier;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +18,11 @@ import view.gui.panel.GamePanel;
  */
 public abstract class ModifierIcon implements Animatable {
 
+
+  /** Color to draw as a background behind a ModifierIcon. */
+  static final Color BACKGROUND_COLOR =
+      new Color(246 / 255f, 246 / 255f, 246 / 255f, 0.75f);
+
   /**
    * The unit this ModifierIcon is painting modifiers for. Should be a unit on the board, not in a
    * menu.
@@ -27,7 +33,7 @@ public abstract class ModifierIcon implements Animatable {
    * The modifier descriptions this should paint. Will be recomputed whenever the modifiers on the
    * unit changes.
    */
-  private List<ModifierDescription> modifierDescriptions;
+  List<ModifierDescription> modifierDescriptions;
 
   /** Filter types for what subset of modifiers to show for a ModifierIcon. */
   public enum FilterType {
@@ -93,18 +99,8 @@ public abstract class ModifierIcon implements Animatable {
     return !modifierDescriptions.isEmpty();
   }
 
-  /** Returns the most recently computed modifier descriptions. */
-  List<ModifierDescription> getModifiers() {
-    return modifierDescriptions;
-  }
-
   @Override
   public int getStateLength() {
     return 20;
-  }
-
-  @Override
-  public boolean isActive() {
-    return modifierDescriptions.size() > 1;
   }
 }

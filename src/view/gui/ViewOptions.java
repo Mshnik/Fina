@@ -2,12 +2,17 @@ package view.gui;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.combatant.Combatant;
+import view.gui.modifier.AnimatedModifierIcon;
+import view.gui.modifier.ModifierIcon;
 import view.gui.modifier.ModifierIcon.FilterType;
+import view.gui.modifier.RowModifierIcon;
+import view.gui.panel.GamePanel;
 
 /**
  * View options for a given player. Used to customize the UI while persisting through turns. A
@@ -20,6 +25,21 @@ public final class ViewOptions {
   /** The index of the player these ViewOptions correspond to. */
   private final Player player;
 
+  /** ModifierIcon types for modifier icons on units. */
+  public enum ModifierIconType {
+    ANIMATED(AnimatedModifierIcon::new),
+    ROW(RowModifierIcon::new);
+
+    private final BiFunction<GamePanel, Unit, ModifierIcon> constructor;
+
+    ModifierIconType(BiFunction<GamePanel, Unit, ModifierIcon> constructor) {
+      this.constructor = constructor;
+    }
+  }
+
+  /** The modifierIcon type for this player. */
+  private ModifierIconType modifierIconType;
+
   /** The FilterType on ModifierIcons to paint for this player. */
   private FilterType modifierIconsFilterType;
 
@@ -28,7 +48,7 @@ public final class ViewOptions {
     /** Show modifiers only on the unit the cursor is on. */
     CURSOR_ONLY,
     /** Show modifiers on all units. */
-    VIEW_ALL,
+    VIEW_ALL;
   }
 
   /** The ModifierViewType to paint for this player. */
@@ -48,9 +68,29 @@ public final class ViewOptions {
     this.frame = frame;
     this.player = player;
     paintDangerRadiusUnits = new HashSet<>();
+    modifierIconType = ModifierIconType.ANIMATED;
     modifierIconsFilterType = FilterType.ONLY_NON_INFINITE_VISIBLE;
     modifierIconViewType = ModifierViewType.CURSOR_ONLY;
     dangerRadius = null;
+  }
+
+  /** Creates a ModifierIcon for the given unit and returns it. */
+  public ModifierIcon createModifierIconFor(GamePanel gamePanel, Unit u) {
+    ModifierIcon modifierIcon = modifierIconType.constructor.apply(gamePanel, u);
+    modifierIcon.setFilterType(modifierIconsFilterType);
+    return modifierIcon;
+  }
+
+  /** Returns the current ModifierIcon ViewType. */
+  public ModifierIconType getModifierIconType() {
+    return modifierIconType;
+  }
+
+  /** Cycles to the next type. */
+  public void cycleModifierIconType() {
+    modifierIconType =
+        ModifierIconType.values()[
+            (modifierIconType.ordinal() + 1) % ModifierIconType.values().length];
   }
 
   /** Returns the current ModifierIcon FilterType. */

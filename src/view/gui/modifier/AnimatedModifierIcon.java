@@ -1,6 +1,5 @@
 package view.gui.modifier;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.RoundRectangle2D;
@@ -12,10 +11,6 @@ import view.gui.panel.GamePanel;
 /** ModifierIcon that cycles through icons with animation. */
 public final class AnimatedModifierIcon extends ModifierIcon {
 
-  /** Color to draw as a background behind a AnimatedModifierIcon. */
-  private static final Color BACKGROUND_COLOR =
-      new Color(246 / 255f, 246 / 255f, 246 / 255f, 0.75f);
-
   /** The state of animation this is currently on. */
   private int animationState;
 
@@ -26,7 +21,7 @@ public final class AnimatedModifierIcon extends ModifierIcon {
 
   @Override
   public int getStateCount() {
-    return getModifiers().size();
+    return modifierDescriptions.size();
   }
 
   @Override
@@ -47,6 +42,11 @@ public final class AnimatedModifierIcon extends ModifierIcon {
   }
 
   @Override
+  public boolean isActive() {
+    return modifierDescriptions.size() > 1;
+  }
+
+  @Override
   public void paintComponent(Graphics g) {
     if (hasModifiers()) {
       Graphics2D g2d = (Graphics2D) g;
@@ -59,9 +59,14 @@ public final class AnimatedModifierIcon extends ModifierIcon {
       g2d.setColor(BACKGROUND_COLOR);
       g2d.fill(
           new RoundRectangle2D.Float(
-              xPosition, yPosition, iconSize + margin * 2, iconSize + margin * 2, margin*2, margin*2));
+              xPosition,
+              yPosition,
+              iconSize + margin * 2,
+              iconSize + margin * 2,
+              margin * 2,
+              margin * 2));
       g2d.drawImage(
-          ImageIndex.imageForModifierDescription(getModifiers().get(getState())),
+          ImageIndex.imageForModifierDescription(modifierDescriptions.get(getState())),
           xPosition + margin,
           yPosition + margin,
           iconSize,
