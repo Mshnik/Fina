@@ -108,6 +108,8 @@ public final class Frame extends JFrame {
                 newGameOptions.playerTypes,
                 newGameOptions.fogOfWar,
                 newGameOptions.startingCommanderLevel);
+          } else {
+            animator.paused = false;
           }
         });
     gameMenu.add(newGameMenuItem);
