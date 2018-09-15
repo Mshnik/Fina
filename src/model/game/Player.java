@@ -385,6 +385,7 @@ public abstract class Player implements Stringable {
         }
       }
     }
+    game.getController().frame.getViewOptionsForPlayer(this).unitDangerRadiusChanged();
   }
 
   /**

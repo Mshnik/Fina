@@ -69,12 +69,25 @@ public final class MovementDelegates {
 
   /**
    * A movement delegate that wants to keep units from being attacked. Wants to get the unit out of
-   * immediate danger range.
+   * immediate danger range. Returns a lower score the more units that can attack the targeted tile.
    */
   public static final class MoveToNotBeAttackedMovementDelegate implements Delegate {
     @Override
     public double getScore(AIAction action) {
-      return 0;
+      if (action.actionType != AIActionType.MOVE_UNIT) {
+        return 0;
+      }
+
+      return action
+              .player
+              .game
+              .getDangerRadius(action.player)
+              .entrySet()
+              .stream()
+              .filter(e -> e.getKey().owner != action.player)
+              .filter(e -> e.getValue().contains(action.targetedTile))
+              .count()
+          * -10;
     }
   }
 }

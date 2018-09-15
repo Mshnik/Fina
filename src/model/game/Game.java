@@ -178,10 +178,21 @@ public final class Game implements Runnable, Stringable {
     return units;
   }
 
-  /** Returns a joined map of all danger radii in the game. */
-  public Map<Combatant, Set<Tile>> getDangerRadius() {
+  /**
+   * Returns a joined map of all danger radii in the game for the given player - filters out
+   * combatants the player can't see (And thus shouldn't know about).
+   */
+  public Map<Combatant, Set<Tile>> getDangerRadius(Player player) {
     Map<Combatant, Set<Tile>> dangerRadius = new HashMap<>();
-    players.stream().map(Player::getDangerRadius).forEach(dangerRadius::putAll);
+    players
+        .stream()
+        .map(Player::getDangerRadius)
+        .forEach(
+            m ->
+                m.entrySet()
+                    .stream()
+                    .filter(e -> player.canSee(e.getKey()))
+                    .forEach(e -> dangerRadius.put(e.getKey(), e.getValue())));
     return dangerRadius;
   }
 

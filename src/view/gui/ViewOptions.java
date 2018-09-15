@@ -133,7 +133,7 @@ public final class ViewOptions {
   }
 
   /** Called when a player's danger radius changes. Always recompute danger Radius here. */
-  void unitDangerRadiusChanged() {
+  public void unitDangerRadiusChanged() {
     dangerRadius = null;
   }
 
@@ -163,11 +163,10 @@ public final class ViewOptions {
     dangerRadius =
         player
             .game
-            .getDangerRadius()
+            .getDangerRadius(player)
             .entrySet()
             .stream()
             .filter(e -> paintDangerRadiusUnits.contains(e.getKey()))
-            .filter(e -> player.canSee(e.getKey()))
             .flatMap(e -> e.getValue().stream())
             .collect(Collectors.toSet());
     return dangerRadius;
