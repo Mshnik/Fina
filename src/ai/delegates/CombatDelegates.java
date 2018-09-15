@@ -10,14 +10,18 @@ import model.unit.combatant.Combatant;
 public final class CombatDelegates {
   private CombatDelegates() {}
 
+  /** Parent class for CombatDelegates. */
+  private abstract static class CombatDelegate extends Delegate {
+    private CombatDelegate() {
+      super(AIActionType.ATTACK);
+    }
+  }
+
   /** A Delegate for combat that wants the most damage dealt. */
-  public static final class MaxExpectedDamageDealtCombatDelegate implements Delegate {
+  public static final class MaxExpectedDamageDealtCombatDelegate extends CombatDelegate {
 
     @Override
-    public double getScore(AIAction action) {
-      if (action.actionType != AIActionType.ATTACK) {
-        return 0;
-      }
+    double getRawScore(AIAction action) {
       Combat combat =
           new Combat((Combatant) action.actingUnit, action.targetedTile.getOccupyingUnit());
       return (combat.getProjectedMaxAttack() + combat.getProjectedMinAttack()) / 2;
@@ -28,13 +32,10 @@ public final class CombatDelegates {
    * A delegate that tries to minimize counter attack damage. All returns will be negative, since
    * this delegate would prefer to never attack at all.
    */
-  public static final class MinCounterAttackDamageCombatDelegate implements Delegate {
+  public static final class MinCounterAttackDamageCombatDelegate extends CombatDelegate {
 
     @Override
-    public double getScore(AIAction action) {
-      if (action.actionType != AIActionType.ATTACK) {
-        return 0;
-      }
+    double getRawScore(AIAction action) {
       Combat combat =
           new Combat((Combatant) action.actingUnit, action.targetedTile.getOccupyingUnit());
       return -(combat.getProjectedMaxCounterAttack() + combat.getProjectedMinCounterAttack()) / 2;
@@ -45,13 +46,10 @@ public final class CombatDelegates {
    * A delegate that rewards keeping your units on the board and removing enemy units from the
    * board.
    */
-  public static final class GainUnitAdvantageCombatDelegate implements Delegate {
+  public static final class GainUnitAdvantageCombatDelegate extends CombatDelegate {
 
     @Override
-    public double getScore(AIAction action) {
-      if (action.actionType != AIActionType.ATTACK) {
-        return 0;
-      }
+    double getRawScore(AIAction action) {
       Unit defender = action.targetedTile.getOccupyingUnit();
       Combat combat = new Combat((Combatant) action.actingUnit, defender);
       double chanceOpponentDies =

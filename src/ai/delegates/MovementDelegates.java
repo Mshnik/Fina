@@ -9,10 +9,17 @@ import model.unit.combatant.Combatant;
 public final class MovementDelegates {
   private MovementDelegates() {}
 
+  /** Parent class for MovementDelegates. */
+  private abstract static class MovementDelegate extends Delegate {
+    private MovementDelegate() {
+      super(AIActionType.MOVE_UNIT);
+    }
+  }
+
   /** A movement delegate that wants to expand the danger radius as much as possible. */
-  public static final class ExpandDangerRadiusMovementDelegate implements Delegate {
+  public static final class ExpandDangerRadiusMovementDelegate extends MovementDelegate {
     @Override
-    public double getScore(AIAction action) {
+    double getRawScore(AIAction action) {
       return 0;
     }
   }
@@ -21,11 +28,10 @@ public final class MovementDelegates {
    * A movement delegate that wants to allow units to attack. Wants to get the unit into immediate
    * attack range.
    */
-  public static final class MoveToAttackMovementDelegate implements Delegate {
+  public static final class MoveToAttackMovementDelegate extends MovementDelegate {
     @Override
-    public double getScore(AIAction action) {
-      if (action.actionType != AIActionType.MOVE_UNIT
-          || !(action.actingUnit instanceof Combatant)) {
+    double getRawScore(AIAction action) {
+      if (!(action.actingUnit instanceof Combatant)) {
         return 0;
       }
       Combatant combatant = (Combatant) action.actingUnit;
@@ -44,11 +50,10 @@ public final class MovementDelegates {
    * get the unit into attack range that doesn't allow the opponent to counter attack.
    */
   public static final class MoveToAttackAndNotBeCounterAttackedMovementDelegate
-      implements Delegate {
+      extends MovementDelegate {
     @Override
-    public double getScore(AIAction action) {
-      if (action.actionType != AIActionType.MOVE_UNIT
-          || !(action.actingUnit instanceof Combatant)) {
+    double getRawScore(AIAction action) {
+      if (!(action.actingUnit instanceof Combatant)) {
         return 0;
       }
       Combatant combatant = (Combatant) action.actingUnit;
@@ -71,13 +76,9 @@ public final class MovementDelegates {
    * A movement delegate that wants to keep units from being attacked. Wants to get the unit out of
    * immediate danger range. Returns a lower score the more units that can attack the targeted tile.
    */
-  public static final class MoveToNotBeAttackedMovementDelegate implements Delegate {
+  public static final class MoveToNotBeAttackedMovementDelegate extends MovementDelegate {
     @Override
-    public double getScore(AIAction action) {
-      if (action.actionType != AIActionType.MOVE_UNIT) {
-        return 0;
-      }
-
+    double getRawScore(AIAction action) {
       return action
               .player
               .game
