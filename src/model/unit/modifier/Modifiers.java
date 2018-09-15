@@ -131,6 +131,8 @@ public final class Modifiers {
         return new ModifierBundle(siege(modValue.doubleValue()));
       case "Sluggish":
         return new ModifierBundle(sluggish(modValue.intValue()));
+      case "Solid":
+        return new ModifierBundle(solid(modValue.doubleValue()));
       case "Strengthened":
         return strengthened(modValue.intValue());
       case "Tenacity":
