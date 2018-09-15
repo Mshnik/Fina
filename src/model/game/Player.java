@@ -406,14 +406,7 @@ public abstract class Player implements Stringable {
 
   /** Recomputes the danger radius for the given combatant. */
   public void recomputeDangerRadiusFor(Combatant combatant) {
-    dangerRadius.put(
-        combatant,
-        game.board
-            .getMovementCloud(combatant, true)
-            .stream()
-            .map(combatant::getAttackableTilesFrom)
-            .flatMap(List::stream)
-            .collect(Collectors.toSet()));
+    dangerRadius.put(combatant, combatant.getDangerRadius(true));
     game.getController().frame.unitDangerRadiusChanged(combatant);
   }
 

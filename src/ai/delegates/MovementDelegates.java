@@ -2,6 +2,10 @@ package ai.delegates;
 
 import ai.AIAction;
 import ai.AIAction.AIActionType;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import model.board.Tile;
 import model.unit.combatant.Combatant;
 
@@ -20,7 +24,19 @@ public final class MovementDelegates {
   public static final class ExpandDangerRadiusMovementDelegate extends MovementDelegate {
     @Override
     double getRawScore(AIAction action) {
-      return 0;
+      if (!(action.actingUnit instanceof Combatant)) {
+        return 0;
+      }
+      Map<Combatant, Set<Tile>> dangerRadius = new HashMap<>(action.player.getDangerRadius());
+      int preMoveDangerRadiusCount = getDangerRadiusSize(dangerRadius);
+      Combatant combatant = (Combatant) action.actingUnit;
+      dangerRadius.put(combatant, combatant.getDangerRadius(true));
+      int postMoveDangerRadiusCount = getDangerRadiusSize(dangerRadius);
+      return postMoveDangerRadiusCount - preMoveDangerRadiusCount;
+    }
+
+    private int getDangerRadiusSize(Map<Combatant, Set<Tile>> dangerRadius) {
+      return dangerRadius.values().stream().flatMap(Set::stream).collect(Collectors.toSet()).size();
     }
   }
 

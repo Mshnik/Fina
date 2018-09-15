@@ -1,5 +1,9 @@
 package model.unit.combatant;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
@@ -11,10 +15,6 @@ import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
 import model.util.ExpandableCloud;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Represents a moving and fighting unit
@@ -248,6 +248,21 @@ public abstract class Combatant extends MovingUnit {
   /** Returns true iff there is at least one enemy unit within range and sight */
   public boolean hasFightableTarget() {
     return !getAttackableTiles(true).isEmpty();
+  }
+
+  /**
+   * Returns the danger radius of this combatant - the union of all attackable tiles from all
+   * movable tiles. If useMaxMovement, uses max movement instead of current movement.
+   */
+  public Set<Tile> getDangerRadius(boolean useMaxMovement) {
+    return owner
+        .game
+        .board
+        .getMovementCloud(this, useMaxMovement)
+        .stream()
+        .map(this::getAttackableTilesFrom)
+        .flatMap(List::stream)
+        .collect(Collectors.toSet());
   }
 
   @Override
