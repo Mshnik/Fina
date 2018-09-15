@@ -1,5 +1,11 @@
 package model.unit.commander;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
@@ -13,18 +19,10 @@ import model.unit.combatant.Combatant;
 import model.unit.combatant.Combatants;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
-import model.unit.modifier.Modifier.StackMode;
 import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.StatModifier;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Represents a commander for a player. Each player should have one.
@@ -35,57 +33,11 @@ import java.util.stream.Collectors;
  */
 public abstract class Commander extends MovingUnit implements Summoner {
 
-  /** Base level of health for lvl1 commanders */
-  static final int BASE_HEALTH = 250;
-
-  /** Base starting level of mana per turn for lvl1 commanders */
-  static final int BASE_MANA_PT = 200;
-
-  /** Base starting level of actions per turn for lvl1 commander */
-  static final int BASE_ACTIONS_PT = 2;
-
   /** Prefix for all levelup buffs. */
-  public static final String LEVEL_UP_MODIFIER_PREFIX = "Level Up";
-
-  protected static final ModifierBundle LEVELUP =
-      new ModifierBundle(
-          new StatModifier(
-              LEVEL_UP_MODIFIER_PREFIX + " Mana",
-              Integer.MAX_VALUE,
-              StackMode.STACKABLE,
-              StatType.MANA_PER_TURN,
-              StatModifier.ModificationType.ADD,
-              100),
-          new StatModifier(
-              LEVEL_UP_MODIFIER_PREFIX + " Actions",
-              Integer.MAX_VALUE,
-              StackMode.STACKABLE,
-              StatType.ACTIONS_PER_TURN,
-              StatModifier.ModificationType.ADD,
-              1),
-          new StatModifier(
-              LEVEL_UP_MODIFIER_PREFIX + " Move",
-              Integer.MAX_VALUE,
-              StackMode.STACKABLE,
-              StatType.MOVEMENT_TOTAL,
-              StatModifier.ModificationType.ADD,
-              1),
-          new StatModifier(
-              LEVEL_UP_MODIFIER_PREFIX + " Vision",
-              Integer.MAX_VALUE,
-              StackMode.STACKABLE,
-              StatType.VISION_RANGE,
-              StatModifier.ModificationType.ADD,
-              1));
-
-  /**
-   * The amount of research required to get to the next level for free. Index i = cost to get from
-   * level i+1 to i+2 (because levels are 1 indexed).
-   */
-  private static final int[] RESEARCH_REQS = {500, 2000, 10000, 1000000};
+  static final String LEVEL_UP_MODIFIER_PREFIX = "Level Up";
 
   /** The highest level commanders can achieve */
-  public static final int MAX_LEVEL = RESEARCH_REQS.length + 1;
+  public static final int MAX_LEVEL = 5;
 
   /** The bonus ratio of damage -> research for damaging a commander. */
   public static final double BONUS_DAMAGE_TO_RESEARCH_RATIO = 1.25;
@@ -103,7 +55,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
   private int level;
 
   /**
-   * The amount of research towards the next level this commander has accrewed. Always in the range
+   * The amount of research towards the next level this commander has accrued. Always in the range
    * [0, RESEARCH_REQS[level-1]]
    */
   private int research;
@@ -161,7 +113,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
     commander.getLocation().addOccupyingUnit(commander);
     p.addUnit(commander);
     for (int i = 1; i < startingLevel; i++) {
-      commander.research += RESEARCH_REQS[i - 1];
+      commander.research += getResearchRequirements()[i - 1];
     }
   }
 
@@ -296,10 +248,16 @@ public abstract class Commander extends MovingUnit implements Summoner {
     return research;
   }
 
+  /**
+   * Returns the array of research requirements for advancing from each level to the next. Because
+   * levels are 1 indexed, requirement[i] is the requirement to get to level i+2.
+   */
+  abstract int[] getResearchRequirements();
+
   /** Returns the amount of research necessary to get to the next level */
   public int getResearchRequirement() {
     if (level == MAX_LEVEL) return Integer.MAX_VALUE;
-    return RESEARCH_REQS[level - 1];
+    return getResearchRequirements()[level - 1];
   }
 
   /** Returns the amount of research still necessary to get to the next level */
@@ -331,6 +289,9 @@ public abstract class Commander extends MovingUnit implements Summoner {
     outOfTurnResearch += deltaResearch;
   }
 
+  /** Returns the bundle of stat boosts to give the commander when it levels up. */
+  abstract ModifierBundle getLevelupModifierBundle();
+
   /**
    * Called by Player class when this levels up. Can be overriden by subclass to cause affect when
    * leveled up, but this super method should be called first. resets research, recalculates
@@ -340,7 +301,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
     if (level < MAX_LEVEL) {
       research -= getResearchRequirement();
       level++;
-      LEVELUP.clone(this, this);
+      getLevelupModifierBundle().clone(this, this);
       owner.updateManaPerTurn();
       owner.refreshVisionCloud();
       owner.game.getController().startNewAbilityDecision(owner);

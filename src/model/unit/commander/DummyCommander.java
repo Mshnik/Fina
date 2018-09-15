@@ -2,6 +2,9 @@ package model.unit.commander;
 
 import model.board.Tile;
 import model.game.Player;
+import model.unit.modifier.Modifier.StackMode;
+import model.unit.modifier.ModifierBundle;
+import model.unit.modifier.StatModifier;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
@@ -11,9 +14,9 @@ public final class DummyCommander extends Commander {
   /** Stats for maxHealth, range and visionRange of dummy commander */
   private static final Stats STATS =
       new Stats(
-          new Stat(StatType.MAX_HEALTH, Commander.BASE_HEALTH),
+          new Stat(StatType.MAX_HEALTH, 250),
           new Stat(StatType.MANA_PER_TURN, 200),
-          new Stat(StatType.ACTIONS_PER_TURN, Commander.BASE_ACTIONS_PT),
+          new Stat(StatType.ACTIONS_PER_TURN, 2),
           new Stat(StatType.SUMMON_RANGE, 1),
           new Stat(StatType.VISION_RANGE, 2),
           new Stat(StatType.MOVEMENT_TOTAL, 2),
@@ -21,6 +24,44 @@ public final class DummyCommander extends Commander {
           new Stat(StatType.WOODS_COST, 2),
           new Stat(StatType.MOUNTAIN_COST, 9999),
           new Stat(StatType.SEA_COST, 9999));
+
+  /** Levelup stats for DummyCommander. */
+  private static final ModifierBundle LEVELUP =
+      new ModifierBundle(
+          new StatModifier(
+              LEVEL_UP_MODIFIER_PREFIX + " Mana",
+              Integer.MAX_VALUE,
+              StackMode.STACKABLE,
+              StatType.MANA_PER_TURN,
+              StatModifier.ModificationType.ADD,
+              100),
+          new StatModifier(
+              LEVEL_UP_MODIFIER_PREFIX + " Actions",
+              Integer.MAX_VALUE,
+              StackMode.STACKABLE,
+              StatType.ACTIONS_PER_TURN,
+              StatModifier.ModificationType.ADD,
+              1),
+          new StatModifier(
+              LEVEL_UP_MODIFIER_PREFIX + " Move",
+              Integer.MAX_VALUE,
+              StackMode.STACKABLE,
+              StatType.MOVEMENT_TOTAL,
+              StatModifier.ModificationType.ADD,
+              1),
+          new StatModifier(
+              LEVEL_UP_MODIFIER_PREFIX + " Vision",
+              Integer.MAX_VALUE,
+              StackMode.STACKABLE,
+              StatType.VISION_RANGE,
+              StatModifier.ModificationType.ADD,
+              1));
+
+  /**
+   * The amount of research required to get to the next level. Index i = cost to get from level i+1
+   * to i+2 (because levels are 1 indexed).
+   */
+  private static final int[] RESEARCH_REQS = {500, 2000, 10000, 1000000};
 
   public DummyCommander() {
     this(null, null);
@@ -37,5 +78,15 @@ public final class DummyCommander extends Commander {
           "Shouldn't make a clone of an already on the board commander " + this);
     }
     return new DummyCommander(owner, cloneLocation);
+  }
+
+  @Override
+  int[] getResearchRequirements() {
+    return RESEARCH_REQS;
+  }
+
+  @Override
+  ModifierBundle getLevelupModifierBundle() {
+    return LEVELUP;
   }
 }
