@@ -132,14 +132,6 @@ public final class ViewOptions {
     dangerRadius = null;
   }
 
-  /** Remove all dead units from the danger radius. */
-  private void cleanupDangerRadiusUnits() {
-    boolean elementsRemoved = paintDangerRadiusUnits.removeIf(c -> !c.isAlive());
-    if (elementsRemoved) {
-      dangerRadius = null;
-    }
-  }
-
   /** Called when a player's danger radius changes. Always recompute danger Radius here. */
   void unitDangerRadiusChanged() {
     dangerRadius = null;
@@ -155,17 +147,6 @@ public final class ViewOptions {
     }
   }
 
-  /** A pair of a unit and its max move cloud. */
-  private static final class UnitToTilePair {
-    private final Combatant unit;
-    private final Tile tile;
-
-    private UnitToTilePair(Combatant unit, Tile tile) {
-      this.unit = unit;
-      this.tile = tile;
-    }
-  }
-
   /** Returns true if the danger radius has at least one tile in it. */
   public boolean hasNonEmptyDangerRadius() {
     return !getDangerRadius().isEmpty();
@@ -176,27 +157,18 @@ public final class ViewOptions {
    * is empty. Causes a cleanup that removes dead units.
    */
   public Set<Tile> getDangerRadius() {
-    cleanupDangerRadiusUnits();
     if (dangerRadius != null) {
       return dangerRadius;
     }
     dangerRadius =
-        paintDangerRadiusUnits
+        player
+            .game
+            .getDangerRadius()
+            .entrySet()
             .stream()
-            .filter(player::canSee)
-            .filter(unit -> unit.owner != player || unit.canFight())
-            .flatMap(
-                unit ->
-                    frame
-                        .getController()
-                        .game
-                        .board
-                        .getMovementCloud(unit, unit.owner != player)
-                        .stream()
-                        .map(tile -> new UnitToTilePair(unit, tile)))
-            .flatMap(
-                unitToTilePair ->
-                    unitToTilePair.unit.getAttackableTilesFrom(unitToTilePair.tile).stream())
+            .filter(e -> paintDangerRadiusUnits.contains(e.getKey()))
+            .filter(e -> player.canSee(e.getKey()))
+            .flatMap(e -> e.getValue().stream())
             .collect(Collectors.toSet());
     return dangerRadius;
   }

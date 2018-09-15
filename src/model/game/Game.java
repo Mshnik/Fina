@@ -1,14 +1,15 @@
 package model.game;
 
 import controller.game.GameController;
-import model.board.Board;
-import model.board.Tile;
-import model.unit.Unit;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import model.board.Board;
+import model.board.Tile;
+import model.unit.Unit;
+import model.unit.combatant.Combatant;
 
 /** Unifying model that holds all sub-model classes */
 public final class Game implements Runnable, Stringable {
@@ -110,7 +111,7 @@ public final class Game implements Runnable, Stringable {
             .findFirst()
             .orElse(-1);
     try {
-      while (running && ! isGameOver()) {
+      while (running && !isGameOver()) {
         repaint();
         nextTurn();
       }
@@ -175,6 +176,13 @@ public final class Game implements Runnable, Stringable {
       units.addAll(p.getUnits());
     }
     return units;
+  }
+
+  /** Returns a joined map of all danger radii in the game. */
+  public Map<Combatant, Set<Tile>> getDangerRadius() {
+    Map<Combatant, Set<Tile>> dangerRadius = new HashMap<>();
+    players.stream().map(Player::getDangerRadius).forEach(dangerRadius::putAll);
+    return dangerRadius;
   }
 
   /** Returns the index of the current player, which rotates through as the players rotate. */
@@ -254,7 +262,8 @@ public final class Game implements Runnable, Stringable {
     // If fog, pause and wait for transfer of computer.
     if (getFogOfWar().active) {
       Player nextTurnPlayer = getCurrentPlayer();
-      if (nextTurnPlayer != null && nextTurnPlayer.isLocalHumanPlayer()
+      if (nextTurnPlayer != null
+          && nextTurnPlayer.isLocalHumanPlayer()
           && nextTurnPlayer.index != mostRecentHumanPlayerIndex) {
         betweenTurnsFog = true;
         controller.frame.showPlayerChangeAlert(nextTurnPlayer);

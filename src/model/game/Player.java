@@ -2,8 +2,11 @@ package model.game;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import model.board.Terrain;
@@ -63,6 +66,9 @@ public abstract class Player implements Stringable {
   /** The Tiles in the model.board this player has vision of */
   private HashSet<Tile> visionCloud;
 
+  /** The tiles that combatants this player controls threatens. */
+  private Map<Combatant, Set<Tile>> dangerRadius;
+
   /** The sum of all the mana per turn generation/costs this player owns */
   private int manaPerTurn;
 
@@ -81,8 +87,9 @@ public abstract class Player implements Stringable {
     units = new ArrayList<>();
     actionableUnits = new ArrayList<>();
     allUnitModifierBuildings = new HashSet<>();
-    temples = new ArrayList<Temple>();
-    visionCloud = new HashSet<Tile>();
+    temples = new ArrayList<>();
+    visionCloud = new HashSet<>();
+    dangerRadius = new HashMap<>();
   }
 
   /** Returns the color of this player. */
@@ -305,7 +312,9 @@ public abstract class Player implements Stringable {
     }
 
     // Recalculate view options as needed.
-    game.getController().frame.unitDangerRadiusChanged(u);
+    if (u instanceof Combatant) {
+      recomputeDangerRadiusFor((Combatant) u);
+    }
   }
 
   /**
@@ -315,9 +324,14 @@ public abstract class Player implements Stringable {
   public void removeUnit(Unit u) {
     units.remove(u);
     actionableUnits.remove(u);
-    if (u instanceof Commander && (Commander) u == commander) commander = null;
+    if (u instanceof Commander && u == commander) {
+      commander = null;
+    }
     if (u instanceof Temple) {
       temples.remove(u);
+    }
+    if (u instanceof Combatant) {
+      dangerRadius.remove((Combatant) u);
     }
     recalculateState();
   }
@@ -338,14 +352,6 @@ public abstract class Player implements Stringable {
   /** Return true iff the tile u occupies is in this Player's vision */
   public boolean canSee(Unit u) {
     return canSee(u.getLocation());
-  }
-
-  /**
-   * Returns the tiles this player can see. Pass-by-value, so editing the returned hashset will do
-   * nothing
-   */
-  public HashSet<Tile> getVisionCloud() {
-    return new HashSet<Tile>(visionCloud);
   }
 
   /** Refreshes this player's vision cloud based on its units */
@@ -379,6 +385,35 @@ public abstract class Player implements Stringable {
         }
       }
     }
+  }
+
+  /**
+   * Returns this player's danger radius - the set of tiles that combatants this player controls
+   * threatens keyed by the unit threatening those tiles. Assumes units have max movement, so may be
+   * inaccurate during a player's own turn. Should be mostly used during opponent's turns, so this
+   * should work.
+   */
+  public Map<Combatant, Set<Tile>> getDangerRadius() {
+    return Collections.unmodifiableMap(dangerRadius);
+  }
+
+  /** Returns the union of all sets in {@link #getDangerRadius()}. */
+  public Set<Tile> getDangerRadiusFlattened() {
+    return Collections.unmodifiableSet(
+        dangerRadius.values().stream().flatMap(Set::stream).collect(Collectors.toSet()));
+  }
+
+  /** Recomputes the danger radius for the given combatant. */
+  public void recomputeDangerRadiusFor(Combatant combatant) {
+    dangerRadius.put(
+        combatant,
+        game.board
+            .getMovementCloud(combatant, true)
+            .stream()
+            .map(combatant::getAttackableTilesFrom)
+            .flatMap(List::stream)
+            .collect(Collectors.toSet()));
+    game.getController().frame.unitDangerRadiusChanged(combatant);
   }
 
   /**

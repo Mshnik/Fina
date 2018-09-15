@@ -155,7 +155,7 @@ public abstract class Combatant extends MovingUnit {
     super.refreshForTurn();
     canFight = true;
     if (owner != null) {
-      owner.game.getController().frame.unitDangerRadiusChanged(this);
+      owner.recomputeDangerRadiusFor(this);
     }
   }
 
@@ -259,7 +259,7 @@ public abstract class Combatant extends MovingUnit {
   @Override
   public void postMove(List<Tile> path) {
     if (path.size() > 0 && owner != null) {
-      owner.game.getController().frame.unitDangerRadiusChanged(this);
+      owner.recomputeDangerRadiusFor(this);
       owner.maybeRemoveActionableUnit(this);
     }
   }
@@ -295,7 +295,7 @@ public abstract class Combatant extends MovingUnit {
       }
     }
     if (owner != null) {
-      owner.game.getController().frame.unitDangerRadiusChanged(this);
+      owner.recomputeDangerRadiusFor(this);
       owner.maybeRemoveActionableUnit(this);
     }
   }
@@ -305,7 +305,7 @@ public abstract class Combatant extends MovingUnit {
   protected void refreshStats() {
     super.refreshStats();
     if (owner != null) {
-      owner.game.getController().frame.unitDangerRadiusChanged(this);
+      owner.recomputeDangerRadiusFor(this);
     }
   }
 
