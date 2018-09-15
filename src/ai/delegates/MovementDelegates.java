@@ -1,6 +1,9 @@
 package ai.delegates;
 
 import ai.AIAction;
+import ai.AIAction.AIActionType;
+import model.board.Tile;
+import model.unit.combatant.Combatant;
 
 /** A list of delegates for moving units. */
 public final class MovementDelegates {
@@ -16,11 +19,22 @@ public final class MovementDelegates {
 
   /**
    * A movement delegate that wants to allow units to attack. Wants to get the unit into immediate
-   * attack range, but is also happy whenever a unit gets closer to an enemy unit.
+   * attack range.
    */
   public static final class MoveToAttackMovementDelegate implements Delegate {
     @Override
     public double getScore(AIAction action) {
+      if (action.actionType != AIActionType.MOVE_UNIT
+          || !(action.actingUnit instanceof Combatant)) {
+        return 0;
+      }
+      Combatant combatant = (Combatant) action.actingUnit;
+      if (combatant
+          .getAttackableTilesFrom(action.targetedTile)
+          .stream()
+          .anyMatch(t -> t.isOccupied() && t.getOccupyingUnit().owner != action.player)) {
+        return 100;
+      }
       return 0;
     }
   }
@@ -33,6 +47,22 @@ public final class MovementDelegates {
       implements Delegate {
     @Override
     public double getScore(AIAction action) {
+      if (action.actionType != AIActionType.MOVE_UNIT
+          || !(action.actingUnit instanceof Combatant)) {
+        return 0;
+      }
+      Combatant combatant = (Combatant) action.actingUnit;
+      if (combatant
+          .getAttackableTilesFrom(action.targetedTile)
+          .stream()
+          .filter(t -> t.isOccupied() && t.getOccupyingUnit().owner != action.player)
+          .map(Tile::getOccupyingUnit)
+          .anyMatch(
+              u ->
+                  !(u instanceof Combatant)
+                      || ((Combatant) u).getAttackableTiles(true).contains(action.targetedTile))) {
+        return 100;
+      }
       return 0;
     }
   }

@@ -283,6 +283,18 @@ public final class Board implements Iterable<Tile>, Stringable {
   }
 
   /**
+   * Returns the set of tiles the given MovingUnit could move to from the given location with its
+   * movement cap. Only counts enemy units as obstacles if they are visible.
+   */
+  public ArrayList<Tile> getMovementCloud(
+      MovingUnit u, Tile startTile, boolean useMaxMovementInsteadOfCurrentMovement) {
+    u.getLocation().prev = null;
+    u.getLocation().dist =
+        useMaxMovementInsteadOfCurrentMovement ? u.getMovementCap() : u.getMovement();
+    return getMovementCloud(startTile, u);
+  }
+
+  /**
    * Returns the set of tiles the given MovingUnit could move to from its current location with its
    * movement cap. Only counts enemy units as obstacles if they are visible.
    */
