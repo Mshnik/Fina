@@ -854,6 +854,7 @@ public final class GameController {
     Unit summonedUnit = toSummon.clone(summoner.owner, loc);
     summonedUnit.copyPersonalModifiersFrom(toSummon);
     summonedUnit.owner.recalculateState();
+    summonedUnit.owner.refreshVisionCloud(summonedUnit);
   }
 
   /** Creates a getGamePanel().getDecisionPanel() for choosing a spell to cast */
@@ -940,7 +941,6 @@ public final class GameController {
     castSelector.toCast.cast(
         castSelector.caster, loc, castSelector.caster.owner.getCastCloudBoost(), random);
     locationSelector = null;
-    castSelector.caster.owner.refreshVisionCloud();
     getGamePanel().boardCursor.setElm(castSelector.caster.getLocation()); // Cause info update
     repaint();
   }

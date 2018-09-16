@@ -112,6 +112,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
     Commander commander = createClone(p, p.game.board.getCommanderStartLocation(p));
     commander.getLocation().addOccupyingUnit(commander);
     p.addUnit(commander);
+    p.refreshVisionCloud(commander);
     for (int i = 1; i < startingLevel; i++) {
       commander.research += getResearchRequirements()[i - 1];
     }
@@ -303,7 +304,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
       level++;
       getLevelupModifierBundle().clone(this, this);
       owner.updateManaPerTurn();
-      owner.refreshVisionCloud();
+      owner.refreshVisionCloud(this);
       owner.game.getController().startNewAbilityDecision(owner);
     }
   }

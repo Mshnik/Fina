@@ -218,6 +218,7 @@ public class Ability implements Stringable {
         for (AbilityEffect effect : effects) {
           effect.affect(u, caster, random);
         }
+        u.owner.refreshVisionCloud(u);
       }
     }
     return Collections.unmodifiableList(affectedUnits);

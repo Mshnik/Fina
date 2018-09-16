@@ -82,7 +82,7 @@ public final class SpacialShift extends Ability {
     caster.setLocation(otherUnitLocation);
     otherUnit.setLocation(casterLocation);
 
-    caster.owner.refreshVisionCloud();
+    caster.owner.refreshVisionCloud(caster);
 
     return list;
   }

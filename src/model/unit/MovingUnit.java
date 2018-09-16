@@ -171,7 +171,7 @@ public abstract class MovingUnit extends Unit {
     }
     if (oldLoc != location) oldLoc.moveUnitTo(location);
     movement -= cost;
-    owner.refreshVisionCloud();
+    owner.refreshVisionCloud(this);
 
     postMove(path);
 

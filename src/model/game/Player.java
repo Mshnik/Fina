@@ -63,8 +63,11 @@ public abstract class Player implements Stringable {
   /** The temples this player controls, if any. Max length 5 */
   private ArrayList<Temple> temples;
 
-  /** The Tiles in the model.board this player has vision of */
-  private HashSet<Tile> visionCloud;
+  /** The Tiles in the model.board this player has vision of, keyed by units */
+  private Map<Unit, Set<Tile>> visionCloud;
+
+  /** The Tiles in the model.board this player has vision of. A flattened version of visionCloud. */
+  private Set<Tile> visionCloudFlattened;
 
   /** The tiles that combatants this player controls threatens. */
   private Map<Combatant, Set<Tile>> dangerRadius;
@@ -88,7 +91,8 @@ public abstract class Player implements Stringable {
     actionableUnits = new ArrayList<>();
     allUnitModifierBuildings = new HashSet<>();
     temples = new ArrayList<>();
-    visionCloud = new HashSet<>();
+    visionCloud = new HashMap<>();
+    visionCloudFlattened = null;
     dangerRadius = new HashMap<>();
   }
 
@@ -268,7 +272,6 @@ public abstract class Player implements Stringable {
   /** Recalcualtes nearly all state for this player - call after adding a unit. */
   public void recalculateState() {
     refreshTempleBuffs();
-    refreshVisionCloud();
     updateManaPerTurn();
     updateResearchPerTurn();
   }
@@ -324,6 +327,8 @@ public abstract class Player implements Stringable {
   public void removeUnit(Unit u) {
     units.remove(u);
     actionableUnits.remove(u);
+    visionCloud.remove(u);
+    visionCloudFlattened = null;
     if (u instanceof Commander && u == commander) {
       commander = null;
     }
@@ -346,7 +351,11 @@ public abstract class Player implements Stringable {
   // VISION
   /** Return true iff this player's vision contains tile T */
   public boolean canSee(Tile t) {
-    return !game.getFogOfWar().active || visionCloud.contains(t);
+    if (visionCloudFlattened == null) {
+      visionCloudFlattened =
+          visionCloud.values().stream().flatMap(Set::stream).collect(Collectors.toSet());
+    }
+    return !game.getFogOfWar().active || visionCloudFlattened.contains(t);
   }
 
   /** Return true iff the tile u occupies is in this Player's vision */
@@ -355,39 +364,40 @@ public abstract class Player implements Stringable {
   }
 
   /** Refreshes this player's vision cloud based on its units */
-  public void refreshVisionCloud() {
-    visionCloud.clear();
-    for (Unit u : units) {
-      // Always have vision of a unit's location.
-      visionCloud.add(u.getLocation());
+  public void refreshVisionCloud(Unit u) {
+    Set<Tile> unitVisionCloud = visionCloud.getOrDefault(u, new HashSet<>());
+    unitVisionCloud.clear();
+    visionCloud.put(u, unitVisionCloud);
+    // Always have vision of a unit's location.
+    unitVisionCloud.add(u.getLocation());
 
-      // If the unit has eagle eye, they just have radial vision.
-      if (u.hasModifierByName(Modifiers.eagleEye())) {
-        visionCloud.addAll(
-            ExpandableCloud.create(ExpandableCloud.ExpandableCloudType.CIRCLE, u.getVisionRange())
-                .translate(u.getLocation().getPoint())
-                .toTileSet(game.board));
-      } else {
-        // Otherwise, Calculate ray-based vision.
-        MPoint center = u.getLocation().getPoint();
-        for (int radius = 1; radius <= u.getVisionRange(); radius++) {
-          boolean radiusIsOne = radius == 1;
-          addVisionPoint(center, center.add(radius, 0), radiusIsOne);
-          addVisionPoint(center, center.add(-radius, 0), radiusIsOne);
-          addVisionPoint(center, center.add(0, radius), radiusIsOne);
-          addVisionPoint(center, center.add(0, -radius), radiusIsOne);
-          for (int i = 1; i < radius; i++) {
-            addVisionPoint(center, center.add(radius - i, i), false);
-            addVisionPoint(center, center.add(-radius + i, -i), false);
-            addVisionPoint(center, center.add(-i, radius - i), false);
-            addVisionPoint(center, center.add(i, -radius + i), false);
-          }
+    // If the unit has eagle eye, they just have radial vision.
+    if (u.hasModifierByName(Modifiers.eagleEye())) {
+      unitVisionCloud.addAll(
+          ExpandableCloud.create(ExpandableCloud.ExpandableCloudType.CIRCLE, u.getVisionRange())
+              .translate(u.getLocation().getPoint())
+              .toTileSet(game.board));
+    } else {
+      // Otherwise, Calculate ray-based vision.
+      MPoint center = u.getLocation().getPoint();
+      for (int radius = 1; radius <= u.getVisionRange(); radius++) {
+        boolean radiusIsOne = radius == 1;
+        addVisionPoint(unitVisionCloud, center, center.add(radius, 0), radiusIsOne);
+        addVisionPoint(unitVisionCloud, center, center.add(-radius, 0), radiusIsOne);
+        addVisionPoint(unitVisionCloud, center, center.add(0, radius), radiusIsOne);
+        addVisionPoint(unitVisionCloud, center, center.add(0, -radius), radiusIsOne);
+        for (int i = 1; i < radius; i++) {
+          addVisionPoint(unitVisionCloud, center, center.add(radius - i, i), false);
+          addVisionPoint(unitVisionCloud, center, center.add(-radius + i, -i), false);
+          addVisionPoint(unitVisionCloud, center, center.add(-i, radius - i), false);
+          addVisionPoint(unitVisionCloud, center, center.add(i, -radius + i), false);
         }
       }
     }
     if (game.getController().hasFrame()) {
       game.getController().frame.getViewOptionsForPlayer(this).unitDangerRadiusChanged();
     }
+    visionCloudFlattened = null;
   }
 
   /**
@@ -419,7 +429,8 @@ public abstract class Player implements Stringable {
    * <li>it is in bounds.
    * <li>It is a woods and a unit is directly adjacent to it
    */
-  private void addVisionPoint(MPoint origin, MPoint point, boolean unitIsAdjacent) {
+  private void addVisionPoint(
+      Set<Tile> visionCloud, MPoint origin, MPoint point, boolean unitIsAdjacent) {
     Tile tile;
     try {
       tile = game.board.getTileAt(point);
@@ -489,9 +500,6 @@ public abstract class Player implements Stringable {
       // Add base mana per turn
       updateManaPerTurn();
       commander.addMana(manaPerTurn);
-
-      // Update vision
-      refreshVisionCloud();
 
       // Process start of turn buildings.
       for (Unit u : units) {
