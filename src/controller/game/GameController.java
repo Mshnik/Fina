@@ -128,7 +128,7 @@ public final class GameController {
   /** A hashmap from each player to the color to tint their units */
   private final HashMap<Player, Color> playerColors;
 
-  /** The Frame that is drawing this Game */
+  /** The Frame that is drawing this Game. May be null if this is headless. */
   public final Frame frame;
 
   /** The thread the game is running in. Null if the game isn't running right now. */
@@ -149,8 +149,39 @@ public final class GameController {
   /** The active location selector, if any */
   private LocationSelector locationSelector;
 
-  /** Loads a board and starts the game in the same frame as this, then disposes of this. */
+  /**
+   * Loads a board and starts the game in a new GameController. Creates and shows a new Frame as
+   * part of initialization.
+   */
   static void loadAndStart(
+      String boardFilepath,
+      List<String> playerTypes,
+      FogOfWar fogOfWar,
+      int startingCommanderLevel,
+      int frameRows,
+      int frameCols,
+      int frameZoom) {
+    loadAndStartHelper(
+        boardFilepath,
+        playerTypes,
+        fogOfWar,
+        startingCommanderLevel,
+        frameRows,
+        frameCols,
+        frameZoom);
+  }
+
+  /** Loads a board and starts the game in a new GameController with no graphical component. */
+  static void loadAndStartHeadless(
+      String boardFilepath,
+      List<String> playerTypes,
+      FogOfWar fogOfWar,
+      int startingCommanderLevel) {
+    loadAndStartHelper(boardFilepath, playerTypes, fogOfWar, startingCommanderLevel, -1, -1, -1);
+  }
+
+  /** Loads a board and starts the game in a new GameController. */
+  private static void loadAndStartHelper(
       String boardFilepath,
       List<String> playerTypes,
       FogOfWar fogOfWar,
@@ -161,10 +192,15 @@ public final class GameController {
     if (playerTypes.size() < 2) {
       throw new RuntimeException("Can't have game with less than 2 players");
     }
-    Frame f = new Frame(frameZoom);
-    InputController.setFrame(f);
-    KeyboardListener.attachToFrame(f);
-    MouseListener.attachToFrame(f);
+    Frame f;
+    if (frameRows > 0 && frameCols > 0) {
+      f = new Frame(frameZoom);
+      InputController.setFrame(f);
+      KeyboardListener.attachToFrame(f);
+      MouseListener.attachToFrame(f);
+    } else {
+      f = null;
+    }
 
     // Read board and create game.
     Board board = BoardReader.readBoard(boardFilepath);
@@ -191,8 +227,18 @@ public final class GameController {
         default:
           throw new RuntimeException("Don't know how to handle player type " + playerTypes.get(i));
       }
-      gc.frame.createViewOptionsForPlayer(p);
+      if (gc.frame != null) {
+        gc.frame.createViewOptionsForPlayer(p);
+      }
       new DummyCommander().createForPlayer(p, startingCommanderLevel);
+    }
+
+    // Create observer if no human players and has frame.
+    if (f != null && g.getRemainingPlayers().stream().noneMatch(p -> p instanceof HumanPlayer)) {
+      Player observer = g.createObserverPlayer();
+      if (gc.frame != null) {
+        gc.frame.createViewOptionsForPlayer(observer);
+      }
     }
 
     // Start game.
@@ -212,7 +258,9 @@ public final class GameController {
     this.playerTypes = Collections.unmodifiableList(playerTypes);
     game.setGameController(this);
     frame = f;
-    frame.setController(this, frameRows, frameCols);
+    if (frame != null) {
+      frame.setController(this, frameRows, frameCols);
+    }
     random = new Random();
 
     playerColors = new HashMap<>();
@@ -222,6 +270,11 @@ public final class GameController {
   /** Returns iff the game is currently running */
   public boolean isRunning() {
     return game.isRunning();
+  }
+
+  /** Returns true iff this game has a frame (a graphical component). */
+  public boolean hasFrame() {
+    return frame != null;
   }
 
   /**
@@ -301,9 +354,11 @@ public final class GameController {
     startNewAbilityDecision(p.getCommander());
   }
 
-  /** Instructs the Frame to repaint */
+  /** Instructs the Frame to repaint, if there is one. */
   public void repaint() {
-    frame.repaint();
+    if (frame != null) {
+      frame.repaint();
+    }
   }
 
   /** Gets the color for the given player */
@@ -313,8 +368,10 @@ public final class GameController {
 
   /** Called when the model wants to begin the turn for player p */
   public void startTurnFor(Player p) {
-    frame.startTurnFor(p);
-    AudioController.playMusicForTurn(p);
+    if (hasFrame()) {
+      frame.startTurnFor(p);
+      AudioController.playMusicForTurn(p);
+    }
   }
 
   /**

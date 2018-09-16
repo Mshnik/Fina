@@ -502,7 +502,7 @@ public abstract class Unit implements Stringable {
     if (modifiers.contains(m)) {
       modifiers.remove(m);
       refreshStats();
-      if (owner != null) {
+      if (owner != null && owner.game.getController().hasFrame()) {
         owner.game.getController().frame.getGamePanel().refreshModifierIconFor(this);
       }
       return true;

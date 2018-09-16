@@ -385,7 +385,9 @@ public abstract class Player implements Stringable {
         }
       }
     }
-    game.getController().frame.getViewOptionsForPlayer(this).unitDangerRadiusChanged();
+    if (game.getController().hasFrame()) {
+      game.getController().frame.getViewOptionsForPlayer(this).unitDangerRadiusChanged();
+    }
   }
 
   /**
@@ -407,7 +409,9 @@ public abstract class Player implements Stringable {
   /** Recomputes the danger radius for the given combatant. */
   public void recomputeDangerRadiusFor(Combatant combatant) {
     dangerRadius.put(combatant, combatant.getDangerRadius(true));
-    game.getController().frame.unitDangerRadiusChanged(combatant);
+    if (game.getController().hasFrame()) {
+      game.getController().frame.unitDangerRadiusChanged(combatant);
+    }
   }
 
   /**

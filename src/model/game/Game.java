@@ -1,6 +1,7 @@
 package model.game;
 
 import controller.game.GameController;
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,6 +21,9 @@ public final class Game implements Runnable, Stringable {
   /** The players currently playing this model.game */
   private LinkedList<Player> players;
 
+  /** The observer player who is not playing. Only non-null if all players are AI. */
+  private Player observer;
+
   /** The players currently playing this model.game, indexed by their playerIndex. */
   private Map<Integer, Player> playersByIndex;
 
@@ -32,7 +36,10 @@ public final class Game implements Runnable, Stringable {
    */
   private int index;
 
-  /** The index of the most recent human player to take a turn. */
+  /**
+   * The index of the most recent human player to take a turn. If no player, will be set to Observer
+   * player.
+   */
   private int mostRecentHumanPlayerIndex;
 
   /** The model.board that represents this model.game */
@@ -109,14 +116,18 @@ public final class Game implements Runnable, Stringable {
             .filter(Player::isLocalHumanPlayer)
             .map(p -> p.index)
             .findFirst()
-            .orElse(-1);
+            .orElse(observer != null ? observer.index : -1);
     try {
       while (running && !isGameOver()) {
         repaint();
         nextTurn();
       }
       if (isGameOver()) {
-        controller.frame.showGameOverAlert(getRemainingPlayers().get(0));
+        if (controller.hasFrame()) {
+          controller.frame.showGameOverAlert(getRemainingPlayers().get(0));
+        } else {
+          System.out.println("Game over - player " + getRemainingPlayers().get(0).index + " wins");
+        }
       }
     } finally {
       running = false;
@@ -140,6 +151,15 @@ public final class Game implements Runnable, Stringable {
     players.add(p);
     playersByIndex.put(players.size(), p);
     remainingPlayers.put(p, true);
+  }
+
+  /** Creates an observer player who isn't in the game. Returns the observer player. */
+  public Player createObserverPlayer() {
+    HumanPlayer observer = new HumanPlayer(this, Color.WHITE);
+    players.remove(observer);
+    remainingPlayers.remove(observer);
+    this.observer = observer;
+    return observer;
   }
 
   /**
@@ -224,7 +244,7 @@ public final class Game implements Runnable, Stringable {
     return !getFogOfWar().active
         || (!betweenTurnsFog
             && getCurrentPlayer() != null
-            && (mostRecentHumanPlayerIndex == -1
+            && (mostRecentHumanPlayerIndex == observer.index
                 || playersByIndex.get(mostRecentHumanPlayerIndex).canSee(t)));
   }
 
@@ -256,6 +276,9 @@ public final class Game implements Runnable, Stringable {
     if (p.isLocalHumanPlayer()) {
       mostRecentHumanPlayerIndex = p.index;
     }
+    if (!controller.hasFrame()) {
+      System.out.println("Player " + p.index + "'s turn");
+    }
     boolean ok = p.turnStart();
     if (ok) {
       controller.startTurnFor(p);
@@ -277,7 +300,9 @@ public final class Game implements Runnable, Stringable {
           && nextTurnPlayer.isLocalHumanPlayer()
           && nextTurnPlayer.index != mostRecentHumanPlayerIndex) {
         betweenTurnsFog = true;
-        controller.frame.showPlayerChangeAlert(nextTurnPlayer);
+        if (controller.hasFrame()) {
+          controller.frame.showPlayerChangeAlert(nextTurnPlayer);
+        }
       }
     }
   }

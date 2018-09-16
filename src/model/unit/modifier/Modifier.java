@@ -142,7 +142,7 @@ public abstract class Modifier implements Stringable {
     boolean ok = unit.addModifier(this);
     if (ok) {
       source.addGrantedModifier(this);
-      if (unit.owner != null) {
+      if (unit.owner != null && unit.owner.game.getController().hasFrame()) {
         unit.owner.game.getController().frame.getGamePanel().refreshModifierIconFor(unit);
       }
     }
@@ -167,7 +167,7 @@ public abstract class Modifier implements Stringable {
   }
 
   /** Returns true iff this Modifier has infinite duration. */
-  public boolean isInfiniteDuration () {
+  public boolean isInfiniteDuration() {
     return remainingTurns == Integer.MAX_VALUE;
   }
 
