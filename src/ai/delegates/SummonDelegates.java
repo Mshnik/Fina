@@ -18,6 +18,14 @@ public final class SummonDelegates {
     }
   }
 
+  /** Summon delegate that wants to not spend mana. */
+  public static final class SummonSpendLessManaDelegate extends SummonDelegate {
+    @Override
+    double getRawScore(AIAction action) {
+      return -action.unitToSummon.getManaCostWithScalingAndDiscountsForPlayer(action.player);
+    }
+  }
+
   /**
    * Summon delegate that wants to summon a certain type of units.
    *
