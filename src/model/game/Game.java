@@ -240,10 +240,13 @@ public final class Game implements Runnable, Stringable {
    * of war (but AIs will respect it).
    */
   public boolean isVisibleToMostRecentHumanPlayer(Tile t) {
-    return !getFogOfWar().active
-        || (!betweenTurnsFog
-            && (mostRecentHumanPlayerIndex == observer.index
-                || playersByIndex.get(mostRecentHumanPlayerIndex).canSee(t)));
+    if (!getFogOfWar().active) {
+      return true;
+    }
+
+    return !betweenTurnsFog
+        && (observer != null && mostRecentHumanPlayerIndex == observer.index
+            || playersByIndex.get(mostRecentHumanPlayerIndex).canSee(t));
   }
 
   /**
