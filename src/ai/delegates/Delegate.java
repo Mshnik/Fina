@@ -14,8 +14,28 @@ public abstract class Delegate {
   /** The actionTypes this Delegate cares about. Other ActionTypes will always get a score of 0. */
   private final Set<AIActionType> validActionTypes;
 
+  /**
+   * Main weight for this Delegate, to compare its value to other delegate. Output of rawScore is
+   * multiplied by this value.
+   */
+  private double weight;
+
+  /**
+   * Weights applied to values within this Delegate, to compare values within its getRawScore. Of
+   * varying length based on the delegate.
+   */
+  protected double[] subWeights;
+
   Delegate(AIActionType... actionTypes) {
     this.validActionTypes = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(actionTypes)));
+  }
+
+  /** Asserts that the subWeights length is correct. */
+  void checkSubWeightsLength(int length) {
+    if (subWeights.length != length) {
+      throw new RuntimeException(
+          "Expected subweights of length " + length + ", got " + Arrays.toString(subWeights));
+    }
   }
 
   /**
@@ -31,7 +51,7 @@ public abstract class Delegate {
     if (!validActionTypes.contains(action.actionType)) {
       return 0;
     }
-    return getRawScore(action);
+    return weight * getRawScore(action);
   }
 
   /** Returns the most preferred action of the given actions. */

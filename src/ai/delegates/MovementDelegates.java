@@ -20,10 +20,13 @@ public final class MovementDelegates {
     }
   }
 
-  /** A movement delegate that wants to expand the danger radius as much as possible. */
+  /**
+   * A movement delegate that wants to expand the danger radius as much as possible. No subweights.
+   */
   public static final class ExpandDangerRadiusMovementDelegate extends MovementDelegate {
     @Override
     double getRawScore(AIAction action) {
+      checkSubWeightsLength(0);
       if (!(action.actingUnit instanceof Combatant)) {
         return 0;
       }
@@ -42,11 +45,12 @@ public final class MovementDelegates {
 
   /**
    * A movement delegate that wants to allow units to attack. Wants to get the unit into immediate
-   * attack range.
+   * attack range. No subWeights.
    */
   public static final class MoveToAttackMovementDelegate extends MovementDelegate {
     @Override
     double getRawScore(AIAction action) {
+      checkSubWeightsLength(0);
       if (!(action.actingUnit instanceof Combatant)) {
         return 0;
       }
@@ -55,7 +59,7 @@ public final class MovementDelegates {
           .getAttackableTilesFrom(action.targetedTile)
           .stream()
           .anyMatch(t -> t.isOccupied() && t.getOccupyingUnit().owner != action.player)) {
-        return 100;
+        return 1;
       }
       return 0;
     }
@@ -63,12 +67,14 @@ public final class MovementDelegates {
 
   /**
    * A movement delegate that wants to allow units to attack and not be counter attacked. Wants to
-   * get the unit into attack range that doesn't allow the opponent to counter attack.
+   * get the unit into attack range that doesn't allow the opponent to counter attack. No
+   * subweights.
    */
   public static final class MoveToAttackAndNotBeCounterAttackedMovementDelegate
       extends MovementDelegate {
     @Override
     double getRawScore(AIAction action) {
+      checkSubWeightsLength(0);
       if (!(action.actingUnit instanceof Combatant)) {
         return 0;
       }
@@ -82,7 +88,7 @@ public final class MovementDelegates {
               u ->
                   !(u instanceof Combatant)
                       || ((Combatant) u).getAttackableTiles(true).contains(action.targetedTile))) {
-        return 100;
+        return 1;
       }
       return 0;
     }
@@ -91,6 +97,7 @@ public final class MovementDelegates {
   /**
    * A movement delegate that wants to keep units from being attacked. Wants to get the unit out of
    * immediate danger range. Returns a lower score the more units that can attack the targeted tile.
+   * No subweights.
    */
   public static final class MoveToNotBeAttackedMovementDelegate extends MovementDelegate {
     @Override
@@ -104,7 +111,7 @@ public final class MovementDelegates {
               .filter(e -> e.getKey().owner != action.player)
               .filter(e -> e.getValue().contains(action.targetedTile))
               .count()
-          * -10;
+          * -1;
     }
   }
 }
