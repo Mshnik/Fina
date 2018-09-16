@@ -81,6 +81,11 @@ public final class Board implements Iterable<Tile>, Stringable {
     return tiles[0].length;
   }
 
+  /** Returns true iff the given r,c is on the board. */
+  public boolean isOnBoard(int r, int c) {
+    return r >= 0 && r < tiles.length && c >= 0 && c < tiles[r].length;
+  }
+
   /** Returns true iff the given point is on the board. */
   public boolean isOnBoard(MPoint p) {
     return p.row >= 0 && p.row < tiles.length && p.col >= 0 && p.col < tiles[p.row].length;
@@ -106,9 +111,9 @@ public final class Board implements Iterable<Tile>, Stringable {
    */
   public Tile getTileInDirection(Tile t, Direction... d) {
     MPoint delta = new MPoint(d);
-    try {
+    if (isOnBoard(t.row + delta.row, t.col + delta.col)) {
       return getTileAt(t.row + delta.row, t.col + delta.col);
-    } catch (IllegalArgumentException e) {
+    } else {
       return null;
     }
   }

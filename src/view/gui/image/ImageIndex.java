@@ -381,10 +381,9 @@ public final class ImageIndex {
     for (Tile t : tiles) {
       for (Direction d : Direction.values()) {
         boolean paint = true;
-        try {
+        if (t.board.isOnBoard(t.row + d.dRow(), t.col + d.dCol())) {
           Tile n = t.board.getTileAt(t.row + d.dRow(), t.col + d.dCol());
           paint = !tiles.contains(n);
-        } catch (IllegalArgumentException e) {
         }
         if (paint) drawLine(g2d, gp, t, d);
       }

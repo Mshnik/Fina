@@ -17,7 +17,7 @@ public final class AIPlayer extends Player {
    * Causes the AIPlayer thread to sleep between executing each action If playing against at least
    * one human opponent.
    */
-  private static final int SLEEP_TIME_BETWEEN_ACTIONS_AGAINST_HUMAN = 10;
+  private static final int SLEEP_TIME_BETWEEN_ACTIONS_AGAINST_HUMAN = 0;
 
   /** The controller handling behavior specification for this AIPlayer. */
   private final AIController aiController;
