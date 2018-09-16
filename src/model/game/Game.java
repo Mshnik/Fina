@@ -176,7 +176,6 @@ public final class Game implements Runnable, Stringable {
    * running.
    */
   public Player getMostRecentHumanPlayer() {
-    if (!running) return null;
     return playersByIndex.get(mostRecentHumanPlayerIndex);
   }
 
@@ -243,7 +242,6 @@ public final class Game implements Runnable, Stringable {
   public boolean isVisibleToMostRecentHumanPlayer(Tile t) {
     return !getFogOfWar().active
         || (!betweenTurnsFog
-            && getCurrentPlayer() != null
             && (mostRecentHumanPlayerIndex == observer.index
                 || playersByIndex.get(mostRecentHumanPlayerIndex).canSee(t)));
   }

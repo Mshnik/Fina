@@ -33,6 +33,10 @@ public final class Modifiers {
       this.description = m.toStatString();
       this.turnsRemaining = m.getRemainingTurns();
       this.unit = m.unit;
+
+      checkNonNullNonEmpty(name);
+      checkNonNullNonEmpty(imageFilename);
+      checkNonNullNonEmpty(description);
     }
 
     private ModifierDescription(ModifierBundle m) {
@@ -42,6 +46,17 @@ public final class Modifiers {
       this.description = m.toStatString().trim();
       this.turnsRemaining = m.getTurnsRemaining();
       this.unit = m.getModifier(0).unit;
+
+      checkNonNullNonEmpty(name);
+      checkNonNullNonEmpty(imageFilename);
+      checkNonNullNonEmpty(description);
+    }
+
+    /** Asserts that all fields are non-null and non-empty. */
+    private void checkNonNullNonEmpty(String s) {
+      if (s == null || s.isEmpty()) {
+        throw new RuntimeException("Got empty string " + s);
+      }
     }
 
     /**

@@ -68,6 +68,10 @@ public final class StatModifier extends Modifier {
    */
   private static String getImageFilename(StatType statType, double modVal) {
     switch (statType) {
+      case ACTIONS_PER_TURN:
+        return modVal > 0 ? "spell_0_5.png" : "spell_0_4.png";
+      case MANA_PER_TURN:
+        return modVal > 0 ? "spell_22_1.png" : "spell_22_5.png";
       case MAX_HEALTH:
         return modVal > 0 ? "spell_2_0.png" : "spell_3_0.png";
       case MIN_ATTACK:

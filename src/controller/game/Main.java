@@ -24,6 +24,6 @@ public final class Main {
     defaultPlayerTypes.add(FULL_RANDOM_AI_TYPE);
     defaultPlayerTypes.add(FULL_RANDOM_AI_TYPE);
     GameController.loadAndStart(
-        "game/boards/" + boardFilename, defaultPlayerTypes, FogOfWar.REGULAR, 1, -1, 10, 3);
+        "game/boards/" + boardFilename, defaultPlayerTypes, FogOfWar.REGULAR, 1, 10, 10, 3);
   }
 }

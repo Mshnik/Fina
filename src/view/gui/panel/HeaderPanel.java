@@ -114,10 +114,11 @@ public final class HeaderPanel extends JPanel {
     g2d.setRenderingHint(
         RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
     g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, 20));
-    if (game.getCurrentPlayer() == null) {
+    if (game.isGameOver()) {
+      g2d.drawString(
+          "Game Over - Player " + game.getRemainingPlayers().get(0).index + " wins", 20, 25);
+    } else if (game.getCurrentPlayer() == null) {
       g2d.drawString("Setup Phase", 20, 25);
-    } else if (game.isGameOver()) {
-      g2d.drawString("Player " + game.getRemainingPlayers().get(0).index + " wins", 20, 25);
     } else {
       Player p = game.getCurrentPlayer();
 
