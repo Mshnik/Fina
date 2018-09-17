@@ -80,11 +80,9 @@ public final class Modifiers {
       if (!addedModifiers.contains(m)) {
         synchronized (m) {
           if (m.hasBundle()) {
-            System.out.println("Using ModifierBundle");
             descriptions.add(new ModifierDescription(m.getBundle()));
             addedModifiers.addAll(m.getBundle().getModifiers());
           } else {
-            System.out.println("Modifier");
             descriptions.add(new ModifierDescription(m));
             addedModifiers.add(m);
           }
