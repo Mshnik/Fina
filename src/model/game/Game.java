@@ -203,15 +203,17 @@ public final class Game implements Runnable, Stringable {
    */
   public Map<Combatant, Set<Tile>> getDangerRadius(Player player) {
     Map<Combatant, Set<Tile>> dangerRadius = new HashMap<>();
-    players
-        .stream()
-        .map(Player::getDangerRadius)
-        .forEach(
-            m ->
-                m.entrySet()
-                    .stream()
-                    .filter(e -> player.canSee(e.getKey()))
-                    .forEach(e -> dangerRadius.put(e.getKey(), e.getValue())));
+    for (Player p : players) {
+      Map<Combatant, Set<Tile>> dangerRadiusMap = p.getDangerRadius();
+      synchronized (dangerRadiusMap) {
+        dangerRadius
+            .entrySet()
+            .stream()
+            .filter(e -> player.canSee(e.getKey()))
+            .forEach(e -> dangerRadius.put(e.getKey(), e.getValue()));
+      }
+    }
+
     return dangerRadius;
   }
 

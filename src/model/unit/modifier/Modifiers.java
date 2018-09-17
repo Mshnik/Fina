@@ -33,10 +33,6 @@ public final class Modifiers {
       this.description = m.toStatString();
       this.turnsRemaining = m.getRemainingTurns();
       this.unit = m.unit;
-
-      checkNonNullNonEmpty(name);
-      checkNonNullNonEmpty(imageFilename);
-      checkNonNullNonEmpty(description);
     }
 
     private ModifierDescription(ModifierBundle m) {
@@ -46,17 +42,6 @@ public final class Modifiers {
       this.description = m.toStatString().trim();
       this.turnsRemaining = m.getTurnsRemaining();
       this.unit = m.getModifier(0).unit;
-
-      checkNonNullNonEmpty(name);
-      checkNonNullNonEmpty(imageFilename);
-      checkNonNullNonEmpty(description);
-    }
-
-    /** Asserts that all fields are non-null and non-empty. */
-    private void checkNonNullNonEmpty(String s) {
-      if (s == null || s.isEmpty()) {
-        throw new RuntimeException("Got empty string " + s);
-      }
     }
 
     /**
@@ -93,12 +78,16 @@ public final class Modifiers {
     ArrayList<ModifierDescription> descriptions = new ArrayList<>();
     for (Modifier m : modifiers) {
       if (!addedModifiers.contains(m)) {
-        if (m.bundle != null) {
-          descriptions.add(new ModifierDescription(m.bundle));
-          addedModifiers.addAll(m.bundle.getModifiers());
-        } else {
-          descriptions.add(new ModifierDescription(m));
-          addedModifiers.add(m);
+        synchronized (m) {
+          if (m.hasBundle()) {
+            System.out.println("Using ModifierBundle");
+            descriptions.add(new ModifierDescription(m.getBundle()));
+            addedModifiers.addAll(m.getBundle().getModifiers());
+          } else {
+            System.out.println("Modifier");
+            descriptions.add(new ModifierDescription(m));
+            addedModifiers.add(m);
+          }
         }
       }
     }
@@ -226,7 +215,7 @@ public final class Modifiers {
         new CustomModifier(
             "Communications",
             "spell_14_11.png",
-            "",
+            " ",
             null,
             Integer.MAX_VALUE,
             StackMode.STACKABLE,

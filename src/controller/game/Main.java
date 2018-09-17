@@ -13,7 +13,7 @@ import model.unit.combatant.Combatants;
 public final class Main {
   /** Simple main method to test out Frame features */
   public static void main(String[] args) throws InterruptedException {
-    Thread.sleep(10000);
+    Thread.sleep(0);
     // Force unit, building, spell, audio loading.
     Combatants.getCombatantsForAge(1);
     Buildings.getBuildingsForLevel(1);

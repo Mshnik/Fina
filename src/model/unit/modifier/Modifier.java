@@ -7,8 +7,11 @@ import model.unit.Unit;
 /** A Modifier for a model.unit - a buff or nerf, etc. */
 public abstract class Modifier implements Stringable {
 
-  /** The bundle this is a member of, if any */
-  ModifierBundle bundle;
+  /**
+   * The bundle this is a member of, if any. Once assigned to a bundle, shouldn't be assigned to
+   * another one.
+   */
+  private ModifierBundle bundle;
 
   /** The name of this modifier */
   public final String name;
@@ -110,6 +113,21 @@ public abstract class Modifier implements Stringable {
     } else {
       return "";
     }
+  }
+
+  /** Checks whether this Modifier has an associated bundle. */
+  synchronized boolean hasBundle() {
+    return bundle != null;
+  }
+
+  /** Returns the associated bundle, if any. Null otherwise. */
+  synchronized ModifierBundle getBundle() {
+    return bundle;
+  }
+
+  /** Sets the associated bundle. */
+  synchronized void setBundle(ModifierBundle bundle) {
+    this.bundle = bundle;
   }
 
   /**

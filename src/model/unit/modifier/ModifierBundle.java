@@ -1,17 +1,18 @@
 package model.unit.modifier;
 
-import model.unit.Unit;
-import model.unit.modifier.Modifier.StackMode;
-
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import model.unit.Unit;
+import model.unit.modifier.Modifier.StackMode;
 
 /** A set of modifiers applied to a single unit */
 public final class ModifierBundle implements Collection<Modifier> {
 
-  private LinkedList<Modifier> modifiers;
+  private final List<Modifier> modifiers;
 
   /**
    * Constructs a new Modifier Bundle
@@ -30,9 +31,11 @@ public final class ModifierBundle implements Collection<Modifier> {
    *     modifiers to this bundle
    */
   public ModifierBundle(Iterable<Modifier> modifiers) {
-    this.modifiers = new LinkedList<>();
-    for (Modifier mod : modifiers) {
-      add(mod);
+    this.modifiers = Collections.synchronizedList(new LinkedList<>());
+    synchronized (this.modifiers) {
+      for (Modifier mod : modifiers) {
+        add(mod);
+      }
     }
   }
 
@@ -40,12 +43,14 @@ public final class ModifierBundle implements Collection<Modifier> {
    * Constructs a new Modifier Bundle from copying the given bundle along with the given modifiers.
    */
   public ModifierBundle(ModifierBundle bundle, Modifier... m) {
-    modifiers = new LinkedList<>();
-    for (Modifier mod : bundle.modifiers) {
-      add(mod);
-    }
-    for (Modifier mod : m) {
-      add(mod);
+    modifiers = Collections.synchronizedList(new LinkedList<>());
+    synchronized (this.modifiers) {
+      for (Modifier mod : bundle.modifiers) {
+        add(mod);
+      }
+      for (Modifier mod : m) {
+        add(mod);
+      }
     }
   }
 
@@ -56,25 +61,16 @@ public final class ModifierBundle implements Collection<Modifier> {
    *     number of turns or stackability to prevent bundles from breaking up
    */
   public boolean add(Modifier m) throws IllegalArgumentException {
-    if (!modifiers.isEmpty()) {
-      Modifier base = modifiers.get(0);
-      if (m.stacking != base.stacking || m.getRemainingTurns() != base.getRemainingTurns())
-        throw new IllegalArgumentException(m.name + " incompatible with " + this);
+    synchronized (modifiers) {
+      if (!modifiers.isEmpty()) {
+        Modifier base = modifiers.get(0);
+        if (m.stacking != base.stacking || m.getRemainingTurns() != base.getRemainingTurns())
+          throw new IllegalArgumentException(m.name + " incompatible with " + this);
+      }
+      modifiers.add(m);
+      m.setBundle(this);
+      return true;
     }
-    modifiers.add(m);
-    m.bundle = this;
-    return true;
-  }
-
-  /**
-   * Safely removes the given modifier from this bundle as part of its kill() procedure
-   *
-   * @throws IllegalArgumentException if m doesn't belong to this bundle
-   */
-  void removeModifier(Modifier m) throws IllegalArgumentException {
-    if (m.bundle != this) throw new IllegalArgumentException(m + " doesn't belong to " + this);
-    modifiers.remove(m);
-    m.bundle = null;
   }
 
   /** Calls clone(unit, unit). */
@@ -88,50 +84,64 @@ public final class ModifierBundle implements Collection<Modifier> {
    */
   public ModifierBundle clone(Unit unit, Unit source) {
     ModifierBundle b = new ModifierBundle();
-    for (Modifier m : modifiers) {
-      Modifier m2 = m.clone(unit, source);
-      b.add(m2);
+    synchronized (modifiers) {
+      for (Modifier m : modifiers) {
+        Modifier m2 = m.clone(unit, source);
+        b.add(m2);
+      }
     }
     return b;
   }
 
   /** Returns the modifier at the given index. */
   public Modifier getModifier(int index) {
-    return modifiers.get(index);
+    synchronized (modifiers) {
+      return modifiers.get(index);
+    }
   }
 
-  /** Returns a copy of the list represented by this modifierBundle */
-  public LinkedList<Modifier> getModifiers() {
-    return new LinkedList<Modifier>(modifiers);
+  /** Returns a non-modifiable view of the list represented by this modifierBundle */
+  public List<Modifier> getModifiers() {
+    synchronized (modifiers) {
+      return Collections.unmodifiableList(modifiers);
+    }
   }
 
   /** Returns true iff the given model.unit is affected by modifiers cloned from this bundle */
   public boolean isAffecting(Unit u) {
-    for (Modifier m : u.getModifiers()) {
-      if (modifiers.contains(m.clonedFrom)) return true;
+    synchronized (modifiers) {
+      for (Modifier m : u.getModifiers()) {
+        if (modifiers.contains(m.clonedFrom)) return true;
+      }
+      return false;
     }
-    return false;
   }
 
   /** Removes all modifiers clone from dummies in this bundle from the given model.unit */
   public void removeFrom(Unit u) {
-    for (Modifier m : u.getModifiers()) {
-      if (modifiers.contains(m.clonedFrom)) m.kill();
+    synchronized (modifiers) {
+      for (Modifier m : u.getModifiers()) {
+        if (modifiers.contains(m.clonedFrom)) m.kill();
+      }
     }
   }
 
   /** Returns true iff every modifier this bundle wraps is a dummy */
   public boolean isDummyBundle() {
-    for (Modifier m : this) {
-      if (!m.isDummy()) return false;
+    synchronized (modifiers) {
+      for (Modifier m : this) {
+        if (!m.isDummy()) return false;
+      }
+      return true;
     }
-    return true;
   }
 
   /** Returns an iterator voer the modifers in this Bundle */
   @Override
   public Iterator<Modifier> iterator() {
-    return modifiers.iterator();
+    synchronized (modifiers) {
+      return modifiers.iterator();
+    }
   }
 
   /**
@@ -139,55 +149,73 @@ public final class ModifierBundle implements Collection<Modifier> {
    * bundle.
    */
   public int getTurnsRemaining() {
-    return modifiers.get(0).getRemainingTurns();
+    synchronized (modifiers) {
+      return modifiers.get(0).getRemainingTurns();
+    }
   }
 
   /** Returns true iff modifiers in this bundle. Hopefully constant throughout. */
   public StackMode getStackMode() {
-    return modifiers.get(0).stacking;
+    synchronized (modifiers) {
+      return modifiers.get(0).stacking;
+    }
   }
 
   /** Returns the toStrings of the modifiers in this bundle */
   public String toString() {
-    String s = "";
-    for (Modifier m : modifiers) {
-      s += m.toString() + "  ";
+    synchronized (modifiers) {
+      String s = "";
+      for (Modifier m : modifiers) {
+        s += m.toString() + "  ";
+      }
+      return s;
     }
-    return s;
   }
 
   /** Returns the toStatStrings of the modifiers in this bundle */
   public String toStatString() {
-    String s = "";
-    for (Modifier m : modifiers) {
-      s += m.toStatString() + "  ";
+    synchronized (modifiers) {
+      String s = "";
+      for (Modifier m : modifiers) {
+        s += m.toStatString() + "  ";
+      }
+      return s;
     }
-    return s;
   }
 
   @Override
   public int size() {
-    return modifiers.size();
+    synchronized (modifiers) {
+      return modifiers.size();
+    }
   }
 
   @Override
   public boolean isEmpty() {
-    return modifiers.isEmpty();
+    synchronized (modifiers) {
+      return modifiers.isEmpty();
+    }
   }
 
   @Override
   public boolean contains(Object o) {
-    return modifiers.contains(o);
+    synchronized (modifiers) {
+      return modifiers.contains(o);
+    }
   }
 
   @Override
   public Object[] toArray() {
-    return modifiers.toArray();
+    synchronized (modifiers) {
+      return modifiers.toArray();
+    }
   }
 
   @Override
   public <T> T[] toArray(T[] a) {
-    return modifiers.toArray(a);
+    synchronized (modifiers) {
+      return modifiers.toArray(a);
+    }
   }
 
   /** Unsupported */
@@ -198,31 +226,39 @@ public final class ModifierBundle implements Collection<Modifier> {
 
   /** Safe removal called during a modifier's kill routine */
   void removeSafe(Modifier m) {
-    modifiers.remove(m);
+    synchronized (modifiers) {
+      modifiers.remove(m);
+    }
   }
 
   @Override
   public boolean containsAll(Collection<?> c) {
-    for (Object o : c) {
-      if (!contains(o)) return false;
+    synchronized (modifiers) {
+      for (Object o : c) {
+        if (!contains(o)) return false;
+      }
+      return true;
     }
-    return true;
   }
 
   @Override
   public boolean addAll(Collection<? extends Modifier> c) throws IllegalArgumentException {
-    for (Modifier m : c) {
-      add(m);
+    synchronized (modifiers) {
+      for (Modifier m : c) {
+        add(m);
+      }
+      return true;
     }
-    return true;
   }
 
   @Override
   public boolean removeAll(Collection<?> c) {
-    for (Object o : c) {
-      remove(o);
+    synchronized (modifiers) {
+      for (Object o : c) {
+        remove(o);
+      }
+      return true;
     }
-    return true;
   }
 
   /** Unsupported */
@@ -234,9 +270,11 @@ public final class ModifierBundle implements Collection<Modifier> {
   /** Clears this bundle by killing all modifiers in it */
   @Override
   public void clear() {
-    for (Modifier m : getModifiers()) {
-      m.kill();
+    synchronized (modifiers) {
+      for (Modifier m : getModifiers()) {
+        m.kill();
+      }
+      modifiers.clear();
     }
-    modifiers.clear();
   }
 }

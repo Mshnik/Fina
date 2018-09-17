@@ -70,7 +70,7 @@ public abstract class Player implements Stringable {
   private Set<Tile> visionCloudFlattened;
 
   /** The tiles that combatants this player controls threatens. */
-  private Map<Combatant, Set<Tile>> dangerRadius;
+  private final Map<Combatant, Set<Tile>> dangerRadius;
 
   /** The sum of all the mana per turn generation/costs this player owns */
   private int manaPerTurn;
@@ -93,7 +93,7 @@ public abstract class Player implements Stringable {
     temples = new ArrayList<>();
     visionCloud = new HashMap<>();
     visionCloudFlattened = null;
-    dangerRadius = new HashMap<>();
+    dangerRadius = Collections.synchronizedMap(new HashMap<>());
   }
 
   /** Returns the color of this player. */
@@ -407,18 +407,24 @@ public abstract class Player implements Stringable {
    * should work.
    */
   public Map<Combatant, Set<Tile>> getDangerRadius() {
-    return Collections.unmodifiableMap(dangerRadius);
+    synchronized (dangerRadius) {
+      return Collections.unmodifiableMap(dangerRadius);
+    }
   }
 
   /** Returns the union of all sets in {@link #getDangerRadius()}. */
   public Set<Tile> getDangerRadiusFlattened() {
-    return Collections.unmodifiableSet(
-        dangerRadius.values().stream().flatMap(Set::stream).collect(Collectors.toSet()));
+    synchronized (dangerRadius) {
+      return Collections.unmodifiableSet(
+          dangerRadius.values().stream().flatMap(Set::stream).collect(Collectors.toSet()));
+    }
   }
 
   /** Recomputes the danger radius for the given combatant. */
   public void recomputeDangerRadiusFor(Combatant combatant) {
-    dangerRadius.put(combatant, combatant.getDangerRadius(true));
+    synchronized (dangerRadius) {
+      dangerRadius.put(combatant, combatant.getDangerRadius(true));
+    }
     if (game.getController().hasFrame()) {
       game.getController().frame.unitDangerRadiusChanged(combatant);
     }
