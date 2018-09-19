@@ -109,7 +109,11 @@ public final class HeaderPanel extends JPanel {
 
     g2d.setColor(Color.BLACK);
     if (frame.DEBUG) {
-      g2d.drawString(frame.getController().getToggle().toString(), MARGIN, MARGIN);
+      String turnString = "Turn " + frame.getController().game.getTurn();
+      String toggleString = "Toggle " + frame.getController().getToggle().toString();
+      g2d.drawString(turnString, MARGIN, MARGIN);
+      g2d.drawString(
+          toggleString, MARGIN + g2d.getFontMetrics().stringWidth(turnString) + 15, MARGIN);
     }
     g2d.setRenderingHint(
         RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);

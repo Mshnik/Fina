@@ -15,6 +15,13 @@ import model.unit.combatant.Combatant;
 /** Unifying model that holds all sub-model classes */
 public final class Game implements Runnable, Stringable {
 
+  /**
+   * The count of turns so far in this game. Initialized to 0, thus the first turn is turn 1.
+   * Incremented at the start of turn, so the final number is the last turn number. Incremented on
+   * every player's turn, so a single player's turn numbers will be different by # of players.
+   */
+  private int turn;
+
   /** The controller for this Game. */
   private GameController controller;
 
@@ -79,6 +86,7 @@ public final class Game implements Runnable, Stringable {
   private boolean running;
 
   public Game(Board b, FogOfWar fog) {
+    turn = 0;
     board = b;
     fogOfWar = fog;
     betweenTurnsFog = false;
@@ -160,6 +168,11 @@ public final class Game implements Runnable, Stringable {
     remainingPlayers.remove(observer);
     this.observer = observer;
     return observer;
+  }
+
+  /** Returns he current turn. */
+  public int getTurn() {
+    return turn;
   }
 
   /**
@@ -274,6 +287,7 @@ public final class Game implements Runnable, Stringable {
   private void nextTurn() throws RuntimeException {
     if (!running)
       throw new RuntimeException("Can't take turn for player - " + this + " isn't started");
+    turn++;
     betweenTurnsFog = false;
     Player p = getCurrentPlayer();
     if (p.isLocalHumanPlayer()) {
