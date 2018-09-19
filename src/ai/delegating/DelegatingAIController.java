@@ -99,7 +99,7 @@ public final class DelegatingAIController implements AIController {
   }
 
   /** Adds the given delegate and returns this. */
-  public DelegatingAIController withDelegate(Delegate delegate) {
+  public DelegatingAIController addDelegate(Delegate delegate) {
     delegates.add(delegate);
     return this;
   }

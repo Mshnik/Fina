@@ -27,6 +27,12 @@ public final class SummonDelegates {
 
   /** Summon delegate that wants to not spend mana. */
   public static final class SummonSpendLessManaDelegate extends SummonDelegate {
+
+    @Override
+    int getExpectedSubweightsLength() {
+      return 0;
+    }
+
     @Override
     double getRawScore(AIAction action) {
       return -action.unitToSummon.getManaCostWithScalingAndDiscountsForPlayer(action.player);
@@ -44,9 +50,14 @@ public final class SummonDelegates {
    * </ol>
    */
   public static final class SummonUnitsDelegate extends SummonDelegate {
+
+    @Override
+    int getExpectedSubweightsLength() {
+      return 2;
+    }
+
     @Override
     double getRawScore(AIAction action) {
-      checkSubWeightsLength(2);
       if (action.unitToSummon instanceof MovingUnit) {
         return getSubWeight(0);
       } else if (action.unitToSummon instanceof Building) {
@@ -59,6 +70,12 @@ public final class SummonDelegates {
 
   /** Summon delegate that wants to summon buildings on AncientGround. */
   public static final class SummonBuildingOnAncientGroundDelegate extends SummonDelegate {
+
+    @Override
+    int getExpectedSubweightsLength() {
+      return 0;
+    }
+
     @Override
     double getRawScore(AIAction action) {
       if (action.unitToSummon instanceof Building

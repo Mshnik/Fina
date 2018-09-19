@@ -16,31 +16,58 @@ public abstract class Delegate {
 
   /**
    * Main weight for this Delegate, to compare its value to other delegate. Output of rawScore is
-   * multiplied by this value.
+   * multiplied by this value. Default value is 1, so delegates will be presumed to have a positive
+   * impact if weight isn't set.
    */
   private double weight;
 
   /**
    * Weights applied to values within this Delegate, to compare values within its getRawScore. Of
-   * varying length based on the delegate.
+   * varying length based on the delegate. Defaults to an array of 1's with {@link
+   * #getExpectedSubweightsLength()} length.
    */
   private double[] subWeights;
 
   Delegate(AIActionType... actionTypes) {
-    this.validActionTypes = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(actionTypes)));
-  }
-
-  /** Asserts that the subWeights length is correct. */
-  void checkSubWeightsLength(int length) {
-    if (subWeights.length != length) {
-      throw new RuntimeException(
-          "Expected subweights of length " + length + ", got " + Arrays.toString(subWeights));
+    this.weight = 1;
+    subWeights = new double[getExpectedSubweightsLength()];
+    for (int i = 0; i < subWeights.length; i++) {
+      subWeights[i] = 1;
     }
+    this.validActionTypes = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(actionTypes)));
   }
 
   /** Returns the subWeight at the given index. */
   double getSubWeight(int index) {
     return subWeights[index];
+  }
+
+  /** Sets the weight of this Delegate and returns it. */
+  public Delegate setWeight(double weight) {
+    this.weight = weight;
+    return this;
+  }
+
+  /** Returns the expected length of the subweights array. If unused, should be 0. */
+  abstract int getExpectedSubweightsLength();
+
+  /** Sets the subweights of this Delegate and returns it. */
+  public Delegate withSubweights(double... subWeights) {
+    if (getExpectedSubweightsLength() != subWeights.length) {
+      throw new RuntimeException(
+          "Can't set subWeights to "
+              + Arrays.toString(subWeights)
+              + ", expected length is "
+              + getExpectedSubweightsLength());
+    }
+    this.subWeights = subWeights;
+    return this;
+  }
+
+  /** Sets the subweights without checking length. Only use this if we're really sure it's ok. */
+  Delegate setSubweightsUnsafe(double... subWeights) {
+    this.subWeights = subWeights;
+    return this;
   }
 
   /**

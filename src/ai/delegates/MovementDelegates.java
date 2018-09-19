@@ -24,9 +24,14 @@ public final class MovementDelegates {
    * A movement delegate that wants to expand the danger radius as much as possible. No subweights.
    */
   public static final class ExpandDangerRadiusMovementDelegate extends MovementDelegate {
+
+    @Override
+    int getExpectedSubweightsLength() {
+      return 0;
+    }
+
     @Override
     double getRawScore(AIAction action) {
-      checkSubWeightsLength(0);
       if (!(action.actingUnit instanceof Combatant)) {
         return 0;
       }
@@ -48,9 +53,14 @@ public final class MovementDelegates {
    * attack range. No subWeights.
    */
   public static final class MoveToAttackMovementDelegate extends MovementDelegate {
+
+    @Override
+    int getExpectedSubweightsLength() {
+      return 0;
+    }
+
     @Override
     double getRawScore(AIAction action) {
-      checkSubWeightsLength(0);
       if (!(action.actingUnit instanceof Combatant)) {
         return 0;
       }
@@ -72,9 +82,14 @@ public final class MovementDelegates {
    */
   public static final class MoveToAttackAndNotBeCounterAttackedMovementDelegate
       extends MovementDelegate {
+
+    @Override
+    int getExpectedSubweightsLength() {
+      return 0;
+    }
+
     @Override
     double getRawScore(AIAction action) {
-      checkSubWeightsLength(0);
       if (!(action.actingUnit instanceof Combatant)) {
         return 0;
       }
@@ -100,6 +115,12 @@ public final class MovementDelegates {
    * No subweights.
    */
   public static final class MoveToNotBeAttackedMovementDelegate extends MovementDelegate {
+
+    @Override
+    int getExpectedSubweightsLength() {
+      return 0;
+    }
+
     @Override
     double getRawScore(AIAction action) {
       return action

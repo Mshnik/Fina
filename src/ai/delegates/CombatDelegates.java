@@ -30,8 +30,12 @@ public final class CombatDelegates {
   public static final class MaxExpectedDamageDealtCombatDelegate extends CombatDelegate {
 
     @Override
+    int getExpectedSubweightsLength() {
+      return 2;
+    }
+
+    @Override
     double getRawScore(AIAction action) {
-      checkSubWeightsLength(2);
       Combat combat =
           new Combat((Combatant) action.actingUnit, action.targetedTile.getOccupyingUnit());
       return combat.getProjectedMaxAttack() * getSubWeight(0)
@@ -53,8 +57,12 @@ public final class CombatDelegates {
   public static final class MinCounterAttackDamageCombatDelegate extends CombatDelegate {
 
     @Override
+    int getExpectedSubweightsLength() {
+      return 2;
+    }
+
+    @Override
     double getRawScore(AIAction action) {
-      checkSubWeightsLength(2);
       Combat combat =
           new Combat((Combatant) action.actingUnit, action.targetedTile.getOccupyingUnit());
       return -(combat.getProjectedMaxCounterAttack() * getSubWeight(0)
@@ -76,8 +84,12 @@ public final class CombatDelegates {
   public static final class GainUnitAdvantageCombatDelegate extends CombatDelegate {
 
     @Override
+    int getExpectedSubweightsLength() {
+      return 2;
+    }
+
+    @Override
     double getRawScore(AIAction action) {
-      checkSubWeightsLength(2);
       Unit defender = action.targetedTile.getOccupyingUnit();
       Combat combat = new Combat((Combatant) action.actingUnit, defender);
       double chanceOpponentDies =
