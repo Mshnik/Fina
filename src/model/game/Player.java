@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.MovingUnit;
+import model.unit.Summoner;
 import model.unit.Unit;
 import model.unit.building.AllUnitModifierBuilding;
 import model.unit.building.CommanderModifierBuilding;
@@ -220,6 +221,15 @@ public abstract class Player implements Stringable {
         .stream()
         .filter(u -> u instanceof Combatant)
         .map(u -> (Combatant) u)
+        .collect(Collectors.toSet());
+  }
+
+  /** Returns the subset of Summoner units from getUnits. */
+  public Set<Summoner> getSummoners() {
+    return units
+        .stream()
+        .filter(u -> u instanceof Summoner)
+        .map(u -> (Summoner) u)
         .collect(Collectors.toSet());
   }
 

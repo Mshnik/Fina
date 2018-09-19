@@ -35,7 +35,8 @@ public final class SummonDelegates {
 
     @Override
     double getRawScore(AIAction action) {
-      return -action.unitToSummon.getManaCostWithScalingAndDiscountsForPlayer(action.player);
+      return -action.unitToSummon.getManaCostWithScalingAndDiscountsForPlayer(action.player)
+          / 200.0;
     }
   }
 

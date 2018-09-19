@@ -18,11 +18,6 @@ public interface Summoner {
    */
   public boolean hasBuildSpace();
 
-  /** Can summon returns true for summoners, this may force an override. */
-  public default boolean canSummon() {
-    return true;
-  }
-
   /** Returns the list of things this can summon. (Doesn't take into account cost or space). * */
   public Map<String, Combatant> getSummonables();
 
