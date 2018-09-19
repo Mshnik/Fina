@@ -43,7 +43,7 @@ public abstract class Delegate {
   }
 
   /** Sets the weight of this Delegate and returns it. */
-  public Delegate setWeight(double weight) {
+  public Delegate withWeight(double weight) {
     this.weight = weight;
     return this;
   }

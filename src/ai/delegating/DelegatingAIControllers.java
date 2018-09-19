@@ -68,31 +68,46 @@ public final class DelegatingAIControllers {
   public static DelegatingAIController randomWeightsDelegatingAIController() {
     double min = -0.5;
     double max = 5.0;
+    double subMin = -0.5;
+    double subMax = 3.0;
     return DelegatingAIControllerFactory.newBuilder()
+        // Movement delegates.
         .addDelegate(
-            new ExpandDangerRadiusMovementDelegate().setWeight(RandomHelper.nextRandom(min, max)))
+            new ExpandDangerRadiusMovementDelegate().withWeight(RandomHelper.nextRandom(min, max)))
         .addDelegate(
-            new MoveToNotBeAttackedMovementDelegate().setWeight(RandomHelper.nextRandom(min, max)))
+            new MoveToNotBeAttackedMovementDelegate().withWeight(RandomHelper.nextRandom(min, max)))
         .addDelegate(
             new MoveToAttackAndNotBeCounterAttackedMovementDelegate()
-                .setWeight(RandomHelper.nextRandom(min, max)))
+                .withWeight(RandomHelper.nextRandom(min, max)))
         .addDelegate(
-            new MoveToAttackMovementDelegate().setWeight(RandomHelper.nextRandom(min, max)))
+            new MoveToAttackMovementDelegate().withWeight(RandomHelper.nextRandom(min, max)))
+        // Combat delegates.
         .addDelegate(
-            new GainUnitAdvantageCombatDelegate().setWeight(RandomHelper.nextRandom(min, max)))
+            new GainUnitAdvantageCombatDelegate()
+                .withWeight(RandomHelper.nextRandom(min, max))
+                .withSubweights(RandomHelper.nextRandoms(subMin, subMax, 2)))
         .addDelegate(
-            new MaxExpectedDamageDealtCombatDelegate().setWeight(RandomHelper.nextRandom(min, max)))
+            new MaxExpectedDamageDealtCombatDelegate()
+                .withWeight(RandomHelper.nextRandom(min, max))
+                .withSubweights(RandomHelper.nextRandoms(subMin, subMax, 2)))
         .addDelegate(
-            new MinCounterAttackDamageCombatDelegate().setWeight(RandomHelper.nextRandom(min, max)))
-        .addDelegate(new SummonUnitsDelegate().setWeight(RandomHelper.nextRandom(min, max)))
+            new MinCounterAttackDamageCombatDelegate()
+                .withWeight(RandomHelper.nextRandom(min, max))
+                .withSubweights(RandomHelper.nextRandoms(subMin, subMax, 2)))
+        // Summon delegates.
+        .addDelegate(
+            new SummonUnitsDelegate()
+                .withWeight(RandomHelper.nextRandom(min, max))
+                .withSubweights(RandomHelper.nextRandoms(subMin, subMax, 2)))
         .addDelegate(
             new SummonBuildingOnAncientGroundDelegate()
-                .setWeight(RandomHelper.nextRandom(min, max)))
-        .addDelegate(new SummonSpendLessManaDelegate().setWeight(RandomHelper.nextRandom(min, max)))
+                .withWeight(RandomHelper.nextRandom(min, max)))
         .addDelegate(
-            new SummonBuildingByNameDelegate().setWeight(RandomHelper.nextRandom(min, max)))
+            new SummonSpendLessManaDelegate().withWeight(RandomHelper.nextRandom(min, max)))
         .addDelegate(
-            new SummonCombatantByNameDelegate().setWeight(RandomHelper.nextRandom(min, max)))
+            new SummonBuildingByNameDelegate().withWeight(RandomHelper.nextRandom(min, max)))
+        .addDelegate(
+            new SummonCombatantByNameDelegate().withWeight(RandomHelper.nextRandom(min, max)))
         .build();
   }
 }
