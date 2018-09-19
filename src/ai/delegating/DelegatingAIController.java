@@ -3,6 +3,13 @@ package ai.delegating;
 import ai.AIAction;
 import ai.AIController;
 import ai.delegates.Delegate;
+import model.board.Tile;
+import model.game.Player;
+import model.unit.MovingUnit;
+import model.unit.Summoner;
+import model.unit.Unit;
+import model.unit.combatant.Combatant;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,12 +17,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import model.board.Tile;
-import model.game.Player;
-import model.unit.MovingUnit;
-import model.unit.Summoner;
-import model.unit.Unit;
-import model.unit.combatant.Combatant;
 
 /** An AI controller that maintains a set of delegates to determine its behavior. */
 public final class DelegatingAIController implements AIController {
@@ -124,6 +125,9 @@ public final class DelegatingAIController implements AIController {
   private void recomputeMoveActionsForUnit(Player p, MovingUnit movingUnit) {
     HashSet<AIActionWithValue> actionWithValues = new HashSet<>();
     for (Tile t : p.game.board.getMovementCloud(movingUnit, false)) {
+      if (t == movingUnit.getLocation()) {
+        continue;
+      }
       actionWithValues.add(
           new AIActionWithValue(
               AIAction.moveUnit(p, movingUnit, t, p.game.board.getMovementPath(t))));
@@ -145,6 +149,9 @@ public final class DelegatingAIController implements AIController {
     HashSet<AIActionWithValue> actionWithValues = new HashSet<>();
     for (Unit summonUnit : summonerUnit.getSummonables().values()) {
       for (Tile t : p.game.board.getSummonCloud(summonerUnit, summonUnit)) {
+        if (t == summonerUnit.getLocation()) {
+          continue;
+        }
         actionWithValues.add(
             new AIActionWithValue(
                 AIAction.summonCombatantOrBuildBuilding(p, summonerUnit, t, summonUnit)));
@@ -152,6 +159,9 @@ public final class DelegatingAIController implements AIController {
     }
     for (Unit summonUnit : summonerUnit.getBuildables().values()) {
       for (Tile t : p.game.board.getSummonCloud(summonerUnit, summonUnit)) {
+        if (t == summonerUnit.getLocation()) {
+          continue;
+        }
         actionWithValues.add(
             new AIActionWithValue(
                 AIAction.summonCombatantOrBuildBuilding(p, summonerUnit, t, summonUnit)));

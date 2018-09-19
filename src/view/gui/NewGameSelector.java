@@ -1,7 +1,21 @@
 package view.gui;
 
+import ai.delegating.DelegatingAIControllers;
 import ai.dummy.FullRandomAIController;
 import controller.game.BoardReader;
+import model.board.Board;
+import model.board.Terrain;
+import model.game.Game.FogOfWar;
+import model.game.HumanPlayer;
+import model.unit.commander.Commander;
+
+import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,18 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.SwingUtilities;
-import model.board.Board;
-import model.board.Terrain;
-import model.game.Game.FogOfWar;
-import model.game.HumanPlayer;
-import model.unit.commander.Commander;
 
 /** Blocking top-level selector that allows the user to create a new game. */
 final class NewGameSelector {
@@ -77,7 +79,8 @@ final class NewGameSelector {
       // Uncomment if these are needed for testing.
       // DoNothingAIController.DO_NOTHING_AI_TYPE,
       // MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE,
-      FullRandomAIController.FULL_RANDOM_AI_TYPE
+      FullRandomAIController.FULL_RANDOM_AI_TYPE,
+      DelegatingAIControllers.DELEGATING_DEFAULT_AI_TYPE,
     };
     private final List<JComboBox<String>> playerTypeSelectorsList;
 

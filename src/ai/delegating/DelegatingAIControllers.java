@@ -16,6 +16,9 @@ import ai.delegates.SummonDelegates.SummonUnitsDelegate;
 /** A listing of DelegatingAIControllers. */
 public final class DelegatingAIControllers {
 
+  /** The type to show on the ui for a default delegating AI controller. */
+  public static final String DELEGATING_DEFAULT_AI_TYPE = "Del AI - Default";
+
   /** A delegating AIController for testing. */
   public static DelegatingAIController defaultDelegatingAIController() {
     return DelegatingAIControllerFactory.newBuilder()
