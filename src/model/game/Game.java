@@ -16,6 +16,11 @@ import java.util.Set;
 /** Unifying model that holds all sub-model classes */
 public final class Game implements Runnable, Stringable {
 
+  /** Cutoff turn for testing + ml generation. If turn hits this number, calls it a draw with both
+   * players losing.
+   */
+  private static final int CUT_OFF_TURN = 1000;
+
   /**
    * The count of turns so far in this game. Initialized to 0, thus the first turn is turn 1.
    * Incremented at the start of turn, so the final number is the last turn number. Incremented on
@@ -132,13 +137,13 @@ public final class Game implements Runnable, Stringable {
         nextTurn();
       }
       if (isGameOver()) {
-        Player winner = getRemainingPlayers().get(0);
+        Player winner = getRemainingPlayers().isEmpty() ? null : getRemainingPlayers().get(0);
         if (controller.hasFrame()) {
           controller.frame.showGameOverAlert(winner);
-        } else {
-          System.out.println("Game over - player " + getRemainingPlayers().get(0).index + " wins");
         }
-        System.out.println("Win " + winner.getConfigString());
+        if (winner != null) {
+          System.out.println("Win " + winner.getConfigString());
+        }
         for (Player p : players) {
           if (p != winner) {
             System.out.println("Lose " + p.getConfigString());
@@ -277,15 +282,22 @@ public final class Game implements Runnable, Stringable {
    * otherwise. Returns true if there are more than 1 remaining player.
    */
   public boolean isGameOver() {
-    int i = 0;
-    for (Player p : remainingPlayers.keySet()) {
-      if (remainingPlayers.get(p) && p.isAlive()) {
-        i++;
-      } else {
+    if (turn >= CUT_OFF_TURN) {
+      for (Player p : remainingPlayers.keySet()) {
         remainingPlayers.put(p, false);
       }
+      return true;
+    } else {
+      int i = 0;
+      for (Player p : remainingPlayers.keySet()) {
+        if (remainingPlayers.get(p) && p.isAlive()) {
+          i++;
+        } else {
+          remainingPlayers.put(p, false);
+        }
+      }
+      return i <= 1;
     }
-    return i <= 1;
   }
 
   /**

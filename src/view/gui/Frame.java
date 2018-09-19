@@ -295,9 +295,13 @@ public final class Frame extends JFrame {
     return controller;
   }
 
-  /** Shows an alert saying that the game is over. */
+  /** Shows an alert saying that the game is over. If winner is null, this game timed out. */
   public void showGameOverAlert(Player winner) {
-    JOptionPane.showMessageDialog(this, "Player " + winner.index + " wins!");
+    if (winner == null) {
+      JOptionPane.showMessageDialog(this, "Tie due to timeout");
+    } else {
+      JOptionPane.showMessageDialog(this, "Player " + winner.index + " wins!");
+    }
   }
 
   /**

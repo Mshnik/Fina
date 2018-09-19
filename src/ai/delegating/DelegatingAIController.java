@@ -231,7 +231,7 @@ public final class DelegatingAIController implements AIController {
   /** Creates a config string from the delegates used and their weights. */
   @Override
   public String getConfigString() {
-    int weightSigFigs = 3;
+    int weightSigFigs = 4;
     return delegates
         .stream()
         .map(

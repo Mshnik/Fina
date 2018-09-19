@@ -1,5 +1,12 @@
 package view.gui.panel;
 
+import model.game.Game;
+import model.game.Player;
+import view.gui.Frame;
+import view.gui.image.ImageIndex;
+import view.gui.image.ImageIndex.DrawingBarSegment;
+
+import javax.swing.JPanel;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,12 +16,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.HashMap;
 import java.util.List;
-import javax.swing.JPanel;
-import model.game.Game;
-import model.game.Player;
-import view.gui.Frame;
-import view.gui.image.ImageIndex;
-import view.gui.image.ImageIndex.DrawingBarSegment;
 
 /**
  * The panel at the top of the frame that shows basic information and the current player's turn
@@ -119,8 +120,12 @@ public final class HeaderPanel extends JPanel {
         RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
     g2d.setFont(new Font(Frame.FONTNAME, Font.BOLD, 20));
     if (game.isGameOver()) {
-      g2d.drawString(
-          "Game Over - Player " + game.getRemainingPlayers().get(0).index + " wins", 20, 25);
+      if (game.getRemainingPlayers().isEmpty()) {
+        g2d.drawString("Game Over - Timeout", 20, 25);
+      } else {
+        g2d.drawString(
+            "Game Over - Player " + game.getRemainingPlayers().get(0).index + " wins", 20, 25);
+      }
     } else if (game.getCurrentPlayer() == null) {
       g2d.drawString("Setup Phase", 20, 25);
     } else {
