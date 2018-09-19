@@ -3,13 +3,6 @@ package ai.delegating;
 import ai.AIAction;
 import ai.AIController;
 import ai.delegates.Delegate;
-import model.board.Tile;
-import model.game.Player;
-import model.unit.MovingUnit;
-import model.unit.Summoner;
-import model.unit.Unit;
-import model.unit.combatant.Combatant;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -21,6 +14,12 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import model.board.Tile;
+import model.game.Player;
+import model.unit.MovingUnit;
+import model.unit.Summoner;
+import model.unit.Unit;
+import model.unit.combatant.Combatant;
 
 /** An AI controller that maintains a set of delegates to determine its behavior. */
 public final class DelegatingAIController implements AIController {
@@ -165,23 +164,27 @@ public final class DelegatingAIController implements AIController {
     HashSet<AIActionWithValue> actionWithValues = new HashSet<>();
     if (summonerUnit.canSummon()) {
       for (Unit summonUnit : summonerUnit.getSummonables().values()) {
-        for (Tile t : p.game.board.getSummonCloud(summonerUnit, summonUnit)) {
-          if (t.isOccupied()) {
-            continue;
+        if (p.getMana() >= summonUnit.getManaCostWithScalingAndDiscountsForPlayer(p)) {
+          for (Tile t : p.game.board.getSummonCloud(summonerUnit, summonUnit)) {
+            if (t.isOccupied()) {
+              continue;
+            }
+            actionWithValues.add(
+                new AIActionWithValue(
+                    AIAction.summonCombatantOrBuildBuilding(p, summonerUnit, t, summonUnit)));
           }
-          actionWithValues.add(
-              new AIActionWithValue(
-                  AIAction.summonCombatantOrBuildBuilding(p, summonerUnit, t, summonUnit)));
         }
       }
       for (Unit summonUnit : summonerUnit.getBuildables().values()) {
-        for (Tile t : p.game.board.getSummonCloud(summonerUnit, summonUnit)) {
-          if (t.isOccupied()) {
-            continue;
+        if (p.getMana() >= summonUnit.getManaCostWithScalingAndDiscountsForPlayer(p)) {
+          for (Tile t : p.game.board.getSummonCloud(summonerUnit, summonUnit)) {
+            if (t.isOccupied()) {
+              continue;
+            }
+            actionWithValues.add(
+                new AIActionWithValue(
+                    AIAction.summonCombatantOrBuildBuilding(p, summonerUnit, t, summonUnit)));
           }
-          actionWithValues.add(
-              new AIActionWithValue(
-                  AIAction.summonCombatantOrBuildBuilding(p, summonerUnit, t, summonUnit)));
         }
       }
     }
