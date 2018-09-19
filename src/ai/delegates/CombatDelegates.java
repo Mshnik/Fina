@@ -34,8 +34,8 @@ public final class CombatDelegates {
       checkSubWeightsLength(2);
       Combat combat =
           new Combat((Combatant) action.actingUnit, action.targetedTile.getOccupyingUnit());
-      return combat.getProjectedMaxAttack() * subWeights[0]
-          + combat.getProjectedMinAttack() * subWeights[1];
+      return combat.getProjectedMaxAttack() * getSubWeight(0)
+          + combat.getProjectedMinAttack() * getSubWeight(1);
     }
   }
 
@@ -57,8 +57,8 @@ public final class CombatDelegates {
       checkSubWeightsLength(2);
       Combat combat =
           new Combat((Combatant) action.actingUnit, action.targetedTile.getOccupyingUnit());
-      return -(combat.getProjectedMaxCounterAttack() * subWeights[0]
-          + combat.getProjectedMinCounterAttack() * subWeights[1]);
+      return -(combat.getProjectedMaxCounterAttack() * getSubWeight(0)
+          + combat.getProjectedMinCounterAttack() * getSubWeight(1));
     }
   }
 
@@ -96,7 +96,7 @@ public final class CombatDelegates {
                       / (combat.getProjectedMaxCounterAttack()
                           + 1
                           - combat.getProjectedMinCounterAttack())));
-      return chanceOpponentDies * subWeights[0] - chanceAllyDies * subWeights[1];
+      return chanceOpponentDies * getSubWeight(0) - chanceAllyDies * getSubWeight(1);
     }
   }
 }

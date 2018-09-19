@@ -24,7 +24,7 @@ public abstract class Delegate {
    * Weights applied to values within this Delegate, to compare values within its getRawScore. Of
    * varying length based on the delegate.
    */
-  protected double[] subWeights;
+  private double[] subWeights;
 
   Delegate(AIActionType... actionTypes) {
     this.validActionTypes = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(actionTypes)));
@@ -36,6 +36,11 @@ public abstract class Delegate {
       throw new RuntimeException(
           "Expected subweights of length " + length + ", got " + Arrays.toString(subWeights));
     }
+  }
+
+  /** Returns the subWeight at the given index. */
+  double getSubWeight(int index) {
+    return subWeights[index];
   }
 
   /**
