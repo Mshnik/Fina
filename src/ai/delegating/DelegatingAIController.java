@@ -145,7 +145,7 @@ public final class DelegatingAIController implements AIController {
     for (Tile t : combatant.getAttackableTiles(true)) {
       actionWithValues.add(new AIActionWithValue(AIAction.attack(p, combatant, t)));
     }
-    possibleMoveActionsByUnit.put(combatant, actionWithValues);
+    possibleAttackActionsByUnit.put(combatant, actionWithValues);
   }
 
   /** Recomputes the summoning actions for the given unit. */

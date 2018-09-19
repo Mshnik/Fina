@@ -2,12 +2,13 @@ package ai.delegates;
 
 import ai.AIAction;
 import ai.AIAction.AIActionType;
+import model.board.Tile;
+import model.unit.combatant.Combatant;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import model.board.Tile;
-import model.unit.combatant.Combatant;
 
 /** A list of delegates for moving units. */
 public final class MovementDelegates {
@@ -38,7 +39,7 @@ public final class MovementDelegates {
       Map<Combatant, Set<Tile>> dangerRadius = new HashMap<>(action.player.getDangerRadius());
       int preMoveDangerRadiusCount = getDangerRadiusSize(dangerRadius);
       Combatant combatant = (Combatant) action.actingUnit;
-      dangerRadius.put(combatant, combatant.getDangerRadius(true));
+      dangerRadius.put(combatant, combatant.getDangerRadiusFromTile(action.targetedTile, true));
       int postMoveDangerRadiusCount = getDangerRadiusSize(dangerRadius);
       return postMoveDangerRadiusCount - preMoveDangerRadiusCount;
     }

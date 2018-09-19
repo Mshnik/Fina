@@ -8,7 +8,7 @@ import model.unit.combatant.Combatants;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ai.delegating.DelegatingAIControllers.DELEGATING_DEFAULT_AI_TYPE;
+import static ai.delegating.DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE;
 
 public final class Main {
   /** Simple main method to test out Frame features */
@@ -22,8 +22,8 @@ public final class Main {
     // Select initial board file and make start game.
     String boardFilename = args.length > 0 ? args[0] : "Backyard.csv";
     List<String> defaultPlayerTypes = new ArrayList<>();
-    defaultPlayerTypes.add(DELEGATING_DEFAULT_AI_TYPE);
-    defaultPlayerTypes.add(DELEGATING_DEFAULT_AI_TYPE);
+    defaultPlayerTypes.add(DELEGATING_RANDOM_AI_TYPE);
+    defaultPlayerTypes.add(DELEGATING_RANDOM_AI_TYPE);
     GameController.loadAndStart(
         "game/boards/" + boardFilename, defaultPlayerTypes, FogOfWar.REGULAR, 1, 9, 18, 3);
   }

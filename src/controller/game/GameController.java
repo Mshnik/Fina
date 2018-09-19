@@ -50,6 +50,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static ai.delegating.DelegatingAIControllers.DELEGATING_DEFAULT_AI_TYPE;
+import static ai.delegating.DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE;
 import static ai.dummy.DoNothingAIController.DO_NOTHING_AI_TYPE;
 import static ai.dummy.FullRandomAIController.FULL_RANDOM_AI_TYPE;
 import static ai.dummy.MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE;
@@ -233,6 +234,12 @@ public final class GameController {
           playerConstructor =
               (game, c) ->
                   new AIPlayer(game, c, DelegatingAIControllers.defaultDelegatingAIController());
+          break;
+        case DELEGATING_RANDOM_AI_TYPE:
+          playerConstructor =
+              (game, c) ->
+                  new AIPlayer(
+                      game, c, DelegatingAIControllers.randomWeightsDelegatingAIController());
           break;
         default:
           throw new RuntimeException("Don't know how to handle player type " + playerTypes.get(i));

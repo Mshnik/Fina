@@ -80,7 +80,8 @@ final class NewGameSelector {
       // DoNothingAIController.DO_NOTHING_AI_TYPE,
       // MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE,
       FullRandomAIController.FULL_RANDOM_AI_TYPE,
-      DelegatingAIControllers.DELEGATING_DEFAULT_AI_TYPE,
+      // DelegatingAIControllers.DELEGATING_DEFAULT_AI_TYPE,
+      DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE
     };
     private final List<JComboBox<String>> playerTypeSelectorsList;
 
