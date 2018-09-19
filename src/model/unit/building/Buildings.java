@@ -327,6 +327,11 @@ public final class Buildings {
   // END CONSTRUCTION METHODS - BELOW HERE IS API.
   ///////////////////
 
+  /** Returns a list of all buildings.. */
+  public static List<Building> getBuildings() {
+    return Collections.unmodifiableList(BUILDINGS);
+  }
+
   /** Returns a list of all buildings for the given level. */
   public static List<Building> getBuildingsForLevel(int level) {
     return BUILDINGS.stream().filter(b -> b.level == level).collect(Collectors.toList());

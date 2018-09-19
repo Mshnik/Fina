@@ -1,6 +1,7 @@
 package ai.delegates;
 
 import ai.AIAction.AIActionType;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +30,13 @@ public abstract class ByNameDelegate extends Delegate {
     this.nameToSubweightIndexMap = new HashMap<>();
   }
 
+  /** Sets the weight of this Delegate and returns it. Overridden to narrow return type. */
+  @Override
+  public ByNameDelegate withWeight(double weight) {
+    super.withWeight(weight);
+    return this;
+  }
+
   /** Not used in subclasses of this. */
   @Override
   final int getExpectedSubweightsLength() {
@@ -37,19 +45,21 @@ public abstract class ByNameDelegate extends Delegate {
 
   /** Don't check for length in ByName, since it isn't known. Use length to always pass check. */
   @Override
-  public Delegate withSubweights(double... subWeights) {
-    return super.setSubweightsUnsafe(subWeights);
+  public ByNameDelegate withSubweights(double... subWeights) {
+    super.setSubweightsUnsafe(subWeights);
+    return this;
   }
 
   /** Sets the fallback subweight and returns this. */
-  public Delegate withFallbackSubweight(double fallbackSubweight) {
+  public ByNameDelegate withFallbackSubweight(double fallbackSubweight) {
     this.fallbackSubweight = fallbackSubweight;
     return this;
   }
 
-  /** Adds the given name to index association to this ByNameDelegate. */
-  public void addNameToSubweightIndex(String name, int index) {
+  /** Adds the given name to index association to this ByNameDelegate and returns this */
+  public ByNameDelegate withNameToSubweightIndex(String name, int index) {
     nameToSubweightIndexMap.put(name, index);
+    return this;
   }
 
   /**

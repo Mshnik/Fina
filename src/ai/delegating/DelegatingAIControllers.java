@@ -1,5 +1,6 @@
 package ai.delegating;
 
+import ai.delegates.ByNameDelegate;
 import ai.delegates.CombatDelegates.GainUnitAdvantageCombatDelegate;
 import ai.delegates.CombatDelegates.MaxExpectedDamageDealtCombatDelegate;
 import ai.delegates.CombatDelegates.MinCounterAttackDamageCombatDelegate;
@@ -12,8 +13,12 @@ import ai.delegates.SummonDelegates.SummonBuildingOnAncientGroundDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantByNameDelegate;
 import ai.delegates.SummonDelegates.SummonSpendLessManaDelegate;
 import ai.delegates.SummonDelegates.SummonUnitsDelegate;
+import model.unit.building.Buildings;
+import model.unit.combatant.Combatants;
 
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /** A listing of DelegatingAIControllers. */
 public final class DelegatingAIControllers {
@@ -64,6 +69,21 @@ public final class DelegatingAIControllers {
     }
   }
 
+  /**
+   * Populates the given ByNameDelegate with the given names to indexes, with min and max random
+   * values.
+   */
+  private static ByNameDelegate populateNamesWithRandomWeights(
+      ByNameDelegate byNameDelegate, List<String> names, double min, double max) {
+    int i = 0;
+    for (String name : names) {
+      byNameDelegate.withNameToSubweightIndex(name, i);
+      i++;
+    }
+    byNameDelegate.withSubweights(RandomHelper.nextRandoms(min, max, i));
+    return byNameDelegate;
+  }
+
   /** A delegating AIController with random weights for testing and generating test data. */
   public static DelegatingAIController randomWeightsDelegatingAIController() {
     double min = -0.5;
@@ -105,9 +125,17 @@ public final class DelegatingAIControllers {
         .addDelegate(
             new SummonSpendLessManaDelegate().withWeight(RandomHelper.nextRandom(min, max)))
         .addDelegate(
-            new SummonBuildingByNameDelegate().withWeight(RandomHelper.nextRandom(min, max)))
+            populateNamesWithRandomWeights(
+                new SummonBuildingByNameDelegate().withWeight(RandomHelper.nextRandom(min, max)),
+                Buildings.getBuildings().stream().map(b -> b.name).collect(Collectors.toList()),
+                subMin,
+                subMax))
         .addDelegate(
-            new SummonCombatantByNameDelegate().withWeight(RandomHelper.nextRandom(min, max)))
+            populateNamesWithRandomWeights(
+                new SummonCombatantByNameDelegate().withWeight(RandomHelper.nextRandom(min, max)),
+                Combatants.getCombatants().stream().map(c -> c.name).collect(Collectors.toList()),
+                subMin,
+                subMax))
         .build();
   }
 }

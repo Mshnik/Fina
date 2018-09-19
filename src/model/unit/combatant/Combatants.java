@@ -12,7 +12,12 @@ import util.TextIO;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -126,12 +131,17 @@ public final class Combatants {
     FILE_COMBATANTS = Collections.unmodifiableList(units);
   }
 
+  /** Returns a list of all units. */
+  public static List<Combatant> getCombatants() {
+    return Collections.unmodifiableList(FILE_COMBATANTS);
+  }
+
   /**
    * Returns a list of units for the given age (minus 1 because age is 1 indexed, this is 0 indexed)
    * - returns by value
    */
-  public static List<FileCombatant> getCombatantsForAge(int age) {
-    LinkedList<FileCombatant> combatants = new LinkedList<FileCombatant>();
+  public static List<Combatant> getCombatantsForAge(int age) {
+    LinkedList<Combatant> combatants = new LinkedList<>();
     FILE_COMBATANTS.stream().filter(c -> c.level == age).forEach(combatants::add);
     return combatants;
   }
