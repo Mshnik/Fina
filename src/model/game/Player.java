@@ -2,6 +2,7 @@ package model.game;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
+import model.unit.MovingUnit;
 import model.unit.Unit;
 import model.unit.building.AllUnitModifierBuilding;
 import model.unit.building.CommanderModifierBuilding;
@@ -197,11 +199,28 @@ public abstract class Player implements Stringable {
 
   // UNITS
   /**
-   * Returns the units belonging to this player. passed-by-value, so editing this hashSet won't do
-   * anything
+   * Returns the units belonging to this player.
    */
-  public Set<Unit> getUnits() {
-    return new HashSet<>(units);
+  public Collection<Unit> getUnits() {
+    return Collections.unmodifiableList(units);
+  }
+
+  /** Returns the subset of MovingUnits from getUnits. */
+  public Set<MovingUnit> getMovingUnits() {
+    return units
+        .stream()
+        .filter(u -> u instanceof MovingUnit)
+        .map(u -> (MovingUnit) u)
+        .collect(Collectors.toSet());
+  }
+
+  /** Returns the subset of Combatants from getUnits. */
+  public Set<Combatant> getCombatants() {
+    return units
+        .stream()
+        .filter(u -> u instanceof Combatant)
+        .map(u -> (Combatant) u)
+        .collect(Collectors.toSet());
   }
 
   /**

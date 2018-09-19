@@ -6,6 +6,7 @@ import controller.decision.Decision.DecisionType;
 import controller.selector.PathSelector;
 import model.board.Direction;
 import model.board.Tile;
+import model.unit.Summoner;
 import model.unit.Unit;
 import model.unit.commander.Commander;
 import view.gui.Cursor;
@@ -191,7 +192,8 @@ public final class InputController {
         }
         break;
       case SUMMON_SELECTION:
-        ((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.DEFAULT);
+        BoardCursor bc = (BoardCursor) gc.frame.getActiveCursor();
+        bc.setSelectType(BoardCursor.SelectType.DEFAULT);
         if (confirm) {
           AudioController.playEffect(AudioController.SoundEffect.CLICK_YES);
           if (!gc.frame.getActiveCursor().canSelect()) return;
@@ -201,8 +203,12 @@ public final class InputController {
           AudioController.playEffect(AudioController.SoundEffect.CLICK_NO);
           boolean summoningUnit = gc.getSummonType().equals(GameController.SummonType.UNIT);
           gc.cancelSummonSelection();
-          if (summoningUnit) gc.startSummonCombatantDecision();
-          else gc.startSummonBuildingDecision();
+          Summoner summoner = (Summoner) bc.getElm().getOccupyingUnit();
+          if (summoningUnit) {
+            gc.startSummonCombatantDecision(summoner);
+          } else {
+            gc.startSummonBuildingDecision(summoner);
+          }
         }
         break;
       case CAST_SELECTION:

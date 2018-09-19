@@ -1,5 +1,9 @@
 package model.unit;
 
+import java.util.Map;
+import model.unit.building.Building;
+import model.unit.combatant.Combatant;
+
 /** Interface representing a unit that can summon or build units. */
 public interface Summoner {
 
@@ -18,4 +22,10 @@ public interface Summoner {
   public default boolean canSummon() {
     return true;
   }
+
+  /** Returns the list of things this can summon. (Doesn't take into account cost or space). * */
+  public Map<String, Combatant> getSummonables();
+
+  /** Returns the list of things this can build. (Doesn't take into account cost or space). */
+  public Map<String, Building> getBuildables();
 }

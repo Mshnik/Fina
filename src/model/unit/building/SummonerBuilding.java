@@ -1,18 +1,19 @@
 package model.unit.building;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.Summoner;
 import model.unit.Unit;
+import model.unit.combatant.Combatant;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * A building that can summon new units (but not buildings) like a commander.
@@ -118,9 +119,9 @@ public final class SummonerBuilding extends Building<SummonerBuilding.SummonerBu
     return false;
   }
 
+  /** Can't build. */
   @Override
   public boolean hasBuildSpace() {
-    // SummonerBuilding can only summon, not build.
     return false;
   }
 
@@ -128,6 +129,18 @@ public final class SummonerBuilding extends Building<SummonerBuilding.SummonerBu
   @Override
   public boolean canSummon() {
     return getActionsRemaining() > 0;
+  }
+
+  /** Can summon the same things the commander can summon. */
+  @Override
+  public Map<String, Combatant> getSummonables() {
+    return owner.getCommander().getSummonables();
+  }
+
+  /** Can't build anything. */
+  @Override
+  public Map<String, Building> getBuildables() {
+    return Collections.emptyMap();
   }
 
   @Override

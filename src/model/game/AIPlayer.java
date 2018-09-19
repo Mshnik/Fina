@@ -69,9 +69,15 @@ public final class AIPlayer extends Player {
    */
   @Override
   protected final void turn() {
+    aiController.turnStart(this);
     AIAction action = aiController.getNextAction(this);
     while (action != null) {
-      handleAction(action);
+      try {
+        handleAction(action);
+        aiController.actionExecuted(action);
+      } catch(Exception e) {
+        aiController.actionFailed(e, action);
+      }
       sleepIfHumanOpponent();
       action = aiController.getNextAction(this);
     }

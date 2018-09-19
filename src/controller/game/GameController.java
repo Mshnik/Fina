@@ -524,11 +524,11 @@ public final class GameController {
 
     // Add choices based on the model.unit on this tile
     LinkedList<Choice> choices = new LinkedList<>();
-    choices.add(new Choice(s.hasSummonSpace(), SUMMON));
-    choices.add(new Choice(s.hasBuildSpace(), BUILD));
+    choices.add(new Choice(s.hasSummonSpace(), SUMMON, s));
+    choices.add(new Choice(s.hasBuildSpace(), BUILD, s));
     if (isCommander) {
       Commander c = (Commander) s;
-      choices.add(new Choice(c.canCast(), CAST));
+      choices.add(new Choice(c.canCast(), CAST, c));
     }
 
     // If there are no applicable choices, do nothing
@@ -548,13 +548,14 @@ public final class GameController {
    */
   void processCommanderActionDecision(Choice c) throws RuntimeException {
     String choice = c.getMessage();
+    Summoner s = (Summoner) c.getVal();
     cancelDecision();
     switch (choice) {
       case SUMMON:
-        startSummonCombatantDecision();
+        startSummonCombatantDecision(s);
         break;
       case BUILD:
-        startSummonBuildingDecision();
+        startSummonBuildingDecision(s);
         break;
       case CAST:
         startCastDecision();
@@ -749,13 +750,13 @@ public final class GameController {
   }
 
   /** Creates a getGamePanel().getDecisionPanel() for summoning new units */
-  void startSummonCombatantDecision() {
+  void startSummonCombatantDecision(Summoner s) {
     Player p = game.getCurrentPlayer();
     Commander c = p.getCommander();
     summonType = SummonType.UNIT;
     startSummonDecision(
         c,
-        c.getSummonables()
+        s.getSummonables()
             .values()
             .stream()
             .sorted(
@@ -766,13 +767,13 @@ public final class GameController {
   }
 
   /** Creates a getGamePanel().getDecisionPanel() for summoning new buildings */
-  void startSummonBuildingDecision() {
+  void startSummonBuildingDecision(Summoner s) {
     Player p = game.getCurrentPlayer();
     Commander c = p.getCommander();
     summonType = SummonType.BUILDING;
     startSummonDecision(
         c,
-        c.getBuildables()
+        s.getBuildables()
             .values()
             .stream()
             .sorted(

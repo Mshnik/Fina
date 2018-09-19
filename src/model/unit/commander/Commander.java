@@ -354,6 +354,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
    * Returns the list of units this can summon. Can be overridden to add additional units. Base
    * Return is FileUnits for this' level.
    */
+  @Override
   public Map<String, Combatant> getSummonables() {
     HashMap<String, Combatant> units = new HashMap<String, Combatant>();
     for (int i = 1; i <= getLevel(); i++) {
@@ -365,6 +366,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
   }
 
   /** Returns the list of buildings this can build. Can be overriden to add additional buildings */
+  @Override
   public Map<String, Building> getBuildables() {
     HashMap<String, Building> units = new HashMap<String, Building>();
     for (int i = 0; i <= getLevel(); i++) {
