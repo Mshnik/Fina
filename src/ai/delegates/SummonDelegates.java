@@ -74,7 +74,6 @@ public final class SummonDelegates {
   public static final class SummonCombatantByNameDelegate extends SummonByNameDelegate {
     @Override
     double getRawScore(AIAction action) {
-      checkSubWeightsLength(5);
       if (!(action.unitToSummon instanceof Combatant)) {
         return 0;
       }
@@ -86,7 +85,6 @@ public final class SummonDelegates {
   public static final class SummonBuildingByNameDelegate extends SummonByNameDelegate {
     @Override
     double getRawScore(AIAction action) {
-      checkSubWeightsLength(5);
       if (!(action.unitToSummon instanceof Building)) {
         return 0;
       }
