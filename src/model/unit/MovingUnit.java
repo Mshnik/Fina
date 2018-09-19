@@ -1,12 +1,13 @@
 package model.unit;
 
-import java.util.LinkedList;
-import java.util.List;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Represents a model.unit that is able to move around the model.board.
@@ -96,8 +97,8 @@ public abstract class MovingUnit extends Unit {
 
   /**
    * Return the total cost of traveling the given path for model.unit. Doesn't count the first tile
-   * - tile the model.unit is already on. Expects the first element to be the current location
-   * of the unit.
+   * - tile the model.unit is already on. Expects the first element to be the current location of
+   * the unit.
    */
   public int getTotalMovementCost(List<Tile> path) {
     int c = 0;
@@ -165,11 +166,22 @@ public abstract class MovingUnit extends Unit {
     // Recalc cost as movement occurs
     Tile oldLoc = location;
     for (Tile t : path) {
-      if (t.isOccupied() && t.getOccupyingUnit().owner != owner) break;
+      if (t.isOccupied() && t.getOccupyingUnit().owner != owner) {
+        break;
+      }
       location = t;
       cost += getMovementCost(t.terrain);
     }
-    if (oldLoc != location) oldLoc.moveUnitTo(location);
+    if (location.isOccupied()) {
+      throw new RuntimeException(
+          "Can't move "
+              + this
+              + " to location, it is already occupied by "
+              + location.getOccupyingUnit());
+    }
+    if (oldLoc != location) {
+      oldLoc.moveUnitTo(location);
+    }
     movement -= cost;
     owner.refreshVisionCloud(this);
 

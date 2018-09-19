@@ -111,6 +111,11 @@ public final class DelegatingAIController implements AIController {
    */
   @Override
   public void turnStart(Player player) {
+    recomputeAllActions(player);
+  }
+
+  /** Recomputes all possible actions the player can take. */
+  private void recomputeAllActions(Player player) {
     possibleAttackActionsByUnit.clear();
     possibleMoveActionsByUnit.clear();
     possibleSummonActionsByUnit.clear();
@@ -128,13 +133,15 @@ public final class DelegatingAIController implements AIController {
   /** Recomputes the moving actions for the given unit. */
   private void recomputeMoveActionsForUnit(Player p, MovingUnit movingUnit) {
     HashSet<AIActionWithValue> actionWithValues = new HashSet<>();
-    for (Tile t : p.game.board.getMovementCloud(movingUnit, false)) {
-      if (t == movingUnit.getLocation()) {
-        continue;
+    if (movingUnit.canMove()) {
+      for (Tile t : p.game.board.getMovementCloud(movingUnit, false)) {
+        if (t == movingUnit.getLocation() || (t.isOccupied() && t.getOccupyingUnit().owner == p)) {
+          continue;
+        }
+        actionWithValues.add(
+            new AIActionWithValue(
+                AIAction.moveUnit(p, movingUnit, t, p.game.board.getMovementPath(t))));
       }
-      actionWithValues.add(
-          new AIActionWithValue(
-              AIAction.moveUnit(p, movingUnit, t, p.game.board.getMovementPath(t))));
     }
     possibleMoveActionsByUnit.put(movingUnit, actionWithValues);
   }
@@ -142,8 +149,10 @@ public final class DelegatingAIController implements AIController {
   /** Recomputes the attacking actions for the given unit. */
   private void recomputeAttackActionsForUnit(Player p, Combatant combatant) {
     HashSet<AIActionWithValue> actionWithValues = new HashSet<>();
-    for (Tile t : combatant.getAttackableTiles(true)) {
-      actionWithValues.add(new AIActionWithValue(AIAction.attack(p, combatant, t)));
+    if (combatant.canFight()) {
+      for (Tile t : combatant.getAttackableTiles(true)) {
+        actionWithValues.add(new AIActionWithValue(AIAction.attack(p, combatant, t)));
+      }
     }
     possibleAttackActionsByUnit.put(combatant, actionWithValues);
   }
@@ -154,7 +163,7 @@ public final class DelegatingAIController implements AIController {
     if (summonerUnit.canSummon()) {
       for (Unit summonUnit : summonerUnit.getSummonables().values()) {
         for (Tile t : p.game.board.getSummonCloud(summonerUnit, summonUnit)) {
-          if (t == summonerUnit.getLocation()) {
+          if (t.isOccupied()) {
             continue;
           }
           actionWithValues.add(
@@ -164,7 +173,7 @@ public final class DelegatingAIController implements AIController {
       }
       for (Unit summonUnit : summonerUnit.getBuildables().values()) {
         for (Tile t : p.game.board.getSummonCloud(summonerUnit, summonUnit)) {
-          if (t == summonerUnit.getLocation()) {
+          if (t.isOccupied()) {
             continue;
           }
           actionWithValues.add(
@@ -182,6 +191,12 @@ public final class DelegatingAIController implements AIController {
    */
   @Override
   public AIAction getNextAction(Player player) {
+    // If game is over, don't try to execute another action.
+    if (player.game.isGameOver()) {
+      return null;
+    }
+
+    // Otherwise, get the best action. Execute if value is positive.
     AIActionWithValue action =
         Stream.<Stream<AIActionWithValue>>builder()
             .add(possibleAttackActionsByUnit.values().stream().flatMap(Set::stream))
@@ -198,25 +213,7 @@ public final class DelegatingAIController implements AIController {
   @Override
   public void actionFailed(Exception e, AIAction action) {
     e.printStackTrace();
-    switch (action.actionType) {
-      case MOVE_UNIT:
-        possibleMoveActionsByUnit
-            .get((MovingUnit) action.actingUnit)
-            .remove(new AIActionWithValue(action));
-        break;
-      case ATTACK:
-        possibleAttackActionsByUnit
-            .get((Combatant) action.actingUnit)
-            .remove(new AIActionWithValue(action));
-        break;
-      case SUMMON_COMBATANT_OR_BUILD_BUILDING:
-        possibleSummonActionsByUnit
-            .get((Summoner) action.actingUnit)
-            .remove(new AIActionWithValue(action));
-        break;
-      case CAST_SPELL:
-        break;
-    }
+    recomputeAllActions(action.player);
   }
 
   /**
@@ -225,19 +222,6 @@ public final class DelegatingAIController implements AIController {
    */
   @Override
   public void actionExecuted(AIAction action) {
-    switch (action.actionType) {
-      case MOVE_UNIT:
-        recomputeMoveActionsForUnit(action.player, (MovingUnit) action.actingUnit);
-        break;
-      case ATTACK:
-        recomputeMoveActionsForUnit(action.player, (MovingUnit) action.actingUnit);
-        recomputeAttackActionsForUnit(action.player, (Combatant) action.actingUnit);
-        break;
-      case SUMMON_COMBATANT_OR_BUILD_BUILDING:
-        recomputeSummonActionsForUnit(action.player, (Unit & Summoner) action.actingUnit);
-        break;
-      case CAST_SPELL:
-        break;
-    }
+    recomputeAllActions(action.player);
   }
 }

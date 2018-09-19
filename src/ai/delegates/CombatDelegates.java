@@ -105,9 +105,10 @@ public final class CombatDelegates {
               Math.max(
                   0,
                   (combat.getProjectedMaxCounterAttack() - action.actingUnit.getHealth())
-                      / (combat.getProjectedMaxCounterAttack()
-                          + 1
-                          - combat.getProjectedMinCounterAttack())));
+                      / Math.max(
+                          1,
+                          combat.getProjectedMaxCounterAttack()
+                              - combat.getProjectedMinCounterAttack())));
       return chanceOpponentDies * getSubWeight(0) - chanceAllyDies * getSubWeight(1);
     }
   }
