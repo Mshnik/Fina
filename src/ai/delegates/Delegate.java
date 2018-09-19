@@ -2,6 +2,7 @@ package ai.delegates;
 
 import ai.AIAction;
 import ai.AIAction.AIActionType;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,9 +38,9 @@ public abstract class Delegate {
     this.validActionTypes = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(actionTypes)));
   }
 
-  /** Returns the subWeight at the given index. */
-  double getSubWeight(int index) {
-    return subWeights[index];
+  /** Returns the current weight of this delegate. */
+  public double getWeight() {
+    return weight;
   }
 
   /** Sets the weight of this Delegate and returns it. */
@@ -48,8 +49,18 @@ public abstract class Delegate {
     return this;
   }
 
+  /** Returns the subWeight at the given index. */
+  double getSubWeight(int index) {
+    return subWeights[index];
+  }
+
   /** Returns the expected length of the subweights array. If unused, should be 0. */
   abstract int getExpectedSubweightsLength();
+
+  /** Returns the current subweights. */
+  public double[] getSubWeights() {
+    return Arrays.copyOf(subWeights, subWeights.length);
+  }
 
   /** Sets the subweights of this Delegate and returns it. */
   public Delegate withSubweights(double... subWeights) {

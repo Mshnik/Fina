@@ -28,4 +28,7 @@ public interface AIController {
    * Does nothing by default
    */
   public default void actionExecuted(AIAction action) {}
+
+  /** Returns a string representing the configuration of this AI. Used to create ML data. */
+  public String getConfigString();
 }

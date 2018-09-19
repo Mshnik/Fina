@@ -10,19 +10,23 @@ import model.unit.Summoner;
 import model.unit.Unit;
 import model.unit.combatant.Combatant;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /** An AI controller that maintains a set of delegates to determine its behavior. */
 public final class DelegatingAIController implements AIController {
 
   /** The delegates this is delegating to. */
-  private final Set<Delegate> delegates;
+  private final List<Delegate> delegates;
 
   /**
    * A pair of an AIAction and a value of how much this controller likes it. The value can be
@@ -92,17 +96,16 @@ public final class DelegatingAIController implements AIController {
   private final Map<Summoner, Set<AIActionWithValue>> possibleSummonActionsByUnit;
 
   /** Constructs a new DelegatingAIController, initially with an empty set of delegates. */
-  public DelegatingAIController() {
-    this.delegates = new HashSet<>();
+  DelegatingAIController() {
+    this.delegates = new ArrayList<>();
     possibleMoveActionsByUnit = new HashMap<>();
     possibleAttackActionsByUnit = new HashMap<>();
     possibleSummonActionsByUnit = new HashMap<>();
   }
 
   /** Adds the given delegate and returns this. */
-  public DelegatingAIController addDelegate(Delegate delegate) {
+  void addDelegate(Delegate delegate) {
     delegates.add(delegate);
-    return this;
   }
 
   /**
@@ -223,5 +226,23 @@ public final class DelegatingAIController implements AIController {
   @Override
   public void actionExecuted(AIAction action) {
     recomputeAllActions(action.player);
+  }
+
+  /** Creates a config string from the delegates used and their weights. */
+  @Override
+  public String getConfigString() {
+    int weightSigFigs = 3;
+    return delegates
+        .stream()
+        .map(
+            d ->
+                String.format(
+                    "%s %." + weightSigFigs + "f [%s]",
+                    d.getClass().getSimpleName(),
+                    d.getWeight(),
+                    Arrays.stream(d.getSubWeights())
+                        .mapToObj(w -> String.format("%." + weightSigFigs + "f", w))
+                        .collect(Collectors.joining(","))))
+        .collect(Collectors.joining(", "));
   }
 }

@@ -44,4 +44,9 @@ public class HumanPlayer extends Player {
   public void endTurn() {
     takingAction = false;
   }
+
+  @Override
+  public String getConfigString() {
+    return "Human";
+  }
 }

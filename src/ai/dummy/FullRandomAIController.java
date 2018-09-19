@@ -50,6 +50,11 @@ public final class FullRandomAIController implements AIController {
     return actions.get(random.nextInt(actions.size()));
   }
 
+  @Override
+  public String getConfigString() {
+    return "";
+  }
+
   /**
    * Returns a movement action for a random unit that can still move. Returns null if no unit can
    * move.

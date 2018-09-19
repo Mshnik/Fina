@@ -28,4 +28,9 @@ public final class DoNothingAIController implements AIController {
     }
     return null;
   }
+
+  @Override
+  public String getConfigString() {
+    return "";
+  }
 }

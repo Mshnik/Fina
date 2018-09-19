@@ -1,16 +1,17 @@
 package model.game;
 
 import controller.game.GameController;
+import model.board.Board;
+import model.board.Tile;
+import model.unit.Unit;
+import model.unit.combatant.Combatant;
+
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import model.board.Board;
-import model.board.Tile;
-import model.unit.Unit;
-import model.unit.combatant.Combatant;
 
 /** Unifying model that holds all sub-model classes */
 public final class Game implements Runnable, Stringable {
@@ -131,10 +132,17 @@ public final class Game implements Runnable, Stringable {
         nextTurn();
       }
       if (isGameOver()) {
+        Player winner = getRemainingPlayers().get(0);
         if (controller.hasFrame()) {
-          controller.frame.showGameOverAlert(getRemainingPlayers().get(0));
+          controller.frame.showGameOverAlert(winner);
         } else {
           System.out.println("Game over - player " + getRemainingPlayers().get(0).index + " wins");
+        }
+        System.out.println("Win " + winner.getConfigString());
+        for (Player p : players) {
+          if (p != winner) {
+            System.out.println("Lose " + p.getConfigString());
+          }
         }
       }
     } finally {

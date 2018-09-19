@@ -2,13 +2,11 @@ package model.game;
 
 import ai.AIAction;
 import ai.AIController;
-import model.board.Tile;
 import model.unit.MovingUnit;
 import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
 
 import java.awt.Color;
-import java.util.LinkedList;
 
 /** A player controlled by an AI. */
 public final class AIPlayer extends Player {
@@ -40,7 +38,8 @@ public final class AIPlayer extends Player {
         combat.process(game.getController().getCombatRandom());
         break;
       case SUMMON_COMBATANT_OR_BUILD_BUILDING:
-        game.getController().summonUnit(action.actingUnit, action.targetedTile, action.unitToSummon);
+        game.getController()
+            .summonUnit(action.actingUnit, action.targetedTile, action.unitToSummon);
         break;
       case CAST_SPELL:
         throw new RuntimeException("Unimplemented");
@@ -75,7 +74,7 @@ public final class AIPlayer extends Player {
       try {
         handleAction(action);
         aiController.actionExecuted(action);
-      } catch(Exception e) {
+      } catch (Exception e) {
         aiController.actionFailed(e, action);
       }
       sleepIfHumanOpponent();
@@ -90,4 +89,9 @@ public final class AIPlayer extends Player {
    */
   @Override
   public void endTurn() {}
+
+  @Override
+  public String getConfigString() {
+    return "AI - {" + aiController.getConfigString() + "}";
+  }
 }

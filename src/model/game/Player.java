@@ -605,4 +605,7 @@ public abstract class Player implements Stringable {
     }
     return s;
   }
+
+  /** Returns a string representing the configuration of this player, for ML logs. */
+  public abstract String getConfigString();
 }
