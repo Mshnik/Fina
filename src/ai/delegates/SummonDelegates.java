@@ -2,6 +2,7 @@ package ai.delegates;
 
 import ai.AIAction;
 import ai.AIAction.AIActionType;
+import model.board.Terrain;
 import model.unit.MovingUnit;
 import model.unit.building.Building;
 import model.unit.combatant.Combatant;
@@ -44,6 +45,19 @@ public final class SummonDelegates {
         return subWeights[0];
       } else if (action.unitToSummon instanceof Building) {
         return subWeights[1];
+      } else {
+        return 0;
+      }
+    }
+  }
+
+  /** Summon delegate that wants to summon buildings on AncientGround. */
+  public static final class SummonBuildingOnAncientGroundDelegate extends SummonDelegate {
+    @Override
+    double getRawScore(AIAction action) {
+      if (action.unitToSummon instanceof Building
+          && action.targetedTile.terrain == Terrain.ANCIENT_GROUND) {
+        return 1;
       } else {
         return 0;
       }
