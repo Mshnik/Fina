@@ -4,6 +4,7 @@ import ai.AIAction;
 import ai.AIAction.AIActionType;
 import model.board.Tile;
 import model.unit.combatant.Combatant;
+import model.unit.commander.Commander;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -113,13 +114,13 @@ public final class MovementDelegates {
   /**
    * A movement delegate that wants to keep units from being attacked. Wants to get the unit out of
    * immediate danger range. Returns a lower score the more units that can attack the targeted tile.
-   * No subweights.
+   * Subweights are Commander, Other.
    */
   public static final class MoveToNotBeAttackedMovementDelegate extends MovementDelegate {
 
     @Override
     int getExpectedSubweightsLength() {
-      return 0;
+      return 2;
     }
 
     @Override
@@ -133,7 +134,8 @@ public final class MovementDelegates {
               .filter(e -> e.getKey().owner != action.player)
               .filter(e -> e.getValue().contains(action.targetedTile))
               .count()
-          * -1;
+          * -1
+          * (action.actingUnit instanceof Commander ? getSubWeight(0) : getSubWeight(1));
     }
   }
 }

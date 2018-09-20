@@ -101,7 +101,9 @@ public final class DelegatingAIControllers {
         .addDelegate(
             new ExpandDangerRadiusMovementDelegate().withWeight(RandomHelper.nextRandom(min, max)))
         .addDelegate(
-            new MoveToNotBeAttackedMovementDelegate().withWeight(RandomHelper.nextRandom(min, max)))
+            new MoveToNotBeAttackedMovementDelegate()
+                .withWeight(RandomHelper.nextRandom(min, max))
+                .withSubweights(RandomHelper.nextRandoms(subMin, subMax, 2)))
         .addDelegate(
             new MoveToAttackAndNotBeCounterAttackedMovementDelegate()
                 .withWeight(RandomHelper.nextRandom(min, max)))
