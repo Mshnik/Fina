@@ -13,7 +13,6 @@ import static ai.delegating.DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE;
 public final class Main {
   /** Simple main method to test out Frame features */
   public static void main(String[] args) throws InterruptedException {
-    Thread.sleep(0);
     // Force unit, building, spell, audio loading.
     Combatants.getCombatantsForAge(1);
     Buildings.getBuildingsForLevel(1);
@@ -24,7 +23,18 @@ public final class Main {
     List<String> defaultPlayerTypes = new ArrayList<>();
     defaultPlayerTypes.add(DELEGATING_RANDOM_AI_TYPE);
     defaultPlayerTypes.add(DELEGATING_RANDOM_AI_TYPE);
-    GameController.loadAndStart(
-        "game/boards/" + boardFilename, defaultPlayerTypes, FogOfWar.REGULAR, 1, 9, 18, 3);
+
+    int i = 0;
+    while (true) {
+      GameController controller =
+          GameController.loadAndStartHeadless(
+              "game/boards/" + boardFilename, defaultPlayerTypes, FogOfWar.REGULAR, 1);
+      System.out.println("Game " + i + " started");
+      while (controller.game.isRunning()) {
+        Thread.sleep(3000);
+      }
+      System.out.println("Game " + i + " finished");
+      i++;
+    }
   }
 }

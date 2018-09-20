@@ -158,7 +158,7 @@ public final class GameController {
    * Loads a board and starts the game in a new GameController. Creates and shows a new Frame as
    * part of initialization.
    */
-  static void loadAndStart(
+  static GameController loadAndStart(
       String boardFilepath,
       List<String> playerTypes,
       FogOfWar fogOfWar,
@@ -166,7 +166,7 @@ public final class GameController {
       int frameRows,
       int frameCols,
       int frameZoom) {
-    loadAndStartHelper(
+    return loadAndStartHelper(
         boardFilepath,
         playerTypes,
         fogOfWar,
@@ -177,16 +177,17 @@ public final class GameController {
   }
 
   /** Loads a board and starts the game in a new GameController with no graphical component. */
-  static void loadAndStartHeadless(
+  static GameController loadAndStartHeadless(
       String boardFilepath,
       List<String> playerTypes,
       FogOfWar fogOfWar,
       int startingCommanderLevel) {
-    loadAndStartHelper(boardFilepath, playerTypes, fogOfWar, startingCommanderLevel, -1, -1, -1);
+    return loadAndStartHelper(
+        boardFilepath, playerTypes, fogOfWar, startingCommanderLevel, -1, -1, -1);
   }
 
   /** Loads a board and starts the game in a new GameController. */
-  private static void loadAndStartHelper(
+  private static GameController loadAndStartHelper(
       String boardFilepath,
       List<String> playerTypes,
       FogOfWar fogOfWar,
@@ -261,6 +262,7 @@ public final class GameController {
 
     // Start game.
     gc.start();
+    return gc;
   }
 
   /** Creates a new game controller for the given game and frame. */

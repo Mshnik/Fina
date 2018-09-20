@@ -17,6 +17,9 @@ import java.util.Set;
 /** Unifying model that holds all sub-model classes */
 public final class Game implements Runnable, Stringable {
 
+  /** Boolean for triggering debug output. */
+  private static final boolean DEBUG = false;
+
   /**
    * Cutoff turn for testing + ml generation. If turn hits this number, calls it a draw with both
    * players losing.
@@ -309,7 +312,7 @@ public final class Game implements Runnable, Stringable {
     if (p.isLocalHumanPlayer()) {
       mostRecentHumanPlayerIndex = p.index;
     }
-    if (!controller.hasFrame()) {
+    if (DEBUG && !controller.hasFrame()) {
       System.out.println("Player " + p.index + "'s turn");
     }
     boolean ok = p.turnStart();
