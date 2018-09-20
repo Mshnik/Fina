@@ -42,9 +42,10 @@ public final class Main {
       GameController controller =
           GameController.loadAndStartHeadless(
               "game/boards/" + boardFilename, defaultPlayerTypes, FogOfWar.REGULAR, 1);
+      Thread.sleep(150);
       System.out.println("Game " + i + " started");
       while (controller.game.isRunning()) {
-        Thread.sleep(3000);
+        Thread.sleep(20);
       }
       System.out.println("Game " + i + " finished");
       i++;
