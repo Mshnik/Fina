@@ -7,6 +7,7 @@ import ai.delegates.CombatDelegates.MinCounterAttackDamageCombatDelegate;
 import ai.delegates.MovementDelegates.ExpandDangerRadiusMovementDelegate;
 import ai.delegates.MovementDelegates.MoveToAttackAndNotBeCounterAttackedMovementDelegate;
 import ai.delegates.MovementDelegates.MoveToAttackMovementDelegate;
+import ai.delegates.MovementDelegates.MoveToBuildOnAncientGroundDelegate;
 import ai.delegates.MovementDelegates.MoveToNotBeAttackedMovementDelegate;
 import ai.delegates.MovementDelegates.MoveToSummonDelegate;
 import ai.delegates.SummonDelegates.SummonBuildingByNameDelegate;
@@ -38,6 +39,7 @@ public final class DelegatingAIControllers {
         .addDelegate(new MoveToAttackAndNotBeCounterAttackedMovementDelegate())
         .addDelegate(new MoveToAttackMovementDelegate())
         .addDelegate(new MoveToSummonDelegate())
+        .addDelegate(new MoveToBuildOnAncientGroundDelegate())
         .addDelegate(new GainUnitAdvantageCombatDelegate())
         .addDelegate(new MaxExpectedDamageDealtCombatDelegate())
         .addDelegate(new MinCounterAttackDamageCombatDelegate())
@@ -112,6 +114,8 @@ public final class DelegatingAIControllers {
         .addDelegate(
             new MoveToAttackMovementDelegate().withWeight(RandomHelper.nextRandom(min, max)))
         .addDelegate(new MoveToSummonDelegate().withWeight(RandomHelper.nextRandom(min, max)))
+        .addDelegate(
+            new MoveToBuildOnAncientGroundDelegate().withWeight(RandomHelper.nextRandom(min, max)))
         // Combat delegates.
         .addDelegate(
             new GainUnitAdvantageCombatDelegate()

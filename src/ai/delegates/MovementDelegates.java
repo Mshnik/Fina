@@ -2,13 +2,18 @@ package ai.delegates;
 
 import ai.AIAction;
 import ai.AIAction.AIActionType;
+import model.board.Board;
+import model.board.Terrain;
 import model.board.Tile;
 import model.unit.MovingUnit;
+import model.unit.building.Building;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -166,6 +171,53 @@ public final class MovementDelegates {
               .stream()
               .filter(t -> !t.isOccupied() && action.player.canSee(t))
               .count());
+    }
+  }
+
+  /** A movement delegate that wants the commander towards the nearest un-built ancient ground. */
+  public static final class MoveToBuildOnAncientGroundDelegate extends MovementDelegate {
+
+    @Override
+    int getExpectedSubweightsLength() {
+      return 0;
+    }
+
+    @Override
+    double getRawScore(AIAction action) {
+      if (!(action.actingUnit instanceof Commander)) {
+        return 0;
+      }
+      Board board = action.player.game.board;
+      List<Tile> wholeBoardPreMove =
+          board.getMovementCloudWholeBoard(
+              (MovingUnit) action.actingUnit, action.actingUnit.getLocation());
+      int pathComputationId = board.getPathComputationId();
+      OptionalInt distToNearestUnbuiltAncientGroundPreMove =
+          wholeBoardPreMove
+              .stream()
+              .filter(t -> t.terrain == Terrain.ANCIENT_GROUND)
+              .filter(t -> !t.isOccupied() || !(t.getOccupyingUnit() instanceof Building))
+              .filter(t -> t != action.actingUnit.getLocation())
+              .mapToInt(t -> board.getDist(pathComputationId, t))
+              .max();
+      if (distToNearestUnbuiltAncientGroundPreMove.isPresent()) {
+        List<Tile> wholeBoardPostMove =
+            board.getMovementCloudWholeBoard((MovingUnit) action.actingUnit, action.targetedTile);
+        int newPathComputationId = board.getPathComputationId();
+        OptionalInt distToNearestUnbuiltAncientGroundPostMove =
+            wholeBoardPostMove
+                .stream()
+                .filter(t -> t.terrain == Terrain.ANCIENT_GROUND)
+                .filter(t -> !t.isOccupied() || !(t.getOccupyingUnit() instanceof Building))
+                .filter(t -> t != action.targetedTile)
+                .mapToInt(t -> board.getDist(newPathComputationId, t))
+                .max();
+        if (distToNearestUnbuiltAncientGroundPostMove.isPresent()) {
+          return distToNearestUnbuiltAncientGroundPostMove.getAsInt()
+              - distToNearestUnbuiltAncientGroundPreMove.getAsInt();
+        }
+      }
+      return 0;
     }
   }
 }

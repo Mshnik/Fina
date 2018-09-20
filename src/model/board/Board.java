@@ -19,6 +19,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A Board represents the whole model.board state for the model.game as a matrix of tiles and other
@@ -28,6 +30,12 @@ import java.util.Set;
  * @author MPatashnik
  */
 public final class Board implements Iterable<Tile>, Stringable {
+
+  /**
+   * Distance value given to the starting location of the unit when using {@link
+   * #getMovementCloudWholeBoard(MovingUnit, Tile)}.
+   */
+  private static final int WHOLE_BOARD_CLOUD_STARTING_DISTANCE = 1000;
 
   /** The csv file this board was read from. */
   public final String filepath;
@@ -151,6 +159,11 @@ public final class Board implements Iterable<Tile>, Stringable {
         getTileInDirection(t, Direction.DOWN)
       };
     }
+  }
+
+  /** Returns a set of tiles that have the given terrain type. */
+  public Set<Tile> getTilesWithTerrainType(Terrain terrain) {
+    return stream().filter(t -> t.terrain == terrain).collect(Collectors.toSet());
   }
 
   /** Returns the maximum number of players this board can support. */
@@ -353,6 +366,17 @@ public final class Board implements Iterable<Tile>, Stringable {
   }
 
   /**
+   * Returns the set of tiles the given MovingUnit could move to from its current location with any
+   * amount of movement. (uses an arbitrarily high movement value). Only counts enemy units as
+   * obstacles if they are visible.
+   */
+  public ArrayList<Tile> getMovementCloudWholeBoard(MovingUnit u, Tile t) {
+    u.getLocation().prev = null;
+    u.getLocation().dist = WHOLE_BOARD_CLOUD_STARTING_DISTANCE;
+    return getMovementCloud(t, u);
+  }
+
+  /**
    * Returns the path to the given tile from the last computed movement cloud, using the given
    * pathComputationId. Throws an exception if the given tile wasn't computed in the last movement
    * cloud computation.
@@ -371,6 +395,24 @@ public final class Board implements Iterable<Tile>, Stringable {
       destTile = destTile.prev;
     }
     return path;
+  }
+
+  /**
+   * Returns the computed distance of the given tile from the last computed movement cloud, using
+   * the given pathComputationId.
+   */
+  public int getDist(int pathComputationId, Tile t) {
+    if (pathComputationId != this.pathComputationId) {
+      throw new RuntimeException(
+          "Expected pathComputationId is out of date, is at " + pathComputationId);
+    }
+    return t.dist;
+  }
+
+  /** Returns a stream over the tiles in this Board. */
+  public Stream<Tile> stream() {
+    Iterator<Tile> iterator = iterator();
+    return Stream.generate(iterator::next).limit(getWidth() * getHeight());
   }
 
   /** Returns an iterator over the tiles in this Board */
