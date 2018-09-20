@@ -5,7 +5,7 @@ import model.board.Board;
 import model.board.Tile;
 import model.unit.Unit;
 import model.unit.combatant.Combatant;
-import model.util.ResultsPrinter;
+import util.ResultsPrinter;
 
 import java.awt.Color;
 import java.util.HashMap;
