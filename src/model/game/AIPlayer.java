@@ -7,9 +7,16 @@ import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
 
 import java.awt.Color;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /** A player controlled by an AI. */
 public final class AIPlayer extends Player {
+
+  /**
+   * Id suffix to assign. Will be regenerated between different class loadings, but that should be
+   * enough to guarantee id uniqueness.
+   */
+  private static final AtomicInteger idCounter = new AtomicInteger();
 
   /**
    * Causes the AIPlayer thread to sleep between executing each action If playing against at least
@@ -26,7 +33,7 @@ public final class AIPlayer extends Player {
   /** Constructor for Player class with just model.game. */
   public AIPlayer(Game g, Color c, AIController aiController) {
     super(g, c);
-    id = Long.toString(System.currentTimeMillis());
+    id = Long.toString(System.currentTimeMillis()) + "-" + idCounter.getAndIncrement();
     this.aiController = aiController;
   }
 
