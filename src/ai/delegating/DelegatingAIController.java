@@ -3,6 +3,7 @@ package ai.delegating;
 import ai.AIAction;
 import ai.AIController;
 import ai.delegates.Delegate;
+import model.board.Board;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
@@ -137,18 +138,23 @@ public final class DelegatingAIController implements AIController {
   private void recomputeMoveActionsForUnit(Player p, MovingUnit movingUnit) {
     HashSet<AIActionWithValue> actionWithValues = new HashSet<>();
     if (movingUnit.canMove()) {
-      List<Tile> cloud = p.game.board.getMovementCloud(movingUnit, false);
-      int pathComputationId = p.game.board.getPathComputationId();
+      Board board = p.game.board;
+      List<Tile> cloud = board.getMovementCloud(movingUnit, false);
+      cloud.remove(movingUnit.getLocation());
+      int pathComputationId = board.getPathComputationId();
       for (Tile t : cloud) {
+        List<Tile> movementPath = board.getMovementPath(pathComputationId, t);
         if (t == movingUnit.getLocation()
-            || (t.isOccupied() && t.getOccupyingUnit().owner == p)
-            || (t.isOccupied() && p.canSee(t))) {
+            // TODO - this allows the AI to cheat by not moving onto a tile that's occupied,
+            // even if it can't see it. Needs to be fixed up.
+            || t.isOccupied()
+            || movementPath
+                .stream()
+                .anyMatch(tile -> tile.isOccupied() && tile.getOccupyingUnit().owner != p)) {
           continue;
         }
         actionWithValues.add(
-            new AIActionWithValue(
-                AIAction.moveUnit(
-                    p, movingUnit, t, p.game.board.getMovementPath(pathComputationId, t))));
+            new AIActionWithValue(AIAction.moveUnit(p, movingUnit, t, movementPath)));
       }
     }
     possibleMoveActionsByUnit.put(movingUnit, actionWithValues);

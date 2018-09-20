@@ -167,19 +167,18 @@ public abstract class MovingUnit extends Unit {
     Tile oldLoc = location;
     for (Tile t : path) {
       if (t.isOccupied() && t.getOccupyingUnit().owner != owner) {
+        System.out.println("Hit enemy along path");
         break;
       }
       location = t;
       cost += getMovementCost(t.terrain);
     }
-    if (location.isOccupied()) {
-      throw new RuntimeException(
-          "Can't move "
-              + this
-              + " to location, it is already occupied by "
-              + location.getOccupyingUnit());
+    // Go backwards along path if enemy was encountered, but don't refund cost.
+    int i = path.indexOf(location);
+    while (location.isOccupied() && i >= 0) {
+      location = path.get(i--);
     }
-    if (oldLoc != location) {
+    if (oldLoc != location && i >= 0) {
       oldLoc.moveUnitTo(location);
     }
     movement -= cost;

@@ -1,9 +1,5 @@
 package model.unit.combatant;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 import model.unit.Unit;
 import model.unit.building.Building;
 import model.unit.combatant.Combatant.CombatantClass;
@@ -11,6 +7,11 @@ import model.unit.commander.Commander;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.Modifiers;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  * A class that describes a prospective combat between two given units and can process it. Used to
@@ -368,11 +369,9 @@ public final class Combat {
       throw new RuntimeException(attacker + " can't fight again this turn");
     if (!attacker.owner.canSee(defender))
       throw new IllegalArgumentException(attacker.owner + " can't see " + defender);
-    if (dist < attacker.getMinAttackRange())
-      throw new IllegalArgumentException(this + " can't fight " + defender + ", it is too close.");
-    if (dist > attacker.getMaxAttackRange())
+    if (!attacker.getAttackableTiles(true).contains(defender.getLocation()))
       throw new IllegalArgumentException(
-          this + " can't fight " + defender + ", it is too far away.");
+          this + " can't fight " + defender + ", it isn't in the valid attack range");
 
     if (DEBUG) System.out.println("Start combat ------");
 
