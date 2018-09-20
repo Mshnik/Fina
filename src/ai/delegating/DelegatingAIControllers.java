@@ -9,10 +9,10 @@ import ai.delegates.MovementDelegates.MoveToAttackAndNotBeCounterAttackedMovemen
 import ai.delegates.MovementDelegates.MoveToAttackMovementDelegate;
 import ai.delegates.MovementDelegates.MoveToNotBeAttackedMovementDelegate;
 import ai.delegates.SummonDelegates.SummonBuildingByNameDelegate;
+import ai.delegates.SummonDelegates.SummonBuildingByNameScalingDelegate;
 import ai.delegates.SummonDelegates.SummonBuildingOnAncientGroundDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantByNameDelegate;
-import ai.delegates.SummonDelegates.SummonSpendLessManaDelegate;
-import ai.delegates.SummonDelegates.SummonUnitsDelegate;
+import ai.delegates.SummonDelegates.SummonCombatantByNameScalingDelegate;
 import model.unit.building.Buildings;
 import model.unit.combatant.Combatants;
 
@@ -39,11 +39,11 @@ public final class DelegatingAIControllers {
         .addDelegate(new GainUnitAdvantageCombatDelegate())
         .addDelegate(new MaxExpectedDamageDealtCombatDelegate())
         .addDelegate(new MinCounterAttackDamageCombatDelegate())
-        .addDelegate(new SummonUnitsDelegate())
         .addDelegate(new SummonBuildingOnAncientGroundDelegate())
-        .addDelegate(new SummonSpendLessManaDelegate())
         .addDelegate(new SummonBuildingByNameDelegate())
+        .addDelegate(new SummonBuildingByNameScalingDelegate())
         .addDelegate(new SummonCombatantByNameDelegate())
+        .addDelegate(new SummonCombatantByNameScalingDelegate())
         .build();
   }
 
@@ -90,6 +90,12 @@ public final class DelegatingAIControllers {
     double max = 5.0;
     double subMin = -0.5;
     double subMax = 3.0;
+
+    List<String> buildingNames =
+        Buildings.getBuildings().stream().map(b -> b.name).collect(Collectors.toList());
+    List<String> combatantNames =
+        Combatants.getCombatants().stream().map(c -> c.name).collect(Collectors.toList());
+
     return DelegatingAIControllerFactory.newBuilder()
         // Movement delegates.
         .addDelegate(
@@ -116,24 +122,32 @@ public final class DelegatingAIControllers {
                 .withSubweights(RandomHelper.nextRandoms(subMin, subMax, 2)))
         // Summon delegates.
         .addDelegate(
-            new SummonUnitsDelegate()
-                .withWeight(RandomHelper.nextRandom(min, max))
-                .withSubweights(RandomHelper.nextRandoms(subMin, subMax, 2)))
-        .addDelegate(
             new SummonBuildingOnAncientGroundDelegate()
                 .withWeight(RandomHelper.nextRandom(min, max)))
         .addDelegate(
-            new SummonSpendLessManaDelegate().withWeight(RandomHelper.nextRandom(min, max)))
-        .addDelegate(
             populateNamesWithRandomWeights(
                 new SummonBuildingByNameDelegate().withWeight(RandomHelper.nextRandom(min, max)),
-                Buildings.getBuildings().stream().map(b -> b.name).collect(Collectors.toList()),
+                buildingNames,
+                subMin,
+                subMax))
+        .addDelegate(
+            populateNamesWithRandomWeights(
+                new SummonBuildingByNameScalingDelegate()
+                    .withWeight(RandomHelper.nextRandom(min, max)),
+                buildingNames,
                 subMin,
                 subMax))
         .addDelegate(
             populateNamesWithRandomWeights(
                 new SummonCombatantByNameDelegate().withWeight(RandomHelper.nextRandom(min, max)),
-                Combatants.getCombatants().stream().map(c -> c.name).collect(Collectors.toList()),
+                combatantNames,
+                subMin,
+                subMax))
+        .addDelegate(
+            populateNamesWithRandomWeights(
+                new SummonCombatantByNameScalingDelegate()
+                    .withWeight(RandomHelper.nextRandom(min, max)),
+                combatantNames,
                 subMin,
                 subMax))
         .build();

@@ -1,15 +1,5 @@
 package model.game;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.MovingUnit;
@@ -28,6 +18,17 @@ import model.unit.modifier.Modifiers;
 import model.util.Cloud;
 import model.util.ExpandableCloud;
 import model.util.MPoint;
+
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * An instance is a player (not the commander piece). Extended to be either human controlled or AI.
@@ -199,11 +200,14 @@ public abstract class Player implements Stringable {
   }
 
   // UNITS
-  /**
-   * Returns the units belonging to this player.
-   */
+  /** Returns the units belonging to this player. */
   public Collection<Unit> getUnits() {
     return Collections.unmodifiableList(units);
+  }
+
+  /** Returns a count of the number of units this player controls with the given name. */
+  public long getUnitCountByName(String name) {
+    return units.stream().filter(u -> u.name.equals(name)).count();
   }
 
   /** Returns the subset of MovingUnits from getUnits. */
