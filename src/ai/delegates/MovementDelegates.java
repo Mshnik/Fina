@@ -3,6 +3,7 @@ package ai.delegates;
 import ai.AIAction;
 import ai.AIAction.AIActionType;
 import model.board.Tile;
+import model.unit.MovingUnit;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 

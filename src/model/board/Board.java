@@ -2,6 +2,13 @@ package model.board;
 
 import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
+import model.game.Player;
+import model.game.Stringable;
+import model.unit.MovingUnit;
+import model.unit.Summoner;
+import model.unit.Unit;
+import model.util.MPoint;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,12 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
-import model.game.Player;
-import model.game.Stringable;
-import model.unit.MovingUnit;
-import model.unit.Summoner;
-import model.unit.Unit;
-import model.util.MPoint;
 
 /**
  * A Board represents the whole model.board state for the model.game as a matrix of tiles and other
@@ -39,6 +40,12 @@ public final class Board implements Iterable<Tile>, Stringable {
    * necessary.
    */
   private final List<MPoint> commanderStartLocations;
+
+  /**
+   * The most recent pathComputationId. Set to a new value whenever a new movement cloud is
+   * computed.
+   */
+  private int pathComputationId;
 
   /**
    * Construct a simple model.board of just terrain Throws IllegalArgumentException if input array
@@ -68,6 +75,7 @@ public final class Board implements Iterable<Tile>, Stringable {
                 terrain[i][j] == Terrain.SEA ? Integer.parseInt(additionalInfo[i][j]) : -1);
       }
     }
+    pathComputationId = 0;
     this.commanderStartLocations = Collections.unmodifiableList(commanderStartLocations);
   }
 
@@ -227,6 +235,11 @@ public final class Board implements Iterable<Tile>, Stringable {
     return getSummonCloud(ss.summoner, ss.toSummon);
   }
 
+  /** Returns the most recent pathComputationId, from a call to getMovementCloud(..) */
+  public int getPathComputationId() {
+    return pathComputationId;
+  }
+
   /**
    * Helper for two getMovementCloud methods, using the given starting tile and unit. Assumes dist
    * and prev fields of start have been set.
@@ -284,6 +297,7 @@ public final class Board implements Iterable<Tile>, Stringable {
         i++;
       }
     }
+    pathComputationId++;
     return settled;
   }
 
@@ -296,6 +310,18 @@ public final class Board implements Iterable<Tile>, Stringable {
     u.getLocation().prev = null;
     u.getLocation().dist =
         useMaxMovementInsteadOfCurrentMovement ? u.getMovementCap() : u.getMovement();
+    return getMovementCloud(startTile, u);
+  }
+
+  /**
+   * Returns the set of tiles the given MovingUnit could move to from the given location with the
+   * given arbitrary movement cap. Useful for determining how close tiles on the board are without
+   * worrying about max movement in a single turn.
+   */
+  private ArrayList<Tile> getMovementCloudWithArbitraryMovementCap(
+      MovingUnit u, Tile startTile, int moveCap) {
+    u.getLocation().prev = null;
+    u.getLocation().dist = moveCap;
     return getMovementCloud(startTile, u);
   }
 
@@ -327,10 +353,15 @@ public final class Board implements Iterable<Tile>, Stringable {
   }
 
   /**
-   * Returns the path to the given tile from the last computed movement cloud. Throws an exception
-   * if the given tile wasn't computed in the last movement cloud computation.
+   * Returns the path to the given tile from the last computed movement cloud, using the given
+   * pathComputationId. Throws an exception if the given tile wasn't computed in the last movement
+   * cloud computation.
    */
-  public List<Tile> getMovementPath(Tile destTile) {
+  public List<Tile> getMovementPath(int pathComputationId, Tile destTile) {
+    if (pathComputationId != this.pathComputationId) {
+      throw new RuntimeException(
+          "Expected pathComputationId is out of date, is at " + pathComputationId);
+    }
     if (destTile.prev == null) {
       throw new RuntimeException(destTile + " wasn't in last movement cloud computation");
     }

@@ -2,12 +2,13 @@ package ai.dummy;
 
 import ai.AIAction;
 import ai.AIController;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.commander.Commander;
+
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * A dummy AI controller that just moves the commander randomly to valid terrain, then ends turn.
@@ -32,6 +33,7 @@ public final class MoveCommanderRandomlyAIController implements AIController {
               .stream()
               .filter(t -> !t.isOccupied())
               .collect(Collectors.toList());
+      int pathComputationId = player.game.board.getPathComputationId();
       Tile toMoveTo = movableTiles.get(random.nextInt(movableTiles.size()));
       try {
         Thread.sleep(2000);
@@ -39,7 +41,10 @@ public final class MoveCommanderRandomlyAIController implements AIController {
         return null;
       }
       return AIAction.moveUnit(
-          player, commander, toMoveTo, player.game.board.getMovementPath(toMoveTo));
+          player,
+          commander,
+          toMoveTo,
+          player.game.board.getMovementPath(pathComputationId, toMoveTo));
     }
     return null;
   }

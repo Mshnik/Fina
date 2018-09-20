@@ -137,7 +137,9 @@ public final class DelegatingAIController implements AIController {
   private void recomputeMoveActionsForUnit(Player p, MovingUnit movingUnit) {
     HashSet<AIActionWithValue> actionWithValues = new HashSet<>();
     if (movingUnit.canMove()) {
-      for (Tile t : p.game.board.getMovementCloud(movingUnit, false)) {
+      List<Tile> cloud = p.game.board.getMovementCloud(movingUnit, false);
+      int pathComputationId = p.game.board.getPathComputationId();
+      for (Tile t : cloud) {
         if (t == movingUnit.getLocation()
             || (t.isOccupied() && t.getOccupyingUnit().owner == p)
             || (t.isOccupied() && p.canSee(t))) {
@@ -145,7 +147,8 @@ public final class DelegatingAIController implements AIController {
         }
         actionWithValues.add(
             new AIActionWithValue(
-                AIAction.moveUnit(p, movingUnit, t, p.game.board.getMovementPath(t))));
+                AIAction.moveUnit(
+                    p, movingUnit, t, p.game.board.getMovementPath(pathComputationId, t))));
       }
     }
     possibleMoveActionsByUnit.put(movingUnit, actionWithValues);
