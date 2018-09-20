@@ -1,15 +1,16 @@
 package ai.delegating;
 
 import ai.delegates.Delegate;
-import java.util.HashSet;
-import java.util.Set;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** A factory for DelegatingAIControllers that handles setting delegate weights. */
 final class DelegatingAIControllerFactory {
   private DelegatingAIControllerFactory() {}
 
   /** The current set of delegates to add to the next call of build(). */
-  private Set<Delegate> delegates = new HashSet<>();
+  private List<Delegate> delegates = new ArrayList<>();
 
   /** Returns a new builder. */
   static DelegatingAIControllerFactory newBuilder() {

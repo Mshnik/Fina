@@ -46,7 +46,12 @@ public class HumanPlayer extends Player {
   }
 
   @Override
-  public String getConfigString() {
+  public String getIdString() {
     return "Human";
+  }
+
+  @Override
+  public String getConfigString() {
+    return "";
   }
 }

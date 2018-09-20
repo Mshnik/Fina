@@ -12,11 +12,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /** Unifying model that holds all sub-model classes */
 public final class Game implements Runnable, Stringable {
 
-  /** Cutoff turn for testing + ml generation. If turn hits this number, calls it a draw with both
+  /**
+   * Cutoff turn for testing + ml generation. If turn hits this number, calls it a draw with both
    * players losing.
    */
   private static final int CUT_OFF_TURN = 1000;
@@ -141,13 +143,21 @@ public final class Game implements Runnable, Stringable {
         if (controller.hasFrame()) {
           controller.frame.showGameOverAlert(winner);
         }
-        if (winner != null) {
-          System.out.println("Win " + winner.getConfigString());
+        for (Player p : players) {
+          if (p == winner) {
+            System.out.print(p.getIdString() + " [WIN] vs ");
+          } else {
+            System.out.print(p.getIdString() + " [LOSE] vs ");
+          }
+          System.out.println(
+              players
+                  .stream()
+                  .filter(p2 -> p2 != p)
+                  .map(Player::getIdString)
+                  .collect(Collectors.joining(",")));
         }
         for (Player p : players) {
-          if (p != winner) {
-            System.out.println("Lose " + p.getConfigString());
-          }
+          System.out.println(p.getConfigString());
         }
       }
     } finally {

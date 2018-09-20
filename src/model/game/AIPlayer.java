@@ -17,12 +17,16 @@ public final class AIPlayer extends Player {
    */
   private static final int SLEEP_TIME_BETWEEN_ACTIONS_AGAINST_HUMAN = 0;
 
+  /** A unique id assigned at construction time. Useful for ML logs. */
+  private final String id;
+
   /** The controller handling behavior specification for this AIPlayer. */
   private final AIController aiController;
 
   /** Constructor for Player class with just model.game. */
   public AIPlayer(Game g, Color c, AIController aiController) {
     super(g, c);
+    id = Long.toString(System.currentTimeMillis());
     this.aiController = aiController;
   }
 
@@ -91,7 +95,12 @@ public final class AIPlayer extends Player {
   public void endTurn() {}
 
   @Override
+  public String getIdString() {
+    return "AI " + id;
+  }
+
+  @Override
   public String getConfigString() {
-    return "AI - {" + aiController.getConfigString() + "}";
+    return getIdString() + " {" + aiController.getConfigString() + "}";
   }
 }

@@ -606,6 +606,9 @@ public abstract class Player implements Stringable {
     return s;
   }
 
+  /** Returns a string representing the player's identification, for ML logs. */
+  public abstract String getIdString();
+
   /** Returns a string representing the configuration of this player, for ML logs. */
   public abstract String getConfigString();
 }
