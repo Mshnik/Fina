@@ -3,6 +3,13 @@ package ai.delegating;
 import ai.AIAction;
 import ai.AIController;
 import ai.delegates.Delegate;
+import model.board.Tile;
+import model.game.Player;
+import model.unit.MovingUnit;
+import model.unit.Summoner;
+import model.unit.Unit;
+import model.unit.combatant.Combatant;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -14,12 +21,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import model.board.Tile;
-import model.game.Player;
-import model.unit.MovingUnit;
-import model.unit.Summoner;
-import model.unit.Unit;
-import model.unit.combatant.Combatant;
 
 /** An AI controller that maintains a set of delegates to determine its behavior. */
 public final class DelegatingAIController implements AIController {
@@ -137,7 +138,9 @@ public final class DelegatingAIController implements AIController {
     HashSet<AIActionWithValue> actionWithValues = new HashSet<>();
     if (movingUnit.canMove()) {
       for (Tile t : p.game.board.getMovementCloud(movingUnit, false)) {
-        if (t == movingUnit.getLocation() || (t.isOccupied() && t.getOccupyingUnit().owner == p)) {
+        if (t == movingUnit.getLocation()
+            || (t.isOccupied() && t.getOccupyingUnit().owner == p)
+            || (t.isOccupied() && p.canSee(t))) {
           continue;
         }
         actionWithValues.add(
@@ -212,7 +215,7 @@ public final class DelegatingAIController implements AIController {
             .flatMap(Function.identity())
             .max(Comparator.naturalOrder())
             .orElse(null);
-    return action != null && action.value > 0 ? action.getAction() : null;
+    return action != null && action.getValue() > 0 ? action.getAction() : null;
   }
 
   /** Remove the action from the possible set and try again. */

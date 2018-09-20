@@ -138,4 +138,33 @@ public final class MovementDelegates {
           * (action.actingUnit instanceof Commander ? getSubWeight(0) : getSubWeight(1));
     }
   }
+
+  /**
+   * A movement delegate that wants the commander to move to a space where it could use all of its
+   * actions to summon.
+   */
+  public static final class MoveToSummonDelegate extends MovementDelegate {
+
+    @Override
+    int getExpectedSubweightsLength() {
+      return 0;
+    }
+
+    @Override
+    double getRawScore(AIAction action) {
+      if (!(action.actingUnit instanceof Commander)) {
+        return 0;
+      }
+      return Math.min(
+          action.actingUnit.getActionsRemaining(),
+          action
+              .player
+              .game
+              .board
+              .getRadialCloud(action.targetedTile, action.actingUnit.getSummonRange())
+              .stream()
+              .filter(t -> !t.isOccupied() && action.player.canSee(t))
+              .count());
+    }
+  }
 }
