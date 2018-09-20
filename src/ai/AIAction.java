@@ -152,7 +152,7 @@ public final class AIAction {
         return;
       case SUMMON_COMBATANT_OR_BUILD_BUILDING:
         assertPrecondition(
-            actingUnit instanceof Commander,
+            actingUnit instanceof Summoner,
             "Can't do SUMMON_COMBATANT_OR_BUILD_BUILDING action on " + actingUnit);
         assertPrecondition(
             actingUnit.getActionsRemaining() > 0,
