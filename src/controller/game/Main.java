@@ -1,15 +1,15 @@
 package controller.game;
 
+import static ai.delegating.DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE;
+import static model.game.HumanPlayer.HUMAN_PLAYER_TYPE;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import model.game.Game.FogOfWar;
 import model.unit.ability.Abilities;
 import model.unit.building.Buildings;
 import model.unit.combatant.Combatants;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static ai.delegating.DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE;
-import static model.game.HumanPlayer.HUMAN_PLAYER_TYPE;
 
 public final class Main {
   /** Simple main method to test out Frame features */
@@ -41,7 +41,11 @@ public final class Main {
     while (true) {
       GameController controller =
           GameController.loadAndStartHeadless(
-              "game/boards/" + boardFilename, defaultPlayerTypes, FogOfWar.REGULAR, 1);
+              "game/boards/" + boardFilename,
+              defaultPlayerTypes,
+              Collections.emptyList(),
+              FogOfWar.REGULAR,
+              1);
       Thread.sleep(150);
       System.out.println("Game " + i + " started");
       while (controller.game.isRunning()) {

@@ -2,7 +2,6 @@ package ai.delegates;
 
 import ai.AIAction;
 import ai.AIAction.AIActionType;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,6 +37,19 @@ public abstract class Delegate {
     this.validActionTypes = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(actionTypes)));
   }
 
+  /**
+   * Returns a copy of this with the same weights that's a difference instance from this. Can be
+   * overridden if more fields have to be added. This will only work if all concrete subclasses have
+   * a zero-arg constructor.
+   */
+  public Delegate copy() {
+    try {
+      return getClass().newInstance().withWeight(weight).withSubweights(subWeights);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   /** Returns the current weight of this delegate. */
   public double getWeight() {
     return weight;
@@ -49,13 +61,28 @@ public abstract class Delegate {
     return this;
   }
 
+  /** Alters the current weight of this delegate by the given delta. */
+  public void changeWeight(double deltaWeight) {
+    weight += deltaWeight;
+  }
+
   /** Returns the subWeight at the given index. */
   double getSubWeight(int index) {
     return subWeights[index];
   }
 
+  /** Returns the subWeight at the given index. */
+  public void getChangeSubWeight(int index, double deltaWeight) {
+    subWeights[index] += deltaWeight;
+  }
+
   /** Returns the expected length of the subweights array. If unused, should be 0. */
   abstract int getExpectedSubweightsLength();
+
+  /** Returns the length of the subweights array. */
+  public int getSubweightsLength() {
+    return subWeights.length;
+  }
 
   /** Returns the current subweights. */
   public double[] getSubWeights() {

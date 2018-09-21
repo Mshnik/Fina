@@ -5,6 +5,9 @@ import model.game.Player;
 /** Controller interface held by an AI player to get the actions it should execute. */
 public interface AIController {
 
+  /** The type to show on the ui for a AI controller with set weights. */
+  public static final String PROVIDED_AI_TYPE = "AI - Provided";
+
   /**
    * Called when this controller's turn starts. By default do nothing, can be overridden for
    * behavior.
