@@ -1,12 +1,11 @@
 package util;
 
-import model.game.Player;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.stream.Collectors;
+import model.game.Player;
 
 /**
  * A utility class for printing game results to file or terminal.
@@ -18,6 +17,15 @@ public final class ResultsPrinter {
   /** Root for output files. */
   private static final String ROOT_OUTPUT_FILEPATH = "data/aiLogs/randomDelegatingAI/";
 
+  /** Results filepath. */
+  static final String RESULTS_FILEPATH = ROOT_OUTPUT_FILEPATH + "/results.txt";
+
+  /** Configs filepath. */
+  static final String CONFIGS_FILEPATH = ROOT_OUTPUT_FILEPATH + "/configs.txt";
+
+  /** Reduced Configs filepath. */
+  static final String REDUCED_FILEPATH = ROOT_OUTPUT_FILEPATH + "/configs_and_results_reduced.csv";
+
   /** Place to write result output to. Defaults to System.out. */
   private static PrintStream resultsOutputStream;
 
@@ -27,10 +35,8 @@ public final class ResultsPrinter {
   /* Set up output streams. */
   static {
     try {
-      resultsOutputStream =
-          new PrintStream(new FileOutputStream(ROOT_OUTPUT_FILEPATH + "/results.txt", true));
-      configOutputStream =
-          new PrintStream(new FileOutputStream(ROOT_OUTPUT_FILEPATH + "/configs.txt", true));
+      resultsOutputStream = new PrintStream(new FileOutputStream(RESULTS_FILEPATH, true));
+      configOutputStream = new PrintStream(new FileOutputStream(CONFIGS_FILEPATH, true));
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
