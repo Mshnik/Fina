@@ -4,6 +4,7 @@ import static ai.AIController.PROVIDED_AI_TYPE;
 
 import ai.evolutionary.EvoPlayer.PointChangeResult;
 import controller.game.GameController;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,7 +44,7 @@ final class EvoPopulation {
     this.boardFilename = boardFilename;
     playerSet = new HashSet<>();
     simulationStarted = false;
-    printer = new EvoResultsPrinter();
+    printer = new EvoResultsPrinter(Long.toString(System.currentTimeMillis()));
   }
 
   /**
@@ -139,11 +140,15 @@ final class EvoPopulation {
   }
 
   /** Starts the simulation, running for the given number of iterations. */
-  void runSimulation(int iterations) {
+  void runSimulation(int iterations) throws FileNotFoundException {
+    // Start simulation.
     simulationStarted = true;
     int batchSize = MAX_CONCURRENT_GAMES * 2;
+
+    // Iterate and write diagnostic row before beginning.
     for (int iteration = 0; iteration < iterations; iteration++) {
       System.out.println("Starting iteration " + iteration + " - " + playerSet.size() + " players");
+      printer.writeRoundDividerRowToResultsAndConfig(iteration);
       printer.writeSimulationRoundRow(iteration, playerSet);
 
       // Copy players to list and shuffle.

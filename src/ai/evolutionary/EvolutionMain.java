@@ -2,9 +2,6 @@ package ai.evolutionary;
 
 import ai.delegating.DelegatingAIControllers;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import util.ResultsPrinter;
 
 /**
  * An executable class that runs an evolutionary algorithm on a population of AIs. Starts with a
@@ -22,11 +19,6 @@ final class EvolutionMain {
           new EvoPlayer(
               DelegatingAIControllers.randomWeightsDelegatingAIController().getDelegates()));
     }
-    ResultsPrinter.setOutputStreams(
-        new PrintStream(
-            new FileOutputStream(ResultsPrinter.ROOT_OUTPUT_FILEPATH + "/evo/results.txt", true)),
-        new PrintStream(
-            new FileOutputStream(ResultsPrinter.ROOT_OUTPUT_FILEPATH + "/evo/configs.txt", true)));
     population.runSimulation(100);
   }
 }
