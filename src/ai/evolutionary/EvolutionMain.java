@@ -14,11 +14,11 @@ final class EvolutionMain {
 
   public static void main(String[] args) throws FileNotFoundException {
     EvoPopulation population = new EvoPopulation("Backyard.csv");
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 50; i++) {
       population.addPlayer(
           new EvoPlayer(
               DelegatingAIControllers.randomWeightsDelegatingAIController().getDelegates()));
     }
-    population.runSimulation(100);
+    population.runSimulation(200);
   }
 }
