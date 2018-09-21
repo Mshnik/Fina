@@ -1,5 +1,14 @@
 package controller.game;
 
+import static ai.AIController.PROVIDED_AI_TYPE;
+import static ai.delegating.DelegatingAIControllers.DELEGATING_DEFAULT_AI_TYPE;
+import static ai.delegating.DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE;
+import static ai.dummy.DoNothingAIController.DO_NOTHING_AI_TYPE;
+import static ai.dummy.FullRandomAIController.FULL_RANDOM_AI_TYPE;
+import static ai.dummy.MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE;
+import static model.game.HumanPlayer.HUMAN_PLAYER_TYPE;
+
+import ai.AIController;
 import ai.delegating.DelegatingAIControllers;
 import ai.dummy.DoNothingAIController;
 import ai.dummy.FullRandomAIController;
@@ -13,6 +22,18 @@ import controller.selector.CastSelector;
 import controller.selector.LocationSelector;
 import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.EmptyStackException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.Stack;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import model.board.Board;
 import model.board.Tile;
 import model.game.AIPlayer;
@@ -35,26 +56,6 @@ import view.gui.ViewOptions;
 import view.gui.decision.DecisionCursor;
 import view.gui.panel.BoardCursor;
 import view.gui.panel.GamePanel;
-
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.Stack;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-
-import static ai.delegating.DelegatingAIControllers.DELEGATING_DEFAULT_AI_TYPE;
-import static ai.delegating.DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE;
-import static ai.dummy.DoNothingAIController.DO_NOTHING_AI_TYPE;
-import static ai.dummy.FullRandomAIController.FULL_RANDOM_AI_TYPE;
-import static ai.dummy.MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE;
-import static model.game.HumanPlayer.HUMAN_PLAYER_TYPE;
 
 /**
  * Overall controlling class that unites all classes. Should be run in its own thread, because some
@@ -169,6 +170,7 @@ public final class GameController {
     return loadAndStartHelper(
         boardFilepath,
         playerTypes,
+        null,
         fogOfWar,
         startingCommanderLevel,
         frameRows,
@@ -176,20 +178,33 @@ public final class GameController {
         frameZoom);
   }
 
-  /** Loads a board and starts the game in a new GameController with no graphical component. */
-  static GameController loadAndStartHeadless(
+  /**
+   * Loads a board and starts the game in a new GameController with no graphical component . Used
+   * for testing / ML gen. playerControllers is only used if playerTypes contains {@link
+   * AIController#PROVIDED_AI_TYPE}, and the indices should match in this case.
+   */
+  public static GameController loadAndStartHeadless(
       String boardFilepath,
       List<String> playerTypes,
+      List<AIController> playerControllers,
       FogOfWar fogOfWar,
       int startingCommanderLevel) {
     return loadAndStartHelper(
-        boardFilepath, playerTypes, fogOfWar, startingCommanderLevel, -1, -1, -1);
+        boardFilepath,
+        playerTypes,
+        playerControllers,
+        fogOfWar,
+        startingCommanderLevel,
+        -1,
+        -1,
+        -1);
   }
 
   /** Loads a board and starts the game in a new GameController. */
   private static GameController loadAndStartHelper(
       String boardFilepath,
       List<String> playerTypes,
+      List<AIController> playerControllers,
       FogOfWar fogOfWar,
       int startingCommanderLevel,
       int frameRows,
@@ -241,6 +256,10 @@ public final class GameController {
               (game, c) ->
                   new AIPlayer(
                       game, c, DelegatingAIControllers.randomWeightsDelegatingAIController());
+          break;
+        case PROVIDED_AI_TYPE:
+          AIController controller = playerControllers.get(i);
+          playerConstructor = (game, c) -> new AIPlayer(game, c, controller);
           break;
         default:
           throw new RuntimeException("Don't know how to handle player type " + playerTypes.get(i));

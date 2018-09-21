@@ -3,16 +3,9 @@ package ai.delegating;
 import ai.AIAction;
 import ai.AIController;
 import ai.delegates.Delegate;
-import model.board.Board;
-import model.board.Tile;
-import model.game.Player;
-import model.unit.MovingUnit;
-import model.unit.Summoner;
-import model.unit.Unit;
-import model.unit.combatant.Combatant;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +15,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import model.board.Board;
+import model.board.Tile;
+import model.game.Player;
+import model.unit.MovingUnit;
+import model.unit.Summoner;
+import model.unit.Unit;
+import model.unit.combatant.Combatant;
 
 /** An AI controller that maintains a set of delegates to determine its behavior. */
 public final class DelegatingAIController implements AIController {
@@ -107,6 +107,11 @@ public final class DelegatingAIController implements AIController {
   /** Adds the given delegate and returns this. */
   void addDelegate(Delegate delegate) {
     delegates.add(delegate);
+  }
+
+  /** Returns the delegates in this controller. */
+  public List<Delegate> getDelegates() {
+    return Collections.unmodifiableList(delegates);
   }
 
   /**

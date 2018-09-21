@@ -28,7 +28,7 @@ public final class DelegatingAIControllers {
   /** The type to show on the ui for a default delegating AI controller. */
   public static final String DELEGATING_DEFAULT_AI_TYPE = "Del AI - Default";
 
-  /** The type to show on the ui for a default delegating AI controller. */
+  /** The type to show on the ui for a random delegating AI controller. */
   public static final String DELEGATING_RANDOM_AI_TYPE = "Del AI - Random";
 
   /** A delegating AIController for testing. */

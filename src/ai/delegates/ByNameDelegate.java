@@ -1,7 +1,6 @@
 package ai.delegates;
 
 import ai.AIAction.AIActionType;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +27,15 @@ public abstract class ByNameDelegate extends Delegate {
     super(actionTypes);
     fallbackSubweight = 1;
     this.nameToSubweightIndexMap = new HashMap<>();
+  }
+
+  /** Overrides {@link Delegate#copy()} to add name to weights map and fallback weight. */
+  @Override
+  public Delegate copy() {
+    ByNameDelegate delegate = (ByNameDelegate) super.copy();
+    delegate.nameToSubweightIndexMap.putAll(nameToSubweightIndexMap);
+    delegate.fallbackSubweight = fallbackSubweight;
+    return delegate;
   }
 
   /** Sets the weight of this Delegate and returns it. Overridden to narrow return type. */

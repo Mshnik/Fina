@@ -1,6 +1,14 @@
 package util;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class enables reading and writing text from/to a file.
@@ -57,27 +65,47 @@ public final class TextIO {
       e.printStackTrace();
     }
 
-    String s = "";
+    StringBuilder stringBuilder = new StringBuilder();
     String line = null;
     do {
       line = br.readLine();
       if (line != null) {
-        s += "\n" + line;
+        stringBuilder.append('\n');
+        stringBuilder.append(line);
       }
     } while (line != null);
 
     br.close();
-    return s.substring(1); // Cut off preceding newline character
+    return stringBuilder.toString().substring(1); // Cut off preceding newline character
   }
 
   /**
-   * Read text file f and return it with one line in each array element.
+   * Read text file f and return it with one line in each list element.
    *
    * @param f - the File to read
    * @return - a String array of the contents of file f, each entry of which is a line
    * @throws IOException - if the file reading goes bad.
    */
-  public static String[] readToArray(File f) throws IOException {
-    return read(f).split("\\n");
+  public static List<String> readToArray(File f) throws IOException {
+    FileReader fr = null;
+    BufferedReader br = null;
+    try {
+      fr = new FileReader(f);
+      br = new BufferedReader(fr);
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+
+    List<String> lines = new ArrayList<>();
+    String line = null;
+    do {
+      line = br.readLine();
+      if (line != null) {
+        lines.add(line);
+      }
+    } while (line != null);
+
+    br.close();
+    return lines;
   }
 }
