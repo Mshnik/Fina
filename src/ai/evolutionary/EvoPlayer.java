@@ -55,11 +55,19 @@ final class EvoPlayer {
   /** The list of delegates to use for this player. */
   private final List<Delegate> delegateList;
 
+  /** The controller to use for this EvoPlayer. */
+  private final AIController aiController;
+
   /** Creates a new EvoPlayer with the given delegates list. */
   EvoPlayer(Iterable<Delegate> delegates) {
     points = STARTING_POINTS;
     delegateList = new ArrayList<>();
     delegates.forEach(delegateList::add);
+    aiController =
+        DelegatingAIControllerFactory.newBuilder()
+            .setIdToTimestampPlusNextId()
+            .addDelegates(delegateList)
+            .build();
   }
 
   /** Reset's this' points after splitting. */
@@ -95,12 +103,12 @@ final class EvoPlayer {
 
   /** Returns a controller to use for this player, when it plays a game. */
   AIController getController() {
-    return DelegatingAIControllerFactory.newBuilder().addDelegates(delegateList).build();
+    return aiController;
   }
 
   /**
    * Creates a new EvoPlayer that's the result of this splitting. Copies each delegate to a list,
-   * then performs a random evolutionary change. (TODO).
+   * then performs a random evolutionary change.
    */
   EvoPlayer split() {
     Random random = new Random();

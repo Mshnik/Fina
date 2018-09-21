@@ -15,12 +15,11 @@ import ai.delegates.SummonDelegates.SummonBuildingByNameScalingDelegate;
 import ai.delegates.SummonDelegates.SummonBuildingOnAncientGroundDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantByNameDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantByNameScalingDelegate;
-import model.unit.building.Buildings;
-import model.unit.combatant.Combatants;
-
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import model.unit.building.Buildings;
+import model.unit.combatant.Combatants;
 
 /** A listing of DelegatingAIControllers. */
 public final class DelegatingAIControllers {

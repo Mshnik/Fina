@@ -2,12 +2,11 @@ package model.game;
 
 import ai.AIAction;
 import ai.AIController;
+import java.awt.Color;
+import java.util.concurrent.atomic.AtomicInteger;
 import model.unit.MovingUnit;
 import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
-
-import java.awt.Color;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /** A player controlled by an AI. */
 public final class AIPlayer extends Player {
@@ -33,7 +32,10 @@ public final class AIPlayer extends Player {
   /** Constructor for Player class with just model.game. */
   public AIPlayer(Game g, Color c, AIController aiController) {
     super(g, c);
-    id = Long.toString(System.currentTimeMillis()) + "-" + idCounter.getAndIncrement();
+    id =
+        aiController.id().isEmpty()
+            ? Long.toString(System.currentTimeMillis()) + "-" + idCounter.getAndIncrement()
+            : aiController.id();
     this.aiController = aiController;
   }
 

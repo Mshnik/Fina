@@ -26,6 +26,9 @@ import model.unit.combatant.Combatant;
 /** An AI controller that maintains a set of delegates to determine its behavior. */
 public final class DelegatingAIController implements AIController {
 
+  /** The id of this AIController. May be empty to delegate setting to player. */
+  private final String id;
+
   /** The delegates this is delegating to. */
   private final List<Delegate> delegates;
 
@@ -96,12 +99,29 @@ public final class DelegatingAIController implements AIController {
   /** The current computed set of possible summon actions, by summoner. Recomputed as needed. */
   private final Map<Summoner, Set<AIActionWithValue>> possibleSummonActionsByUnit;
 
-  /** Constructs a new DelegatingAIController, initially with an empty set of delegates. */
+  /**
+   * Constructs a new DelegatingAIController, initially with an empty set of delegates. The id is
+   * left empty, thus the player will set it on its own.
+   */
   DelegatingAIController() {
+    this("");
+  }
+
+  /**
+   * Constructs a new DelegatingAIController, initially with an empty set of delegates and the given
+   * id.
+   */
+  DelegatingAIController(String id) {
+    this.id = id;
     this.delegates = new ArrayList<>();
     possibleMoveActionsByUnit = new HashMap<>();
     possibleAttackActionsByUnit = new HashMap<>();
     possibleSummonActionsByUnit = new HashMap<>();
+  }
+
+  @Override
+  public String id() {
+    return id;
   }
 
   /** Adds the given delegate and returns this. */

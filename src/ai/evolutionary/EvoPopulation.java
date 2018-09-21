@@ -23,7 +23,7 @@ final class EvoPopulation {
       Stream.of(PROVIDED_AI_TYPE, PROVIDED_AI_TYPE).collect(Collectors.toList());
 
   /** The max number of games to run at a time. */
-  private static final int MAX_CONCURRENT_GAMES = 5;
+  private static final int MAX_CONCURRENT_GAMES = 3;
 
   private final String boardFilename;
 
@@ -143,8 +143,7 @@ final class EvoPopulation {
     simulationStarted = true;
     int batchSize = MAX_CONCURRENT_GAMES * 2;
     for (int iteration = 0; iteration < iterations; iteration++) {
-      System.out.println(
-          "Starting iteration " + iteration + " - " + playerSet.size() + " players remain");
+      System.out.println("Starting iteration " + iteration + " - " + playerSet.size() + " players");
       printer.writeSimulationRoundRow(iteration, playerSet);
 
       // Copy players to list and shuffle.

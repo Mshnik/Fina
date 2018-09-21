@@ -9,6 +9,14 @@ public interface AIController {
   public static final String PROVIDED_AI_TYPE = "AI - Provided";
 
   /**
+   * The id of this AIController, to set the id of the player. If unimplemented (returns empty),
+   * uses timestamp-based id.
+   */
+  public default String id() {
+    return "";
+  }
+
+  /**
    * Called when this controller's turn starts. By default do nothing, can be overridden for
    * behavior.
    */

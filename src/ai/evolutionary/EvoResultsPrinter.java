@@ -48,8 +48,12 @@ final class EvoResultsPrinter {
             .orElseThrow(() -> new RuntimeException("Expected at least one player"));
     printStream.println(
         String.format(
-            "Round %d,%s",
+            "Round %d,%d,%s",
             round,
-            averageWeights.stream().map(d -> d.toString()).collect(Collectors.joining(","))));
+            playerList.size(),
+            averageWeights
+                .stream()
+                .map(d -> String.format("%.3f", d))
+                .collect(Collectors.joining(","))));
   }
 }
