@@ -64,6 +64,11 @@ public final class SpacialShift extends Ability {
   }
 
   @Override
+  public double getEffectivenessOn(Unit u) {
+    return super.getEffectivenessOn(u);
+  }
+
+  @Override
   public List<Unit> cast(Commander caster, Tile location, int boostLevel, Random random) {
     List<Unit> list = super.cast(caster, location, boostLevel, random);
 

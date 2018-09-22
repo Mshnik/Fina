@@ -67,6 +67,11 @@ final class Sacrifice extends Ability {
   }
 
   @Override
+  public double getEffectivenessOn(Unit u) {
+    return super.getEffectivenessOn(u);
+  }
+
+  @Override
   public List<Unit> cast(Commander caster, Tile location, int boostLevel, Random random) {
     List<Unit> affectedUnits = super.cast(caster, location, boostLevel, random);
     for (Unit u : affectedUnits) {

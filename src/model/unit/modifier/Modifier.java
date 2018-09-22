@@ -168,13 +168,14 @@ public abstract class Modifier implements Stringable {
 
   /**
    * Returns a copy if another copy of this exists within the given collection Checks each member of
-   * the given collection for having the same clonedFrom as this. Otherwise returns null If this is
-   * a dummy, throws runtimeException
+   * the given collection for having the same clonedFrom as this or was cloned from this. Otherwise
+   * returns null.
    */
   public Modifier cloneInCollection(Collection<? extends Modifier> elms) throws RuntimeException {
-    if (isDummy()) throw new RuntimeException("Can't check if dummy is in list");
     for (Modifier m : elms) {
-      if (m.clonedFrom == clonedFrom) return m;
+      if (m.clonedFrom == clonedFrom || m.clonedFrom == this) {
+        return m;
+      }
     }
     return null;
   }

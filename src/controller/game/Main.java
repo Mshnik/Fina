@@ -21,13 +21,13 @@ public final class Main {
 
     // Select initial board file and make start game.
     String boardFilename = args.length > 0 ? args[0] : "Backyard.csv";
-    genDataLoop(boardFilename);
+    humanGame(boardFilename);
   }
 
   private static void humanGame(String boardFilename) {
     List<String> defaultPlayerTypes = new ArrayList<>();
-    defaultPlayerTypes.add(HUMAN_PLAYER_TYPE);
-    defaultPlayerTypes.add(HUMAN_PLAYER_TYPE);
+    defaultPlayerTypes.add(DELEGATING_RANDOM_AI_TYPE);
+    defaultPlayerTypes.add(DELEGATING_RANDOM_AI_TYPE);
 
     GameController.loadAndStart(
         "game/boards/" + boardFilename, defaultPlayerTypes, FogOfWar.REGULAR, 1, 10, 18, 3);

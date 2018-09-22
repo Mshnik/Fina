@@ -7,6 +7,7 @@ import model.game.Player;
 import model.unit.MovingUnit;
 import model.unit.Summoner;
 import model.unit.Unit;
+import model.unit.ability.Ability;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 
@@ -51,6 +52,9 @@ public final class AIAction {
   /** Unit to summon - should only be non-null for summoning. */
   public final Unit unitToSummon;
 
+  /** Ability to cast - should only be non-null for casting. */
+  public final Ability spellToCast;
+
   /** Creates an AIAction that moves the given unit to the given adjacent tile. */
   public static AIAction moveUnit(
       Player player, MovingUnit unitToMove, Tile moveToTile, List<Tile> movePath) {
@@ -60,12 +64,13 @@ public final class AIAction {
         unitToMove,
         moveToTile,
         Collections.unmodifiableList(movePath),
+        null,
         null);
   }
 
   /** Creates an AIAction that has the given unit attack the enemy unit on the given tile. */
   public static AIAction attack(Player player, Combatant attackingUnit, Tile tileToAttack) {
-    return new AIAction(player, AIActionType.ATTACK, attackingUnit, tileToAttack, null, null);
+    return new AIAction(player, AIActionType.ATTACK, attackingUnit, tileToAttack, null, null, null);
   }
 
   /**
@@ -80,14 +85,17 @@ public final class AIAction {
         summoningUnit,
         tileToSummonOn,
         null,
-        unitToSummon);
+        unitToSummon,
+        null);
   }
 
   /**
    * Creates an AIAction that has the given commander cast the given spell on the given tile target.
    */
-  public static AIAction cast(Player player, Commander caster, Tile tileToTarget) {
-    return new AIAction(player, AIActionType.CAST_SPELL, caster, tileToTarget, null, null);
+  public static AIAction cast(
+      Player player, Commander caster, Tile tileToTarget, Ability spellToCast) {
+    return new AIAction(
+        player, AIActionType.CAST_SPELL, caster, tileToTarget, null, null, spellToCast);
   }
 
   /** Constructs an AIAction and asserts that the inputs are valid. */
@@ -97,13 +105,15 @@ public final class AIAction {
       Unit actingUnit,
       Tile targetedTile,
       List<Tile> movePath,
-      Unit unitToSummon) {
+      Unit unitToSummon,
+      Ability spellToCast) {
     this.player = player;
     this.actionType = actionType;
     this.actingUnit = actingUnit;
     this.targetedTile = targetedTile;
     this.movePath = movePath;
     this.unitToSummon = unitToSummon;
+    this.spellToCast = spellToCast;
 
     // Assert that this action construction is legal.
     checkPreconditions();
@@ -173,6 +183,7 @@ public final class AIAction {
       case CAST_SPELL:
         assertPrecondition(
             actingUnit instanceof Commander, "Can't do CAST_SPELL action on " + actingUnit);
+        assertPrecondition(spellToCast != null, "Can't do CAST_SPELL action, no spell specified");
         return;
       default:
         throw new RuntimeException("Got unsupported actionType " + actionType);

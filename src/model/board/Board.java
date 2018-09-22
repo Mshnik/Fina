@@ -1,14 +1,8 @@
 package model.board;
 
+import controller.selector.CastSelector;
 import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
-import model.game.Player;
-import model.game.Stringable;
-import model.unit.MovingUnit;
-import model.unit.Summoner;
-import model.unit.Unit;
-import model.util.MPoint;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,6 +15,15 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import model.game.Player;
+import model.game.Stringable;
+import model.unit.MovingUnit;
+import model.unit.Summoner;
+import model.unit.Unit;
+import model.unit.ability.Ability;
+import model.unit.ability.SpacialShift;
+import model.unit.commander.Commander;
+import model.util.MPoint;
 
 /**
  * A Board represents the whole model.board state for the model.game as a matrix of tiles and other
@@ -246,6 +249,49 @@ public final class Board implements Iterable<Tile>, Stringable {
   /** Returns the set of tiles the given summon selector could choose to summon a new model.unit */
   public List<Tile> getSummonCloud(SummonSelector<?> ss) {
     return getSummonCloud(ss.summoner, ss.toSummon);
+  }
+
+  /** Returns the set of tiles the given casting unit could choose to cast the given spell. */
+  public List<Tile> getCastCloud(Commander caster, Ability toCast) {
+    int castDist =
+        toCast.castDist + (toCast.canBeCloudBoosted ? 0 : caster.owner.getCastSelectBoost());
+
+    List<Tile> cloud = getRadialCloud(caster.getLocation(), castDist);
+    // If cast dist is greater than 0, can't cast on commander location.
+    if (castDist > 0) {
+      cloud.remove(caster.getLocation());
+    }
+    List<Tile> toRemove = new ArrayList<>();
+    for (Tile t : cloud) {
+      if (toCast
+          .getTranslatedEffectCloud(caster, t, caster.owner.getCastCloudBoost())
+          .stream()
+          .noneMatch(
+              tile ->
+                  tile.isOccupied()
+                      && caster.owner.canSee(tile)
+                      && toCast.wouldAffect(tile.getOccupyingUnit(), caster))) {
+        toRemove.add(t);
+      }
+    }
+
+    // If this is SpacialShift, cant cast on a unit on a mountain since commanders's can't occupy
+    // them.
+    if (toCast instanceof SpacialShift) {
+      for (Tile t : cloud) {
+        if (!caster.canOccupy(t.terrain)) {
+          toRemove.add(t);
+        }
+      }
+    }
+
+    cloud.removeAll(toRemove);
+    return cloud;
+  }
+
+  /** Returns the set of tiles the given cast selector could choose to cast a spell. */
+  public List<Tile> getCastCloud(CastSelector cs) {
+    return getCastCloud(cs.caster, cs.toCast);
   }
 
   /** Returns the most recent pathComputationId, from a call to getMovementCloud(..) */

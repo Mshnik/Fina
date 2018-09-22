@@ -171,6 +171,17 @@ public class Ability implements Stringable {
   }
 
   /**
+   * Returns a double that represents how effective the given ability is on the given unit by
+   * applying {@link AbilityEffect#getEffectivenessPercentage(Unit)} for each effect on the given
+   * unit, then averaging. Should be overridden if Ability is overridden to do custom math, but
+   * should return in [0,1].
+   */
+  public double getEffectivenessOn(Unit unit) {
+    return effects.stream().mapToDouble(effect -> effect.getEffectivenessPercentage(unit)).sum()
+        / effects.size();
+  }
+
+  /**
    * Casts this ability. Returns true if this call is ok and cast happens, throws exception
    * otherwise. If this is passive, always cast with the commander's location as its location.
    * Returns the list of units this affected.

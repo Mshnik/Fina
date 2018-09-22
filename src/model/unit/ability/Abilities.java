@@ -180,9 +180,14 @@ public final class Abilities {
     }
   }
 
+  /** Returns a list of all abilities */
+  public static List<Ability> getAbilities() {
+    return Collections.unmodifiableList(ABILITIES);
+  }
+
   /**
-   * Returns a list of units for the given age (minus 1 because age is 1 indexed, this is 0 indexed)
-   * - returns by value
+   * Returns a list of abilities for the given age (minus 1 because age is 1 indexed, this is 0
+   * indexed) - returns by value
    */
   public static List<Ability> getAbilitiesForAge(int age) {
     return ABILITIES.stream().filter(a -> a.level == age).collect(Collectors.toList());

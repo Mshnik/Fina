@@ -21,7 +21,9 @@ import model.game.Player;
 import model.unit.MovingUnit;
 import model.unit.Summoner;
 import model.unit.Unit;
+import model.unit.ability.Ability;
 import model.unit.combatant.Combatant;
+import model.unit.commander.Commander;
 
 /** An AI controller that maintains a set of delegates to determine its behavior. */
 public final class DelegatingAIController implements AIController {
@@ -100,6 +102,11 @@ public final class DelegatingAIController implements AIController {
   private final Map<Summoner, Set<AIActionWithValue>> possibleSummonActionsByUnit;
 
   /**
+   * The current computed set of possible cast actions. All are for commander. Recomputed as needed.
+   */
+  private final Set<AIActionWithValue> possibleSpellsToCast;
+
+  /**
    * Constructs a new DelegatingAIController, initially with an empty set of delegates. The id is
    * left empty, thus the player will set it on its own.
    */
@@ -117,6 +124,7 @@ public final class DelegatingAIController implements AIController {
     possibleMoveActionsByUnit = new HashMap<>();
     possibleAttackActionsByUnit = new HashMap<>();
     possibleSummonActionsByUnit = new HashMap<>();
+    possibleSpellsToCast = new HashSet<>();
   }
 
   @Override
@@ -157,6 +165,7 @@ public final class DelegatingAIController implements AIController {
     for (Summoner s : player.getSummoners()) {
       recomputeSummonActionsForUnit(player, (Unit & Summoner) s);
     }
+    recomputeSpellsForCommander(player, player.getCommander());
   }
 
   /** Recomputes the moving actions for the given unit. */
@@ -228,6 +237,21 @@ public final class DelegatingAIController implements AIController {
     possibleSummonActionsByUnit.put(summonerUnit, actionWithValues);
   }
 
+  /** Recomputes the casting actions for the given commander. */
+  private void recomputeSpellsForCommander(Player p, Commander commander) {
+    possibleSpellsToCast.clear();
+    if (commander.canCast()) {
+      for (Ability ability : commander.getCastables().values()) {
+        if (p.getMana() >= ability.getManaCostWithDiscountsForPlayer(p)) {
+          for (Tile t : p.game.board.getCastCloud(commander, ability)) {
+            possibleSpellsToCast.add(
+                new AIActionWithValue(AIAction.cast(p, commander, t, ability)));
+          }
+        }
+      }
+    }
+  }
+
   /**
    * Returns the best action remaining with value > 0 as the next action. If no actions remaining or
    * all actions < 0, does nothing (returns null).
@@ -245,6 +269,7 @@ public final class DelegatingAIController implements AIController {
             .add(possibleAttackActionsByUnit.values().stream().flatMap(Set::stream))
             .add(possibleMoveActionsByUnit.values().stream().flatMap(Set::stream))
             .add(possibleSummonActionsByUnit.values().stream().flatMap(Set::stream))
+            .add(possibleSpellsToCast.stream())
             .build()
             .flatMap(Function.identity())
             .max(Comparator.naturalOrder())

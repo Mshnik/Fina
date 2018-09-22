@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /** An abstract class for a piece of an AI that functions as an adviser to the AI. */
@@ -87,6 +88,11 @@ public abstract class Delegate {
   /** Returns the current subweights. */
   public double[] getSubWeights() {
     return Arrays.copyOf(subWeights, subWeights.length);
+  }
+
+  /** Sets the subweights of this Delegate and returns it. */
+  public Delegate withSubweights(List<Double> subWeights) {
+    return withSubweights(subWeights.stream().mapToDouble(d -> d).toArray());
   }
 
   /** Sets the subweights of this Delegate and returns it. */

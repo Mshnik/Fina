@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import model.unit.MovingUnit;
 import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
+import model.unit.commander.Commander;
 
 /** A player controlled by an AI. */
 public final class AIPlayer extends Player {
@@ -55,9 +56,11 @@ public final class AIPlayer extends Player {
             .summonUnit(action.actingUnit, action.targetedTile, action.unitToSummon);
         break;
       case CAST_SPELL:
-        throw new RuntimeException("Unimplemented");
+        game.getController()
+            .castSpell((Commander) action.actingUnit, action.spellToCast, action.targetedTile);
+        break;
       default:
-        throw new RuntimeException("Got unhandled actionType: " + action);
+        throw new RuntimeException("Got unhandled actionType: " + action.actionType);
     }
   }
 

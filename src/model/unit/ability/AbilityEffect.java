@@ -1,5 +1,7 @@
 package model.unit.ability;
 
+import java.util.Random;
+import java.util.stream.Collectors;
 import model.unit.MovingUnit;
 import model.unit.Unit;
 import model.unit.combatant.Combatant;
@@ -8,9 +10,6 @@ import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.Modifiers;
-
-import java.util.Random;
-import java.util.stream.Collectors;
 
 /** An effect applied to a unit as part of an ability. */
 public final class AbilityEffect {
@@ -120,6 +119,45 @@ public final class AbilityEffect {
                 .collect(Collectors.toList())));
   }
 
+  /**
+   * Returns the percentage of the effect this can have on the given unit. For Damage abilities,
+   * compares the unit's health to the min damage. For healing, compares the heal to the max amount
+   * the unit can heal. For boosts, checks how many turns of stacks the unit already has. For
+   * utility, custom logic.
+   */
+  double getEffectivenessPercentage(Unit u) {
+    if (minDamage != 0) {
+      return (double) Math.min(minDamage, u.getHealth()) / minDamage;
+    } else if (healConstantHp != 0) {
+      return (double) Math.min(healConstantHp, u.getMaxHealth() - u.getHealth()) / healConstantHp;
+    } else if (healPercentageOfMaxHp != 0) {
+      double healAmount = healPercentageOfMaxHp * u.getMaxHealth();
+      return Math.min(healAmount, u.getMaxHealth() - u.getHealth()) / healAmount;
+    } else if (destroyUnit) {
+      return 1;
+    } else if (refreshUnit) {
+      if (u instanceof Combatant) {
+        return (u.canFight() ? 0 : 0.5) + (u.canMove() ? 0 : 0.5);
+      } else if (u instanceof MovingUnit) {
+        return u.canMove() ? 0 : 1;
+      } else {
+        throw new RuntimeException("Can't refresh " + u);
+      }
+    } else if (research > 0) {
+      return 1;
+    } else if (modifierEffect != null) {
+      if (modifierEffect.isAffecting(u)) {
+        return 1
+            / (modifierEffect.getModifier(0).cloneInCollection(u.getModifiers()).getRemainingTurns()
+                + 1);
+      } else {
+        return 1;
+      }
+    } else {
+      throw new RuntimeException("This effect didn't match any known effect case");
+    }
+  }
+
   /** Makes this abilityEffect affect the given unit. */
   void affect(Unit u, Commander caster, Random random) {
     if (maxDamage != 0) {
@@ -136,6 +174,8 @@ public final class AbilityEffect {
       }
       if (u instanceof Combatant) {
         ((Combatant) u).setCanFight(true);
+      } else {
+        throw new RuntimeException("Can't refresh " + u);
       }
     } else if (research > 0) {
       caster.addResearch(research);

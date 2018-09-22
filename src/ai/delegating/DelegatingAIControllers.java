@@ -1,6 +1,9 @@
 package ai.delegating;
 
 import ai.delegates.ByNameDelegate;
+import ai.delegates.CastDelegates.CastSpellByNameDelegate;
+import ai.delegates.CastDelegates.MaximizeUnitsEffectedCastByNameDelegate;
+import ai.delegates.CastDelegates.MinimizeRedundantEffectByNameCastDelegate;
 import ai.delegates.CombatDelegates.GainUnitAdvantageCombatDelegate;
 import ai.delegates.CombatDelegates.MaxExpectedDamageDealtCombatDelegate;
 import ai.delegates.CombatDelegates.MinCounterAttackDamageCombatDelegate;
@@ -18,6 +21,7 @@ import ai.delegates.SummonDelegates.SummonCombatantByNameScalingDelegate;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import model.unit.ability.Abilities;
 import model.unit.building.Buildings;
 import model.unit.combatant.Combatants;
 
@@ -47,6 +51,9 @@ public final class DelegatingAIControllers {
         .addDelegate(new SummonBuildingByNameScalingDelegate())
         .addDelegate(new SummonCombatantByNameDelegate())
         .addDelegate(new SummonCombatantByNameScalingDelegate())
+        .addDelegate(new CastSpellByNameDelegate())
+        .addDelegate(new MaximizeUnitsEffectedCastByNameDelegate())
+        .addDelegate(new MinimizeRedundantEffectByNameCastDelegate())
         .build();
   }
 
@@ -98,6 +105,8 @@ public final class DelegatingAIControllers {
         Buildings.getBuildings().stream().map(b -> b.name).collect(Collectors.toList());
     List<String> combatantNames =
         Combatants.getCombatants().stream().map(c -> c.name).collect(Collectors.toList());
+    List<String> abilityNames =
+        Abilities.getAbilities().stream().map(c -> c.name).collect(Collectors.toList());
 
     return DelegatingAIControllerFactory.newBuilder()
         // Movement delegates.
@@ -156,6 +165,22 @@ public final class DelegatingAIControllers {
                 new SummonCombatantByNameScalingDelegate()
                     .withWeight(RandomHelper.nextRandom(min, max)),
                 combatantNames,
+                subMin,
+                subMax))
+        // Casting
+        .addDelegate(
+            populateNamesWithRandomWeights(
+                new CastSpellByNameDelegate().withWeight(RandomHelper.nextRandom(min, max)),
+                abilityNames,
+                subMin,
+                subMax))
+        .addDelegate(
+            new MaximizeUnitsEffectedCastByNameDelegate().withWeight(RandomHelper.nextRandom(min, max)))
+        .addDelegate(
+            populateNamesWithRandomWeights(
+                new MinimizeRedundantEffectByNameCastDelegate()
+                    .withWeight(RandomHelper.nextRandom(min, max)),
+                abilityNames,
                 subMin,
                 subMax))
         .build();

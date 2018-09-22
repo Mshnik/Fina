@@ -975,13 +975,17 @@ public final class GameController {
     Toggle t = removeTopToggle();
     if (!t.equals(Toggle.CAST_SELECTION))
       throw new RuntimeException("Can't process cast selection, currently toggling " + getToggle());
+    castSpell(castSelector.caster, castSelector.toCast, loc);
+  }
+
+  /** Casts the given spell on the given tile location. */
+  public void castSpell(Commander caster, Ability toCast, Tile loc) {
     if (game.getCurrentPlayer() != null) {
       game.getCurrentPlayer().getCommander().spendAction();
     }
-    castSelector.toCast.cast(
-        castSelector.caster, loc, castSelector.caster.owner.getCastCloudBoost(), random);
+    toCast.cast(caster, loc, caster.owner.getCastCloudBoost(), random);
     locationSelector = null;
-    getGamePanel().boardCursor.setElm(castSelector.caster.getLocation()); // Cause info update
+    getGamePanel().boardCursor.setElm(caster.getLocation()); // Cause info update
     repaint();
   }
 

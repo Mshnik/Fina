@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import model.board.Tile;
 import model.unit.ability.Ability;
-import model.unit.ability.SpacialShift;
 import model.unit.commander.Commander;
 
 public final class CastSelector extends LocationSelector {
@@ -29,39 +28,7 @@ public final class CastSelector extends LocationSelector {
   /** Refreshes the possible cast locations for this castSelector */
   @Override
   protected void refreshPossibilitiesCloud() {
-    int castDist =
-        toCast.castDist + (toCast.canBeCloudBoosted ? 0 : caster.owner.getCastSelectBoost());
-
-    cloud = controller.game.board.getRadialCloud(caster.getLocation(), castDist);
-    // If cast dist is greater than 0, can't cast on commander location.
-    if (castDist > 0) {
-      cloud.remove(caster.getLocation());
-    }
-    List<Tile> toRemove = new ArrayList<>();
-    for (Tile t : cloud) {
-      if (toCast
-          .getTranslatedEffectCloud(caster, t, caster.owner.getCastCloudBoost())
-          .stream()
-          .noneMatch(
-              tile ->
-                  tile.isOccupied()
-                      && caster.owner.canSee(tile)
-                      && toCast.wouldAffect(tile.getOccupyingUnit(), caster))) {
-        toRemove.add(t);
-      }
-    }
-
-    // If this is SpacialShift, cant cast on a unit on a mountain since commanders's can't occupy
-    // them.
-    if (toCast instanceof SpacialShift) {
-      for (Tile t : cloud) {
-        if (!caster.canOccupy(t.terrain)) {
-          toRemove.add(t);
-        }
-      }
-    }
-
-    cloud.removeAll(toRemove);
+    cloud = caster.owner.game.board.getCastCloud(this);
     if (!cloud.isEmpty()) {
       refreshEffectCloud();
     }
