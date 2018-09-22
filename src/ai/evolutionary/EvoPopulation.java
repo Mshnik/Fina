@@ -155,17 +155,44 @@ final class EvoPopulation {
     }
   }
 
+  /** Helper function that sums two lists of doubles. Expects the lists to be of the same length. */
+  private static List<Double> sumLists(List<Double> list1, List<Double> list2) {
+    return IntStream.range(0, list1.size())
+        .mapToObj(i -> list1.get(i) + list2.get(i))
+        .collect(Collectors.toList());
+  }
+
   /** Calculates the average weights of each delegate (including subweights). */
   private List<Double> calculateAverageWeights() {
     return playerSet
         .stream()
         .map(EvoPlayer::getWeightsList)
-        .reduce(
-            (weights1, weights2) ->
-                IntStream.range(0, weights1.size())
-                    .mapToObj(i -> weights1.get(i) + weights2.get(i))
-                    .collect(Collectors.toList()))
+        .reduce(EvoPopulation::sumLists)
         .map(list -> list.stream().map(d -> d / playerSet.size()).collect(Collectors.toList()))
+        .orElseThrow(() -> new RuntimeException("Expected at least one player"));
+  }
+
+  /** Calculates the standard deviation of each weight (including subweights). */
+  private List<Double> calculateWeightStandardDeviation(List<Double> averageWeights) {
+    return playerSet
+        .stream()
+        .map(EvoPlayer::getWeightsList)
+        // Map to list of (val - mean) ^ 2
+        .map(
+            weights ->
+                IntStream.range(0, weights.size())
+                    .mapToObj(
+                        i ->
+                            (weights.get(i) - averageWeights.get(i))
+                                * (weights.get(i) - averageWeights.get(i)))
+                    .collect(Collectors.toList()))
+        .reduce(EvoPopulation::sumLists)
+        // Divide by size (sum -> average), take square root.
+        .map(
+            list ->
+                list.stream()
+                    .map(d -> Math.pow(d / playerSet.size(), 0.5))
+                    .collect(Collectors.toList()))
         .orElseThrow(() -> new RuntimeException("Expected at least one player"));
   }
 
