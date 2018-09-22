@@ -20,7 +20,7 @@ final class EvoPlayer {
   private static final int KNOCKOUT_POINTS = 0;
 
   /** The amount of points an EvoPlayer starts with. */
-  private static final int STARTING_POINTS = 3;
+  private static final int STARTING_POINTS = 1;
 
   /** The amount of points needed to split. */
   private static final int SPLIT_POINTS = STARTING_POINTS * 2;
@@ -29,16 +29,16 @@ final class EvoPlayer {
   private static final int DELTA_POINTS = 1;
 
   /** The chance of a mutation on weight of a delegate. */
-  private static final double WEIGHT_MUTATION_CHANCE_ON_SPLIT = 0.2;
+  private static final double WEIGHT_MUTATION_CHANCE_ON_SPLIT = 0.3;
 
   /** The chance of a mutation on a subweight of a delegate. */
-  private static final double SUBWEIGHT_MUTATION_CHANCE_ON_SPLIT = 0.1;
+  private static final double SUBWEIGHT_MUTATION_CHANCE_ON_SPLIT = 0.2;
 
   /**
    * The max value of a mutation (in absolute value) on a mutated attribute. Actual value determined
    * by uniform random over [-max, max].
    */
-  private static final double MUTATION_MAX_VALUE_ON_SPLIT = 0.5;
+  private static final double MUTATION_MAX_VALUE_ON_SPLIT = 0.2;
 
   /** Possible changes based on a point change. */
   enum PointChangeResult {
