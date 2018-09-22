@@ -3,6 +3,7 @@ package ai.evolutionary;
 import ai.delegates.Delegate;
 import ai.delegating.DelegatingAIController;
 import ai.delegating.DelegatingAIControllerFactory;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,10 +20,10 @@ final class EvoPlayer {
   private static final int KNOCKOUT_POINTS = 0;
 
   /** The amount of points an EvoPlayer starts with. */
-  private static final int STARTING_POINTS = 4;
+  private static final int STARTING_POINTS = 3;
 
   /** The amount of points needed to split. */
-  private static final int SPLIT_POINTS = 8;
+  private static final int SPLIT_POINTS = STARTING_POINTS * 2;
 
   /** The amount of points a player gains when winning and loses when losing. */
   private static final int DELTA_POINTS = 1;
@@ -31,7 +32,7 @@ final class EvoPlayer {
   private static final double WEIGHT_MUTATION_CHANCE_ON_SPLIT = 0.1;
 
   /** The chance of a mutation on a subweight of a delegate. */
-  private static final double SUBWEIGHT_MUTATION_CHANCE_ON_SPLIT = 0.02;
+  private static final double SUBWEIGHT_MUTATION_CHANCE_ON_SPLIT = 0.05;
 
   /**
    * The max value of a mutation (in absolute value) on a mutated attribute. Actual value determined
@@ -96,13 +97,16 @@ final class EvoPlayer {
     List<String> headers = new ArrayList<>();
     for (Delegate delegate : delegateList) {
       String simpleName = delegate.getClass().getSimpleName();
-      headers.add(simpleName);
-      headers.addAll(
-          delegate
-              .getSubweightsHeaders()
-              .stream()
-              .map(header -> simpleName + "-" + header)
-              .collect(Collectors.toList()));
+      List<String> subHeaders = delegate.getSubweightsHeaders();
+      if (subHeaders.isEmpty()) {
+        headers.add(simpleName);
+      } else {
+        headers.addAll(
+            subHeaders
+                .stream()
+                .map(header -> simpleName + "-" + header)
+                .collect(Collectors.toList()));
+      }
     }
     return headers;
   }
@@ -111,8 +115,14 @@ final class EvoPlayer {
   List<Double> getWeightsList() {
     List<Double> weights = new ArrayList<>();
     for (Delegate delegate : delegateList) {
-      weights.add(delegate.getWeight());
-      weights.addAll(Arrays.stream(delegate.getSubWeights()).boxed().collect(Collectors.toList()));
+      if (delegate.getSubweightsHeaders().isEmpty()) {
+        weights.add(delegate.getWeight());
+      } else {
+        weights.addAll(
+            Arrays.stream(delegate.getSubWeights())
+                .mapToObj(d -> d * delegate.getWeight())
+                .collect(Collectors.toList()));
+      }
     }
     return weights;
   }

@@ -66,7 +66,7 @@ public final class DelegatingAIControllers {
 
     /** Returns a random double in the given range, (effectively) inclusively. */
     private static double nextRandom(double min, double max) {
-      return random.nextDouble() * (max - min) - min;
+      return random.nextDouble() * (max - min) + min;
     }
 
     /**
@@ -99,10 +99,10 @@ public final class DelegatingAIControllers {
 
   /** A delegating AIController with random weights for testing and generating test data. */
   public static DelegatingAIController randomWeightsDelegatingAIController() {
-    double min = -0.5;
-    double max = 5.0;
-    double subMin = -0.5;
-    double subMax = 3.0;
+    double min = 0;
+    double max = 6.0;
+    double subMin = 0.5;
+    double subMax = 1.5;
 
     List<String> buildingNames =
         Buildings.getBuildings().stream().map(b -> b.name).collect(Collectors.toList());
