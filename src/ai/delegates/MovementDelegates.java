@@ -122,7 +122,11 @@ public final class MovementDelegates {
       if (combatant
           .getAttackableTilesFrom(action.targetedTile)
           .stream()
-          .filter(t -> t.isOccupied() && t.getOccupyingUnit().owner != action.player)
+          .filter(
+              t ->
+                  t.isOccupied()
+                      && t.getOccupyingUnit().owner != action.player
+                      && action.player.canSee(t))
           .map(Tile::getOccupyingUnit)
           .anyMatch(
               u ->
@@ -160,6 +164,7 @@ public final class MovementDelegates {
               .entrySet()
               .stream()
               .filter(e -> e.getKey().owner != action.player)
+              .filter(e -> action.player.canSee(e.getKey()))
               .filter(e -> e.getValue().contains(action.targetedTile))
               .count()
           * -1
@@ -228,7 +233,11 @@ public final class MovementDelegates {
           wholeBoardPreMove
               .stream()
               .filter(t -> t.terrain == Terrain.ANCIENT_GROUND)
-              .filter(t -> !t.isOccupied() || !(t.getOccupyingUnit() instanceof Building))
+              .filter(
+                  t ->
+                      !t.isOccupied()
+                          || !(t.getOccupyingUnit() instanceof Building)
+                          || !action.player.canSee(t))
               .filter(t -> t != action.actingUnit.getLocation())
               .mapToInt(t -> board.getDist(pathComputationId, t))
               .max();
@@ -240,7 +249,11 @@ public final class MovementDelegates {
             wholeBoardPostMove
                 .stream()
                 .filter(t -> t.terrain == Terrain.ANCIENT_GROUND)
-                .filter(t -> !t.isOccupied() || !(t.getOccupyingUnit() instanceof Building))
+                .filter(
+                    t ->
+                        !t.isOccupied()
+                            || !(t.getOccupyingUnit() instanceof Building)
+                            || !action.player.canSee(t))
                 .filter(t -> t != action.targetedTile)
                 .mapToInt(t -> board.getDist(newPathComputationId, t))
                 .max();
@@ -279,7 +292,11 @@ public final class MovementDelegates {
       OptionalInt distToNearestVisibleCommanderPreMove =
           wholeBoardPreMove
               .stream()
-              .filter(t -> t.isOccupied() && t.getOccupyingUnit() instanceof Commander && t.getOccupyingUnit().owner != action.player)
+              .filter(
+                  t ->
+                      t.isOccupied()
+                          && t.getOccupyingUnit() instanceof Commander
+                          && t.getOccupyingUnit().owner != action.player)
               .filter(action.player::canSee)
               .mapToInt(t -> board.getDist(pathComputationId, t))
               .max();
@@ -291,7 +308,11 @@ public final class MovementDelegates {
         OptionalInt distToNearestVisibleCommanderPostMove =
             wholeBoardPostMove
                 .stream()
-                .filter(t -> t.isOccupied() && t.getOccupyingUnit() instanceof Commander && t.getOccupyingUnit().owner != action.player)
+                .filter(
+                    t ->
+                        t.isOccupied()
+                            && t.getOccupyingUnit() instanceof Commander
+                            && t.getOccupyingUnit().owner != action.player)
                 .filter(action.player::canSee)
                 .mapToInt(t -> board.getDist(newPathComputationId, t))
                 .max();
