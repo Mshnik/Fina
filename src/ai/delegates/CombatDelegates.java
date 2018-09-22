@@ -2,6 +2,8 @@ package ai.delegates;
 
 import ai.AIAction;
 import ai.AIAction.AIActionType;
+import java.util.Arrays;
+import java.util.List;
 import model.unit.Unit;
 import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
@@ -35,6 +37,11 @@ public final class CombatDelegates {
     }
 
     @Override
+    public List<String> getSubweightsHeaders() {
+      return Arrays.asList("MinAttack", "MaxAttack");
+    }
+
+    @Override
     double getRawScore(AIAction action) {
       Combat combat =
           new Combat((Combatant) action.actingUnit, action.targetedTile.getOccupyingUnit());
@@ -62,6 +69,11 @@ public final class CombatDelegates {
     }
 
     @Override
+    public List<String> getSubweightsHeaders() {
+      return Arrays.asList("MinCounterAttack", "MaxCounterAttack");
+    }
+
+    @Override
     double getRawScore(AIAction action) {
       Combat combat =
           new Combat((Combatant) action.actingUnit, action.targetedTile.getOccupyingUnit());
@@ -86,6 +98,11 @@ public final class CombatDelegates {
     @Override
     int getExpectedSubweightsLength() {
       return 2;
+    }
+
+    @Override
+    public List<String> getSubweightsHeaders() {
+      return Arrays.asList("ChanceOpponentDies", "ChanceAllyDies (neg)");
     }
 
     @Override

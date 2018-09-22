@@ -2,6 +2,14 @@ package ai.delegates;
 
 import ai.AIAction;
 import ai.AIAction.AIActionType;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.OptionalInt;
+import java.util.Set;
+import java.util.stream.Collectors;
 import model.board.Board;
 import model.board.Terrain;
 import model.board.Tile;
@@ -9,13 +17,6 @@ import model.unit.MovingUnit;
 import model.unit.building.Building;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.OptionalInt;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /** A list of delegates for moving units. */
 public final class MovementDelegates {
@@ -36,6 +37,11 @@ public final class MovementDelegates {
     @Override
     int getExpectedSubweightsLength() {
       return 0;
+    }
+
+    @Override
+    public List<String> getSubweightsHeaders() {
+      return Collections.emptyList();
     }
 
     @Override
@@ -68,6 +74,11 @@ public final class MovementDelegates {
     }
 
     @Override
+    public List<String> getSubweightsHeaders() {
+      return Collections.emptyList();
+    }
+
+    @Override
     double getRawScore(AIAction action) {
       if (!(action.actingUnit instanceof Combatant)) {
         return 0;
@@ -94,6 +105,11 @@ public final class MovementDelegates {
     @Override
     int getExpectedSubweightsLength() {
       return 0;
+    }
+
+    @Override
+    public List<String> getSubweightsHeaders() {
+      return Collections.emptyList();
     }
 
     @Override
@@ -130,6 +146,11 @@ public final class MovementDelegates {
     }
 
     @Override
+    public List<String> getSubweightsHeaders() {
+      return Arrays.asList("Commander", "Combatant");
+    }
+
+    @Override
     double getRawScore(AIAction action) {
       return action
               .player
@@ -157,6 +178,11 @@ public final class MovementDelegates {
     }
 
     @Override
+    public List<String> getSubweightsHeaders() {
+      return Collections.emptyList();
+    }
+
+    @Override
     double getRawScore(AIAction action) {
       if (!(action.actingUnit instanceof Commander)) {
         return 0;
@@ -180,6 +206,11 @@ public final class MovementDelegates {
     @Override
     int getExpectedSubweightsLength() {
       return 0;
+    }
+
+    @Override
+    public List<String> getSubweightsHeaders() {
+      return Collections.emptyList();
     }
 
     @Override

@@ -2,6 +2,8 @@ package ai.delegates;
 
 import ai.AIAction;
 import ai.AIAction.AIActionType;
+import java.util.Collections;
+import java.util.List;
 import model.board.Terrain;
 import model.unit.building.Building;
 import model.unit.combatant.Combatant;
@@ -30,6 +32,11 @@ public final class SummonDelegates {
     @Override
     int getExpectedSubweightsLength() {
       return 0;
+    }
+
+    @Override
+    public List<String> getSubweightsHeaders() {
+      return Collections.emptyList();
     }
 
     @Override

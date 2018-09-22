@@ -1,10 +1,9 @@
 package ai.evolutionary;
 
+import static ai.AIController.PROVIDED_AI_TYPE;
+
 import ai.evolutionary.EvoPlayer.PointChangeResult;
 import controller.game.GameController;
-import model.game.Game.FogOfWar;
-import model.game.Player;
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,8 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static ai.AIController.PROVIDED_AI_TYPE;
+import model.game.Game.FogOfWar;
+import model.game.Player;
 
 /** A population of {@link EvoPlayer}s that will play against themselves, split, and knockout. */
 final class EvoPopulation {
@@ -145,6 +144,7 @@ final class EvoPopulation {
     // Start simulation.
     simulationStarted = true;
     int batchSize = MAX_CONCURRENT_GAMES * 2;
+    printer.writeSimulationHeaderRow(playerSet.stream().findAny().get());
 
     // Iterate and write diagnostic row before beginning.
     for (int iteration = 0; iteration < iterations; iteration++) {

@@ -49,6 +49,14 @@ final class EvoResultsPrinter {
     aiConfigStream.println("--- ROUND " + round + " ---");
   }
 
+  /** Writes a header row to the simulation file. */
+  void writeSimulationHeaderRow(EvoPlayer player) {
+    mainPrintStream.println(
+        String.format(
+            "Round,Players,%s",
+            player.getWeightsHeader().stream().collect(Collectors.joining(","))));
+  }
+
   /**
    * Writes a row to the simulation file for the average attributes of the players list at this
    * point in time.

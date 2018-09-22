@@ -1,8 +1,12 @@
 package ai.delegates;
 
 import ai.AIAction.AIActionType;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * An extension of {@link Delegate} that associates a string name to each index in subWeights. This
@@ -49,6 +53,17 @@ public abstract class ByNameDelegate extends Delegate {
   @Override
   final int getExpectedSubweightsLength() {
     return 0;
+  }
+
+  /** Has headers for names by index. */
+  @Override
+  public final List<String> getSubweightsHeaders() {
+    return nameToSubweightIndexMap
+        .entrySet()
+        .stream()
+        .sorted(Comparator.comparingInt(Entry::getValue))
+        .map(Entry::getKey)
+        .collect(Collectors.toList());
   }
 
   /** Don't check for length in ByName, since it isn't known. Use length to always pass check. */

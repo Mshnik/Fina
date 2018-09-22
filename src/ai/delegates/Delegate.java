@@ -85,6 +85,12 @@ public abstract class Delegate {
     return subWeights.length;
   }
 
+  /**
+   * Returns a list of headers for weights, explaining what they mean. Should be the same length of
+   * getSubweightsLengths().
+   */
+  public abstract List<String> getSubweightsHeaders();
+
   /** Returns the current subweights. */
   public double[] getSubWeights() {
     return Arrays.copyOf(subWeights, subWeights.length);

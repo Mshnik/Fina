@@ -1,7 +1,7 @@
 package ai.evolutionary;
 
-import ai.AIController;
 import ai.delegates.Delegate;
+import ai.delegating.DelegatingAIController;
 import ai.delegating.DelegatingAIControllerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +56,7 @@ final class EvoPlayer {
   private final List<Delegate> delegateList;
 
   /** The controller to use for this EvoPlayer. */
-  private final AIController aiController;
+  private final DelegatingAIController aiController;
 
   /** Creates a new EvoPlayer with the given delegates list. */
   EvoPlayer(Iterable<Delegate> delegates) {
@@ -91,6 +91,22 @@ final class EvoPlayer {
     }
   }
 
+  /** Returns a list of headers for the weights used in this, in the order of delegates. */
+  List<String> getWeightsHeader() {
+    List<String> headers = new ArrayList<>();
+    for (Delegate delegate : delegateList) {
+      String simpleName = delegate.getClass().getSimpleName();
+      headers.add(simpleName);
+      headers.addAll(
+          delegate
+              .getSubweightsHeaders()
+              .stream()
+              .map(header -> simpleName + "-" + header)
+              .collect(Collectors.toList()));
+    }
+    return headers;
+  }
+
   /** Returns a list of all weights used in this, in the order of delegates. */
   List<Double> getWeightsList() {
     List<Double> weights = new ArrayList<>();
@@ -102,7 +118,7 @@ final class EvoPlayer {
   }
 
   /** Returns a controller to use for this player, when it plays a game. */
-  AIController getController() {
+  DelegatingAIController getController() {
     return aiController;
   }
 
