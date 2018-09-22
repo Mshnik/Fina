@@ -29,10 +29,10 @@ final class EvoPlayer {
   private static final int DELTA_POINTS = 1;
 
   /** The chance of a mutation on weight of a delegate. */
-  private static final double WEIGHT_MUTATION_CHANCE_ON_SPLIT = 0.1;
+  private static final double WEIGHT_MUTATION_CHANCE_ON_SPLIT = 0.2;
 
   /** The chance of a mutation on a subweight of a delegate. */
-  private static final double SUBWEIGHT_MUTATION_CHANCE_ON_SPLIT = 0.05;
+  private static final double SUBWEIGHT_MUTATION_CHANCE_ON_SPLIT = 0.1;
 
   /**
    * The max value of a mutation (in absolute value) on a mutated attribute. Actual value determined
