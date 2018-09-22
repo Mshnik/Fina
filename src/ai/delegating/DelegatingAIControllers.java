@@ -13,17 +13,19 @@ import ai.delegates.MovementDelegates.MoveToAttackMovementDelegate;
 import ai.delegates.MovementDelegates.MoveToBuildOnAncientGroundDelegate;
 import ai.delegates.MovementDelegates.MoveToNotBeAttackedMovementDelegate;
 import ai.delegates.MovementDelegates.MoveToSummonDelegate;
+import ai.delegates.MovementDelegates.MoveTowardsEnemyCommanderMovementDelegate;
 import ai.delegates.SummonDelegates.SummonBuildingByNameDelegate;
 import ai.delegates.SummonDelegates.SummonBuildingByNameScalingDelegate;
 import ai.delegates.SummonDelegates.SummonBuildingOnAncientGroundDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantByNameDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantByNameScalingDelegate;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
 import model.unit.ability.Abilities;
 import model.unit.building.Buildings;
 import model.unit.combatant.Combatants;
+
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 /** A listing of DelegatingAIControllers. */
 public final class DelegatingAIControllers {
@@ -43,6 +45,7 @@ public final class DelegatingAIControllers {
         .addDelegate(new MoveToAttackMovementDelegate())
         .addDelegate(new MoveToSummonDelegate())
         .addDelegate(new MoveToBuildOnAncientGroundDelegate())
+        .addDelegate(new MoveTowardsEnemyCommanderMovementDelegate())
         .addDelegate(new GainUnitAdvantageCombatDelegate())
         .addDelegate(new MaxExpectedDamageDealtCombatDelegate())
         .addDelegate(new MinCounterAttackDamageCombatDelegate())
@@ -124,6 +127,9 @@ public final class DelegatingAIControllers {
         .addDelegate(new MoveToSummonDelegate().withWeight(RandomHelper.nextRandom(min, max)))
         .addDelegate(
             new MoveToBuildOnAncientGroundDelegate().withWeight(RandomHelper.nextRandom(min, max)))
+        .addDelegate(
+            new MoveTowardsEnemyCommanderMovementDelegate()
+                .withWeight(RandomHelper.nextRandom(min, max)))
         // Combat delegates.
         .addDelegate(
             new GainUnitAdvantageCombatDelegate()
@@ -175,7 +181,8 @@ public final class DelegatingAIControllers {
                 subMin,
                 subMax))
         .addDelegate(
-            new MaximizeUnitsEffectedCastByNameDelegate().withWeight(RandomHelper.nextRandom(min, max)))
+            new MaximizeUnitsEffectedCastByNameDelegate()
+                .withWeight(RandomHelper.nextRandom(min, max)))
         .addDelegate(
             populateNamesWithRandomWeights(
                 new MinimizeRedundantEffectByNameCastDelegate()

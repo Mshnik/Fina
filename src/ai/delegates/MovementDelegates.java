@@ -2,6 +2,14 @@ package ai.delegates;
 
 import ai.AIAction;
 import ai.AIAction.AIActionType;
+import model.board.Board;
+import model.board.Terrain;
+import model.board.Tile;
+import model.unit.MovingUnit;
+import model.unit.building.Building;
+import model.unit.combatant.Combatant;
+import model.unit.commander.Commander;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,13 +18,6 @@ import java.util.Map;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
-import model.board.Board;
-import model.board.Terrain;
-import model.board.Tile;
-import model.unit.MovingUnit;
-import model.unit.building.Building;
-import model.unit.combatant.Combatant;
-import model.unit.commander.Commander;
 
 /** A list of delegates for moving units. */
 public final class MovementDelegates {
@@ -246,6 +247,57 @@ public final class MovementDelegates {
         if (distToNearestUnbuiltAncientGroundPostMove.isPresent()) {
           return distToNearestUnbuiltAncientGroundPostMove.getAsInt()
               - distToNearestUnbuiltAncientGroundPreMove.getAsInt();
+        }
+      }
+      return 0;
+    }
+  }
+
+  /**
+   * A movement delegate that wants to move units towards the enemy commander. Returns 0 if the
+   * player can't see the enemy commander. Subweights are Commander, Other.
+   */
+  public static final class MoveTowardsEnemyCommanderMovementDelegate extends MovementDelegate {
+
+    @Override
+    int getExpectedSubweightsLength() {
+      return 2;
+    }
+
+    @Override
+    public List<String> getSubweightsHeaders() {
+      return Arrays.asList("Commander", "Combatant");
+    }
+
+    @Override
+    double getRawScore(AIAction action) {
+      Board board = action.player.game.board;
+      List<Tile> wholeBoardPreMove =
+          board.getMovementCloudWholeBoard(
+              (MovingUnit) action.actingUnit, action.actingUnit.getLocation());
+      int pathComputationId = board.getPathComputationId();
+      OptionalInt distToNearestVisibleCommanderPreMove =
+          wholeBoardPreMove
+              .stream()
+              .filter(t -> t.isOccupied() && t.getOccupyingUnit() instanceof Commander && t.getOccupyingUnit().owner != action.player)
+              .filter(action.player::canSee)
+              .mapToInt(t -> board.getDist(pathComputationId, t))
+              .max();
+
+      if (distToNearestVisibleCommanderPreMove.isPresent()) {
+        List<Tile> wholeBoardPostMove =
+            board.getMovementCloudWholeBoard((MovingUnit) action.actingUnit, action.targetedTile);
+        int newPathComputationId = board.getPathComputationId();
+        OptionalInt distToNearestVisibleCommanderPostMove =
+            wholeBoardPostMove
+                .stream()
+                .filter(t -> t.isOccupied() && t.getOccupyingUnit() instanceof Commander && t.getOccupyingUnit().owner != action.player)
+                .filter(action.player::canSee)
+                .mapToInt(t -> board.getDist(newPathComputationId, t))
+                .max();
+        if (distToNearestVisibleCommanderPostMove.isPresent()) {
+          return distToNearestVisibleCommanderPostMove.getAsInt()
+              - distToNearestVisibleCommanderPostMove.getAsInt();
         }
       }
       return 0;
