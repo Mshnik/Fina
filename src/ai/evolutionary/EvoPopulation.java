@@ -35,6 +35,12 @@ final class EvoPopulation {
   /** The set of players in this population. */
   private final Set<EvoPlayer> playerSet;
 
+  /** Random instance to use to get a player to randomly duplicate as necessary. */
+  private final Random extraPlayerMutationRandom;
+
+  /** The extra points stored up to cause a spontaneous mutation on a remaining player. */
+  private int extraMutationPoints;
+
   /** The writer to use for writing simulation results. */
   private final EvoResultsPrinter printer;
 
@@ -47,8 +53,10 @@ final class EvoPopulation {
   EvoPopulation(String... boardFilenames) {
     this.boardFilenames = Arrays.asList(boardFilenames);
     boardChooserRandom = new Random();
+    extraPlayerMutationRandom = new Random();
     playerSet = new HashSet<>();
     simulationStarted = false;
+    extraMutationPoints = 0;
     printer = new EvoResultsPrinter(Long.toString(System.currentTimeMillis()));
   }
 
@@ -236,6 +244,20 @@ final class EvoPopulation {
         if (result.hasWinner()) {
           changePointsAndHandleResult(result.getWinner(), true);
           changePointsAndHandleResult(result.getLoser(), false);
+        } else {
+          changePointsAndHandleResult(result.getPlayer1(), false);
+          changePointsAndHandleResult(result.getPlayer2(), false);
+          extraMutationPoints += EvoPlayer.DELTA_POINTS * 2;
+          while (extraMutationPoints >= EvoPlayer.STARTING_POINTS) {
+            EvoPlayer playerToMutate =
+                playerSet
+                    .stream()
+                    .skip(extraPlayerMutationRandom.nextInt(playerSet.size()))
+                    .findFirst()
+                    .get();
+            playerSet.add(playerToMutate.split());
+            extraMutationPoints -= EvoPlayer.STARTING_POINTS;
+          }
         }
       }
     }

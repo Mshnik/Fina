@@ -50,4 +50,14 @@ final class EvoGameResult {
       throw new RuntimeException("No loser, was a tie");
     }
   }
+
+  /** Returns the first player. May be winner / loser / tie. */
+  EvoPlayer getPlayer1() {
+    return player1;
+  }
+
+  /** Returns the second player. May be winner / loser / tie. */
+  EvoPlayer getPlayer2() {
+    return player2;
+  }
 }

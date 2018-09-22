@@ -20,13 +20,13 @@ final class EvoPlayer {
   private static final int KNOCKOUT_POINTS = 0;
 
   /** The amount of points an EvoPlayer starts with. */
-  private static final int STARTING_POINTS = 1;
+  static final int STARTING_POINTS = 1;
 
   /** The amount of points needed to split. */
   private static final int SPLIT_POINTS = STARTING_POINTS * 2;
 
   /** The amount of points a player gains when winning and loses when losing. */
-  private static final int DELTA_POINTS = 1;
+  static final int DELTA_POINTS = 1;
 
   /** The chance of a mutation on weight of a delegate. */
   private static final double WEIGHT_MUTATION_CHANCE_ON_SPLIT = 0.3;
