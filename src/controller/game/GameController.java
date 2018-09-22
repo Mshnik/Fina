@@ -985,7 +985,10 @@ public final class GameController {
     }
     toCast.cast(caster, loc, caster.owner.getCastCloudBoost(), random);
     locationSelector = null;
-    getGamePanel().boardCursor.setElm(caster.getLocation()); // Cause info update
+    if (hasFrame()) {
+      // Cause info update.
+      getGamePanel().boardCursor.setElm(caster.getLocation());
+    }
     repaint();
   }
 

@@ -1,8 +1,9 @@
 package util;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
 import model.game.Player;
@@ -36,10 +37,14 @@ public final class ResultsPrinter {
   /* Set up output streams. */
   static {
     try {
+      File resultsFile = new File(RESULTS_FILEPATH);
+      File configsFile = new File(CONFIGS_FILEPATH);
+      Files.createDirectories(resultsFile.getParentFile().toPath());
+      Files.createDirectories(configsFile.getParentFile().toPath());
       resultsOutputStream = new PrintStream(new FileOutputStream(RESULTS_FILEPATH, true));
       configOutputStream = new PrintStream(new FileOutputStream(CONFIGS_FILEPATH, true));
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
