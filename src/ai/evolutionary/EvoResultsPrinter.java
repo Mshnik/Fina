@@ -1,13 +1,12 @@
 package ai.evolutionary;
 
+import util.ResultsPrinter;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import util.ResultsPrinter;
 
 /** Printer for specifically printing results from evolution simulation rounds. */
 final class EvoResultsPrinter {
@@ -61,23 +60,12 @@ final class EvoResultsPrinter {
    * Writes a row to the simulation file for the average attributes of the players list at this
    * point in time.
    */
-  void writeSimulationRoundRow(int round, Set<EvoPlayer> playerList) {
-    List<Double> averageWeights =
-        playerList
-            .stream()
-            .map(EvoPlayer::getWeightsList)
-            .reduce(
-                (weights1, weights2) ->
-                    IntStream.range(0, weights1.size())
-                        .mapToObj(i -> weights1.get(i) + weights2.get(i))
-                        .collect(Collectors.toList()))
-            .map(list -> list.stream().map(d -> d / playerList.size()).collect(Collectors.toList()))
-            .orElseThrow(() -> new RuntimeException("Expected at least one player"));
+  void writeSimulationRoundRow(int round, int playerCount, List<Double> averageWeights) {
     mainPrintStream.println(
         String.format(
             "Round %d,%d,%s",
             round,
-            playerList.size(),
+            playerCount,
             averageWeights
                 .stream()
                 .map(d -> String.format("%.3f", d))

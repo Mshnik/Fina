@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static ai.AIController.PROVIDED_AI_TYPE;
@@ -154,6 +155,20 @@ final class EvoPopulation {
     }
   }
 
+  /** Calculates the average weights of each delegate (including subweights). */
+  private List<Double> calculateAverageWeights() {
+    return playerSet
+        .stream()
+        .map(EvoPlayer::getWeightsList)
+        .reduce(
+            (weights1, weights2) ->
+                IntStream.range(0, weights1.size())
+                    .mapToObj(i -> weights1.get(i) + weights2.get(i))
+                    .collect(Collectors.toList()))
+        .map(list -> list.stream().map(d -> d / playerSet.size()).collect(Collectors.toList()))
+        .orElseThrow(() -> new RuntimeException("Expected at least one player"));
+  }
+
   /** Starts the simulation, running for the given number of iterations. */
   void runSimulation(int iterations) throws FileNotFoundException {
     // Start simulation.
@@ -165,7 +180,7 @@ final class EvoPopulation {
     for (int iteration = 0; iteration < iterations; iteration++) {
       System.out.println("Starting iteration " + iteration + " - " + playerSet.size() + " players");
       printer.writeRoundDividerRowToResultsAndConfig(iteration);
-      printer.writeSimulationRoundRow(iteration, playerSet);
+      printer.writeSimulationRoundRow(iteration, playerSet.size(), calculateAverageWeights());
 
       // Copy players to list and shuffle.
       List<EvoPlayer> playerList = new ArrayList<>(playerSet);
@@ -200,6 +215,6 @@ final class EvoPopulation {
         }
       }
     }
-    printer.writeSimulationRoundRow(iterations, playerSet);
+    printer.writeSimulationRoundRow(iterations, playerSet.size(), calculateAverageWeights());
   }
 }
