@@ -1,18 +1,17 @@
 package model.game;
 
 import controller.game.GameController;
-import model.board.Board;
-import model.board.Tile;
-import model.unit.Unit;
-import model.unit.combatant.Combatant;
-import util.ResultsPrinter;
-
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import model.board.Board;
+import model.board.Tile;
+import model.unit.Unit;
+import model.unit.combatant.Combatant;
+import util.ResultsPrinter;
 
 /** Unifying model that holds all sub-model classes */
 public final class Game implements Runnable, Stringable {
@@ -21,10 +20,10 @@ public final class Game implements Runnable, Stringable {
   private static final boolean DEBUG = false;
 
   /**
-   * Cutoff turn for testing + ml generation. If turn hits this number, calls it a draw with both
-   * players losing.
+   * Cutoff turn for testing + ml generation. If turn hits this number, winner is player with higher
+   * commander HP, draw if tied. Only used if all players are AI.
    */
-  private static final int CUT_OFF_TURN = 1000;
+  private static final int CUT_OFF_TURN = 500;
 
   /**
    * The count of turns so far in this game. Initialized to 0, thus the first turn is turn 1.
@@ -39,7 +38,13 @@ public final class Game implements Runnable, Stringable {
   /** The players currently playing this model.game */
   private LinkedList<Player> players;
 
-  /** The observer player who is not playing. Only non-null if all players are AI. */
+  /** True if all players are AI, false otherwise. */
+  private boolean allPlayersAI;
+
+  /**
+   * The observer player who is not playing. Only non-null if all players are AI and there is a
+   * graphic component.
+   */
   private Player observer;
 
   /** The players currently playing this model.game, indexed by their playerIndex. */
@@ -136,6 +141,7 @@ public final class Game implements Runnable, Stringable {
             .map(p -> p.index)
             .findFirst()
             .orElse(observer != null ? observer.index : -1);
+    allPlayersAI = players.stream().noneMatch(Player::isLocalHumanPlayer);
     try {
       while (running && !isGameOver()) {
         repaint();
@@ -281,9 +287,26 @@ public final class Game implements Runnable, Stringable {
    * otherwise. Returns true if there are more than 1 remaining player.
    */
   public boolean isGameOver() {
-    if (turn >= CUT_OFF_TURN) {
+    if (allPlayersAI && turn >= CUT_OFF_TURN) {
+      // Game ends due to cut off - winner is player with highest commander health,
+      // otherwise tie.
+      int maxCommanderHealth =
+          getRemainingPlayers()
+              .stream()
+              .mapToInt(p -> p.getCommander().getHealth())
+              .max()
+              .orElse(Integer.MAX_VALUE);
+      boolean tie =
+          getRemainingPlayers()
+                  .stream()
+                  .mapToInt(p -> p.getCommander().getHealth())
+                  .filter(i -> i == maxCommanderHealth)
+                  .count()
+              > 1;
       for (Player p : remainingPlayers.keySet()) {
-        remainingPlayers.put(p, false);
+        if (tie || p.getCommander().getHealth() < maxCommanderHealth) {
+          remainingPlayers.put(p, false);
+        }
       }
       return true;
     } else {
