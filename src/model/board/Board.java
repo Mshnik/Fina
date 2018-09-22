@@ -128,10 +128,15 @@ public final class Board implements Iterable<Tile>, Stringable {
    * Return the tile in the given direction from this tile. If oob, returns null or if direction
    * invalid.
    */
-  public Tile getTileInDirection(Tile t, Direction... d) {
-    MPoint delta = new MPoint(d);
-    if (isOnBoard(t.row + delta.row, t.col + delta.col)) {
-      return getTileAt(t.row + delta.row, t.col + delta.col);
+  private Tile getTileInDirection(Tile t, Direction... directions) {
+    int r = t.row;
+    int c = t.col;
+    for (Direction d : directions) {
+      r += d.dRow();
+      c += d.dCol();
+    }
+    if (isOnBoard(r, c)) {
+      return getTileAt(r, c);
     } else {
       return null;
     }
@@ -142,7 +147,7 @@ public final class Board implements Iterable<Tile>, Stringable {
    * false, Returns in order [left, up, right, down]. If true, returns [left, left-up, up, right-up,
    * right, down-right, down, down-left].
    */
-  public Tile[] getTileNeighbors(Tile t, boolean includeDiagonal) {
+  private Tile[] getTileNeighbors(Tile t, boolean includeDiagonal) {
     if (includeDiagonal) {
       return new Tile[] {
         getTileInDirection(t, Direction.LEFT),

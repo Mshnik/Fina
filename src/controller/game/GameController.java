@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import model.board.Board;
@@ -115,6 +116,9 @@ public final class GameController {
     CAST_SELECTION,
     ATTACK_SELECTION
   }
+
+  /** Counter for naming game threads. */
+  private static final AtomicInteger gameNamingCounter = new AtomicInteger();
 
   /** The layers of active toggles. Topmost is the current toggle */
   private Stack<Toggle> toggle;
@@ -322,7 +326,7 @@ public final class GameController {
   public synchronized void start() {
     if (isRunning() || game.isGameOver()) return;
     gameThread = new Thread(game);
-    gameThread.setName("Game Thread");
+    gameThread.setName("Game Thread " + gameNamingCounter.getAndIncrement());
     gameThread.start();
   }
 
