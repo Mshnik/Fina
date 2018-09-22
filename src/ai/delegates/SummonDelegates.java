@@ -2,11 +2,12 @@ package ai.delegates;
 
 import ai.AIAction;
 import ai.AIAction.AIActionType;
-import java.util.Collections;
-import java.util.List;
 import model.board.Terrain;
 import model.unit.building.Building;
 import model.unit.combatant.Combatant;
+
+import java.util.Collections;
+import java.util.List;
 
 /** Delegate for summoning a new unit or building. */
 public final class SummonDelegates {
@@ -23,6 +24,45 @@ public final class SummonDelegates {
   private abstract static class SummonByNameDelegate extends ByNameDelegate {
     private SummonByNameDelegate() {
       super(AIActionType.SUMMON_COMBATANT_OR_BUILD_BUILDING);
+    }
+  }
+
+  /**
+   * Summon delegate that wants to summon the type of combatant that counters the type(s) of units the
+   * visible opponents have and not summon units that are countered by what the visible opponents
+   * have. Returns 0 if the opponent has no visible combatants.
+   */
+  public static final class SummonCombatantWithTypeAdvantageDelegate extends SummonDelegate {
+
+    @Override
+    int getExpectedSubweightsLength() {
+      return 0;
+    }
+
+    @Override
+    public List<String> getSubweightsHeaders() {
+      return Collections.emptyList();
+    }
+
+    @Override
+    double getRawScore(AIAction action) {
+      if (! (action.unitToSummon instanceof Combatant)) {
+        return 0;
+      }
+      Combatant combatantToSummon = (Combatant) action.unitToSummon;
+      return action
+          .player
+          .game
+          .getOtherPlayersUnits(action.player)
+          .stream()
+          .filter(
+              u -> u instanceof Combatant && action.player.canSee(u))
+          .map(u -> (Combatant) u)
+          .mapToInt(
+              c ->
+                  Combatant.CombatantClass.getBonusLevel(
+                      combatantToSummon.combatantClasses, c.combatantClasses))
+          .sum();
     }
   }
 

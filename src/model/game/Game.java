@@ -228,6 +228,17 @@ public final class Game implements Runnable, Stringable {
     return units;
   }
 
+  /** Returns all units in the model.game owned by players other than the given player */
+  public List<Unit> getOtherPlayersUnits(Player player) {
+    LinkedList<Unit> units = new LinkedList<Unit>();
+    for (Player p : getRemainingPlayers()) {
+      if (p != player) {
+        units.addAll(p.getUnits());
+      }
+    }
+    return units;
+  }
+
   /**
    * Returns a joined map of all danger radii in the game for the given player - filters out
    * combatants the player can't see (And thus shouldn't know about).

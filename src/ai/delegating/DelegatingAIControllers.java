@@ -19,6 +19,7 @@ import ai.delegates.SummonDelegates.SummonBuildingByNameScalingDelegate;
 import ai.delegates.SummonDelegates.SummonBuildingOnAncientGroundDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantByNameDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantByNameScalingDelegate;
+import ai.delegates.SummonDelegates.SummonCombatantWithTypeAdvantageDelegate;
 import model.unit.ability.Abilities;
 import model.unit.building.Buildings;
 import model.unit.combatant.Combatants;
@@ -49,6 +50,7 @@ public final class DelegatingAIControllers {
         .addDelegate(new GainUnitAdvantageCombatDelegate())
         .addDelegate(new MaxExpectedDamageDealtCombatDelegate())
         .addDelegate(new MinCounterAttackDamageCombatDelegate())
+        .addDelegate(new SummonCombatantWithTypeAdvantageDelegate())
         .addDelegate(new SummonBuildingOnAncientGroundDelegate())
         .addDelegate(new SummonBuildingByNameDelegate())
         .addDelegate(new SummonBuildingByNameScalingDelegate())
@@ -144,6 +146,9 @@ public final class DelegatingAIControllers {
                 .withWeight(RandomHelper.nextRandom(min, max))
                 .withSubweights(RandomHelper.nextRandoms(subMin, subMax, 2)))
         // Summon delegates.
+        .addDelegate(
+            new SummonCombatantWithTypeAdvantageDelegate()
+                .withWeight(RandomHelper.nextRandom(min, max)))
         .addDelegate(
             new SummonBuildingOnAncientGroundDelegate()
                 .withWeight(RandomHelper.nextRandom(min, max)))
