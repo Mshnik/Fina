@@ -12,7 +12,7 @@ import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.Modifiers;
 
 /** An effect applied to a unit as part of an ability. */
-public final class AbilityEffect {
+final class AbilityEffect {
 
   /** Minimum damage to deal if this is an effect that deals damage, null otherwise. */
   private final int minDamage;
@@ -210,7 +210,6 @@ public final class AbilityEffect {
     damage = Math.max(0, damage);
 
     // Apply damage.
-    System.out.println("Spell damage: " + damage);
     u.changeHealth(-damage, caster);
   }
 }

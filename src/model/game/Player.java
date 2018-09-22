@@ -159,7 +159,11 @@ public abstract class Player implements Stringable {
 
   /** Returns the current level (not exp) of this player */
   public int getLevel() {
-    return commander.getLevel();
+    if (commander != null) {
+      return commander.getLevel();
+    } else {
+      return 0;
+    }
   }
 
   /** Returns the current amount of research this commander has accrewed */
