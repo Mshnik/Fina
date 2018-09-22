@@ -105,7 +105,7 @@ final class EvoPopulation {
     }
 
     // Sleep until all games are done.
-    System.out.print("| ");
+    System.out.print("|> Running");
     do {
       try {
         Thread.sleep(750);
@@ -113,7 +113,7 @@ final class EvoPopulation {
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
-    } while(hasRunningGame(gameControllers));
+    } while (hasRunningGame(gameControllers));
     System.out.println();
 
     // Collect results into list and return.
@@ -132,7 +132,8 @@ final class EvoPopulation {
                 : EvoGameResult.forWinnerAndLoser(player2, player1));
       }
     }
-    System.out.println("\\> Batch completed\n");
+    System.out.println("\\> Batch completed");
+    System.out.println("");
     return results;
   }
 
@@ -174,8 +175,10 @@ final class EvoPopulation {
       List<EvoGameResult> results = new ArrayList<>();
       int i = 0;
       int batches = playerList.size() / batchSize;
+      int realBatchCount = batches + (playerList.size() % batchSize > 0 ? 1 : 0);
       for (; i < batches; i++) {
-        System.out.println("+ Batch " + i + "/" + batches + " (" + batchSize + " players)");
+        System.out.println(
+            "+ Batch " + (i + 1) + "/" + realBatchCount + " (" + batchSize + " players)");
         results.addAll(runGamesBatch(playerList.subList(i * batchSize, (i + 1) * batchSize)));
       }
       // Run remainder (less than one batch), rounding to down to multiple of 2 as necessary.
@@ -183,13 +186,13 @@ final class EvoPopulation {
       int remainderBatchSize = (playerList.size() - i * batchSize) / 2 * 2;
       if (remainderBatchSize > 0) {
         System.out.println(
-            "+ Batch " + i + "/" + batches + " (" + remainderBatchSize + " players)");
+            "+ Batch " + (i + 1) + "/" + realBatchCount + " (" + remainderBatchSize + " players)");
         results.addAll(
             runGamesBatch(playerList.subList(i * batchSize, i * batchSize + remainderBatchSize)));
       }
 
       // Process results.
-      System.out.println("Done, evaluating results\n");
+      System.out.println("> Done, evaluating results\n");
       for (EvoGameResult result : results) {
         if (result.hasWinner()) {
           changePointsAndHandleResult(result.getWinner(), true);
