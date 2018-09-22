@@ -1,6 +1,7 @@
 package ai.evolutionary;
 
 import ai.delegating.DelegatingAIControllers;
+
 import java.io.FileNotFoundException;
 
 /**
@@ -13,7 +14,8 @@ import java.io.FileNotFoundException;
 final class EvolutionMain {
 
   public static void main(String[] args) throws FileNotFoundException {
-    EvoPopulation population = new EvoPopulation("Backyard.csv");
+    EvoPopulation population =
+        new EvoPopulation("Backyard.csv", "Darkwood.csv", "Hourglass.csv", "Ridges.csv");
     for (int i = 0; i < 10; i++) {
       population.addPlayer(
           new EvoPlayer(

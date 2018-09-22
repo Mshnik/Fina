@@ -1,20 +1,23 @@
 package ai.evolutionary;
 
-import static ai.AIController.PROVIDED_AI_TYPE;
-
 import ai.evolutionary.EvoPlayer.PointChangeResult;
 import controller.game.GameController;
+import model.game.Game.FogOfWar;
+import model.game.Player;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import model.game.Game.FogOfWar;
-import model.game.Player;
+
+import static ai.AIController.PROVIDED_AI_TYPE;
 
 /** A population of {@link EvoPlayer}s that will play against themselves, split, and knockout. */
 final class EvoPopulation {
@@ -24,9 +27,13 @@ final class EvoPopulation {
       Stream.of(PROVIDED_AI_TYPE, PROVIDED_AI_TYPE).collect(Collectors.toList());
 
   /** The max number of games to run at a time. */
-  private static final int MAX_CONCURRENT_GAMES = 1;
+  private static final int MAX_CONCURRENT_GAMES = 2;
 
-  private final String boardFilename;
+  /** Valid boards to test on. A random one will be picked for every game. */
+  private final List<String> boardFilenames;
+
+  /** Random instance to use to get a board for each game. */
+  private final Random boardChooserRandom;
 
   /** The set of players in this population. */
   private final Set<EvoPlayer> playerSet;
@@ -40,8 +47,9 @@ final class EvoPopulation {
    */
   private boolean simulationStarted;
 
-  EvoPopulation(String boardFilename) {
-    this.boardFilename = boardFilename;
+  EvoPopulation(String... boardFilenames) {
+    this.boardFilenames = Arrays.asList(boardFilenames);
+    boardChooserRandom = new Random();
     playerSet = new HashSet<>();
     simulationStarted = false;
     printer = new EvoResultsPrinter(Long.toString(System.currentTimeMillis()));
@@ -61,6 +69,13 @@ final class EvoPopulation {
 
   /** Has the given two players play each other and returns a result. */
   private GameController startGameAndReturnController(EvoPlayer player1, EvoPlayer player2) {
+    String boardFilename = boardFilenames.get(boardChooserRandom.nextInt(boardFilenames.size()));
+    System.out.println(
+        String.format(
+            "|> Starting game on %s between %s and %s",
+            boardFilename.replace(".csv", ""),
+            player1.getController().id(),
+            player2.getController().id()));
     return GameController.loadAndStartHeadless(
         "game/boards/" + boardFilename,
         PROVIDED_AI_TYPES_LIST,
@@ -90,18 +105,16 @@ final class EvoPopulation {
     }
 
     // Sleep until all games are done.
-    try {
-      Thread.sleep(500);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
-    while (hasRunningGame(gameControllers)) {
+    System.out.print("| ");
+    do {
       try {
-        Thread.sleep(100);
+        Thread.sleep(750);
+        System.out.print(".");
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
-    }
+    } while(hasRunningGame(gameControllers));
+    System.out.println();
 
     // Collect results into list and return.
     List<EvoGameResult> results = new ArrayList<>();
@@ -119,6 +132,7 @@ final class EvoPopulation {
                 : EvoGameResult.forWinnerAndLoser(player2, player1));
       }
     }
+    System.out.println("\\> Batch completed\n");
     return results;
   }
 
@@ -161,20 +175,21 @@ final class EvoPopulation {
       int i = 0;
       int batches = playerList.size() / batchSize;
       for (; i < batches; i++) {
-        System.out.println("> Batch " + i + "/" + batches + " (" + batchSize + ")");
+        System.out.println("+ Batch " + i + "/" + batches + " (" + batchSize + " players)");
         results.addAll(runGamesBatch(playerList.subList(i * batchSize, (i + 1) * batchSize)));
       }
       // Run remainder (less than one batch), rounding to down to multiple of 2 as necessary.
       // If there's an odd number, the final player won't play this round.
       int remainderBatchSize = (playerList.size() - i * batchSize) / 2 * 2;
       if (remainderBatchSize > 0) {
-        System.out.println("> Batch " + i + "/" + batches + " (" + remainderBatchSize + ")");
+        System.out.println(
+            "+ Batch " + i + "/" + batches + " (" + remainderBatchSize + " players)");
         results.addAll(
             runGamesBatch(playerList.subList(i * batchSize, i * batchSize + remainderBatchSize)));
       }
 
       // Process results.
-      System.out.println("Done, evaluating results");
+      System.out.println("Done, evaluating results\n");
       for (EvoGameResult result : results) {
         if (result.hasWinner()) {
           changePointsAndHandleResult(result.getWinner(), true);
