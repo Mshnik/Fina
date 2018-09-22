@@ -1,14 +1,7 @@
 package controller.game;
 
-import static ai.AIController.PROVIDED_AI_TYPE;
-import static ai.delegating.DelegatingAIControllers.DELEGATING_DEFAULT_AI_TYPE;
-import static ai.delegating.DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE;
-import static ai.dummy.DoNothingAIController.DO_NOTHING_AI_TYPE;
-import static ai.dummy.FullRandomAIController.FULL_RANDOM_AI_TYPE;
-import static ai.dummy.MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE;
-import static model.game.HumanPlayer.HUMAN_PLAYER_TYPE;
-
 import ai.AIController;
+import ai.delegating.DelegatingAIControllerFactory;
 import ai.delegating.DelegatingAIControllers;
 import ai.dummy.DoNothingAIController;
 import ai.dummy.FullRandomAIController;
@@ -22,19 +15,6 @@ import controller.selector.CastSelector;
 import controller.selector.LocationSelector;
 import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.Stack;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 import model.board.Board;
 import model.board.Tile;
 import model.game.AIPlayer;
@@ -52,11 +32,37 @@ import model.unit.commander.Commander;
 import model.unit.commander.DummyCommander;
 import model.unit.modifier.Modifiers;
 import model.unit.modifier.Modifiers.ModifierDescription;
+import util.TextIO;
 import view.gui.Frame;
 import view.gui.ViewOptions;
 import view.gui.decision.DecisionCursor;
 import view.gui.panel.BoardCursor;
 import view.gui.panel.GamePanel;
+
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.EmptyStackException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.Stack;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+
+import static ai.AIController.PROVIDED_AI_TYPE;
+import static ai.delegating.DelegatingAIControllers.DELEGATING_DEFAULT_AI_TYPE;
+import static ai.delegating.DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE;
+import static ai.dummy.DoNothingAIController.DO_NOTHING_AI_TYPE;
+import static ai.dummy.FullRandomAIController.FULL_RANDOM_AI_TYPE;
+import static ai.dummy.MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE;
+import static model.game.HumanPlayer.HUMAN_PLAYER_TYPE;
 
 /**
  * Overall controlling class that unites all classes. Should be run in its own thread, because some
@@ -145,7 +151,7 @@ public final class GameController {
   private Thread gameThread;
 
   /** The types of players in this game, in turn order. */
-  private final List<String> playerTypes;
+  private final List<CreatePlayerOptions> playerTypes;
 
   /** The game this is controlling */
   public final Game game;
@@ -165,7 +171,7 @@ public final class GameController {
    */
   static GameController loadAndStart(
       String boardFilepath,
-      List<String> playerTypes,
+      List<CreatePlayerOptions> playerTypes,
       FogOfWar fogOfWar,
       int startingCommanderLevel,
       int frameRows,
@@ -174,7 +180,6 @@ public final class GameController {
     return loadAndStartHelper(
         boardFilepath,
         playerTypes,
-        null,
         fogOfWar,
         startingCommanderLevel,
         frameRows,
@@ -189,26 +194,17 @@ public final class GameController {
    */
   public static GameController loadAndStartHeadless(
       String boardFilepath,
-      List<String> playerTypes,
-      List<AIController> playerControllers,
+      List<CreatePlayerOptions> playerTypes,
       FogOfWar fogOfWar,
       int startingCommanderLevel) {
     return loadAndStartHelper(
-        boardFilepath,
-        playerTypes,
-        playerControllers,
-        fogOfWar,
-        startingCommanderLevel,
-        -1,
-        -1,
-        -1);
+        boardFilepath, playerTypes, fogOfWar, startingCommanderLevel, -1, -1, -1);
   }
 
   /** Loads a board and starts the game in a new GameController. */
   private static GameController loadAndStartHelper(
       String boardFilepath,
-      List<String> playerTypes,
-      List<AIController> playerControllers,
+      List<CreatePlayerOptions> playerTypes,
       FogOfWar fogOfWar,
       int startingCommanderLevel,
       int frameRows,
@@ -236,7 +232,8 @@ public final class GameController {
     // Create players.
     for (int i = 0; i < playerTypes.size(); i++) {
       BiFunction<Game, Color, Player> playerConstructor;
-      switch (playerTypes.get(i)) {
+      CreatePlayerOptions createPlayerOptions = playerTypes.get(i);
+      switch (createPlayerOptions.typeName) {
         case HUMAN_PLAYER_TYPE:
           playerConstructor = HumanPlayer::new;
           break;
@@ -262,8 +259,38 @@ public final class GameController {
                       game, c, DelegatingAIControllers.randomWeightsDelegatingAIController());
           break;
         case PROVIDED_AI_TYPE:
-          AIController controller = playerControllers.get(i);
-          playerConstructor = (game, c) -> new AIPlayer(game, c, controller);
+          AIController explicitController = createPlayerOptions.explicitController;
+          if (explicitController != null) {
+            playerConstructor = (game, c) -> new AIPlayer(game, c, explicitController);
+          } else {
+            String fileLineToLoad;
+            try {
+              fileLineToLoad =
+                  TextIO.readToArray(new File(createPlayerOptions.aiFilename))
+                      .stream()
+                      .skip(createPlayerOptions.aiFileRow + 1)
+                      .findFirst()
+                      .orElseThrow(
+                          () ->
+                              new RuntimeException("Invalid row " + createPlayerOptions.aiFileRow));
+            } catch (IOException e) {
+              throw new RuntimeException(e);
+            }
+            List<Double> weights =
+                Arrays.stream(fileLineToLoad.split(","))
+                    .skip(2)
+                    .map(Double::parseDouble)
+                    .collect(Collectors.toList());
+            playerConstructor =
+                (game, c) ->
+                    new AIPlayer(
+                        game,
+                        c,
+                        DelegatingAIControllerFactory.copyOf(
+                                DelegatingAIControllers.defaultDelegatingAIController())
+                            .setWeights(weights)
+                            .build());
+          }
           break;
         default:
           throw new RuntimeException("Don't know how to handle player type " + playerTypes.get(i));
@@ -292,7 +319,7 @@ public final class GameController {
   private GameController(
       Game g,
       Frame f,
-      List<String> playerTypes,
+      List<CreatePlayerOptions> playerTypes,
       int startingCommanderLevel,
       int frameRows,
       int frameCols) {
@@ -342,7 +369,7 @@ public final class GameController {
   /** Loads the given board and kills this. */
   public synchronized void loadAndKillThis(
       String boardFilepath,
-      List<String> playerTypes,
+      List<CreatePlayerOptions> playerTypes,
       FogOfWar fogOfWar,
       int startingCommanderLevel) {
     kill();

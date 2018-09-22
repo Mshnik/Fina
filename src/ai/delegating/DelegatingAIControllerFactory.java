@@ -92,10 +92,13 @@ public final class DelegatingAIControllerFactory {
   public DelegatingAIControllerFactory setWeights(List<Double> weights) {
     LinkedList<Double> weightsCopy = new LinkedList<>(weights);
     for (Delegate d : delegates) {
-      d.withWeight(weightsCopy.poll());
-      d.withSubweights(weightsCopy.subList(0, d.getSubweightsLength()));
-      for (int i = 0; i < d.getSubweightsLength(); i++) {
-        weightsCopy.poll();
+      if (d.getSubweightsHeaders().isEmpty()) {
+        d.withWeight(weightsCopy.poll());
+      } else {
+        d.withSubweights(weightsCopy.subList(0, d.getSubweightsLength()));
+        for (int i = 0; i < d.getSubweightsLength(); i++) {
+          weightsCopy.poll();
+        }
       }
     }
     if (!weightsCopy.isEmpty()) {

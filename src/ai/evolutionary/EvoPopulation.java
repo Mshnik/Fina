@@ -1,6 +1,8 @@
 package ai.evolutionary;
 
+import ai.AIController;
 import ai.evolutionary.EvoPlayer.PointChangeResult;
+import controller.game.CreatePlayerOptions;
 import controller.game.GameController;
 import model.game.Game.FogOfWar;
 import model.game.Player;
@@ -18,14 +20,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static ai.AIController.PROVIDED_AI_TYPE;
-
 /** A population of {@link EvoPlayer}s that will play against themselves, split, and knockout. */
 final class EvoPopulation {
-
-  /** The set of types for every game - always two provided AIs. */
-  private static final List<String> PROVIDED_AI_TYPES_LIST =
-      Stream.of(PROVIDED_AI_TYPE, PROVIDED_AI_TYPE).collect(Collectors.toList());
 
   /** The max number of games to run at a time. */
   private static final int MAX_CONCURRENT_GAMES = 2;
@@ -79,8 +75,9 @@ final class EvoPopulation {
             player2.getController().id()));
     return GameController.loadAndStartHeadless(
         "game/boards/" + boardFilename,
-        PROVIDED_AI_TYPES_LIST,
-        Stream.of(player1.getController(), player2.getController()).collect(Collectors.toList()),
+        Stream.of(player1.getController(), player2.getController())
+            .map(controller -> new CreatePlayerOptions(AIController.PROVIDED_AI_TYPE, controller))
+            .collect(Collectors.toList()),
         FogOfWar.REGULAR,
         1);
   }

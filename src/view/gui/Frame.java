@@ -1,22 +1,9 @@
 package view.gui;
 
 import controller.audio.AudioController;
+import controller.game.CreatePlayerOptions;
 import controller.game.GameController;
 import controller.game.MouseListener;
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.util.HashMap;
-import java.util.Map;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.ability.Ability;
@@ -26,6 +13,23 @@ import view.gui.NewGameSelector.NewGameOptions;
 import view.gui.panel.GamePanel;
 import view.gui.panel.HeaderPanel;
 import view.gui.panel.InfoPanel;
+
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /** The visual frame that manages showing the model.game */
 public final class Frame extends JFrame {
@@ -105,7 +109,14 @@ public final class Frame extends JFrame {
           if (!newGameOptions.cancelled) {
             controller.loadAndKillThis(
                 newGameOptions.boardFilepath,
-                newGameOptions.playerTypes,
+                IntStream.range(0, newGameOptions.playerTypes.size())
+                    .mapToObj(
+                        i ->
+                            new CreatePlayerOptions(
+                                newGameOptions.playerTypes.get(i),
+                                newGameOptions.loadAIOptions.get(i).filename,
+                                newGameOptions.loadAIOptions.get(i).row))
+                    .collect(Collectors.toList()),
                 newGameOptions.fogOfWar,
                 newGameOptions.startingCommanderLevel);
           } else {

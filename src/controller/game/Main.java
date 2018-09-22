@@ -1,15 +1,16 @@
 package controller.game;
 
-import static ai.delegating.DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE;
-import static model.game.HumanPlayer.HUMAN_PLAYER_TYPE;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import model.game.Game.FogOfWar;
 import model.unit.ability.Abilities;
 import model.unit.building.Buildings;
 import model.unit.combatant.Combatants;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static ai.delegating.DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE;
+import static model.game.HumanPlayer.HUMAN_PLAYER_TYPE;
 
 public final class Main {
   /** Simple main method to test out Frame features */
@@ -26,11 +27,17 @@ public final class Main {
 
   private static void humanGame(String boardFilename) {
     List<String> defaultPlayerTypes = new ArrayList<>();
-    defaultPlayerTypes.add(DELEGATING_RANDOM_AI_TYPE);
-    defaultPlayerTypes.add(DELEGATING_RANDOM_AI_TYPE);
+    defaultPlayerTypes.add(HUMAN_PLAYER_TYPE);
+    defaultPlayerTypes.add(HUMAN_PLAYER_TYPE);
 
     GameController.loadAndStart(
-        "game/boards/" + boardFilename, defaultPlayerTypes, FogOfWar.REGULAR, 1, 10, 18, 3);
+        "game/boards/" + boardFilename,
+        defaultPlayerTypes.stream().map(CreatePlayerOptions::new).collect(Collectors.toList()),
+        FogOfWar.REGULAR,
+        1,
+        10,
+        18,
+        3);
   }
 
   private static void genDataLoop(String boardFilename) throws Exception {
@@ -42,8 +49,10 @@ public final class Main {
       GameController controller =
           GameController.loadAndStartHeadless(
               "game/boards/" + boardFilename,
-              defaultPlayerTypes,
-              Collections.emptyList(),
+              defaultPlayerTypes
+                  .stream()
+                  .map(CreatePlayerOptions::new)
+                  .collect(Collectors.toList()),
               FogOfWar.REGULAR,
               1);
       Thread.sleep(150);

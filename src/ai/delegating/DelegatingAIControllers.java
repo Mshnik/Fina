@@ -39,6 +39,13 @@ public final class DelegatingAIControllers {
 
   /** A delegating AIController for testing. */
   public static DelegatingAIController defaultDelegatingAIController() {
+    List<String> buildingNames =
+        Buildings.getBuildings().stream().map(b -> b.name).collect(Collectors.toList());
+    List<String> combatantNames =
+        Combatants.getCombatants().stream().map(c -> c.name).collect(Collectors.toList());
+    List<String> abilityNames =
+        Abilities.getAbilities().stream().map(c -> c.name).collect(Collectors.toList());
+
     return DelegatingAIControllerFactory.newBuilder()
         .addDelegate(new ExpandDangerRadiusMovementDelegate())
         .addDelegate(new MoveToNotBeAttackedMovementDelegate())
@@ -52,13 +59,23 @@ public final class DelegatingAIControllers {
         .addDelegate(new MinCounterAttackDamageCombatDelegate())
         .addDelegate(new SummonCombatantWithTypeAdvantageDelegate())
         .addDelegate(new SummonBuildingOnAncientGroundDelegate())
-        .addDelegate(new SummonBuildingByNameDelegate())
-        .addDelegate(new SummonBuildingByNameScalingDelegate())
-        .addDelegate(new SummonCombatantByNameDelegate())
-        .addDelegate(new SummonCombatantByNameScalingDelegate())
-        .addDelegate(new CastSpellByNameDelegate())
+        .addDelegate(
+            populateNamesWithRandomWeights(new SummonBuildingByNameDelegate(), buildingNames, 1, 1))
+        .addDelegate(
+            populateNamesWithRandomWeights(
+                new SummonBuildingByNameScalingDelegate(), buildingNames, 1, 1))
+        .addDelegate(
+            populateNamesWithRandomWeights(
+                new SummonCombatantByNameDelegate(), combatantNames, 1, 1))
+        .addDelegate(
+            populateNamesWithRandomWeights(
+                new SummonCombatantByNameScalingDelegate(), combatantNames, 1, 1))
+        .addDelegate(
+            populateNamesWithRandomWeights(new CastSpellByNameDelegate(), abilityNames, 1, 1))
         .addDelegate(new MaximizeUnitsEffectedCastByNameDelegate())
-        .addDelegate(new MinimizeRedundantEffectByNameCastDelegate())
+        .addDelegate(
+            populateNamesWithRandomWeights(
+                new MinimizeRedundantEffectByNameCastDelegate(), abilityNames, 1, 1))
         .build();
   }
 
