@@ -39,6 +39,7 @@ public class Cloud {
    * board.
    */
   public List<Tile> toTileSet(Board board) {
+    // TODO - optimize.
     return points
         .stream()
         .filter(board::isOnBoard)
@@ -48,6 +49,7 @@ public class Cloud {
 
   /** Returns a cloud translated to have the new center point. */
   public Cloud translate(MPoint center) {
+    // TODO - optimize.
     return new Cloud(points.stream().map(p -> p.add(center)).collect(Collectors.toSet()));
   }
 
@@ -68,6 +70,7 @@ public class Cloud {
 
   /** Returns a cloud with the points of this minus the points in other. */
   public Cloud difference(Cloud other) {
+    // TODO - optimize.
     return new Cloud(points.stream().filter(p -> !other.contains(p)).collect(Collectors.toSet()));
   }
 }
