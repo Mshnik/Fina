@@ -14,6 +14,7 @@ import java.awt.Stroke;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -98,7 +99,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
         Math.max(0, maxCols - f.getController().game.board.getWidth()),
         Math.max(0, maxRows - f.getController().game.board.getHeight()));
     boardCursor = new BoardCursor(this);
-    unitToModifierIconMap = new HashMap<>();
+    unitToModifierIconMap = Collections.synchronizedMap(new HashMap<>());
     resizeTimer = null;
     setPreferredSize(new Dimension(getShowedCols() * cellSize(), getShowedRows() * cellSize()));
     addComponentListener(this);
@@ -159,11 +160,13 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
    * and if a player changes their view options.
    */
   public void recreateModifierIconsForViewOptions(ViewOptions viewOptions) {
-    for (Unit u : unitToModifierIconMap.keySet()) {
-      getFrame().getAnimator().removeAnimatable(unitToModifierIconMap.get(u));
-      ModifierIcon modifierIcon = viewOptions.createModifierIconFor(this, u);
-      getFrame().getAnimator().addAnimatable(modifierIcon);
-      unitToModifierIconMap.put(u, modifierIcon);
+    synchronized (unitToModifierIconMap) {
+      for (Unit u : unitToModifierIconMap.keySet()) {
+        getFrame().getAnimator().removeAnimatable(unitToModifierIconMap.get(u));
+        ModifierIcon modifierIcon = viewOptions.createModifierIconFor(this, u);
+        getFrame().getAnimator().addAnimatable(modifierIcon);
+        unitToModifierIconMap.put(u, modifierIcon);
+      }
     }
   }
 
@@ -172,8 +175,10 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
    * yet.
    */
   public void refreshModifierIconFor(Unit u) {
-    if (unitToModifierIconMap.containsKey(u)) {
-      unitToModifierIconMap.get(u).refreshModifiers();
+    synchronized (unitToModifierIconMap) {
+      if (unitToModifierIconMap.containsKey(u)) {
+        unitToModifierIconMap.get(u).refreshModifiers();
+      }
     }
   }
 
@@ -182,16 +187,18 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
    * in the set.
    */
   private void cleanupModifierIcons(Set<Unit> units) {
-    unitToModifierIconMap
-        .keySet()
-        .stream()
-        .filter(u -> !units.contains(u))
-        .collect(Collectors.toSet())
-        .forEach(
-            u -> {
-              getFrame().getAnimator().removeAnimatable(unitToModifierIconMap.get(u));
-              unitToModifierIconMap.remove(u);
-            });
+    synchronized (unitToModifierIconMap) {
+      unitToModifierIconMap
+          .keySet()
+          .stream()
+          .filter(u -> !units.contains(u))
+          .collect(Collectors.toSet())
+          .forEach(
+              u -> {
+                getFrame().getAnimator().removeAnimatable(unitToModifierIconMap.get(u));
+                unitToModifierIconMap.remove(u);
+              });
+    }
   }
 
   /** Paints this GamePanel, for use in the frame it is in. */
@@ -284,13 +291,15 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
             Unit unit = t.getOccupyingUnit();
             units.add(unit);
             ModifierIcon modifierIcon;
-            if (unitToModifierIconMap.containsKey(unit)) {
-              modifierIcon = unitToModifierIconMap.get(unit);
-              modifierIcon.setFilterType(viewOptions.getModifierIconsFilterType());
-            } else {
-              modifierIcon = viewOptions.createModifierIconFor(this, unit);
-              getFrame().getAnimator().addAnimatable(modifierIcon);
-              unitToModifierIconMap.put(unit, modifierIcon);
+            synchronized (unitToModifierIconMap) {
+              if (unitToModifierIconMap.containsKey(unit)) {
+                modifierIcon = unitToModifierIconMap.get(unit);
+                modifierIcon.setFilterType(viewOptions.getModifierIconsFilterType());
+              } else {
+                modifierIcon = viewOptions.createModifierIconFor(this, unit);
+                getFrame().getAnimator().addAnimatable(modifierIcon);
+                unitToModifierIconMap.put(unit, modifierIcon);
+              }
             }
             if (game.isVisibleToMostRecentHumanPlayer(t)) {
               drawUnit(g2d, unit);
