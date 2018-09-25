@@ -20,13 +20,12 @@ import ai.delegates.SummonDelegates.SummonBuildingOnAncientGroundDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantByNameDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantByNameScalingDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantWithTypeAdvantageDelegate;
-import model.unit.ability.Abilities;
-import model.unit.building.Buildings;
-import model.unit.combatant.Combatants;
-
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import model.unit.ability.Abilities;
+import model.unit.building.Buildings;
+import model.unit.combatant.Combatants;
 
 /** A listing of DelegatingAIControllers. */
 public final class DelegatingAIControllers {
@@ -148,7 +147,8 @@ public final class DelegatingAIControllers {
             new MoveToBuildOnAncientGroundDelegate().withWeight(RandomHelper.nextRandom(min, max)))
         .addDelegate(
             new MoveTowardsEnemyCommanderMovementDelegate()
-                .withWeight(RandomHelper.nextRandom(min, max)))
+                .withWeight(RandomHelper.nextRandom(min, max))
+                .withSubweights(RandomHelper.nextRandoms(subMin, subMax, 2)))
         // Combat delegates.
         .addDelegate(
             new GainUnitAdvantageCombatDelegate()

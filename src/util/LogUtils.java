@@ -1,5 +1,7 @@
 package util;
 
+import ai.delegates.Delegate;
+import ai.delegating.DelegatingAIControllers;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -35,14 +37,22 @@ public final class LogUtils {
       winLossMap.compute(id, (key, val) -> val == null ? winLoss : val + winLoss);
     }
 
+    List<Delegate> delegates =
+        DelegatingAIControllers.randomWeightsDelegatingAIController().getDelegates();
+
     StringBuilder builder = new StringBuilder();
     Pattern weightPattern = Pattern.compile("-?[0-9]+\\.[0-9]+");
-    int weightAtrCount = configLineList.get(0).split(",").length + 8;
     builder.append("ID,WinLossValue");
-    for (int i = 0; i < weightAtrCount; i++) {
+    for (Delegate d : delegates) {
+      String delegateName = d.getClass().getSimpleName();
       builder.append(',');
-      builder.append("Weight");
-      builder.append(i);
+      builder.append(delegateName);
+      for (String subweightHeader : d.getSubweightsHeaders()) {
+        builder.append(',');
+        builder.append(delegateName);
+        builder.append('-');
+        builder.append(subweightHeader);
+      }
     }
     builder.append("\n");
     int i = 0;
