@@ -2,6 +2,7 @@ package ai.delegating;
 
 import ai.AIAction;
 import ai.AIController;
+import ai.delegates.ByNameDelegate;
 import ai.delegates.Delegate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -140,6 +141,31 @@ public final class DelegatingAIController implements AIController {
   /** Returns the delegates in this controller. */
   public List<Delegate> getDelegates() {
     return Collections.unmodifiableList(delegates);
+  }
+
+  /**
+   * Returns the delegate by Class. Throws a runtime exception if the given delegate class isn't
+   * present in delegates.
+   */
+  Delegate getDelegate(Class<? extends Delegate> delClass) {
+    return delegates
+        .stream()
+        .filter(delClass::isInstance)
+        .findAny()
+        .orElseThrow(() -> new RuntimeException("No matching delegate to " + delClass));
+  }
+
+  /**
+   * Returns the ByNameDelegate by Class. Throws a runtime exception if the given delegate class
+   * isn't present in delegates.
+   */
+  ByNameDelegate getByNameDelegate(Class<? extends ByNameDelegate> delClass) {
+    return delegates
+        .stream()
+        .filter(delClass::isInstance)
+        .findAny()
+        .map(d -> (ByNameDelegate) d)
+        .orElseThrow(() -> new RuntimeException("No matching delegate to " + delClass));
   }
 
   /**

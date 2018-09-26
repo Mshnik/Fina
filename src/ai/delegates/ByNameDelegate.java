@@ -96,4 +96,26 @@ public abstract class ByNameDelegate extends Delegate {
       return fallbackSubweight;
     }
   }
+
+  /**
+   * Alters the current weight of this delegate by the given delta. Overridden to narrow return
+   * type.
+   */
+  @Override
+  public ByNameDelegate changeWeight(double deltaWeight) {
+    super.changeWeight(deltaWeight);
+    return this;
+  }
+
+  /** Returns the subWeight at the given index. Overridden to narrow return type. */
+  @Override
+  public ByNameDelegate changeSubWeight(int index, double deltaWeight) {
+    super.changeSubWeight(index, deltaWeight);
+    return this;
+  }
+
+  /** Returns the subWeight at the given name. */
+  public ByNameDelegate changeSubWeight(String name, double deltaWeight) {
+    return changeSubWeight(nameToSubweightIndexMap.get(name), deltaWeight);
+  }
 }

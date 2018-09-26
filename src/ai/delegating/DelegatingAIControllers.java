@@ -36,6 +36,9 @@ public final class DelegatingAIControllers {
   /** The type to show on the ui for a random delegating AI controller. */
   public static final String DELEGATING_RANDOM_AI_TYPE = "Del AI - Random";
 
+  /** The type to show on the ui for a random delegating AI controller. */
+  public static final String DELEGATING_RANDOM_WITH_EDITS_AI_TYPE = "Del AI - Random w/Edits";
+
   /** A delegating AIController for testing. */
   public static DelegatingAIController defaultDelegatingAIController() {
     List<String> buildingNames =
@@ -213,5 +216,22 @@ public final class DelegatingAIControllers {
                 subMin,
                 subMax))
         .build();
+  }
+
+  /**
+   * A delegating AIController with random weights plus manual edits for testing and generating test
+   * data.
+   */
+  public static DelegatingAIController randomWeightsWithManualEditsDelegatingAIController() {
+    DelegatingAIController randomWeightsController = randomWeightsDelegatingAIController();
+    randomWeightsController.getDelegate(MoveTowardsEnemyCommanderMovementDelegate.class).changeWeight(1);
+    randomWeightsController.getDelegate(MoveToSummonDelegate.class).changeWeight(2);
+    randomWeightsController
+        .getDelegate(SummonCombatantWithTypeAdvantageDelegate.class)
+        .changeWeight(5);
+    randomWeightsController.getByNameDelegate(SummonCombatantByNameDelegate.class).changeWeight(3);
+    randomWeightsController.getByNameDelegate(SummonBuildingByNameDelegate.class).changeWeight(1);
+    randomWeightsController.getByNameDelegate(CastSpellByNameDelegate.class).changeWeight(-4);
+    return randomWeightsController;
   }
 }

@@ -63,8 +63,9 @@ public abstract class Delegate {
   }
 
   /** Alters the current weight of this delegate by the given delta. */
-  public void changeWeight(double deltaWeight) {
+  public Delegate changeWeight(double deltaWeight) {
     weight += deltaWeight;
+    return this;
   }
 
   /** Returns the subWeight at the given index. */
@@ -73,8 +74,9 @@ public abstract class Delegate {
   }
 
   /** Returns the subWeight at the given index. */
-  public void getChangeSubWeight(int index, double deltaWeight) {
+  public Delegate changeSubWeight(int index, double deltaWeight) {
     subWeights[index] += deltaWeight;
+    return this;
   }
 
   /** Returns the expected length of the subweights array. If unused, should be 0. */

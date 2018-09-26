@@ -1,5 +1,14 @@
 package controller.game;
 
+import static ai.AIController.PROVIDED_AI_TYPE;
+import static ai.delegating.DelegatingAIControllers.DELEGATING_DEFAULT_AI_TYPE;
+import static ai.delegating.DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE;
+import static ai.delegating.DelegatingAIControllers.DELEGATING_RANDOM_WITH_EDITS_AI_TYPE;
+import static ai.dummy.DoNothingAIController.DO_NOTHING_AI_TYPE;
+import static ai.dummy.FullRandomAIController.FULL_RANDOM_AI_TYPE;
+import static ai.dummy.MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE;
+import static model.game.HumanPlayer.HUMAN_PLAYER_TYPE;
+
 import ai.AIController;
 import ai.delegating.DelegatingAIControllerFactory;
 import ai.delegating.DelegatingAIControllers;
@@ -15,6 +24,22 @@ import controller.selector.CastSelector;
 import controller.selector.LocationSelector;
 import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.EmptyStackException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.Stack;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import model.board.Board;
 import model.board.Tile;
 import model.game.AIPlayer;
@@ -38,31 +63,6 @@ import view.gui.ViewOptions;
 import view.gui.decision.DecisionCursor;
 import view.gui.panel.BoardCursor;
 import view.gui.panel.GamePanel;
-
-import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.Stack;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-
-import static ai.AIController.PROVIDED_AI_TYPE;
-import static ai.delegating.DelegatingAIControllers.DELEGATING_DEFAULT_AI_TYPE;
-import static ai.delegating.DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE;
-import static ai.dummy.DoNothingAIController.DO_NOTHING_AI_TYPE;
-import static ai.dummy.FullRandomAIController.FULL_RANDOM_AI_TYPE;
-import static ai.dummy.MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE;
-import static model.game.HumanPlayer.HUMAN_PLAYER_TYPE;
 
 /**
  * Overall controlling class that unites all classes. Should be run in its own thread, because some
@@ -257,6 +257,14 @@ public final class GameController {
               (game, c) ->
                   new AIPlayer(
                       game, c, DelegatingAIControllers.randomWeightsDelegatingAIController());
+          break;
+        case DELEGATING_RANDOM_WITH_EDITS_AI_TYPE:
+          playerConstructor =
+              (game, c) ->
+                  new AIPlayer(
+                      game,
+                      c,
+                      DelegatingAIControllers.randomWeightsWithManualEditsDelegatingAIController());
           break;
         case PROVIDED_AI_TYPE:
           AIController explicitController = createPlayerOptions.explicitController;

@@ -147,7 +147,7 @@ final class EvoPlayer {
       }
       for (int i = 0; i < delegate.getSubweightsLength(); i++) {
         if (random.nextDouble() < SUBWEIGHT_MUTATION_CHANCE_ON_SPLIT) {
-          delegate.getChangeSubWeight(
+          delegate.changeSubWeight(
               i,
               (random.nextDouble() * MUTATION_MAX_VALUE_ON_SPLIT * 2)
                   - MUTATION_MAX_VALUE_ON_SPLIT);
