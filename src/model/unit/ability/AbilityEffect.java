@@ -36,7 +36,7 @@ final class AbilityEffect {
   private final int research;
 
   /** Number of turns all modifiers granted through abilities last. */
-  private static final int MODIFIER_TURN_DURATION = 3;
+  private static final int MODIFIER_TURN_DURATION = 4;
 
   /** ModifierBundle if this is an effect that gives a modifier, null otherwise. */
   private final ModifierBundle modifierEffect;

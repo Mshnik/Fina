@@ -130,46 +130,47 @@ public final class Abilities {
   private static List<AbilityEffect> getEffectsFor(String abilityName) {
     switch (abilityName) {
       case "Magic Missile":
-        return Collections.singletonList(AbilityEffect.damage(15, 30));
+        return Collections.singletonList(AbilityEffect.damage(30, 45));
       case "Heal":
-        return Collections.singletonList(AbilityEffect.healConstantHp(25));
+        return Collections.singletonList(AbilityEffect.healPercentageOfMaxHp(.5));
       case "Clairvoyance":
         return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.farsight(3)));
       case "Sacrifice":
         return Collections.singletonList(AbilityEffect.destroyUnit());
       case "Research":
-        return Collections.singletonList(AbilityEffect.research(100));
+        return Collections.singletonList(AbilityEffect.research(75));
       case "Cone of Flame":
-        return Collections.singletonList(AbilityEffect.damage(30, 45));
+        return Collections.singletonList(AbilityEffect.damage(45, 60));
       case "Strengthen":
-        return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.strengthened(5)));
+        return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.strengthened(10)));
       case "Repair":
-        return Collections.singletonList(AbilityEffect.healPercentageOfMaxHp(.5));
+        return Collections.singletonList(AbilityEffect.healPercentageOfMaxHp(1.0));
       case "Toughen":
-        return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.toughness(5)));
+        return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.toughness(10)));
       case "Quicken":
-        return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.quickness(2)));
+        return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.quickness(3)));
       case "Cone of Ice":
         return Arrays.asList(
-            AbilityEffect.damage(30, 45), AbilityEffect.modifierBundle(Modifiers.sluggish(1)));
+            AbilityEffect.damage(45, 60), AbilityEffect.modifierBundle(Modifiers.sluggish(1)));
       case "Cone of Electricity":
         return Arrays.asList(
-            AbilityEffect.damage(30, 45), AbilityEffect.modifierBundle(Modifiers.weakened(5)));
+            AbilityEffect.damage(45, 60), AbilityEffect.modifierBundle(Modifiers.weakened(5)));
       case "Mass Heal":
-        return Collections.singletonList(AbilityEffect.healPercentageOfMaxHp(.25));
+        return Collections.singletonList(AbilityEffect.healPercentageOfMaxHp(.5));
       case "Resolution":
-        return Collections.singletonList(AbilityEffect.modifierBundle(Modifiers.tenacity(15)));
+        return Arrays.asList(
+            AbilityEffect.healConstantHp(25), AbilityEffect.modifierBundle(Modifiers.tenacity(25)));
       case "Refresh":
         return Collections.singletonList(AbilityEffect.refreshUnit());
       case "Spacial Shift":
         return Collections.emptyList();
       case "Cone of Light":
         return Arrays.asList(
-            AbilityEffect.damage(45, 90), AbilityEffect.modifierBundle(Modifiers.blinded(2)));
+            AbilityEffect.damage(60, 90), AbilityEffect.modifierBundle(Modifiers.blinded(2)));
       case "Mana Shield":
         return Arrays.asList(
             AbilityEffect.modifierBundle(Modifiers.shielded(0.25)),
-            AbilityEffect.healConstantHp(50));
+            AbilityEffect.healPercentageOfMaxHp(0.5));
       case "Levitation":
         return Collections.singletonList(
             AbilityEffect.modifierBundle(

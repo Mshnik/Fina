@@ -18,7 +18,7 @@ final class Sacrifice extends Ability {
   static final String NAME = "Sacrifice";
 
   /** The ratio of unit cost to mana gain. */
-  private static final double MANA_GAIN_RATIO = .25;
+  private static final double MANA_GAIN_RATIO = .5;
 
   /**
    * Ability Constructor

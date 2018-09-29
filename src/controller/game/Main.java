@@ -23,7 +23,7 @@ public final class Main {
 
     // Select initial board file and make start game.
     String boardFilename = args.length > 0 ? args[0] : "Backyard.csv";
-    genDataLoop(boardFilename);
+    humanGame(boardFilename);
   }
 
   private static void humanGame(String boardFilename) {
