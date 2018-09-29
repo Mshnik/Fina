@@ -212,12 +212,12 @@ public final class Buildings {
             new StartOfTurnEffect(
                 StartOfTurnEffectType.HEAL_COMBATANT,
                 5,
-                ExpandableCloud.create(ExpandableCloudType.CIRCLE, 1),
+                ExpandableCloud.create(ExpandableCloudType.SQUARE, 1),
                 nonAncientGroundDescription),
             new StartOfTurnEffect(
                 StartOfTurnEffectType.HEAL_COMBATANT,
                 20,
-                ExpandableCloud.create(ExpandableCloudType.CIRCLE, 2),
+                ExpandableCloud.create(ExpandableCloudType.SQUARE, 2),
                 ancientGroundDescription));
       default:
         throw new RuntimeException("Unknown building name " + buildingName);
