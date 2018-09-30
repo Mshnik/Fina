@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class Cloud {
 
   /** The points in this cloud. May or may not contain (0,0). */
-  final Set<MPoint> points;
+  private final Set<MPoint> points;
 
   /** Constructs a new cloud. Up to the constructor to enforce that the points set is correct. */
   Cloud(Set<MPoint> points) {
