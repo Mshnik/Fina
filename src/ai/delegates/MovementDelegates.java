@@ -6,6 +6,7 @@ import model.board.Board;
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.MovingUnit;
+import model.unit.Unit;
 import model.unit.building.Building;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
@@ -65,9 +66,62 @@ public final class MovementDelegates {
 
   /**
    * A movement delegate that wants to allow units to attack. Wants to get the unit into immediate
-   * attack range. No subWeights.
+   * attack range. Subweights are:
+   *
+   * <ol>
+   *   <li>0 - attack combatant
+   *   <li>1 - attack building
+   *   <li>2 - attack commander
+   * </ol>
+   *
+   * Sums possible attacks from dest location, thus favors locations that allow for multiple
+   * attacks.
    */
   public static final class MoveToAttackMovementDelegate extends MovementDelegate {
+
+    @Override
+    int getExpectedSubweightsLength() {
+      return 3;
+    }
+
+    @Override
+    public List<String> getSubweightsHeaders() {
+      return Arrays.asList("Combatant", "Building", "Commander");
+    }
+
+    @Override
+    double getRawScore(AIAction action) {
+      if (!(action.actingUnit instanceof Combatant)) {
+        return 0;
+      }
+      Combatant combatant = (Combatant) action.actingUnit;
+      return combatant
+          .getAttackableTilesFrom(action.targetedTile)
+          .stream()
+          .filter(t -> t.isOccupied() && t.getOccupyingUnit().owner != action.player)
+          .map(Tile::getOccupyingUnit)
+          .mapToDouble(
+              u -> {
+                if (u instanceof Combatant) {
+                  return getSubWeight(0);
+                } else if (u instanceof Building) {
+                  return getSubWeight(1);
+                } else if (u instanceof Commander) {
+                  return getSubWeight(2);
+                } else {
+                  throw new RuntimeException("Unexpected unit type " + u.getClass());
+                }
+              })
+          .sum();
+    }
+  }
+
+  /**
+   * A movement delegate that wants to allow units to attack enemy units they are favored against
+   * and not attack enemies it isn't favored against. Wants to get the unit into immediate attack
+   * range. No subWeights.
+   */
+  public static final class MoveToAttackFavoredEnemiesMovementDelegate extends MovementDelegate {
 
     @Override
     int getExpectedSubweightsLength() {
@@ -85,13 +139,20 @@ public final class MovementDelegates {
         return 0;
       }
       Combatant combatant = (Combatant) action.actingUnit;
-      if (combatant
+      return combatant
           .getAttackableTilesFrom(action.targetedTile)
           .stream()
-          .anyMatch(t -> t.isOccupied() && t.getOccupyingUnit().owner != action.player)) {
-        return 1;
-      }
-      return 0;
+          .filter(
+              t ->
+                  t.isOccupied()
+                      && t.getOccupyingUnit().owner != action.player
+                      && t.getOccupyingUnit() instanceof Combatant)
+          .map(t -> (Combatant) t.getOccupyingUnit())
+          .mapToInt(
+              c ->
+                  Combatant.CombatantClass.getBonusLevel(
+                      combatant.combatantClasses, c.combatantClasses))
+          .sum();
     }
   }
 

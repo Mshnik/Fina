@@ -135,6 +135,12 @@ public final class DelegatingAIController implements AIController {
 
   /** Adds the given delegate and returns this. */
   void addDelegate(Delegate delegate) {
+    for (Delegate d : delegates) {
+      if (d.getClass().equals(delegate.getClass())) {
+        throw new RuntimeException(
+            "Can't add delegate " + delegate + ", already have instance of class " + d);
+      }
+    }
     delegates.add(delegate);
   }
 
