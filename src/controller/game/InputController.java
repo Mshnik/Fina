@@ -43,14 +43,15 @@ public final class InputController {
     BoardCursor boardCursor = (BoardCursor) frame.getActiveCursor();
     Tile currentElem = boardCursor.getElm();
     int tileSize = frame.getGamePanel().cellSize();
+    // Account for header, menu, and title bar on top.
+    cursorY -=
+        frame.getHeaderPanel().getHeight() + frame.getMenu().getHeight() + frame.getInsets().top;
     Tile destTile;
     try {
       destTile =
           frame
               .getGamePanel()
-              .getElmAtWithScrollingAndMargins(
-                  (cursorY - frame.getHeaderPanel().getHeight()) / tileSize - 1,
-                  cursorX / tileSize);
+              .getElmAtWithScrollingAndMargins(cursorY / tileSize, cursorX / tileSize);
     } catch (IllegalArgumentException ex) {
       return;
     }

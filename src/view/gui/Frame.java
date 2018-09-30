@@ -49,6 +49,9 @@ public final class Frame extends JFrame {
   /** The font to use for all text */
   public static final String FONTNAME = "Damascus";
 
+  /** The JMenu at the top of the frame. */
+  private JMenuBar menu;
+
   /** Restart game menu item. */
   private JMenuItem restartGameMenuItem;
 
@@ -93,7 +96,7 @@ public final class Frame extends JFrame {
     viewOptionsMap = new HashMap<>();
 
     // Set up menu
-    JMenuBar menu = new JMenuBar();
+    menu = new JMenuBar();
 
     // Game menu - game-related functions.
     JMenu gameMenu = new JMenu("Game");
@@ -284,6 +287,11 @@ public final class Frame extends JFrame {
     gamePanel = gp;
     activeCursor = gamePanel.boardCursor;
     animator.addAnimatable(gamePanel.boardCursor);
+  }
+
+  /** @return the JMenuBar at the top of this Frame. */
+  public JMenuBar getMenu() {
+    return menu;
   }
 
   /** @return the headerPanel */
