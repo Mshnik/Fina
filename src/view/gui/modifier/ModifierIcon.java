@@ -18,10 +18,8 @@ import view.gui.panel.GamePanel;
  */
 public abstract class ModifierIcon implements Animatable {
 
-
   /** Color to draw as a background behind a ModifierIcon. */
-  static final Color BACKGROUND_COLOR =
-      new Color(246 / 255f, 246 / 255f, 246 / 255f, 0.75f);
+  static final Color BACKGROUND_COLOR = new Color(246 / 255f, 246 / 255f, 246 / 255f, 0.75f);
 
   /**
    * The unit this ModifierIcon is painting modifiers for. Should be a unit on the board, not in a

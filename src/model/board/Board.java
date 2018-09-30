@@ -181,7 +181,7 @@ public final class Board implements Iterable<Tile>, Stringable {
 
   /** Returns true if the given location is a commander starting location. */
   public boolean isCommanderStartLocation(int row, int col) {
-    return commanderStartLocations.contains(new MPoint(row, col));
+    return commanderStartLocations.contains(MPoint.get(row, col));
   }
 
   /**

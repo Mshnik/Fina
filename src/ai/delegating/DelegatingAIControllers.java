@@ -224,7 +224,9 @@ public final class DelegatingAIControllers {
    */
   public static DelegatingAIController randomWeightsWithManualEditsDelegatingAIController() {
     DelegatingAIController randomWeightsController = randomWeightsDelegatingAIController();
-    randomWeightsController.getDelegate(MoveTowardsEnemyCommanderMovementDelegate.class).changeWeight(1);
+    randomWeightsController
+        .getDelegate(MoveTowardsEnemyCommanderMovementDelegate.class)
+        .changeWeight(1);
     randomWeightsController.getDelegate(MoveToSummonDelegate.class).changeWeight(2);
     randomWeightsController
         .getDelegate(SummonCombatantWithTypeAdvantageDelegate.class)

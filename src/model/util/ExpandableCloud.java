@@ -18,10 +18,10 @@ public final class ExpandableCloud extends Cloud {
       Set<MPoint> createCloud(int size) {
         Set<MPoint> set = createInitialSet();
         for (int i = 1; i <= size; i++) {
-          set.add(new MPoint(i, 0));
-          set.add(new MPoint(-i, 0));
-          set.add(new MPoint(0, i));
-          set.add(new MPoint(0, -i));
+          set.add(MPoint.get(i, 0));
+          set.add(MPoint.get(-i, 0));
+          set.add(MPoint.get(0, i));
+          set.add(MPoint.get(0, -i));
         }
         return set;
       }
@@ -31,10 +31,10 @@ public final class ExpandableCloud extends Cloud {
       Set<MPoint> createCloud(int size) {
         Set<MPoint> set = createInitialSet();
         for (int i = 1; i <= size; i++) {
-          set.add(new MPoint(i, i));
-          set.add(new MPoint(-i, i));
-          set.add(new MPoint(-i, -i));
-          set.add(new MPoint(i, -i));
+          set.add(MPoint.get(i, i));
+          set.add(MPoint.get(-i, i));
+          set.add(MPoint.get(-i, -i));
+          set.add(MPoint.get(i, -i));
         }
         return set;
       }
@@ -46,7 +46,7 @@ public final class ExpandableCloud extends Cloud {
         for (int r = -size; r <= size; r++) {
           for (int c = -size; c <= size; c++) {
             if (Math.abs(r) + Math.abs(c) <= size) {
-              set.add(new MPoint(r, c));
+              set.add(MPoint.get(r, c));
             }
           }
         }
@@ -58,8 +58,8 @@ public final class ExpandableCloud extends Cloud {
       Set<MPoint> createCloud(int size) {
         Set<MPoint> set = createInitialSet();
         for (int i = 1; i <= size; i++) {
-          set.add(new MPoint(i, 0));
-          set.add(new MPoint(-i, 0));
+          set.add(MPoint.get(i, 0));
+          set.add(MPoint.get(-i, 0));
         }
         return set;
       }
@@ -71,7 +71,7 @@ public final class ExpandableCloud extends Cloud {
         for (int r = -size; r <= size; r++) {
           for (int c = 1; c <= size; c++) {
             if (Math.abs(r) <= c) {
-              set.add(new MPoint(r, c));
+              set.add(MPoint.get(r, c));
             }
           }
         }
@@ -84,7 +84,7 @@ public final class ExpandableCloud extends Cloud {
         Set<MPoint> set = createInitialSet();
         for (int r = -size; r <= size; r++) {
           for (int c = -size; c <= size; c++) {
-            set.add(new MPoint(r, c));
+            set.add(MPoint.get(r, c));
           }
         }
         return set;

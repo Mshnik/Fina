@@ -7,7 +7,10 @@ package view.gui;
  */
 public interface Animatable extends Paintable {
 
-  /** Return the length (in frames) of a step of this Animatable. Can be overriden for different delay timing. */
+  /**
+   * Return the length (in frames) of a step of this Animatable. Can be overriden for different
+   * delay timing.
+   */
   default int getStateLength() {
     return 1;
   }

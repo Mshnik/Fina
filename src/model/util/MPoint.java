@@ -1,17 +1,27 @@
 package model.util;
 
-import java.awt.Point;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
 import model.board.Direction;
 import model.util.ExpandableCloud.ExpandableCloudType;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * A class representing a point on a matrix, with row-col notation. Instances are kept by row-col
+ * and returned as needed. New instances are only constructed as needed.
+ */
 public final class MPoint {
 
+  /** A map of all points, indexed by row, then column. */
+  private static final Map<Integer, Map<Integer, MPoint>> points =
+      Collections.synchronizedMap(new HashMap<>());
+
   /** A point representing (0,0) */
-  public static final MPoint ORIGIN = new MPoint(0, 0);
+  static final MPoint ORIGIN = get(0, 0);
 
   /** The row represented by this point */
   public final int row;
@@ -20,51 +30,52 @@ public final class MPoint {
   public final int col;
 
   /**
-   * Constructor for MPoint
+   * Constructor for MPoint. Creates a point and adds it to points.
    *
    * @param r - row of point
    * @param c - col of point
    */
-  public MPoint(int r, int c) {
+  private MPoint(int r, int c) {
     row = r;
     col = c;
+
+    synchronized (points) {
+      if (!points.containsKey(r)) {
+        points.put(r, new HashMap<>());
+      }
+      points.get(r).put(c, this);
+    }
   }
 
   /**
-   * Duplication constructor
+   * Returns a point for the given r, c, creating a new one only if necessary.
    *
-   * @param p - the point to clone
+   * @param r - row of point
+   * @param c - col of point
    */
-  public MPoint(MPoint p) {
-    row = p.row;
-    col = p.col;
+  public static MPoint get(int r, int c) {
+    synchronized (points) {
+      if (points.containsKey(r) && points.get(r).containsKey(c)) {
+        return points.get(r).get(c);
+      } else {
+        return new MPoint(r, c);
+      }
+    }
   }
 
-  /**
-   * Conversion constructor
-   *
-   * @param p - the Point to convert. (x,y) -> (col, row)
-   */
-  public MPoint(Point p) {
-    row = p.y;
-    col = p.x;
-  }
-
-  /** Constructor from an array of directions, creating a resulting delta. */
-  public MPoint(Direction... d) {
-    MPoint p = Arrays.stream(d).map(Direction::toPoint).reduce(MPoint.ORIGIN, MPoint::add);
-    row = p.row;
-    col = p.col;
+  /** Returns a point from the given array of directions. */
+  public static MPoint get(Direction... d) {
+    return Arrays.stream(d).map(Direction::toPoint).reduce(MPoint.ORIGIN, MPoint::add);
   }
 
   /** Creates a new point from adding the row and col to this. */
   public MPoint add(int r, int c) {
-    return new MPoint(row + r, col + c);
+    return get(row + r, col + c);
   }
 
   /** Creates a new point from adding the row and col components of p to this */
   public MPoint add(MPoint p) {
-    return new MPoint(row + p.row, col + p.col);
+    return get(row + p.row, col + p.col);
   }
 
   /** Returns a radial cloud centered at this */
@@ -85,7 +96,7 @@ public final class MPoint {
       for (int r = row;
           row < other.row && r <= other.row || row > other.row && r >= other.row;
           r += (row < other.row ? 1 : -1)) {
-        points.add(new MPoint(r, col));
+        points.add(get(r, col));
       }
 
       return new Cloud(points);
@@ -117,7 +128,7 @@ public final class MPoint {
     double error = 0.0;
     int r = y0;
     for (int c = x0; x0 < x1 && c <= x1 || x0 > x1 && c >= x1; c += (x0 < x1 ? 1 : -1)) {
-      points.add(new MPoint(r, c));
+      points.add(get(r, c));
       error = error + deltaErr;
       if (error >= 0.5) {
         r = r + (deltaY > 0 ? 1 : -1);

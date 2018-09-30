@@ -56,7 +56,7 @@ public class Cloud {
   /** Returns a cloud reflected over y=x by reversing coordinates. */
   public Cloud reflect() {
     return new Cloud(
-        points.stream().map(p -> new MPoint(p.col, p.row)).collect(Collectors.toSet()));
+        points.stream().map(p -> MPoint.get(p.col, p.row)).collect(Collectors.toSet()));
   }
 
   /** Returns a cloud rotated 90 degrees clockwise/counter clockwise about (0,0). */
@@ -64,7 +64,7 @@ public class Cloud {
     return new Cloud(
         points
             .stream()
-            .map(p -> clockwise ? new MPoint(p.col, -p.row) : new MPoint(-p.col, p.row))
+            .map(p -> clockwise ? MPoint.get(p.col, -p.row) : MPoint.get(-p.col, p.row))
             .collect(Collectors.toSet()));
   }
 

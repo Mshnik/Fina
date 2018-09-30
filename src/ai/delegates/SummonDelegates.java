@@ -28,9 +28,9 @@ public final class SummonDelegates {
   }
 
   /**
-   * Summon delegate that wants to summon the type of combatant that counters the type(s) of units the
-   * visible opponents have and not summon units that are countered by what the visible opponents
-   * have. Returns 0 if the opponent has no visible combatants.
+   * Summon delegate that wants to summon the type of combatant that counters the type(s) of units
+   * the visible opponents have and not summon units that are countered by what the visible
+   * opponents have. Returns 0 if the opponent has no visible combatants.
    */
   public static final class SummonCombatantWithTypeAdvantageDelegate extends SummonDelegate {
 
@@ -46,7 +46,7 @@ public final class SummonDelegates {
 
     @Override
     double getRawScore(AIAction action) {
-      if (! (action.unitToSummon instanceof Combatant)) {
+      if (!(action.unitToSummon instanceof Combatant)) {
         return 0;
       }
       Combatant combatantToSummon = (Combatant) action.unitToSummon;
@@ -55,8 +55,7 @@ public final class SummonDelegates {
           .game
           .getOtherPlayersUnits(action.player)
           .stream()
-          .filter(
-              u -> u instanceof Combatant && action.player.canSee(u))
+          .filter(u -> u instanceof Combatant && action.player.canSee(u))
           .map(u -> (Combatant) u)
           .mapToInt(
               c ->

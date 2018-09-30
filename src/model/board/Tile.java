@@ -155,7 +155,7 @@ public final class Tile implements Comparable<Tile>, MatrixElement, Stringable {
 
   /** Returns the location of this as a Point in (col, row) form */
   public MPoint getPoint() {
-    return new MPoint(row, col);
+    return MPoint.get(row, col);
   }
 
   /** ToString implementation - shows basic info of Tile. Remains brief to be useful in debugging */

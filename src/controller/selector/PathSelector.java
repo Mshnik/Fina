@@ -34,9 +34,7 @@ public final class PathSelector extends LocationSelector implements Paintable, I
    */
   private LinkedList<Tile> path;
 
-  /**
-   * Constructor for PathSelector
-   */
+  /** Constructor for PathSelector */
   public PathSelector(GameController gc, MovingUnit unit) {
     super(gc);
     this.unit = unit;
@@ -77,8 +75,10 @@ public final class PathSelector extends LocationSelector implements Paintable, I
     return path.size();
   }
 
-  /** Adds the given Tile to the path, then removes cycle as necessary.
-   * Returns true if this added to the path, false if it removed a cycle. */
+  /**
+   * Adds the given Tile to the path, then removes cycle as necessary. Returns true if this added to
+   * the path, false if it removed a cycle.
+   */
   public boolean addToPath(Tile t) {
     path.add(t);
     // Cycle iff first and last index of t aren't equal

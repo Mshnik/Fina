@@ -50,7 +50,7 @@ public final class BoardReader {
         String str = terrainRow[col].toUpperCase();
         if (PLAYER_START_STRING.equals(str.substring(0, PLAYER_START_STRING.length()))) {
           terrainArr[row][col] = PLAYER_START_TERRAIN;
-          playerStartLocations.add(new MPoint(row, col));
+          playerStartLocations.add(MPoint.get(row, col));
         } else {
           terrainArr[row][col] = Terrain.valueOfShort(str.substring(0, 1));
           additionalInfo[row][col] = str.length() > 1 ? str.substring(1) : null;

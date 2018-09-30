@@ -44,7 +44,7 @@ public enum Direction {
 
   /** Returns a point that corresponds to this direction as a vector. */
   public MPoint toPoint() {
-    return new MPoint(dRow(), dCol());
+    return MPoint.get(dRow(), dCol());
   }
 
   /**

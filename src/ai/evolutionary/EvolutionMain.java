@@ -21,6 +21,6 @@ final class EvolutionMain {
           new EvoPlayer(
               DelegatingAIControllers.randomWeightsDelegatingAIController().getDelegates()));
     }
-    population.runSimulation(200);
+    population.runSimulation(1000);
   }
 }
