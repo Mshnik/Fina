@@ -248,7 +248,7 @@ public final class Game implements Runnable, Stringable {
     for (Player p : players) {
       Map<Combatant, Set<Tile>> dangerRadiusMap = p.getDangerRadius();
       synchronized (dangerRadiusMap) {
-        dangerRadius
+        dangerRadiusMap
             .entrySet()
             .stream()
             .filter(e -> player.canSee(e.getKey()))
