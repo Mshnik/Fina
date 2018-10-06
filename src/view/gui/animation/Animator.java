@@ -1,4 +1,4 @@
-package view.gui;
+package view.gui.animation;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public final class Animator {
   private final Timer timer;
 
   /** Constructor for an Animator */
-  Animator() {
+  public Animator() {
     paused = false;
     animates = Collections.synchronizedMap(new HashMap<>());
     timer = new Timer(FRAME_LENGTH_IN_MILLIS, e -> animate());

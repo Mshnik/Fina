@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import model.board.Direction;
+import view.gui.animation.Animatable;
 
 /**
  * An abstract cursor implementation that is able to select things in any matrix

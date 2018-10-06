@@ -10,6 +10,7 @@ import model.unit.ability.Ability;
 import model.unit.combatant.Combat;
 import model.unit.modifier.Modifiers.ModifierDescription;
 import view.gui.NewGameSelector.NewGameOptions;
+import view.gui.animation.Animator;
 import view.gui.panel.GamePanel;
 import view.gui.panel.HeaderPanel;
 import view.gui.panel.InfoPanel;

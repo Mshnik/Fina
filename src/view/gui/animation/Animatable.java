@@ -1,4 +1,6 @@
-package view.gui;
+package view.gui.animation;
+
+import view.gui.Paintable;
 
 /**
  * A paintable object that is also animatable (has changes in its painting on a cycle duration)

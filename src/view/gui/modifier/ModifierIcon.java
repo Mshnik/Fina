@@ -8,7 +8,7 @@ import model.unit.Unit;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.Modifiers;
 import model.unit.modifier.Modifiers.ModifierDescription;
-import view.gui.Animatable;
+import view.gui.animation.Animatable;
 import view.gui.panel.GamePanel;
 
 /**
