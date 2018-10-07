@@ -6,15 +6,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import model.board.Tile;
+import model.game.Game;
 import model.unit.MovingUnit;
 import model.unit.Unit;
 import view.gui.panel.GamePanel;
 
-/**
- * An animation representing a unit moving along a given path. Doesn't loop - active is set to false
- * after completing once.
- */
-public final class UnitMovementAnimation extends UnitAnimation {
+/** An animation representing a unit moving along a given path. */
+public final class MovementAnimation extends UnitAnimation {
 
   /**
    * The ratio of a frame to how far along a path (in tiles) the unit should move. Should be in the
@@ -26,8 +24,7 @@ public final class UnitMovementAnimation extends UnitAnimation {
   private final List<Tile> movementPath;
 
   /** Creates a new animation for the given args. */
-  public UnitMovementAnimation(
-      GamePanel gamePanel, MovingUnit movingUnit, List<Tile> movementPath) {
+  public MovementAnimation(GamePanel gamePanel, MovingUnit movingUnit, List<Tile> movementPath) {
     super(gamePanel, movingUnit);
     this.movementPath = movementPath;
   }
@@ -38,7 +35,7 @@ public final class UnitMovementAnimation extends UnitAnimation {
   }
 
   /** Returns the tiles this is currently on, either size 1 or 2. */
-  public List<Tile> getCurrentTiles() {
+  private List<Tile> getCurrentTiles() {
     double pathState = getState() * TILE_MOVEMENT_PER_FRAME_RATIO;
     int prevTileState = (int) Math.floor(pathState);
     int nextTileState = (int) Math.ceil(pathState);
@@ -77,5 +74,12 @@ public final class UnitMovementAnimation extends UnitAnimation {
                   + gamePanel.getYPosition(prevTile) * (1 - towardNextTilePercent));
     }
     gamePanel.drawUnit((Graphics2D) g, getUnit(), x, y);
+  }
+
+  @Override
+  public boolean isVisible(Game game) {
+    List<Tile> currentTiles = getCurrentTiles();
+    return game.isVisibleToMostRecentHumanPlayer(currentTiles.get(0))
+        || (currentTiles.size() == 2 && game.isVisibleToMostRecentHumanPlayer(currentTiles.get(1)));
   }
 }

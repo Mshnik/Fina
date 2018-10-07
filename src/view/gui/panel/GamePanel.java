@@ -14,7 +14,6 @@ import java.awt.Stroke;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,7 +39,9 @@ import view.gui.MatrixPanel;
 import view.gui.Paintable;
 import view.gui.ViewOptions;
 import view.gui.ViewOptions.ModifierViewType;
-import view.gui.animation.UnitMovementAnimation;
+import view.gui.animation.CombatAnimation;
+import view.gui.animation.MovementAnimation;
+import view.gui.animation.UnitAnimation;
 import view.gui.decision.DecisionPanel;
 import view.gui.image.ImageIndex;
 import view.gui.image.ImageIndex.DrawingBarSegment;
@@ -80,7 +81,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
   private final Map<Unit, ModifierIcon> unitToModifierIconMap;
 
   /** The currently moving units, if any. Empty if none. */
-  private final Map<Unit, UnitMovementAnimation> unitMovementAnimationMap;
+  private final Map<Unit, UnitAnimation> unitMovementAnimationMap;
 
   /** The DecisionPanel that is currently active. Null if none */
   private DecisionPanel decisionPanel;
@@ -125,7 +126,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
   /** Adds a new MovementAnimation for the given movingUnit along the given path. */
   public void addUnitMovementAnimation(MovingUnit movingUnit, List<Tile> movementPath) {
     synchronized (unitMovementAnimationMap) {
-      UnitMovementAnimation animation = new UnitMovementAnimation(this, movingUnit, movementPath);
+      MovementAnimation animation = new MovementAnimation(this, movingUnit, movementPath);
       if (unitToModifierIconMap.containsKey(movingUnit)) {
         getFrame().getAnimator().removeAnimatable(unitMovementAnimationMap.get(movingUnit));
       }
@@ -134,8 +135,20 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     }
   }
 
-  /** Cleans up movement animations, removing each that is no longer active. */
-  private void cleanupUnitMovementAnimations() {
+  /** Adds a new MovementAnimation for the given combatant targeting the given target. */
+  public void addCombatAnimation(Combatant combatant, Tile target) {
+    synchronized (unitMovementAnimationMap) {
+      CombatAnimation animation = new CombatAnimation(this, combatant, target);
+      if (unitToModifierIconMap.containsKey(combatant)) {
+        getFrame().getAnimator().removeAnimatable(unitMovementAnimationMap.get(combatant));
+      }
+      unitMovementAnimationMap.put(combatant, animation);
+      getFrame().getAnimator().addAnimatable(animation);
+    }
+  }
+
+  /** Cleans up unit animations, removing each that is no longer active. */
+  private void cleanupUnitAnimations() {
     synchronized (unitMovementAnimationMap) {
       unitMovementAnimationMap
           .entrySet()
@@ -352,18 +365,15 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
       }
     }
     synchronized (unitMovementAnimationMap) {
-      for (UnitMovementAnimation animation : unitMovementAnimationMap.values()) {
-        List<Tile> currentTiles = animation.getCurrentTiles();
-        if (game.isVisibleToMostRecentHumanPlayer(currentTiles.get(0))
-            || (currentTiles.size() == 2
-                && game.isVisibleToMostRecentHumanPlayer(currentTiles.get(1)))) {
+      for (UnitAnimation animation : unitMovementAnimationMap.values()) {
+        if (animation.isVisible(game)) {
           animation.paintComponent(g2d);
         }
       }
     }
 
     cleanupModifierIcons(units);
-    cleanupUnitMovementAnimations();
+    cleanupUnitAnimations();
   }
 
   /** Draws the given tile. Doesn't do any model.unit drawing. */

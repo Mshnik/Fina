@@ -1,9 +1,13 @@
 package view.gui.animation;
 
+import model.game.Game;
 import model.unit.Unit;
 import view.gui.panel.GamePanel;
 
-/** An abstract parent of an animation involving a unit. */
+/**
+ * An abstract parent of an animation involving a unit. Doesn't loop - active is set to false after
+ * completing once.
+ */
 public abstract class UnitAnimation implements Animatable {
 
   final GamePanel gamePanel;
@@ -18,7 +22,6 @@ public abstract class UnitAnimation implements Animatable {
   UnitAnimation(GamePanel gamePanel, Unit unit) {
     this.gamePanel = gamePanel;
     this.unit = unit;
-
     state = 0;
     active = true;
   }
@@ -26,6 +29,8 @@ public abstract class UnitAnimation implements Animatable {
   public Unit getUnit() {
     return unit;
   }
+
+  public abstract boolean isVisible(Game game);
 
   @Override
   public int getState() {

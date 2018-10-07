@@ -7,6 +7,8 @@ import model.unit.commander.Commander;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.Modifiers;
+import view.gui.Frame;
+import view.gui.panel.GamePanel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -425,6 +427,17 @@ public final class Combat {
     }
     if (defender.isAlive() && counterAttack) {
       defender.postCounterFight(counterAttackDamage, attacker, damage);
+    }
+
+    // If frame, add animation(s).
+    if (attacker.owner.game.getController().hasFrame()) {
+      GamePanel gamePanel = attacker.owner.game.getController().frame.getGamePanel();
+      if (attacker.isAlive()) {
+        gamePanel.addCombatAnimation(attacker, defender.getLocation());
+      }
+      if (defender.isAlive() && counterAttack) {
+        gamePanel.addCombatAnimation((Combatant) defender, attacker.getLocation());
+      }
     }
 
     boolean defenderIsDead = !defender.isAlive();
