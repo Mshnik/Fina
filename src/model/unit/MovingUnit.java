@@ -1,13 +1,12 @@
 package model.unit;
 
+import java.util.LinkedList;
+import java.util.List;
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Represents a model.unit that is able to move around the model.board.
@@ -176,10 +175,15 @@ public abstract class MovingUnit extends Unit {
     // Go backwards along path if enemy was encountered, but don't refund cost.
     int i = path.indexOf(location);
     while (location.isOccupied() && i >= 0) {
-      location = path.get(i--);
+      location = path.get(i);
+      path.remove(i);
+      i--;
     }
     if (oldLoc != location && i >= 0) {
       oldLoc.moveUnitTo(location);
+      if (owner.game.getController().hasFrame()) {
+        owner.game.getController().frame.getGamePanel().setUnitMovementAnimation(this, path);
+      }
     }
     movement -= cost;
     owner.refreshVisionCloud(this);

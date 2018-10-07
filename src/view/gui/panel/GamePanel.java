@@ -26,6 +26,7 @@ import model.board.Terrain;
 import model.board.Tile;
 import model.game.Game;
 import model.game.Player;
+import model.unit.MovingUnit;
 import model.unit.Summoner;
 import model.unit.Unit;
 import model.unit.ability.Ability;
@@ -38,6 +39,7 @@ import view.gui.MatrixPanel;
 import view.gui.Paintable;
 import view.gui.ViewOptions;
 import view.gui.ViewOptions.ModifierViewType;
+import view.gui.animation.UnitMovementAnimation;
 import view.gui.decision.DecisionPanel;
 import view.gui.image.ImageIndex;
 import view.gui.image.ImageIndex.DrawingBarSegment;
@@ -76,6 +78,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
   /** Map of Unit -> ModifierIcon drawing for that unit. */
   private final Map<Unit, ModifierIcon> unitToModifierIconMap;
 
+  /** The currently moving unit, if any. Null if none. */
+  private UnitMovementAnimation unitMovementAnimation;
+
   /** The DecisionPanel that is currently active. Null if none */
   private DecisionPanel decisionPanel;
 
@@ -113,6 +118,11 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
   /** Returns the current active decision panel, if any */
   public DecisionPanel getDecisionPanel() {
     return decisionPanel;
+  }
+
+  public void setUnitMovementAnimation(MovingUnit movingUnit, List<Tile> movementPath) {
+    unitMovementAnimation = new UnitMovementAnimation(this, movingUnit, movementPath);
+    getFrame().getAnimator().addAnimatable(unitMovementAnimation);
   }
 
   /**
@@ -287,7 +297,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
           Tile t =
               game.board.getTileAt(row + scrollY - marginRowTop, col + scrollX - marginColLeft);
           drawTile(g2d, t);
-          if (t.isOccupied()) {
+          if (t.isOccupied()
+              && (unitMovementAnimation == null
+                  || unitMovementAnimation.getUnit() != t.getOccupyingUnit())) {
             Unit unit = t.getOccupyingUnit();
             units.add(unit);
             ModifierIcon modifierIcon;
@@ -302,7 +314,8 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
               }
             }
             if (game.isVisibleToMostRecentHumanPlayer(t)) {
-              drawUnit(g2d, unit);
+              drawUnit(
+                  g2d, unit, getXPosition(unit.getLocation()), getYPosition(unit.getLocation()));
               if (viewOptions.getModifierIconsViewType() == ModifierViewType.VIEW_ALL
                   || viewOptions.getModifierIconsViewType() == ModifierViewType.CURSOR_ONLY
                       && boardCursor.getElm() == unit.getLocation()) {
@@ -315,6 +328,17 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
             g2d.drawString(t.getPoint().toString(), getXPosition(t), getYPosition(t) + 10);
           }
         }
+      }
+    }
+    if (unitMovementAnimation != null) {
+      List<Tile> currentTiles = unitMovementAnimation.getCurrentTiles();
+      if (game.isVisibleToMostRecentHumanPlayer(currentTiles.get(0))
+          || (currentTiles.size() == 2
+              && game.isVisibleToMostRecentHumanPlayer(currentTiles.get(1)))) {
+        unitMovementAnimation.paintComponent(g2d);
+      }
+      if (!unitMovementAnimation.isActive()) {
+        unitMovementAnimation = null;
       }
     }
 
@@ -342,10 +366,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
   }
 
   /** Draws the given model.unit. Doesn't do any tile drawing. */
-  private void drawUnit(Graphics2D g2d, Unit u) {
-    int x = getXPosition(u.getLocation());
-    int y = getYPosition(u.getLocation());
-
+  public void drawUnit(Graphics2D g2d, Unit u, int x, int y) {
     // Draw model.unit if it's alive.
     if (u.isAlive()) {
       BufferedImage unitImg;

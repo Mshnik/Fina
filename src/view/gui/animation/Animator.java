@@ -2,8 +2,10 @@ package view.gui.animation;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import javax.swing.Timer;
 
 /**
@@ -23,12 +25,16 @@ public final class Animator {
   /** Animatables to that are animated by this */
   private final Map<Animatable, Integer> animates;
 
+  /** Animatables to be removed on the next frame start. */
+  private final Set<Animatable> animatesToRemove;
+
   private final Timer timer;
 
   /** Constructor for an Animator */
   public Animator() {
     paused = false;
     animates = Collections.synchronizedMap(new HashMap<>());
+    animatesToRemove = Collections.synchronizedSet(new HashSet<>());
     timer = new Timer(FRAME_LENGTH_IN_MILLIS, e -> animate());
     timer.start();
   }
@@ -39,6 +45,10 @@ public final class Animator {
    */
   private void animate() {
     synchronized (animates) {
+      synchronized (animatesToRemove) {
+        animatesToRemove.forEach(animates::remove);
+        animatesToRemove.clear();
+      }
       // First animate animatables at 0 frames remaining and reset to max.
       animates
           .entrySet()
@@ -49,6 +59,10 @@ public final class Animator {
           .forEach(
               a -> {
                 a.advanceState();
+                // If state is 0 after animation, this just rolled over.
+                if (a.getState() == 0) {
+                  a.animationCompleted();
+                }
                 animates.put(a, a.getStateLength());
               });
 
@@ -85,10 +99,13 @@ public final class Animator {
     }
   }
 
-  /** Removes the given Animatable from this Animator */
+  /**
+   * Removes the given Animatable from this Animator, at the start of the next animation frame. This
+   * prevents an animatable from being removed in the middle of a frame.
+   */
   public void removeAnimatable(Animatable a) {
-    synchronized (animates) {
-      animates.remove(a);
+    synchronized (animatesToRemove) {
+      animatesToRemove.add(a);
     }
   }
 
