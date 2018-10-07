@@ -14,7 +14,7 @@ import view.gui.panel.GamePanel;
  * An animation representing a unit moving along a given path. Doesn't loop - active is set to false
  * after completing once.
  */
-public final class UnitMovementAnimation implements Animatable {
+public final class UnitMovementAnimation extends UnitAnimation {
 
   /**
    * The ratio of a frame to how far along a path (in tiles) the unit should move. Should be in the
@@ -22,28 +22,14 @@ public final class UnitMovementAnimation implements Animatable {
    */
   private static final double TILE_MOVEMENT_PER_FRAME_RATIO = 0.5;
 
-  private final GamePanel gamePanel;
-  private final MovingUnit movingUnit;
+  /** The path to animate the unit moving along. */
   private final List<Tile> movementPath;
-
-  /** The current state this is on. */
-  private int state;
-
-  /** True if this is active, false once the animation has been completed. */
-  private boolean active;
 
   /** Creates a new animation for the given args. */
   public UnitMovementAnimation(
       GamePanel gamePanel, MovingUnit movingUnit, List<Tile> movementPath) {
-    this.gamePanel = gamePanel;
-    this.movingUnit = movingUnit;
+    super(gamePanel, movingUnit);
     this.movementPath = movementPath;
-    state = 0;
-    active = true;
-  }
-
-  public Unit getUnit() {
-    return movingUnit;
   }
 
   @Override
@@ -51,29 +37,9 @@ public final class UnitMovementAnimation implements Animatable {
     return (int) ((movementPath.size() - 1) / TILE_MOVEMENT_PER_FRAME_RATIO) + 1;
   }
 
-  @Override
-  public int getState() {
-    return state;
-  }
-
-  @Override
-  public void advanceState() {
-    state = (state + 1) % getStateCount();
-  }
-
-  @Override
-  public void setState(int state) {
-    this.state = state;
-  }
-
-  @Override
-  public boolean isActive() {
-    return active;
-  }
-
   /** Returns the tiles this is currently on, either size 1 or 2. */
   public List<Tile> getCurrentTiles() {
-    double pathState = state * TILE_MOVEMENT_PER_FRAME_RATIO;
+    double pathState = getState() * TILE_MOVEMENT_PER_FRAME_RATIO;
     int prevTileState = (int) Math.floor(pathState);
     int nextTileState = (int) Math.ceil(pathState);
     // If this state is exactly on a tile, return that single tile. Otherwise
@@ -96,7 +62,7 @@ public final class UnitMovementAnimation implements Animatable {
       x = gamePanel.getXPosition(currentTiles.get(0));
       y = gamePanel.getYPosition(currentTiles.get(0));
     } else {
-      double pathState = state * TILE_MOVEMENT_PER_FRAME_RATIO;
+      double pathState = getState() * TILE_MOVEMENT_PER_FRAME_RATIO;
       int prevTileState = (int) Math.floor(pathState);
       Tile prevTile = currentTiles.get(0);
       Tile nextTile = currentTiles.get(1);
@@ -110,13 +76,6 @@ public final class UnitMovementAnimation implements Animatable {
               (gamePanel.getYPosition(nextTile) * towardNextTilePercent
                   + gamePanel.getYPosition(prevTile) * (1 - towardNextTilePercent));
     }
-    gamePanel.drawUnit((Graphics2D) g, movingUnit, x, y);
-  }
-
-  @Override
-  public void animationCompleted() {
-    gamePanel.getFrame().getAnimator().removeAnimatable(this);
-    state = getStateCount() - 1;
-    active = false;
+    gamePanel.drawUnit((Graphics2D) g, getUnit(), x, y);
   }
 }
