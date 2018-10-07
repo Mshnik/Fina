@@ -182,7 +182,7 @@ public abstract class MovingUnit extends Unit {
     if (oldLoc != location && i >= 0) {
       oldLoc.moveUnitTo(location);
       if (owner.game.getController().hasFrame()) {
-        owner.game.getController().frame.getGamePanel().setUnitMovementAnimation(this, path);
+        owner.game.getController().frame.getGamePanel().addUnitMovementAnimation(this, path);
       }
     }
     movement -= cost;
