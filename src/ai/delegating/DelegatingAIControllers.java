@@ -9,8 +9,8 @@ import ai.delegates.CombatDelegates.MaxExpectedDamageDealtCombatDelegate;
 import ai.delegates.CombatDelegates.MinCounterAttackDamageCombatDelegate;
 import ai.delegates.MovementDelegates.ExpandDangerRadiusMovementDelegate;
 import ai.delegates.MovementDelegates.MoveToAttackAndNotBeCounterAttackedMovementDelegate;
-import ai.delegates.MovementDelegates.MoveToAttackMovementDelegate;
 import ai.delegates.MovementDelegates.MoveToAttackFavoredEnemiesMovementDelegate;
+import ai.delegates.MovementDelegates.MoveToAttackMovementDelegate;
 import ai.delegates.MovementDelegates.MoveToBuildOnAncientGroundDelegate;
 import ai.delegates.MovementDelegates.MoveToNotBeAttackedMovementDelegate;
 import ai.delegates.MovementDelegates.MoveToSummonDelegate;
@@ -21,9 +21,14 @@ import ai.delegates.SummonDelegates.SummonBuildingOnAncientGroundDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantByNameDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantByNameScalingDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantWithTypeAdvantageDelegate;
+import controller.game.CreatePlayerOptions;
+import controller.game.GameController;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import model.game.Game.FogOfWar;
 import model.unit.ability.Abilities;
 import model.unit.building.Buildings;
 import model.unit.combatant.Combatants;
@@ -242,5 +247,44 @@ public final class DelegatingAIControllers {
     randomWeightsController.getByNameDelegate(SummonBuildingByNameDelegate.class).changeWeight(1);
     randomWeightsController.getByNameDelegate(CastSpellByNameDelegate.class).changeWeight(-4);
     return randomWeightsController;
+  }
+
+  /** Runnable method that plays delegating AI controllers against each other. */
+  public static void main(String[] args) throws Exception {
+    // Force unit, building, spell, audio loading.
+    Combatants.getCombatantsForAge(1);
+    Buildings.getBuildingsForLevel(1);
+    Abilities.getAbilitiesForAge(1);
+
+    // Select initial board file and make start game.
+    String boardFilename = args.length > 0 ? args[0] : "Backyard.csv";
+    genDataLoop(boardFilename);
+  }
+
+  /** Runs games repeatedly on the given boardFilename between two Delegating random AIs. */
+  private static void genDataLoop(String boardFilename) throws Exception {
+    List<String> defaultPlayerTypes = new ArrayList<>();
+    defaultPlayerTypes.add(DELEGATING_RANDOM_AI_TYPE);
+    defaultPlayerTypes.add(DELEGATING_RANDOM_WITH_EDITS_AI_TYPE);
+    int i = 0;
+    while (true) {
+      Collections.shuffle(defaultPlayerTypes);
+      GameController controller =
+          GameController.loadAndStartHeadless(
+              "game/boards/" + boardFilename,
+              defaultPlayerTypes
+                  .stream()
+                  .map(CreatePlayerOptions::new)
+                  .collect(Collectors.toList()),
+              FogOfWar.REGULAR,
+              1);
+      Thread.sleep(150);
+      System.out.println("Game " + i + " started");
+      while (controller.game.isRunning()) {
+        Thread.sleep(20);
+      }
+      System.out.println("Game " + i + " finished");
+      i++;
+    }
   }
 }
