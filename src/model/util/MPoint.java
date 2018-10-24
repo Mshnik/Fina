@@ -146,6 +146,7 @@ public final class MPoint {
 
   /** Two points are equal if they have the same row and col */
   public boolean equals(Object o) {
+    if (this == o) return true;
     if (!(o instanceof MPoint)) return false;
 
     return ((MPoint) o).row == row && ((MPoint) o).col == col;
