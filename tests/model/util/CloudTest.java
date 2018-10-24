@@ -81,4 +81,7 @@ public final class CloudTest {
     assertThat(createCloud(points).difference(createCloud(pointsToRemove)).getPoints())
         .containsExactlyElementsIn(remainingPoints);
   }
+
+  // TODO - to test:
+  // - toTileSet
 }
