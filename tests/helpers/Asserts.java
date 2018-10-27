@@ -8,9 +8,11 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.Supplier;
 
 /** Assertion utilities for testing. */
 public final class Asserts {
@@ -32,8 +34,8 @@ public final class Asserts {
   }
 
   /** Creates a subject on the given string element. */
-  public static Subject<String> assertThat(String elem) {
-    return new Subject<>(elem);
+  public static StringSubject assertThat(String elem) {
+    return new StringSubject(elem);
   }
 
   /** Creates a subject on the given boolean element. */
@@ -49,6 +51,11 @@ public final class Asserts {
   /** Creates a subject on the given object element. */
   public static <T> Subject<T> assertThat(T elem) {
     return new Subject<>(elem);
+  }
+
+  /** Creates a lazy subject on the given runnable. */
+  public static LazySubject assertThat(Runnable runnable) {
+    return new LazySubject(runnable);
   }
 
   /** An abstract parent of subjects. Stores the value and exposes standard assertion methods. */
@@ -89,6 +96,13 @@ public final class Asserts {
     }
   }
 
+  /** A default subject, only exposing the methods in {@link AbsSubject}. */
+  public static final class Subject<T> extends AbsSubject<T> {
+    private Subject(T val) {
+      super(val);
+    }
+  }
+
   /** A subject specifically for booleans, exposing conditional assertions. */
   public static final class BooleanSubject extends AbsSubject<Boolean> {
     private BooleanSubject(Boolean val) {
@@ -101,6 +115,27 @@ public final class Asserts {
 
     public void isFalse() {
       assertFalse(val);
+    }
+  }
+
+  /** A subject for strings, exposing containment logic. */
+  public static final class StringSubject extends AbsSubject<String> {
+    private StringSubject(String val) {
+      super(val);
+    }
+
+    public void contains(String substring) {
+      assertTrue(
+          String.format("Expected %s to contain %s", val, substring), val.contains(substring));
+    }
+
+    public void startsWith(String prefix) {
+      assertTrue(
+          String.format("Expected %s to start with %s", val, prefix), val.startsWith(prefix));
+    }
+
+    public void endsWith(String suffix) {
+      assertTrue(String.format("Expected %s to end with %s", val, suffix), val.endsWith(suffix));
     }
   }
 
@@ -130,10 +165,51 @@ public final class Asserts {
     }
   }
 
-  /** A default subject, only exposing the methods in {@link AbsSubject}. */
-  public static final class Subject<T> extends AbsSubject<T> {
-    private Subject(T val) {
+  /** A subject on a supplier. get() is only called when an assertion is performed. */
+  public static final class LazySubject {
+    private final Runnable runnable;
+
+    private LazySubject(Runnable runnable) {
+      this.runnable = runnable;
+    }
+
+    public void throwsException(Class<? extends Exception> exception) {
+      throwsExceptionThat(exception);
+    }
+
+    public <E extends Exception> ExceptionSubject<E> throwsExceptionThat(Class<E> exception) {
+      try {
+        runnable.run();
+        fail(
+            String.format(
+                "Expected an exception of type %s, but no exception was thrown.",
+                exception.getName()));
+      } catch (Exception e) {
+        if (exception.isInstance(e)) {
+          return new ExceptionSubject<>(exception.cast(e));
+        } else {
+          fail(
+              String.format(
+                  "Expected an exception of type %s, but got: %s",
+                  exception.getName(), e.toString()));
+        }
+      }
+      throw new AssertionError("Unreachable");
+    }
+  }
+
+  /** A subject on an exception. Exposes additional methods for assertion on message / cause. */
+  public static final class ExceptionSubject<T extends Throwable> extends AbsSubject<T> {
+    private ExceptionSubject(T val) {
       super(val);
+    }
+
+    public ExceptionSubject<Throwable> hasCauseThat() {
+      return new ExceptionSubject<>(val.getCause());
+    }
+
+    public StringSubject hasMessageThat() {
+      return new StringSubject(val.getMessage());
     }
   }
 }
