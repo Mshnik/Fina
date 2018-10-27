@@ -1,5 +1,6 @@
 package model.util;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -104,12 +105,14 @@ public final class ExpandableCloud extends Cloud {
 
   /** Map of clouds created so far. */
   private static final Map<ExpandableCloudType, Map<Integer, ExpandableCloud>> CLOUDS =
-      new HashMap<>();
+      Collections.synchronizedMap(new HashMap<>());
 
   /* Setup default clouds map. */
   static {
-    for (ExpandableCloudType type : ExpandableCloudType.values()) {
-      CLOUDS.put(type, new HashMap<>());
+    synchronized (CLOUDS) {
+      for (ExpandableCloudType type : ExpandableCloudType.values()) {
+        CLOUDS.put(type, new HashMap<>());
+      }
     }
   }
 
@@ -118,12 +121,14 @@ public final class ExpandableCloud extends Cloud {
     if (size < 0) {
       throw new RuntimeException("Expected size >= 0, got " + size);
     }
-    if (CLOUDS.get(type).containsKey(size)) {
-      return CLOUDS.get(type).get(size);
+    synchronized (CLOUDS) {
+      if (CLOUDS.get(type).containsKey(size)) {
+        return CLOUDS.get(type).get(size);
+      }
+      ExpandableCloud cloud = new ExpandableCloud(type.createCloud(size), size, type);
+      CLOUDS.get(type).put(size, cloud);
+      return cloud;
     }
-    ExpandableCloud cloud = new ExpandableCloud(type.createCloud(size), size, type);
-    CLOUDS.get(type).put(size, cloud);
-    return cloud;
   }
 
   /** Level of this cloud. Cloud will fit within square of size (level * 2) + 1. */

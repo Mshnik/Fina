@@ -1,12 +1,11 @@
 package model.util;
 
-import model.board.Board;
-import model.board.Tile;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import model.board.Board;
+import model.board.Tile;
 
 /**
  * A set of points representing a cloud for use when selecting an ability target or any cloud
@@ -22,6 +21,11 @@ public class Cloud {
   /** Constructs a new cloud. Up to the constructor to enforce that the points set is correct. */
   Cloud(Set<MPoint> points) {
     this.points = points;
+  }
+
+  /** Returns the number of points in this cloud. */
+  public int getSize() {
+    return points.size();
   }
 
   /** Returns the set of points in this cloud. */
