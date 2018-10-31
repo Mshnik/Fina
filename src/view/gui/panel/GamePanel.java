@@ -80,8 +80,8 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
   /** Map of Unit -> ModifierIcon drawing for that unit. */
   private final Map<Unit, ModifierIcon> unitToModifierIconMap;
 
-  /** The currently moving units, if any. Empty if none. */
-  private final Map<Unit, UnitAnimation> unitMovementAnimationMap;
+  /** The currently animated units, if any. Empty if none. */
+  private final Map<Unit, UnitAnimation> unitAnimationMap;
 
   /** The DecisionPanel that is currently active. Null if none */
   private DecisionPanel decisionPanel;
@@ -107,7 +107,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
         Math.max(0, maxRows - f.getController().game.board.getHeight()));
     boardCursor = new BoardCursor(this);
     unitToModifierIconMap = Collections.synchronizedMap(new HashMap<>());
-    unitMovementAnimationMap = Collections.synchronizedMap(new HashMap<>());
+    unitAnimationMap = Collections.synchronizedMap(new HashMap<>());
     resizeTimer = null;
     setPreferredSize(new Dimension(getShowedCols() * cellSize(), getShowedRows() * cellSize()));
     addComponentListener(this);
@@ -125,37 +125,55 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
 
   /** Adds a new MovementAnimation for the given movingUnit along the given path. */
   public void addUnitMovementAnimation(MovingUnit movingUnit, List<Tile> movementPath) {
-    synchronized (unitMovementAnimationMap) {
+    synchronized (unitAnimationMap) {
       MovementAnimation animation = new MovementAnimation(this, movingUnit, movementPath);
       if (unitToModifierIconMap.containsKey(movingUnit)) {
-        getFrame().getAnimator().removeAnimatable(unitMovementAnimationMap.get(movingUnit));
+        getFrame().getAnimator().removeAnimatable(unitAnimationMap.get(movingUnit));
       }
-      unitMovementAnimationMap.put(movingUnit, animation);
+      unitAnimationMap.put(movingUnit, animation);
       getFrame().getAnimator().addAnimatable(animation);
+      animation.start();
     }
   }
 
   /** Adds a new MovementAnimation for the given combatant targeting the given target. */
-  public void addCombatAnimation(Combatant combatant, Tile target) {
-    synchronized (unitMovementAnimationMap) {
-      CombatAnimation animation = new CombatAnimation(this, combatant, target);
-      if (unitToModifierIconMap.containsKey(combatant)) {
-        getFrame().getAnimator().removeAnimatable(unitMovementAnimationMap.get(combatant));
+  public void addCombatAnimation(
+      Combatant combatant, Tile target, boolean addCounterAttackAnimation) {
+    synchronized (unitAnimationMap) {
+      CombatAnimation attackAnimation = addCombatAnimation(combatant, target);
+      if (addCounterAttackAnimation) {
+        Combatant counterAttackingCombatant = (Combatant) target.getOccupyingUnit();
+        CombatAnimation counterAttackAnimation =
+            addCombatAnimation(counterAttackingCombatant, combatant.getLocation());
+        attackAnimation.setNextAnimation(counterAttackAnimation);
       }
-      unitMovementAnimationMap.put(combatant, animation);
-      getFrame().getAnimator().addAnimatable(animation);
+      attackAnimation.start();
     }
+  }
+
+  /**
+   * Helper for {@link #addCombatAnimation(Combatant, Tile, boolean)}. Should only be called from
+   * there to guarantee thread safety.
+   */
+  private CombatAnimation addCombatAnimation(Combatant combatant, Tile target) {
+    CombatAnimation animation = new CombatAnimation(this, combatant, target);
+    if (unitToModifierIconMap.containsKey(combatant)) {
+      getFrame().getAnimator().removeAnimatable(unitAnimationMap.get(combatant));
+    }
+    unitAnimationMap.put(combatant, animation);
+    getFrame().getAnimator().addAnimatable(animation);
+    return animation;
   }
 
   /** Cleans up unit animations, removing each that is no longer active. */
   private void cleanupUnitAnimations() {
-    synchronized (unitMovementAnimationMap) {
-      unitMovementAnimationMap
+    synchronized (unitAnimationMap) {
+      unitAnimationMap
           .entrySet()
           .stream()
-          .filter(e -> !e.getValue().isActive())
+          .filter(e -> e.getValue().isCompleted())
           .collect(Collectors.toSet())
-          .forEach(e -> unitMovementAnimationMap.remove(e.getKey()));
+          .forEach(e -> unitAnimationMap.remove(e.getKey()));
     }
   }
 
@@ -331,8 +349,8 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
           Tile t =
               game.board.getTileAt(row + scrollY - marginRowTop, col + scrollX - marginColLeft);
           drawTile(g2d, t);
-          synchronized (unitMovementAnimationMap) {
-            if (t.isOccupied() && !unitMovementAnimationMap.containsKey(t.getOccupyingUnit())) {
+          synchronized (unitAnimationMap) {
+            if (t.isOccupied() && !unitAnimationMap.containsKey(t.getOccupyingUnit())) {
               Unit unit = t.getOccupyingUnit();
               units.add(unit);
               ModifierIcon modifierIcon;
@@ -364,8 +382,8 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
         }
       }
     }
-    synchronized (unitMovementAnimationMap) {
-      for (UnitAnimation animation : unitMovementAnimationMap.values()) {
+    synchronized (unitAnimationMap) {
+      for (UnitAnimation animation : unitAnimationMap.values()) {
         if (animation.isVisible(game)) {
           animation.paintComponent(g2d);
         }

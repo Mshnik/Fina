@@ -1,5 +1,9 @@
 package model.unit.combatant;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import model.unit.Unit;
 import model.unit.building.Building;
 import model.unit.combatant.Combatant.CombatantClass;
@@ -7,13 +11,7 @@ import model.unit.commander.Commander;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.Modifiers;
-import view.gui.Frame;
 import view.gui.panel.GamePanel;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 
 /**
  * A class that describes a prospective combat between two given units and can process it. Used to
@@ -433,10 +431,10 @@ public final class Combat {
     if (attacker.owner.game.getController().hasFrame()) {
       GamePanel gamePanel = attacker.owner.game.getController().frame.getGamePanel();
       if (attacker.isAlive()) {
-        gamePanel.addCombatAnimation(attacker, defender.getLocation());
-      }
-      if (defender.isAlive() && counterAttack) {
-        gamePanel.addCombatAnimation((Combatant) defender, attacker.getLocation());
+        gamePanel.addCombatAnimation(
+            attacker, defender.getLocation(), defender.isAlive() && counterAttack);
+      } else if (defender.isAlive() && counterAttack) {
+        gamePanel.addCombatAnimation((Combatant) defender, attacker.getLocation(), false);
       }
     }
 
