@@ -40,8 +40,20 @@ public final class Combat {
   /** Number of squares between attacker and defender's locations, accounting for melee. */
   private final int dist;
 
-  /** True after process() is called, to prevent double counting combat. */
-  private boolean processed;
+  /** The current {@link Stage} this is on. */
+  private Stage stage;
+
+  /** The stages a Combat can be on. */
+  public enum Stage {
+    NOT_YET_STARTED,
+    STARTED,
+    PRE_FIGHTS_COMPLETED,
+    ATTACK_COMPLETED,
+    COUNTER_ATTACK_COMPLETED,
+    COUNTER_ATTACK_SKIPPED,
+    POST_ATTACK_COMPLETED,
+    COMBAT_COMPLETED
+  }
 
   /** A pair of combatant classes. */
   public static final class CombatantClassPair {
@@ -69,6 +81,12 @@ public final class Combat {
 
     // Account for melee = 0 range
     dist = attacker.getLocation().manhattanDistance(defender.getLocation()) - 1;
+    stage = Stage.NOT_YET_STARTED;
+  }
+
+  /** Returns the current stage this combat is on. */
+  public Stage getStage() {
+    return stage;
   }
 
   /**
@@ -357,7 +375,7 @@ public final class Combat {
    * @return true iff defender is killed because of this action
    */
   public final boolean process(Random random) throws IllegalArgumentException, RuntimeException {
-    if (processed)
+    if (stage != Stage.NOT_YET_STARTED)
       throw new RuntimeException("Can't process " + this + "process() already called.");
     if (!attacker.isAlive()) throw new RuntimeException(attacker + " can't fight, it is dead.");
     if (!defender.isAlive())
@@ -372,20 +390,12 @@ public final class Combat {
     if (!attacker.getAttackableTiles(true).contains(defender.getLocation()))
       throw new IllegalArgumentException(
           this + " can't fight " + defender + ", it isn't in the valid attack range");
-
+    stage = Stage.STARTED;
     if (DEBUG) System.out.println("Start combat ------");
 
-    // Get damage in range [min,max]
+    // Get damage in range [min,max], change with damage reduction.
     int damage = random.nextInt(getMaxAttack() + 1 - getMinAttack()) + getMinAttack();
     if (DEBUG) System.out.println("Raw Attack damage: " + damage);
-
-    // True if a counterAttack is happening, false otherwise.
-    boolean counterAttack = defenderCouldCounterAttack() && damage < defender.getHealth();
-
-    attacker.preFight(defender);
-    if (counterAttack) defender.preCounterFight(attacker);
-
-    // attacker attacks defender, less damage reduction.
     int finalDamage =
         (int)
             Math.max(
@@ -393,7 +403,19 @@ public final class Combat {
                 damage * Math.max(0, 1 - getDefenderPercentageDamageReduction())
                     - getDefenderFlatDamageReduction());
     if (DEBUG) System.out.println("Final Attack damage: " + finalDamage);
+
+    // True if a counterAttack is happening, false otherwise.
+    boolean counterAttack = defenderCouldCounterAttack() && finalDamage < defender.getHealth();
+
+    attacker.preFight(defender);
+    if (counterAttack){
+      defender.preCounterFight(attacker);
+    }
+    stage = Stage.PRE_FIGHTS_COMPLETED;
+
+    // attacker attacks defender, less damage reduction.
     defender.changeHealth(-finalDamage, attacker);
+    stage = Stage.ATTACK_COMPLETED;
 
     // If defender is still alive, can see the first unit,
     // and this is within range, defender counterattacks
@@ -402,7 +424,9 @@ public final class Combat {
       // Get damage in range [min,max]
       counterAttackDamage =
           random.nextInt(getMaxCounterAttack() + 1 - getMinCounterAttack()) + getMinCounterAttack();
-      if (DEBUG) System.out.println("Raw Counter damage: " + counterAttackDamage);
+      if (DEBUG){
+        System.out.println("Raw Counter damage: " + counterAttackDamage);
+      }
 
       // Change this unit's health
       int finalCounterDamage =
@@ -411,9 +435,13 @@ public final class Combat {
                   0,
                   counterAttackDamage * Math.max(0, 1 - getAttackerPercentageDamageReduction())
                       - getAttackerFlatDamageReduction());
-      if (DEBUG) System.out.println("Final Counter damage: " + finalCounterDamage);
+      if (DEBUG){
+        System.out.println("Final Counter damage: " + finalCounterDamage);
+      }
       attacker.changeHealth(Math.min(0, -finalCounterDamage), defender);
-      counterAttack = true;
+      stage = Stage.COUNTER_ATTACK_COMPLETED;
+    } else {
+      stage = Stage.COUNTER_ATTACK_SKIPPED;
     }
 
     // This can't attack this turn again
@@ -426,6 +454,7 @@ public final class Combat {
     if (defender.isAlive() && counterAttack) {
       defender.postCounterFight(counterAttackDamage, attacker, damage);
     }
+    stage = Stage.POST_ATTACK_COMPLETED;
 
     // If frame, add animation(s).
     if (attacker.owner.game.getController().hasFrame()) {
@@ -440,7 +469,7 @@ public final class Combat {
 
     boolean defenderIsDead = !defender.isAlive();
 
-    processed = true;
+    stage = Stage.COMBAT_COMPLETED;
     if (DEBUG) System.out.println("End combat ------");
 
     return defenderIsDead;
