@@ -35,7 +35,7 @@ public final class AllUnitModifierBuilding extends Building<ModifierBundle> {
    * @param name - the name of this model.unit.
    * @param imageFilename - the image to draw when drawing this unit.
    * @param level - the level of this model.unit - the age this belongs to
-   * @param manaCost - the cost of summoning this model.unit. Should be a positive number. * @param
+   * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
    * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond
    *     the first. Should be a non-negative number.
    * @param validTerrain - types of terrain this can be built on.

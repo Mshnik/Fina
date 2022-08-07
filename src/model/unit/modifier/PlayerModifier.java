@@ -1,7 +1,7 @@
 package model.unit.modifier;
 
 /**
- * A modifier applied to a player.
+ * A modifier applied to a player. Notably does not extend {@link Modifier} because this does not attach to a unit.
  */
 public final class PlayerModifier {
   /**
