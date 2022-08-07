@@ -8,8 +8,7 @@ import model.unit.Unit;
 import model.unit.building.AllUnitModifierBuilding;
 import model.unit.building.CommanderModifierBuilding;
 import model.unit.building.PlayerModifierBuilding;
-import model.unit.building.PlayerModifierBuilding.PlayerModifierEffect;
-import model.unit.building.PlayerModifierBuilding.PlayerModifierEffectType;
+import model.unit.modifier.PlayerModifier;
 import model.unit.building.StartOfTurnEffectBuilding;
 import model.unit.building.Temple;
 import model.unit.combatant.Combatant;
@@ -188,8 +187,8 @@ public abstract class Player implements Stringable {
     for (Unit u : units) {
       manaPerTurn += u.getManaPerTurn();
       if (u instanceof PlayerModifierBuilding) {
-        for (PlayerModifierEffect effect : ((PlayerModifierBuilding) u).getEffect()) {
-          if (effect.effectType == PlayerModifierEffectType.MANA_GENERATION) {
+        for (PlayerModifier effect : ((PlayerModifierBuilding) u).getEffect()) {
+          if (effect.effectType == PlayerModifier.PlayerModifierType.MANA_GENERATION) {
             manaPerTurn += effect.value;
           }
         }
@@ -244,8 +243,8 @@ public abstract class Player implements Stringable {
     researchPerTurn = 0;
     for (Unit u : units) {
       if (u instanceof PlayerModifierBuilding) {
-        for (PlayerModifierEffect effect : ((PlayerModifierBuilding) u).getEffect()) {
-          if (effect.effectType == PlayerModifierEffectType.RESEARCH_GENERATION) {
+        for (PlayerModifier effect : ((PlayerModifierBuilding) u).getEffect()) {
+          if (effect.effectType == PlayerModifier.PlayerModifierType.RESEARCH_GENERATION) {
             researchPerTurn += effect.value;
           }
         }
@@ -354,7 +353,7 @@ public abstract class Player implements Stringable {
         .stream()
         .filter(u -> u instanceof PlayerModifierBuilding)
         .flatMap(u -> ((PlayerModifierBuilding) u).getEffect().stream())
-        .filter(e -> e.effectType == PlayerModifierEffectType.CAST_SELECT_BOOST)
+        .filter(e -> e.effectType == PlayerModifier.PlayerModifierType.CAST_SELECT_BOOST)
         .mapToInt(e -> e.value)
         .sum();
   }
@@ -367,7 +366,7 @@ public abstract class Player implements Stringable {
         .stream()
         .filter(u -> u instanceof PlayerModifierBuilding)
         .flatMap(u -> ((PlayerModifierBuilding) u).getEffect().stream())
-        .filter(e -> e.effectType == PlayerModifierEffectType.CAST_CLOUD_BOOST)
+        .filter(e -> e.effectType == PlayerModifier.PlayerModifierType.CAST_CLOUD_BOOST)
         .mapToInt(e -> e.value)
         .sum();
   }

@@ -17,6 +17,7 @@ import model.unit.commander.Commander;
 import model.unit.modifier.CustomModifier;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.Modifiers;
+import model.unit.modifier.PlayerModifier;
 import model.unit.stat.Stat;
 import model.unit.stat.StatType;
 import model.unit.stat.Stats;
@@ -120,10 +121,10 @@ public abstract class Unit implements Stringable {
         (int) p.getUnits().stream().filter(u -> u.name.equals(name)).count() * manaCostScaling;
 
     // Discount - check for player modifiers that make this type of unit creation cheaper.
-    PlayerModifierBuilding.PlayerModifierEffectType discountType =
+    PlayerModifier.PlayerModifierType discountType =
         this instanceof Building
-            ? PlayerModifierBuilding.PlayerModifierEffectType.BUILD_DISCOUNT
-            : PlayerModifierBuilding.PlayerModifierEffectType.SUMMON_DISCOUNT;
+            ? PlayerModifier.PlayerModifierType.BUILD_DISCOUNT
+            : PlayerModifier.PlayerModifierType.SUMMON_DISCOUNT;
     double discountPercentage =
         1.0
             - p.getUnits()

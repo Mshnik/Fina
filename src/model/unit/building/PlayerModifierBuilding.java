@@ -7,57 +7,17 @@ import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
-import model.unit.building.PlayerModifierBuilding.PlayerModifierEffect;
+import model.unit.modifier.PlayerModifier;
 import model.unit.stat.Stats;
 
 /** An extension of building that grants the player (not a particular unit) a bonus. */
-public final class PlayerModifierBuilding extends Building<List<PlayerModifierEffect>> {
-
-  /** Types of effects that can occur at start of each turn. */
-  public enum PlayerModifierEffectType {
-    /** Bonus mana generation. */
-    MANA_GENERATION,
-    /** Bonus research. */
-    RESEARCH_GENERATION,
-    /** Percent discount on Summoning. */
-    SUMMON_DISCOUNT,
-    /** Percent discount on Building. */
-    BUILD_DISCOUNT,
-    /** Percent discount on Casting. */
-    CAST_DISCOUNT,
-    /** Increase selection range for non-cloud casting. */
-    CAST_SELECT_BOOST,
-    /** Increased cloud level for cloud-casting. */
-    CAST_CLOUD_BOOST;
-  }
-
-  public static final class PlayerModifierEffect {
-    /** The type of effect for this effect. */
-    public final PlayerModifierEffectType effectType;
-
-    /** The value of this effect. */
-    public final int value;
-
-    /** A string representation of this effect. */
-    public final String description;
-
-    PlayerModifierEffect(PlayerModifierEffectType effectType, int value, String description) {
-      this.effectType = effectType;
-      this.value = value;
-      this.description = description;
-    }
-
-    @Override
-    public String toString() {
-      return description;
-    }
-  }
+public final class PlayerModifierBuilding extends Building<List<PlayerModifier>> {
 
   /** Effects this building grants if this isn't on ancient ground. */
-  public final List<PlayerModifierEffect> nonAncientGroundEffect;
+  public final List<PlayerModifier> nonAncientGroundEffect;
 
   /** Effects this building grants if this is on ancient ground. */
-  public final List<PlayerModifierEffect> ancientGroundEffect;
+  public final List<PlayerModifier> ancientGroundEffect;
 
   /**
    * Constructor for Building. Also adds this model.unit to the tile it is on as an occupant, and
@@ -86,8 +46,8 @@ public final class PlayerModifierBuilding extends Building<List<PlayerModifierEf
       int manaCostScaling,
       List<Terrain> validTerrain,
       Stats stats,
-      List<PlayerModifierEffect> nonAncientGroundEffect,
-      List<PlayerModifierEffect> ancientGroundEffect)
+      List<PlayerModifier> nonAncientGroundEffect,
+      List<PlayerModifier> ancientGroundEffect)
       throws RuntimeException, IllegalArgumentException {
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, stats);
     this.nonAncientGroundEffect = nonAncientGroundEffect;
@@ -95,15 +55,15 @@ public final class PlayerModifierBuilding extends Building<List<PlayerModifierEf
   }
 
   @Override
-  public List<List<PlayerModifierEffect>> getPossibleEffectsList() {
-    LinkedList<List<PlayerModifierEffect>> list = new LinkedList<>();
+  public List<List<PlayerModifier>> getPossibleEffectsList() {
+    LinkedList<List<PlayerModifier>> list = new LinkedList<>();
     list.add(nonAncientGroundEffect);
     list.add(ancientGroundEffect);
     return Collections.unmodifiableList(list);
   }
 
   @Override
-  public List<PlayerModifierEffect> getEffect() {
+  public List<PlayerModifier> getEffect() {
     return getLocation() != null && getLocation().terrain == Terrain.ANCIENT_GROUND
         ? ancientGroundEffect
         : nonAncientGroundEffect;
