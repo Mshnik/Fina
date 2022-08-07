@@ -80,7 +80,7 @@ public final class GameController {
   /** Text representing fighting */
   public static final String FIGHT = "Attack";
   /** Text representing commander actions (summon/build/cast) */
-  public static final String COMMANDER_ACTION = "Cast";
+  public static final String COMMANDER_ACTION = "Command";
   /** Text representing summoning */
   public static final String SUMMON = "Summon";
   /** Text representing building (building summoning) */
