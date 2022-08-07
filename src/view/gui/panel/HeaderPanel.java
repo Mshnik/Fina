@@ -24,67 +24,109 @@ import java.util.List;
  */
 public final class HeaderPanel extends JPanel {
 
-  /** */
+  /**
+   *
+   */
   private static final long serialVersionUID = 1L;
 
-  /** The Height of the HeaderPanel */
+  /**
+   * The Height of the HeaderPanel
+   */
   private static final int HEIGHT = 50;
 
-  /** The color of the border surrounding the headerPanel */
+  /**
+   * The color of the border surrounding the headerPanel
+   */
   private static final Color BORDER_COLOR = new Color(96, 66, 5);
 
-  /** Distance (in pixels) between the top of the HeaderPanel and the top of the bars */
+  /**
+   * Distance (in pixels) between the top of the HeaderPanel and the top of the bars
+   */
   private static final int MARGIN = 15;
 
-  /** Width of the stroke used to make the bars */
+  /**
+   * Width of the stroke used to make the bars
+   */
   private static final int STROKE = 4;
 
-  /** Extra width on sides of components. */
+  /**
+   * Extra width on sides of components.
+   */
   private static final int X_MARGIN = 20;
 
-  /** Color of text used to show mana and health bars */
+  /**
+   * Color of text used to show mana and health bars
+   */
   private static final Color TEXT_COLOR = Color.white;
 
-  /** Color behind the bars if the bars aren't totally full */
+  /**
+   * Color behind the bars if the bars aren't totally full
+   */
   private static final Color BACK_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.2f);
 
-  /** Increments drawn with thin black lines along bar. If negative, not used. */
+  /**
+   * Increments drawn with thin black lines along bar. If negative, not used.
+   */
   private static final int INCREMENT_VAL = -1;
 
-  /** Color used to draw Increment lines - translucent black */
+  /**
+   * Color used to draw Increment lines - translucent black
+   */
   private static final Color INCREMENT_COLOR = new Color(0.0f, 0.0f, 0.0f, 0.5f);
 
-  /** The border color for the health bar */
+  /**
+   * The border color for the health bar
+   */
   private static final Color HEALTH_BORDER = new Color(153, 15, 0);
 
-  /** The filled in color for the health bar */
+  /**
+   * The filled in color for the health bar
+   */
   private static final Color HEALTH_FILL = new Color(242, 33, 10);
 
-  /** The border color for the mana bar */
+  /**
+   * The border color for the mana bar
+   */
   private static final Color MANA_BORDER = new Color(0, 53, 145);
 
-  /** The filled in color for the mana bar */
+  /**
+   * The filled in color for the mana bar
+   */
   private static final Color MANA_FILL = new Color(9, 93, 237);
 
-  /** The filled in color for the manaPerTurn cap in the mana bar */
+  /**
+   * The filled in color for the manaPerTurn cap in the mana bar
+   */
   private static final Color MANA_PER_TURN_FILL = new Color(9, 169, 237);
 
-  /** Color for level text */
+  /**
+   * Color for level text
+   */
   private static final Color LEVEL = Color.WHITE;
 
-  /** The border color for the exp bar */
+  /**
+   * The border color for the exp bar
+   */
   private static final Color EXP_BORDER = new Color(135, 121, 17);
 
-  /** The filled in color for the exp bar */
+  /**
+   * The filled in color for the exp bar
+   */
   private static final Color EXP_FILL = new Color(208, 189, 26);
 
-  /** The filled in color for the exp per turn cap in the exp bar */
+  /**
+   * The filled in color for the exp per turn cap in the exp bar
+   */
   private static final Color EXP_PER_TURN_FILL = new Color(255, 237, 43);
 
-  /** The "max" mana (highest mana value seen thus far for the given players) */
+  /**
+   * The "max" mana (highest mana value seen thus far for the given players)
+   */
   private HashMap<Player, Integer> maxMana;
 
-  /** The frame this belongs to */
+  /**
+   * The frame this belongs to
+   */
   public final Frame frame;
 
   public HeaderPanel(Frame f) {
@@ -93,7 +135,9 @@ public final class HeaderPanel extends JPanel {
     setPreferredSize(new Dimension(0, HEIGHT));
   }
 
-  /** Draws the HeaderPanel */
+  /**
+   * Draws the HeaderPanel
+   */
   @Override
   public void paintComponent(Graphics g) {
     Game game = frame.getController().game;
@@ -190,7 +234,7 @@ public final class HeaderPanel extends JPanel {
               EXP_FILL,
               Math.min(1, (double) p.getResearch() / p.getResearchRequirement()),
               EXP_PER_TURN_FILL,
-              Math.min(p.getResearchPerTurn(), p.getResearchRemaining())
+              Math.max(0, Math.min(p.getResearchPerTurn(), p.getResearchRemaining()))
                   / (double) p.getResearchRequirement()),
           p.getResearch()
               + (p.getResearchPerTurn() > 0 ? " ( +" + p.getResearchPerTurn() + ") " : "")
@@ -215,13 +259,13 @@ public final class HeaderPanel extends JPanel {
   /**
    * Draws a bar with the border and fill colors, full the given amount
    *
-   * @param g2d - a graphics object to draw with
-   * @param X - the x coordinate of the top left corner
-   * @param width - the width of the bar to draw.
-   * @param border - the color with which to draw the border.
+   * @param g2d      - a graphics object to draw with
+   * @param X        - the x coordinate of the top left corner
+   * @param width    - the width of the bar to draw.
+   * @param border   - the color with which to draw the border.
    * @param segments - the segments to fill.
-   * @param maxVal - the value the full bar currently corresponds to
-   * @param text - the text to draw.
+   * @param maxVal   - the value the full bar currently corresponds to
+   * @param text     - the text to draw.
    */
   private void drawBar(
       Graphics2D g2d,

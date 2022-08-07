@@ -626,7 +626,7 @@ public abstract class Player implements Stringable {
       commander.addResearch(researchPerTurn);
 
       // Check for leveling up first and add out of turn research.
-      getCommander().checkForLevelUp();
+      getCommander().ingestResearchAndCheckLevelUp();
 
       // Refresh for turn and refresh actionable units
       actionableUnits.clear();

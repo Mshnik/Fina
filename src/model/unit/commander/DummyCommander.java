@@ -105,7 +105,7 @@ public final class DummyCommander extends Commander {
    * The amount of research required to get to the next level. Index i = cost to get from level i+1
    * to i+2 (because levels are 1 indexed).
    */
-  private static final int[] RESEARCH_REQS = {500, 2000, 10000, 1000000};
+  private static final int[] RESEARCH_REQS = {500, 2000, 10000, 5000};
 
   public DummyCommander() {
     this(null, null);

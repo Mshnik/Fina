@@ -131,10 +131,10 @@ public abstract class Commander extends MovingUnit implements Summoner {
   /**
    * Checks for level up, and levels up if need be (may be multiple times if that acutally happens).
    */
-  public void checkForLevelUp() {
+  public void ingestResearchAndCheckLevelUp() {
     addResearch(outOfTurnResearch);
     outOfTurnResearch = 0;
-    while (research >= getResearchRequirement()) {
+    while (research >= getResearchRequirement() && level < MAX_LEVEL) {
       levelUp();
     }
   }
@@ -251,13 +251,13 @@ public abstract class Commander extends MovingUnit implements Summoner {
 
   /**
    * Returns the array of research requirements for advancing from each level to the next. Because
-   * levels are 1 indexed, requirement[i] is the requirement to get to level i+2.
+   * levels are 1 indexed, requirement[i] is the requirement to get to level i+2. Requirement[MAX_LEVEL-1]
+   * is the amount of research needed to use this commander's ultimate power.
    */
   abstract int[] getResearchRequirements();
 
-  /** Returns the amount of research necessary to get to the next level */
+  /** Returns the amount of research necessary to get to the next level or use an ultimate power, if at max level. */
   public int getResearchRequirement() {
-    if (level == MAX_LEVEL) return Integer.MAX_VALUE;
     return getResearchRequirements()[level - 1];
   }
 
