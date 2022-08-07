@@ -1,22 +1,22 @@
 Name,Image Filename,Level,Cost,Cost Scaling,Type,Health,Vision,Valid Terrain,Building Type,Regular Effect,Ancient Ground Effect
-Well,building_0_0.png,1,150,0,Utility,75,0,Grass-Woods-Ancient_Ground,PlayerModifierBuilding,+ 50 bonus mana gen / turn,+ 150 bonus mana gen / turn
-Library,building_0_1.png,1,100,0,Utility,75,0,Grass-Woods-Ancient_Ground,PlayerModifierBuilding,+ 25 exp / turn,+ 75 exp / turn
-Blockade,building_0_2.png,1,25,0,Defensive,100,0,Grass-Woods-Ancient_Ground,NoEffectBuilding,-,-
-Portal,building_0_3.png,1,150,0,Offensive,50,1,Grass-Woods-Ancient_Ground,SummonerBuilding,Summon radius 1 once per turn,Summon radius 3 three times per turn
+Well,building_0_0.png,1,75,100,Utility,75,0,Grass-Woods-Ancient_Ground,PlayerModifierBuilding,+ 50 bonus mana gen / turn,+ 150 bonus mana gen / turn
+Library,building_0_1.png,1,100,50,Utility,75,0,Grass-Woods-Ancient_Ground,PlayerModifierBuilding,+ 25 exp / turn,+ 75 exp / turn
+Blockade,building_0_2.png,1,10,10,Defensive,100,0,Grass-Woods-Ancient_Ground,NoEffectBuilding,-,-
+Portal,building_0_3.png,1,100,100,Offensive,50,1,Grass-Woods-Ancient_Ground,SummonerBuilding,Summon radius 1 once per turn,Summon radius 3 three times per turn
 ,,,,,,,,,,,
-Watchtower,building_1_0.png,2,75,0,Utility,85,2+Eagle Eye,Grass-Woods-Mountain-Ancient_Ground,NoEffectBuilding,--,--
-Dojo,building_1_1.png,2,200,0,Utility,80,0,Grass-Woods-Ancient_Ground,CommanderModifierBuilding,+ 1 action/turn,+ 3 actions/turn
+Watchtower,building_1_0.png,2,70,15,Utility,85,2+Eagle Eye,Grass-Woods-Mountain-Ancient_Ground,NoEffectBuilding,--,--
+Dojo,building_1_1.png,2,175,25,Utility,80,0,Grass-Woods-Ancient_Ground,CommanderModifierBuilding,+ 1 action/turn,+ 3 actions/turn
 SKIP,Temple,building_1_2.png,2,150,0,Utility,50,0,Ancient_Ground,Temple,--,"All unit buffs, Varies by # of temples: 1: +2 vision 2: Strengthened +5 Toughness +5 3: +2 move 4: Tenacity 20 5: Strengthed +20 Toughness +10"
-Fountain,building_1_3.png,2,150,0,Defensive,90,0,Grass-Woods-Ancient_Ground,StartOfTurnEffectBuilding,Start of turn heal combatants in radius 1 by 5 health,Start of turn heal combatants in radius 2 by 20 health
-Armory,building_1_4.png,2,200,0,Offensive,100,0,Grass-Woods-Ancient_Ground,AllUnitModifierBuilding,All units Strengthened 2,All units Strengthened 5 + Toughness 3
+Fountain,building_1_3.png,2,150,50,Defensive,90,0,Grass-Woods-Ancient_Ground,StartOfTurnEffectBuilding,Start of turn heal combatants in radius 1 by 5 health,Start of turn heal combatants in radius 2 by 20 health
+Armory,building_1_4.png,2,175,75,Offensive,100,0,Grass-Woods-Ancient_Ground,AllUnitModifierBuilding,All units Strengthened 2,All units Strengthened 5 + Toughness 3
 ,,,,,,,,,,,
-Comms Tower,building_2_0.png,3,200,0,Utility,90,2+Eagle Eye,Grass-Woods-Mountain-Ancient_Ground,AllUnitModifierBuilding,All units Farsight 1,"All Farsight 3, Quickness 1"
-Laboratory,building_2_1.png,3,250,0,Utility,75,0,Grass-Ancient_Ground,PlayerModifierBuilding,Targeted Spell +1 Range,Targeted Spell +1 Range and Cloud Spell +1 cloud level
-Cemetery,building_2_2.png,3,300,0,Offensive,80,0,Grass-Ancient_Ground,AllUnitModifierBuilding,All units Bloodlust 5,All units Bloodlust 20
-Siege Works,building_2_3.png,3,300,0,Offensive,80,0,Grass-Ancient_Ground,AllUnitModifierBuilding,All units Siege 25,All units Siege 100
-Military Academy,building_2_4.png,3,300,0,Defensive,80,0,Grass-Ancient_Ground,AllUnitModifierBuilding,All units Patience 5,All units Patience 20
-Sanctuary,building_2_5.png,3,300,0,Defensive,80,0,Grass-Ancient_Ground,AllUnitModifierBuilding,All units Hexproof 10,All units Hexproof 40
+Comms Tower,building_2_0.png,3,175,25,Utility,90,2+Eagle Eye,Grass-Woods-Mountain-Ancient_Ground,AllUnitModifierBuilding,All units Farsight 1,"All Farsight 3, Quickness 1"
+Laboratory,building_2_1.png,3,225,75,Utility,75,0,Grass-Ancient_Ground,PlayerModifierBuilding,Targeted Spell +1 Range,Targeted Spell +1 Range and Cloud Spell +1 cloud level
+Cemetery,building_2_2.png,3,300,50,Offensive,80,0,Grass-Ancient_Ground,AllUnitModifierBuilding,All units Bloodlust 5,All units Bloodlust 20
+Siege Works,building_2_3.png,3,300,50,Offensive,80,0,Grass-Ancient_Ground,AllUnitModifierBuilding,All units Siege 25,All units Siege 100
+Military Academy,building_2_4.png,3,300,50,Defensive,80,0,Grass-Ancient_Ground,AllUnitModifierBuilding,All units Patience 5,All units Patience 20
+Sanctuary,building_2_5.png,3,300,50,Defensive,80,0,Grass-Ancient_Ground,AllUnitModifierBuilding,All units Hexproof 10,All units Hexproof 40
 ,,,,,,,,,,,
-Ritual Grounds,building_3_0.png,4,450,0,Utility,80,0,Grass-Ancient_Ground,PlayerModifierBuilding,Summon cost -10%,Summon cost -30%
-Archive,building_3_1.png,4,450,0,Utility,80,0,Grass-Ancient_Ground,PlayerModifierBuilding,Spell cost -15%,Spell cost -40%
-Studio,building_3_2.png,4,450,0,Utility,80,0,Grass-Ancient_Ground,PlayerModifierBuilding,Build cost -15%,Build cost -40%
+Ritual Grounds,building_3_0.png,4,450,150,Utility,80,0,Grass-Ancient_Ground,PlayerModifierBuilding,Summon cost -10%,Summon cost -30%
+Archive,building_3_1.png,4,450,150,Utility,80,0,Grass-Ancient_Ground,PlayerModifierBuilding,Spell cost -15%,Spell cost -40%
+Studio,building_3_2.png,4,450,150,Utility,80,0,Grass-Ancient_Ground,PlayerModifierBuilding,Build cost -15%,Build cost -40%
