@@ -159,9 +159,9 @@ final class NewGameSelector {
       startingCommanderLevelSelector =
           new JComboBox<>(
               Stream.iterate(1, i -> i + 1)
-                  .limit(Commander.MAX_LEVEL - 1)
+                  .limit(Commander.MAX_LEVEL)
                   .collect(Collectors.toList())
-                  .toArray(new Integer[Commander.MAX_LEVEL - 1]));
+                  .toArray(new Integer[Commander.MAX_LEVEL]));
 
       add(boardSelector, BorderLayout.NORTH);
 

@@ -37,7 +37,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
   static final String LEVEL_UP_MODIFIER_PREFIX = "Level Up";
 
   /** The highest level commanders can achieve */
-  public static final int MAX_LEVEL = 5;
+  public static final int MAX_LEVEL = 4;
 
   /** The bonus ratio of damage -> research for damaging a commander. */
   public static final double BONUS_DAMAGE_TO_RESEARCH_RATIO = 1.25;
@@ -50,7 +50,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
 
   /**
    * The current level of this player. Starts at 1, increases by 1 every time the player performs a
-   * levelup action. Capped at 5
+   * levelup action. Capped at 4.
    */
   private int level;
 

@@ -20,7 +20,7 @@ final class EvoPlayer {
   private static final int KNOCKOUT_POINTS = 0;
 
   /** The amount of points an EvoPlayer starts with. */
-  static final int STARTING_POINTS = 1;
+  static final int STARTING_POINTS = 3;
 
   /** The amount of points needed to split. */
   private static final int SPLIT_POINTS = STARTING_POINTS * 2;

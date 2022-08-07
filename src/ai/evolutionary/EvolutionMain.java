@@ -16,7 +16,7 @@ final class EvolutionMain {
   public static void main(String[] args) throws FileNotFoundException {
     EvoPopulation population =
         new EvoPopulation("Backyard.csv", "Darkwood.csv", "Hourglass.csv", "Ridges.csv");
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 16; i++) {
       population.addPlayer(
           new EvoPlayer(
               DelegatingAIControllers.randomWeightsDelegatingAIController().getDelegates()));
