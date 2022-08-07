@@ -5,13 +5,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.SwingUtilities;
+
 import model.game.Player;
 import model.unit.commander.Commander;
 import model.unit.commander.DummyCommander;
@@ -23,16 +26,22 @@ import model.unit.commander.DummyCommander;
  */
 public final class AudioController {
 
-  /** True iff debug info should be printed. */
+  /**
+   * True iff debug info should be printed.
+   */
   private static final boolean DEBUG = false;
 
-  /** Valid sound effects. */
+  /**
+   * Valid sound effects.
+   */
   public enum SoundEffect {
     CLICK_YES("click_yes.wav"),
     CLICK_NO("click_no.wav"),
     CURSOR_MOVE("cursor_move.wav");
 
-    /** The filepath to the sound effect file. */
+    /**
+     * The filepath to the sound effect file.
+     */
     private final String filePath;
 
     /**
@@ -41,13 +50,17 @@ public final class AudioController {
      */
     private final List<Clip> clips;
 
-    /** Constructs a new sound effect from the given filename. */
+    /**
+     * Constructs a new sound effect from the given filename.
+     */
     private SoundEffect(String filename) {
       clips = new ArrayList<>();
       filePath = "sound/effects/" + filename;
     }
 
-    /** Reads this sound effect into a new clip and adds it into clips. */
+    /**
+     * Reads this sound effect into a new clip and adds it into clips.
+     */
     private Clip readIntoNewClip() {
       try {
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath));
@@ -75,7 +88,9 @@ public final class AudioController {
     }
   }
 
-  /** Valid music. Can be menu or commander. */
+  /**
+   * Valid music. Can be menu or commander.
+   */
   public enum Music {
     DUMMY_COMMANDER_THEME("jess_theme.mp3");
 
@@ -94,20 +109,24 @@ public final class AudioController {
 
     // Start up a JavaFX room for sound, don't show anything.
     // this will prepare JavaFX toolkit and environment so we can use media.
-    SwingUtilities.invokeLater(JFXPanel::new);
+    new JFXPanel();
   }
 
   private static boolean MUTE;
   private static MediaPlayer mediaPlayer;
 
-  /** Plays the given sound effect. */
+  /**
+   * Plays the given sound effect.
+   */
   public static void playEffect(SoundEffect effect) {
     if (!MUTE) {
       effect.play();
     }
   }
 
-  /** Plays the given music. */
+  /**
+   * Plays the given music.
+   */
   private static void playMusic(Music music) {
     if (!MUTE) {
       if (mediaPlayer != null) {
@@ -120,21 +139,27 @@ public final class AudioController {
     }
   }
 
-  /** Plays the music for the given commander. */
+  /**
+   * Plays the music for the given commander.
+   */
   public static void playMusicForTurn(Player player) {
-    //    playMusic(
-    //        MUSIC_MAP.getOrDefault(player.getCommander().getClass(),
-    // Music.DUMMY_COMMANDER_THEME));
+    playMusic(
+        MUSIC_MAP.getOrDefault(player.getCommander().getClass(),
+            Music.DUMMY_COMMANDER_THEME));
   }
 
-  /** Stops music. */
+  /**
+   * Stops music.
+   */
   public static void stopMusic() {
     if (mediaPlayer != null) {
       mediaPlayer.stop();
     }
   }
 
-  /** Sets the mute setting and stops any currently playing music. */
+  /**
+   * Sets the mute setting and stops any currently playing music.
+   */
   public static void setMute(boolean mute) {
     // Stop media player.
     if (mediaPlayer != null && mute) {
