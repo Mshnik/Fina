@@ -11,7 +11,9 @@ import model.unit.stat.Stats;
 
 public final class DummyCommander extends Commander {
 
-  /** Stats for maxHealth, range and visionRange of dummy commander */
+  /**
+   * Stats for maxHealth, range and visionRange of dummy commander
+   */
   private static final Stats STATS =
       new Stats(
           new Stat(StatType.MAX_HEALTH, 250),
@@ -25,8 +27,30 @@ public final class DummyCommander extends Commander {
           new Stat(StatType.MOUNTAIN_COST, 9999),
           new Stat(StatType.SEA_COST, 9999));
 
-  /** Levelup stats for DummyCommander. */
-  private static final ModifierBundle LEVELUP =
+  /**
+   * Levelup stats for DummyCommander for levels 2.
+   */
+  private static final ModifierBundle LEVELUP_2 =
+      new ModifierBundle(
+          new StatModifier(
+              LEVEL_UP_MODIFIER_PREFIX + " Mana",
+              Integer.MAX_VALUE,
+              StackMode.STACKABLE,
+              StatType.MANA_PER_TURN,
+              StatModifier.ModificationType.ADD,
+              100),
+          new StatModifier(
+              LEVEL_UP_MODIFIER_PREFIX + " Actions",
+              Integer.MAX_VALUE,
+              StackMode.STACKABLE,
+              StatType.ACTIONS_PER_TURN,
+              StatModifier.ModificationType.ADD,
+              1));
+
+  /**
+   * Levelup stats for DummyCommander for levels 3.
+   */
+  private static final ModifierBundle LEVELUP_3 =
       new ModifierBundle(
           new StatModifier(
               LEVEL_UP_MODIFIER_PREFIX + " Mana",
@@ -54,6 +78,26 @@ public final class DummyCommander extends Commander {
               Integer.MAX_VALUE,
               StackMode.STACKABLE,
               StatType.VISION_RANGE,
+              StatModifier.ModificationType.ADD,
+              1));
+
+  /**
+   * Levelup stats for DummyCommander for levels 4.
+   */
+  private static final ModifierBundle LEVELUP_4 =
+      new ModifierBundle(
+          new StatModifier(
+              LEVEL_UP_MODIFIER_PREFIX + " Mana",
+              Integer.MAX_VALUE,
+              StackMode.STACKABLE,
+              StatType.MANA_PER_TURN,
+              StatModifier.ModificationType.ADD,
+              100),
+          new StatModifier(
+              LEVEL_UP_MODIFIER_PREFIX + " Actions",
+              Integer.MAX_VALUE,
+              StackMode.STACKABLE,
+              StatType.ACTIONS_PER_TURN,
               StatModifier.ModificationType.ADD,
               1));
 
@@ -86,7 +130,16 @@ public final class DummyCommander extends Commander {
   }
 
   @Override
-  ModifierBundle getLevelupModifierBundle() {
-    return LEVELUP;
+  ModifierBundle getLevelupModifierBundle(int level) {
+    switch (level) {
+      case 2:
+        return LEVELUP_2;
+      case 3:
+        return LEVELUP_3;
+      case 4:
+        return LEVELUP_4;
+      default:
+        return new ModifierBundle();
+    }
   }
 }

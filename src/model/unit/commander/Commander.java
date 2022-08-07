@@ -290,8 +290,8 @@ public abstract class Commander extends MovingUnit implements Summoner {
     outOfTurnResearch += deltaResearch;
   }
 
-  /** Returns the bundle of stat boosts to give the commander when it levels up. */
-  abstract ModifierBundle getLevelupModifierBundle();
+  /** Returns the bundle of stat boosts to give the commander when it levels up to level {@code level}. */
+  abstract ModifierBundle getLevelupModifierBundle(int level);
 
   /**
    * Called by Player class when this levels up. Can be overriden by subclass to cause affect when
@@ -302,7 +302,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
     if (level < MAX_LEVEL) {
       research -= getResearchRequirement();
       level++;
-      getLevelupModifierBundle().clone(this, this);
+      getLevelupModifierBundle(level).clone(this, this);
       owner.updateManaPerTurn();
       owner.refreshVisionCloud(this);
       owner.game.getController().startNewAbilityDecision(owner);
