@@ -37,13 +37,19 @@ import java.util.stream.Collectors;
  */
 public abstract class Player implements Stringable {
 
-  /** The Game this player is playing in */
+  /**
+   * The Game this player is playing in
+   */
   public final Game game;
 
-  /** The index of this player in the model.game, where player 1 is the first player */
+  /**
+   * The index of this player in the model.game, where player 1 is the first player
+   */
   public final int index;
 
-  /** Colors of players, determined by index. */
+  /**
+   * Colors of players, determined by index.
+   */
   public enum PlayerColor {
     BLUE,
     RED,
@@ -52,41 +58,58 @@ public abstract class Player implements Stringable {
     PURPLE;
   }
 
-  /** The Units this player controls, in the order they were added to this player. */
-  private List<Unit> units;
+  /**
+   * The Units this player controls, in the order they were added to this player.
+   */
+  private final List<Unit> units;
 
-  /** The list of units the player controls that can still act this turn. Recomputed each turn. */
-  private List<Unit> actionableUnits;
+  /**
+   * The list of units the player controls that can still act this turn. Recomputed each turn.
+   */
+  private final List<Unit> actionableUnits;
 
-  /** The commander belonging to this player */
+  /**
+   * The commander belonging to this player
+   */
   private Commander commander;
 
-  /** The AllUnitModifierBuildings this player controls, if any. */
-  private Set<AllUnitModifierBuilding> allUnitModifierBuildings;
+  /**
+   * The AllUnitModifierBuildings this player controls, if any.
+   */
+  private final Set<AllUnitModifierBuilding> allUnitModifierBuildings;
 
-  /** The temples this player controls, if any. Max length 5 */
-  private ArrayList<Temple> temples;
+  /**
+   * The temples this player controls, if any. Max length 5
+   */
+  private final ArrayList<Temple> temples;
 
-  /** The Tiles in the model.board this player has vision of, keyed by units */
-  private Map<Unit, Set<Tile>> visionCloud;
+  /**
+   * The Tiles in the model.board this player has vision of, keyed by units
+   */
+  private final Map<Unit, Set<Tile>> visionCloud;
 
-  /** The Tiles in the model.board this player has vision of. A flattened version of visionCloud. */
+  /**
+   * The Tiles in the model.board this player has vision of. A flattened version of visionCloud.
+   */
   private Set<Tile> visionCloudFlattened;
 
-  /** The tiles that combatants this player controls threatens. */
+  /**
+   * The tiles that combatants this player controls threatens.
+   */
   private final Map<Combatant, Set<Tile>> dangerRadius;
 
-  /** The sum of all the mana per turn generation/costs this player owns */
+  /**
+   * The sum of all the mana per turn generation/costs this player owns
+   */
   private int manaPerTurn;
 
-  /** The sum of all passive research generation this player owns. */
+  /**
+   * The sum of all passive research generation this player owns.
+   */
   private int researchPerTurn;
 
   /**
    * Constructor for Player class with just model.game.
-   *
-   * @param g
-   * @param c
    */
   public Player(Game g, Color c) {
     game = g;
@@ -100,41 +123,58 @@ public abstract class Player implements Stringable {
     dangerRadius = Collections.synchronizedMap(new HashMap<>());
   }
 
-  /** Returns the color of this player. */
+  /**
+   * Returns the color of this player.
+   */
   public PlayerColor getColor() {
     return PlayerColor.values()[index - 1];
   }
 
-  /** Returns true if it is this player's turn, false if some other player */
+  /**
+   * Returns true if it is this player's turn, false if some other player
+   */
   public boolean isMyTurn() {
     return game.getCurrentPlayer() == this;
   }
 
-  /** Returns true if this is a local human player, false otherwise */
+  /**
+   * Returns true if this is a local human player, false otherwise
+   */
   public abstract boolean isLocalHumanPlayer();
 
   // HEALTH AND MANA
-  /** Returns true if this player is alive. */
+
+  /**
+   * Returns true if this player is alive.
+   */
   public boolean isAlive() {
     return commander != null && getHealth() > 0;
   }
 
-  /** Returns the current health for this player (the health of the commander) */
+  /**
+   * Returns the current health for this player (the health of the commander)
+   */
   public int getHealth() {
     return commander.getHealth();
   }
 
-  /** Returns the max health for this player (the max health of the commander */
+  /**
+   * Returns the max health for this player (the max health of the commander
+   */
   public int getMaxHealth() {
     return commander.getMaxHealth();
   }
 
-  /** Returns the current mana for this player */
+  /**
+   * Returns the current mana for this player
+   */
   public int getMana() {
     return commander.getMana();
   }
 
-  /** Returns the manaPerTurn this player generates */
+  /**
+   * Returns the manaPerTurn this player generates
+   */
   public int getManaPerTurn() {
     return manaPerTurn;
   }
@@ -157,7 +197,9 @@ public abstract class Player implements Stringable {
     }
   }
 
-  /** Returns the current level (not exp) of this player */
+  /**
+   * Returns the current level (not exp) of this player
+   */
   public int getLevel() {
     if (commander != null) {
       return commander.getLevel();
@@ -166,22 +208,30 @@ public abstract class Player implements Stringable {
     }
   }
 
-  /** Returns the current amount of research this commander has accrewed */
+  /**
+   * Returns the current amount of research this commander has accrewed
+   */
   public int getResearch() {
     return commander.getResearch();
   }
 
-  /** Returns the amount of research necessary to get to the next level */
+  /**
+   * Returns the amount of research necessary to get to the next level
+   */
   public int getResearchRequirement() {
     return commander.getResearchRequirement();
   }
 
-  /** Returns the amount of research still necessary to get to the next level */
+  /**
+   * Returns the amount of research still necessary to get to the next level
+   */
   public int getResearchRemaining() {
     return commander.getResearchRemaining();
   }
 
-  /** Returns the researchPerTurn this player generates */
+  /**
+   * Returns the researchPerTurn this player generates
+   */
   public int getResearchPerTurn() {
     return researchPerTurn;
   }
@@ -204,17 +254,24 @@ public abstract class Player implements Stringable {
   }
 
   // UNITS
-  /** Returns the units belonging to this player. */
+
+  /**
+   * Returns the units belonging to this player.
+   */
   public Collection<Unit> getUnits() {
     return Collections.unmodifiableList(units);
   }
 
-  /** Returns a count of the number of units this player controls with the given name. */
+  /**
+   * Returns a count of the number of units this player controls with the given name.
+   */
   public long getUnitCountByName(String name) {
     return units.stream().filter(u -> u.name.equals(name)).count();
   }
 
-  /** Returns the subset of MovingUnits from getUnits. */
+  /**
+   * Returns the subset of MovingUnits from getUnits.
+   */
   public Set<MovingUnit> getMovingUnits() {
     return units
         .stream()
@@ -223,7 +280,9 @@ public abstract class Player implements Stringable {
         .collect(Collectors.toSet());
   }
 
-  /** Returns the subset of Combatants from getUnits. */
+  /**
+   * Returns the subset of Combatants from getUnits.
+   */
   public Set<Combatant> getCombatants() {
     return units
         .stream()
@@ -232,7 +291,9 @@ public abstract class Player implements Stringable {
         .collect(Collectors.toSet());
   }
 
-  /** Returns the subset of Summoner units from getUnits. */
+  /**
+   * Returns the subset of Summoner units from getUnits.
+   */
   public Set<Summoner> getSummoners() {
     return units
         .stream()
@@ -259,14 +320,18 @@ public abstract class Player implements Stringable {
     return actionableUnits.get((indexOfCurrentUnit + 1) % actionableUnits.size());
   }
 
-  /** Removes the given unit from the set of actionable units if it's no longer actionable. */
+  /**
+   * Removes the given unit from the set of actionable units if it's no longer actionable.
+   */
   public void maybeRemoveActionableUnit(Unit unit) {
     if (!unit.canFight() && !unit.canMove() && !unit.canSummon() && !unit.canCast()) {
       actionableUnits.remove(unit);
     }
   }
 
-  /** Returns the units belonging to this player in the given location cloud. */
+  /**
+   * Returns the units belonging to this player in the given location cloud.
+   */
   public Set<Unit> getUnitsInCloud(Cloud cloud) {
     return units
         .stream()
@@ -274,12 +339,16 @@ public abstract class Player implements Stringable {
         .collect(Collectors.toSet());
   }
 
-  /** Returns the index of the given temple, or -1 if this is not a temple owned by this */
+  /**
+   * Returns the index of the given temple, or -1 if this is not a temple owned by this
+   */
   public int getTempleIndex(Temple t) {
     return temples.indexOf(t);
   }
 
-  /** Returns the total cast select boost this player has. */
+  /**
+   * Returns the total cast select boost this player has.
+   */
   public int getCastSelectBoost() {
     return units
         .stream()
@@ -290,7 +359,9 @@ public abstract class Player implements Stringable {
         .sum();
   }
 
-  /** Returns the total cloud boost this player has. */
+  /**
+   * Returns the total cloud boost this player has.
+   */
   public int getCastCloudBoost() {
     return units
         .stream()
@@ -301,12 +372,16 @@ public abstract class Player implements Stringable {
         .sum();
   }
 
-  /** The commander belonging to this player */
+  /**
+   * The commander belonging to this player
+   */
   public Commander getCommander() {
     return commander;
   }
 
-  /** Recalcualtes nearly all state for this player - call after adding a unit. */
+  /**
+   * Recalcualtes nearly all state for this player - call after adding a unit.
+   */
   public void recalculateState() {
     refreshTempleBuffs();
     updateManaPerTurn();
@@ -378,7 +453,9 @@ public abstract class Player implements Stringable {
     recalculateState();
   }
 
-  /** Refreshes all temples buffs on all units */
+  /**
+   * Refreshes all temples buffs on all units
+   */
   private void refreshTempleBuffs() {
     for (Temple t : temples) {
       t.refreshForIndex();
@@ -386,21 +463,35 @@ public abstract class Player implements Stringable {
   }
 
   // VISION
-  /** Return true iff this player's vision contains tile T */
+
+  /**
+   * Return true iff this player's vision contains tile T
+   */
   public boolean canSee(Tile t) {
-    if (visionCloudFlattened == null) {
-      visionCloudFlattened =
-          visionCloud.values().stream().flatMap(Set::stream).collect(Collectors.toSet());
+    if (!game.getFogOfWar().active) {
+      return true;
     }
-    return !game.getFogOfWar().active || visionCloudFlattened.contains(t);
+
+    if (visionCloudFlattened == null) {
+      synchronized (visionCloud) {
+        visionCloudFlattened =
+            visionCloud.values().stream().flatMap(Set::stream).collect(Collectors.toSet());
+      }
+    }
+
+    return visionCloudFlattened.contains(t);
   }
 
-  /** Return true iff the tile u occupies is in this Player's vision */
+  /**
+   * Return true iff the tile u occupies is in this Player's vision
+   */
   public boolean canSee(Unit u) {
     return canSee(u.getLocation());
   }
 
-  /** Refreshes this player's vision cloud based on its units */
+  /**
+   * Refreshes this player's vision cloud based on its units
+   */
   public void refreshVisionCloud(Unit u) {
     Set<Tile> unitVisionCloud = visionCloud.getOrDefault(u, new HashSet<>());
     unitVisionCloud.clear();
@@ -449,7 +540,9 @@ public abstract class Player implements Stringable {
     }
   }
 
-  /** Returns the union of all sets in {@link #getDangerRadius()}. */
+  /**
+   * Returns the union of all sets in {@link #getDangerRadius()}.
+   */
   public Set<Tile> getDangerRadiusFlattened() {
     synchronized (dangerRadius) {
       return Collections.unmodifiableSet(
@@ -457,7 +550,9 @@ public abstract class Player implements Stringable {
     }
   }
 
-  /** Recomputes the danger radius for the given combatant. */
+  /**
+   * Recomputes the danger radius for the given combatant.
+   */
   public void recomputeDangerRadiusFor(Combatant combatant) {
     synchronized (dangerRadius) {
       dangerRadius.put(combatant, combatant.getDangerRadius(true));
@@ -518,6 +613,7 @@ public abstract class Player implements Stringable {
   }
 
   // TURN
+
   /**
    * Called when it becomes this player's turn. Does start of turn processing. - calls refresh on
    * each model.unit (no particular order). Return true if this player can start their turn -
@@ -580,7 +676,9 @@ public abstract class Player implements Stringable {
    */
   protected abstract void turn();
 
-  /** Called by the someone (the player / the model.game) when this player's turn should end. */
+  /**
+   * Called by the someone (the player / the model.game) when this player's turn should end.
+   */
   public abstract void endTurn();
 
   @Override
@@ -614,9 +712,13 @@ public abstract class Player implements Stringable {
     return s;
   }
 
-  /** Returns a string representing the player's identification, for ML logs. */
+  /**
+   * Returns a string representing the player's identification, for ML logs.
+   */
   public abstract String getIdString();
 
-  /** Returns a string representing the configuration of this player, for ML logs. */
+  /**
+   * Returns a string representing the configuration of this player, for ML logs.
+   */
   public abstract String getConfigString();
 }
