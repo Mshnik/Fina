@@ -139,7 +139,7 @@ public final class DummyCommander extends Commander {
       case 4:
         return LEVELUP_4;
       default:
-        return new ModifierBundle();
+        throw new UnsupportedOperationException("Unsupported level up: " + level);
     }
   }
 }
