@@ -2,6 +2,8 @@ package model.unit.commander;
 
 import model.board.Tile;
 import model.game.Player;
+import model.unit.ability.Abilities;
+import model.unit.ability.Ability;
 import model.unit.modifier.Modifier.StackMode;
 import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.StatModifier;
@@ -105,7 +107,23 @@ public final class DummyCommander extends Commander {
    * The amount of research required to get to the next level. Index i = cost to get from level i+1
    * to i+2 (because levels are 1 indexed).
    */
-  private static final int[] RESEARCH_REQS = {500, 2000, 10000, 5000};
+  private static final int[] RESEARCH_REQS = {50, 200, 10000, 5000};
+
+  /**
+   * Abilities this commander can have, by level. Abilities after level 1 may have choices.
+   */
+  private static final Ability[][] ABILITIES = new Ability[][]{
+      {
+      },
+      {
+          Abilities.getAbilityForName("Heal"),
+          Abilities.getAbilityForName("Strengthen")
+      },
+      {
+      },
+      {
+      }
+  };
 
   public DummyCommander() {
     this(null, null);
@@ -141,5 +159,10 @@ public final class DummyCommander extends Commander {
       default:
         throw new UnsupportedOperationException("Unsupported level up: " + level);
     }
+  }
+
+  @Override
+  public Ability[][] allAbilities() {
+    return ABILITIES;
   }
 }

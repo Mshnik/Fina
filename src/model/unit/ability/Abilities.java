@@ -5,9 +5,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
 import model.unit.Unit;
 import model.unit.ability.Ability.AbilityType;
 import model.unit.building.Building;
@@ -19,17 +23,23 @@ import model.util.ExpandableCloud;
 import model.util.ExpandableCloud.ExpandableCloudType;
 import util.TextIO;
 
-/** Index of abilities commanders can use. */
+/**
+ * Index of abilities commanders can use.
+ */
 public final class Abilities {
 
-  /** List of all available abilities as read from storage. */
-  private static final List<Ability> ABILITIES;
+  /**
+   * List of all available abilities as read from storage.
+   */
+  private static final Map<String, Ability> ABILITIES;
 
-  /** File containing the abilities, in csv format */
+  /**
+   * File containing the abilities, in csv format
+   */
   private static final File ABILITIES_FILE = new File("game/units/spells.csv");
 
   static {
-    List<Ability> abilities = new LinkedList<>();
+    LinkedHashMap<String, Ability> abilities = new LinkedHashMap<>();
     try {
       String[] abilityLines = TextIO.read(ABILITIES_FILE).split("\\n");
 
@@ -81,7 +91,13 @@ public final class Abilities {
               constructor = Ability::new;
               break;
           }
-          abilities.add(
+
+          if (abilities.containsKey(name)) {
+            throw new RuntimeException(String.format("Abilities already has ability for name %s: %s", name, abilities.get(name)));
+          }
+
+          abilities.put(
+              name,
               constructor.create(
                   name,
                   abilityType,
@@ -104,13 +120,17 @@ public final class Abilities {
       throw new RuntimeException(e);
     }
 
-    ABILITIES = Collections.unmodifiableList(abilities);
+    ABILITIES = Collections.unmodifiableMap(abilities);
   }
 
-  /** A generic functional interface wrapping a constructor for a particular Ability type. */
+  /**
+   * A generic functional interface wrapping a constructor for a particular Ability type.
+   */
   @FunctionalInterface
   private interface AbilityConstructor<A extends Ability> {
-    /** Creates a new ability instance from the given values. */
+    /**
+     * Creates a new ability instance from the given values.
+     */
     A create(
         String name,
         AbilityType abilityType,
@@ -126,7 +146,9 @@ public final class Abilities {
         List<AbilityEffect> effects);
   }
 
-  /** Helper for construction to get the list of ability effects for an ability. */
+  /**
+   * Helper for construction to get the list of ability effects for an ability.
+   */
   private static List<AbilityEffect> getEffectsFor(String abilityName) {
     switch (abilityName) {
       case "Magic Missile":
@@ -181,9 +203,22 @@ public final class Abilities {
     }
   }
 
-  /** Returns a list of all abilities */
+  /**
+   * Returns the ability for {@code name}, or throws an exception if it does not exist.
+   */
+  public static Ability getAbilityForName(String name) {
+    if (ABILITIES.containsKey(name)) {
+      return ABILITIES.get(name);
+    } else {
+      throw new RuntimeException("Unknown ability " + name);
+    }
+  }
+
+  /**
+   * Returns a list of all abilities
+   */
   public static List<Ability> getAbilities() {
-    return Collections.unmodifiableList(ABILITIES);
+    return Collections.unmodifiableList(new ArrayList<>(ABILITIES.values()));
   }
 
   /**
@@ -191,6 +226,6 @@ public final class Abilities {
    * indexed) - returns by value
    */
   public static List<Ability> getAbilitiesForAge(int age) {
-    return ABILITIES.stream().filter(a -> a.level == age).collect(Collectors.toList());
+    return ABILITIES.values().stream().filter(a -> a.level == age).collect(Collectors.toList());
   }
 }

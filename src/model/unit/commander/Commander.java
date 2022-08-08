@@ -1,10 +1,12 @@
 package model.unit.commander;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import model.board.Tile;
 import model.game.Player;
@@ -69,10 +71,10 @@ public abstract class Commander extends MovingUnit implements Summoner {
   /**
    * Abilities this commander has picked. each index is -1 before a commander has reached that level
    */
-  private int[] abilityChoices;
+  private final Ability[] abilityChoices;
 
   /** The abilities the commander has cast this turn */
-  private LinkedList<Ability> currentTurnCasts;
+  private final LinkedList<Ability> currentTurnCasts;
 
   /**
    * Constructor for Commander. Also adds this model.unit to the starting tile for the owner, and
@@ -94,10 +96,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
     setMana(0);
     this.location = location;
 
-    abilityChoices = new int[MAX_LEVEL];
-    for (int i = 1; i < MAX_LEVEL; i++) { // leave abilityChoices[0] = 0
-      abilityChoices[i] = -1;
-    }
+    abilityChoices = new Ability[MAX_LEVEL];
   }
 
   /** Forces implementing methods to return a commander. */
@@ -309,11 +308,25 @@ public abstract class Commander extends MovingUnit implements Summoner {
     }
   }
 
+  /** Returns all abilites this commander could have. Only some of these will be active, by level and levelup decision. */
+  public abstract Ability[][] allAbilities();
+
+  /** Returns the abilities this commander currently has. */
+  public List<Ability> getAbilities() {
+    return Arrays.stream(abilityChoices).filter(Objects::nonNull).collect(Collectors.toList());
+  }
+
+  /** Returns the abilities that can be chosen between for the current level. */
+  public Ability[] getAbilityChoices() {
+    return allAbilities()[level - 1];
+  }
+
   /** Chooses ability index i for this level. Called when the player ends the levelup decision */
   public void chooseAbility(int i) throws RuntimeException {
-    if (abilityChoices[level - 1] != -1)
+    if (abilityChoices[level - 1] != null) {
       throw new RuntimeException("Can't pick ability for level " + level + " already picked " + i);
-    abilityChoices[level - 1] = i;
+    }
+    abilityChoices[level - 1] = allAbilities()[level-1][i];
   }
 
   /**

@@ -24,6 +24,7 @@ import controller.selector.CastSelector;
 import controller.selector.LocationSelector;
 import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
+
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +41,7 @@ import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+
 import model.board.Board;
 import model.board.Tile;
 import model.game.AIPlayer;
@@ -71,35 +73,65 @@ import view.gui.panel.GamePanel;
  * @author MPatashnik /** The game that this controller wraps public final Game game;
  */
 public final class GameController {
-  /** Text for confirming a decision */
+  /**
+   * Text for confirming a decision
+   */
   public static final String CONFIRM = "Yes";
-  /** Text for canceling a decision */
+  /**
+   * Text for canceling a decision
+   */
   public static final String CANCEL = "No";
-  /** Text representing moving */
+  /**
+   * Text representing moving
+   */
   public static final String MOVE = "Move";
-  /** Text representing fighting */
+  /**
+   * Text representing fighting
+   */
   public static final String FIGHT = "Attack";
-  /** Text representing commander actions (summon/build/cast) */
+  /**
+   * Text representing commander actions (summon/build/cast)
+   */
   public static final String COMMANDER_ACTION = "Command";
-  /** Text representing summoning */
+  /**
+   * Text representing summoning
+   */
   public static final String SUMMON = "Summon";
-  /** Text representing building (building summoning) */
+  /**
+   * Text representing building (building summoning)
+   */
   public static final String BUILD = "Build";
-  /** Text representing casting (Using active abilities) */
+  /**
+   * Text representing casting (Using active abilities)
+   */
   public static final String CAST = "Magic";
-  /** Text for altering view options. */
+  /**
+   * Text for altering view options.
+   */
   private static final String ALTER_VIEW_OPTIONS = "View Options";
-  /** Text for the current ModifierIcon type setting. */
+  /**
+   * Text for the current ModifierIcon type setting.
+   */
   private static final String MODIFIER_ICON_TYPE = "Modifier Icon TYPE";
-  /** Text for the current ModifierIcon filter setting. */
+  /**
+   * Text for the current ModifierIcon filter setting.
+   */
   private static final String MODIFIER_ICON_FILTER = "Modifier Icon Filter";
-  /** Text for the current ModifierIcon display setting. */
+  /**
+   * Text for the current ModifierIcon display setting.
+   */
   private static final String MODIFIER_ICON_VIEW = "Modifier Icon Display";
-  /** Text for clearing the danger radius for all units. */
+  /**
+   * Text for clearing the danger radius for all units.
+   */
   private static final String CLEAR_DANGER_RADIUS = "Clear Danger Zone";
-  /** Text for toggling showing / unshowing the danger radius for this unit. */
+  /**
+   * Text for toggling showing / unshowing the danger radius for this unit.
+   */
   private static final String TOGGLE_DANGER_RADIUS = "Toggle Danger Zone";
-  /** Text for ending the turn. */
+  /**
+   * Text for ending the turn.
+   */
   private static final String END_TURN = "End Turn";
 
   /**
@@ -108,12 +140,16 @@ public final class GameController {
    */
   private static final String INFO_PREFIX = "Info: ";
 
-  /** Colors that will be used to tint player units. */
+  /**
+   * Colors that will be used to tint player units.
+   */
   private static final Color[] playerColorsArr = {
-    Color.BLUE, Color.MAGENTA, Color.YELLOW, Color.GREEN
+      Color.BLUE, Color.MAGENTA, Color.YELLOW, Color.GREEN
   };
 
-  /** Different possiblities for toggle options */
+  /**
+   * Different possiblities for toggle options
+   */
   public enum Toggle {
     NONE,
     DECISION,
@@ -123,46 +159,72 @@ public final class GameController {
     ATTACK_SELECTION
   }
 
-  /** Counter for naming game threads. */
+  /**
+   * Counter for naming game threads.
+   */
   private static final AtomicInteger gameNamingCounter = new AtomicInteger();
 
-  /** The layers of active toggles. Topmost is the current toggle */
+  /**
+   * The layers of active toggles. Topmost is the current toggle
+   */
   private Stack<Toggle> toggle;
 
-  /** Different types of summoning */
+  /**
+   * Different types of summoning
+   */
   public enum SummonType {
     UNIT,
     BUILDING
   }
 
-  /** The type of the most recent decision to summon. Null if none is currently in progress */
+  /**
+   * The type of the most recent decision to summon. Null if none is currently in progress
+   */
   private SummonType summonType;
 
-  /** Current decision that is underway. Null if none */
+  /**
+   * Current decision that is underway. Null if none
+   */
   private Decision decision;
 
-  /** A hashmap from each player to the color to tint their units */
+  /**
+   * A hashmap from each player to the color to tint their units
+   */
   private final HashMap<Player, Color> playerColors;
 
-  /** The Frame that is drawing this Game. May be null if this is headless. */
+  /**
+   * The Frame that is drawing this Game. May be null if this is headless.
+   */
   public final Frame frame;
 
-  /** The thread the game is running in. Null if the game isn't running right now. */
+  /**
+   * The thread the game is running in. Null if the game isn't running right now.
+   */
   private Thread gameThread;
 
-  /** The types of players in this game, in turn order. */
+  /**
+   * The types of players in this game, in turn order.
+   */
   private final List<CreatePlayerOptions> playerTypes;
 
-  /** The game this is controlling */
+  /**
+   * The game this is controlling
+   */
   public final Game game;
 
-  /** The level commanders start at in this game. */
+  /**
+   * The level commanders start at in this game.
+   */
   private final int startingCommanderLevel;
 
-  /** The random instance used for generating combat damage. */
+  /**
+   * The random instance used for generating combat damage.
+   */
   private final Random random;
 
-  /** The active location selector, if any */
+  /**
+   * The active location selector, if any
+   */
   private LocationSelector locationSelector;
 
   /**
@@ -201,7 +263,9 @@ public final class GameController {
         boardFilepath, playerTypes, fogOfWar, startingCommanderLevel, -1, -1, -1);
   }
 
-  /** Loads a board and starts the game in a new GameController. */
+  /**
+   * Loads a board and starts the game in a new GameController.
+   */
   private static GameController loadAndStartHelper(
       String boardFilepath,
       List<CreatePlayerOptions> playerTypes,
@@ -295,7 +359,7 @@ public final class GameController {
                         game,
                         c,
                         DelegatingAIControllerFactory.copyOf(
-                                DelegatingAIControllers.defaultDelegatingAIController())
+                            DelegatingAIControllers.defaultDelegatingAIController())
                             .setWeights(weights)
                             .build());
           }
@@ -323,7 +387,9 @@ public final class GameController {
     return gc;
   }
 
-  /** Creates a new game controller for the given game and frame. */
+  /**
+   * Creates a new game controller for the given game and frame.
+   */
   private GameController(
       Game g,
       Frame f,
@@ -345,12 +411,16 @@ public final class GameController {
     toggle = new Stack<>();
   }
 
-  /** Returns iff the game is currently running */
+  /**
+   * Returns iff the game is currently running
+   */
   public boolean isRunning() {
     return game.isRunning();
   }
 
-  /** Returns true iff this game has a frame (a graphical component). */
+  /**
+   * Returns true iff this game has a frame (a graphical component).
+   */
   public boolean hasFrame() {
     return frame != null;
   }
@@ -365,7 +435,9 @@ public final class GameController {
     gameThread.start();
   }
 
-  /** Stops this game controller. Does nothing if this game isn't running. */
+  /**
+   * Stops this game controller. Does nothing if this game isn't running.
+   */
   private synchronized void kill() {
     if (!isRunning()) return;
     frame.dispose();
@@ -374,7 +446,9 @@ public final class GameController {
     AudioController.stopMusic();
   }
 
-  /** Loads the given board and kills this. */
+  /**
+   * Loads the given board and kills this.
+   */
   public synchronized void loadAndKillThis(
       String boardFilepath,
       List<CreatePlayerOptions> playerTypes,
@@ -391,7 +465,9 @@ public final class GameController {
         frame.getZoomIndex());
   }
 
-  /** Restarts this game by creating a new copy of this then disposing of this. */
+  /**
+   * Restarts this game by creating a new copy of this then disposing of this.
+   */
   public synchronized void restart() {
     kill();
     loadAndStart(
@@ -404,12 +480,16 @@ public final class GameController {
         frame.getZoomIndex());
   }
 
-  /** Returns the random to use for combat. */
+  /**
+   * Returns the random to use for combat.
+   */
   public Random getCombatRandom() {
     return random;
   }
 
-  /** Returns the gamePanel located within frame */
+  /**
+   * Returns the gamePanel located within frame
+   */
   public GamePanel getGamePanel() {
     return frame.getGamePanel();
   }
@@ -427,24 +507,32 @@ public final class GameController {
     return game.getRemainingPlayers().size();
   }
 
-  /** Starts a new ability decision for the given player - call during levelup */
+  /**
+   * Starts a new ability decision for the given player - call during levelup
+   */
   public void startNewAbilityDecision(Player p) {
     startNewAbilityDecision(p.getCommander());
   }
 
-  /** Instructs the Frame to repaint, if there is one. */
+  /**
+   * Instructs the Frame to repaint, if there is one.
+   */
   public void repaint() {
     if (frame != null) {
       frame.repaint();
     }
   }
 
-  /** Gets the color for the given player */
+  /**
+   * Gets the color for the given player
+   */
   public Color getColorFor(Player p) {
     return playerColors.get(p);
   }
 
-  /** Called when the model wants to begin the turn for player p */
+  /**
+   * Called when the model wants to begin the turn for player p
+   */
   public void startTurnFor(Player p) {
     if (hasFrame()) {
       frame.startTurnFor(p);
@@ -463,12 +551,16 @@ public final class GameController {
     }
   }
 
-  /** Sets the current Toggle setting by adding it to the top of the stack */
+  /**
+   * Sets the current Toggle setting by adding it to the top of the stack
+   */
   private void addToggle(Toggle t) {
     toggle.push(t);
   }
 
-  /** Removes the top-most Toggle setting. Returns the removed setting for checking purposes */
+  /**
+   * Removes the top-most Toggle setting. Returns the removed setting for checking purposes
+   */
   private Toggle removeTopToggle() {
     return toggle.pop();
   }
@@ -490,17 +582,23 @@ public final class GameController {
     repaint();
   }
 
-  /** Returns the currently active location selector, if any */
+  /**
+   * Returns the currently active location selector, if any
+   */
   public LocationSelector getLocationSelector() {
     return locationSelector;
   }
 
-  /** Returns the type of the current decision, if any */
+  /**
+   * Returns the type of the current decision, if any
+   */
   public DecisionType getDecisionType() {
     return decision.getType();
   }
 
-  /** Returns iff the current decision is manditory */
+  /**
+   * Returns iff the current decision is manditory
+   */
   public boolean isDecisionManditory() {
     return decision.isManditory();
   }
@@ -518,8 +616,8 @@ public final class GameController {
     if (!getGamePanel().boardCursor.canSelect()) return;
     if (t.getOccupyingUnit() == null
         || (game.isRunning()
-            && t.getOccupyingUnit().owner != game.getCurrentPlayer()
-            && !game.getCurrentPlayer().canSee(t))) {
+        && t.getOccupyingUnit().owner != game.getCurrentPlayer()
+        && !game.getCurrentPlayer().canSee(t))) {
       return;
     }
     Unit u = t.getOccupyingUnit();
@@ -643,7 +741,9 @@ public final class GameController {
     }
   }
 
-  /** Stats a decision panel for player actions, including ending the turn. */
+  /**
+   * Stats a decision panel for player actions, including ending the turn.
+   */
   void startPlayerActionDecision() {
     decision =
         new Decision(
@@ -657,7 +757,9 @@ public final class GameController {
     getGamePanel().moveDecisionPanel();
   }
 
-  /** Processes the given player action decision. */
+  /**
+   * Processes the given player action decision.
+   */
   void processPlayerActionDecision(Choice c) {
     String choice = c.getMessage();
     cancelDecision();
@@ -673,7 +775,9 @@ public final class GameController {
     }
   }
 
-  /** Starts a getGamePanel().getDecisionPanel() for ending the current player's turn */
+  /**
+   * Starts a getGamePanel().getDecisionPanel() for ending the current player's turn
+   */
   private void startEndTurnDecision() {
     if (game.isRunning() && game.getCurrentPlayer().isLocalHumanPlayer()) {
       decision =
@@ -689,7 +793,9 @@ public final class GameController {
     }
   }
 
-  /** Processes an endOfTurn Decision */
+  /**
+   * Processes an endOfTurn Decision
+   */
   void processEndTurnDecision(Choice c) {
     String m = c.getMessage();
     cancelDecision();
@@ -700,7 +806,9 @@ public final class GameController {
     }
   }
 
-  /** Starts a decision panel for view options. */
+  /**
+   * Starts a decision panel for view options.
+   */
   private void startViewOptionsDecision() {
     ViewOptions viewOptions = frame.getViewOptionsForPlayer(game.getMostRecentHumanPlayer());
     decision =
@@ -728,7 +836,9 @@ public final class GameController {
     getGamePanel().moveDecisionPanel();
   }
 
-  /** Processes the given view options decision. */
+  /**
+   * Processes the given view options decision.
+   */
   void processViewOptionsDecision(Choice c) {
     String choice = c.getMessage().replaceAll(":.*", "");
     ViewOptions viewOptions = (ViewOptions) c.getVal();
@@ -760,26 +870,21 @@ public final class GameController {
    * ability yet
    */
   private void startNewAbilityDecision(Commander c) throws RuntimeException {
-    // TODO - revisit this
-    //    if (c.getAbility(c.getLevel()) != null)
-    //      throw new RuntimeException(
-    //          "Can't pick a new ability for " + c + ", already has " +
-    // c.getAbility(c.getLevel()));
-    //
-    //    Ability[] a = c.getPossibleAbilities(c.getLevel());
-    //    if (a != null) {
-    //      decision = new Decision(DecisionType.NEW_ABILITY_DECISION, true, true);
-    //      for (Ability ab : a) {
-    //        decision.add(new Choice(true, ab.name, ab));
-    //      }
-    //      addToggle(Toggle.DECISION);
-    //      getGamePanel().fixDecisionPanel("Choose a New Ability", c.owner, decision, true);
-    //      getGamePanel().centerDecisionPanel();
-    //    }
-    // else do nothing
+    Ability[] a = c.getAbilityChoices();
+    if (a != null && a.length > 0) {
+      decision = new Decision(DecisionType.NEW_ABILITY_DECISION, true, true);
+      for (Ability ab : a) {
+        decision.add(new Choice(true, ab.name, ab));
+      }
+      addToggle(Toggle.DECISION);
+      getGamePanel().fixDecisionPanel("Choose a New Ability", c.owner, decision, true);
+      getGamePanel().centerDecisionPanel();
+    }
   }
 
-  /** Processes the levelup new ability decision */
+  /**
+   * Processes the levelup new ability decision
+   */
   void processNewAbilityDecision(Choice c) {
     Commander com = getGamePanel().getDecisionPanel().player.getCommander();
     int index = c.getIndex();
@@ -787,12 +892,16 @@ public final class GameController {
     com.chooseAbility(index);
   }
 
-  /** Returns the type of the current summon decision under way, null otherwise */
+  /**
+   * Returns the type of the current summon decision under way, null otherwise
+   */
   SummonType getSummonType() {
     return summonType;
   }
 
-  /** Creates a getGamePanel().getDecisionPanel() for creating either units or buildings */
+  /**
+   * Creates a getGamePanel().getDecisionPanel() for creating either units or buildings
+   */
   private void startSummonDecision(Commander c, List<? extends Unit> creatables) {
     LinkedList<Choice> choices = new LinkedList<Choice>();
     Tile t = getGamePanel().boardCursor.getElm();
@@ -804,8 +913,8 @@ public final class GameController {
           new Choice(
               u.getManaCostWithScalingAndDiscountsForPlayer(c.owner) <= c.getMana()
                   && !new SummonSelector<>(this, (Unit & Summoner) t.getOccupyingUnit(), u)
-                      .getCloud()
-                      .isEmpty(),
+                  .getCloud()
+                  .isEmpty(),
               u.name
                   + Choice.SEPERATOR
                   + " ("
@@ -827,7 +936,9 @@ public final class GameController {
     getGamePanel().moveDecisionPanel();
   }
 
-  /** Creates a getGamePanel().getDecisionPanel() for summoning new units */
+  /**
+   * Creates a getGamePanel().getDecisionPanel() for summoning new units
+   */
   void startSummonCombatantDecision(Summoner s) {
     Player p = game.getCurrentPlayer();
     Commander c = p.getCommander();
@@ -844,7 +955,9 @@ public final class GameController {
             .collect(Collectors.toList()));
   }
 
-  /** Creates a getGamePanel().getDecisionPanel() for summoning new buildings */
+  /**
+   * Creates a getGamePanel().getDecisionPanel() for summoning new buildings
+   */
   void startSummonBuildingDecision(Summoner s) {
     Player p = game.getCurrentPlayer();
     Commander c = p.getCommander();
@@ -936,7 +1049,9 @@ public final class GameController {
     summonedUnit.owner.refreshVisionCloud(summonedUnit);
   }
 
-  /** Creates a getGamePanel().getDecisionPanel() for choosing a spell to cast */
+  /**
+   * Creates a getGamePanel().getDecisionPanel() for choosing a spell to cast
+   */
   void startCastDecision() {
     LinkedList<Choice> choices = new LinkedList<Choice>();
     Commander c = (Commander) getGamePanel().boardCursor.getElm().getOccupyingUnit();
@@ -964,7 +1079,9 @@ public final class GameController {
     getGamePanel().moveDecisionPanel();
   }
 
-  /** Processes a casting decision */
+  /**
+   * Processes a casting decision
+   */
   void startCastSelection(Choice choice) {
     if (!choice.isSelectable()) {
       return;
@@ -1008,7 +1125,9 @@ public final class GameController {
     locationSelector = null;
   }
 
-  /** Processes the cast selection, causing the ability to actually occur. */
+  /**
+   * Processes the cast selection, causing the ability to actually occur.
+   */
   void processCastSelection(Tile loc) {
     CastSelector castSelector = (CastSelector) locationSelector;
     Toggle t = removeTopToggle();
@@ -1017,7 +1136,9 @@ public final class GameController {
     castSpell(castSelector.caster, castSelector.toCast, loc);
   }
 
-  /** Casts the given spell on the given tile location. */
+  /**
+   * Casts the given spell on the given tile location.
+   */
   public void castSpell(Commander caster, Ability toCast, Tile loc) {
     if (game.getCurrentPlayer() != null) {
       game.getCurrentPlayer().getCommander().spendAction();
@@ -1160,7 +1281,9 @@ public final class GameController {
     }
   }
 
-  /** Starts a hover over the modifiers on the selected unit. */
+  /**
+   * Starts a hover over the modifiers on the selected unit.
+   */
   private void startModifierInfoHover() {
     Unit occupyingUnit = getGamePanel().boardCursor.getElm().getOccupyingUnit();
 
