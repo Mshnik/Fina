@@ -148,6 +148,9 @@ public final class InfoPanel extends JPanel {
     ability = null;
     tile = null;
     combat = null;
+    if (u.owner == null) {
+      modifierDescription = null;
+    }
     repaint();
   }
 
@@ -281,7 +284,7 @@ public final class InfoPanel extends JPanel {
       x = XMARGIN;
     }
 
-    if (unit instanceof Building && isMenu) {
+    if (unit instanceof Building && isMenu && modifierDescription == null) {
       List<Terrain> terrainList = ((Building<?>) unit).getValidTerrain();
       y += infoFont;
       g2d.setFont(SMALL_FONT);

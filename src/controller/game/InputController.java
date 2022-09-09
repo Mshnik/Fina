@@ -166,14 +166,14 @@ public final class InputController {
             case VIEW_OPTIONS_DECISION:
               gc.processViewOptionsDecision(decision);
               break;
+            case PICK_SUMMONABLE_DECISION:
+              gc.processPickSummonableDecision(decision);
+              break;
             case SUMMON_DECISION:
               boolean startedDecision = gc.startSummonSelection(decision);
               if (startedDecision) {
                 ((BoardCursor) gc.frame.getActiveCursor())
                     .setSelectType(BoardCursor.SelectType.SUMMON);
-              } else {
-                throw new RuntimeException(
-                    "No valid space to summon - " + "shouldn't have been able to pick this");
               }
               break;
             case CAST_DECISION:
@@ -189,8 +189,18 @@ public final class InputController {
         } else {
           AudioController.playEffect(AudioController.SoundEffect.CLICK_NO);
           if (!gc.isDecisionManditory()) {
-            if (gc.getDecisionType() == DecisionType.SUMMON_DECISION
-                || gc.getDecisionType() == DecisionType.CAST_DECISION) {
+            if (gc.getDecisionType() == DecisionType.SUMMON_DECISION) {
+              gc.cancelDecision();
+              Summoner summoner = gc.getSummoner();
+              switch (gc.getSummonType()) {
+                case UNIT:
+                  gc.startSummonCombatantDecision(summoner);
+                  break;
+                case BUILDING:
+                  gc.startSummonBuildingDecision(summoner);
+                  break;
+              }
+            } else if (gc.getDecisionType() == DecisionType.PICK_SUMMONABLE_DECISION) {
               gc.cancelDecision();
               gc.startCommanderActionDecision(
                   gc.frame.getGamePanel().boardCursor.getElm().getOccupyingUnit()

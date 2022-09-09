@@ -182,6 +182,9 @@ public final class GameController {
    */
   private SummonType summonType;
 
+  /** The most recent summoner. Null if none is currently in progress. */
+  private Summoner summoner;
+
   /**
    * Current decision that is underway. Null if none
    */
@@ -907,6 +910,11 @@ public final class GameController {
     return summonType;
   }
 
+  /** Returns the summoner currently summoning. Null if none. */
+  Summoner getSummoner() {
+    return summoner;
+  }
+
   /**
    * Creates a getGamePanel().getDecisionPanel() for creating either units or buildings
    */
@@ -916,6 +924,7 @@ public final class GameController {
     if (!(t.getOccupyingUnit() instanceof Summoner)) {
       throw new RuntimeException(t.getOccupyingUnit() + " can't summon");
     }
+    summoner = (Summoner) t.getOccupyingUnit();
     for (Unit u : creatables) {
       choices.add(
           new Choice(
@@ -930,7 +939,7 @@ public final class GameController {
                   + ")",
               u));
     }
-    decision = new Decision(DecisionType.SUMMON_DECISION, false, true, choices);
+    decision = new Decision(DecisionType.PICK_SUMMONABLE_DECISION, false, true, choices);
     addToggle(Toggle.DECISION);
     getGamePanel()
         .fixDecisionPanel(
@@ -982,6 +991,36 @@ public final class GameController {
   }
 
   /**
+   * Creates a decision pannel for summoning a unit, or further inspecting it.
+   */
+  void processPickSummonableDecision(Choice choice) {
+    Player p = game.getCurrentPlayer();
+    Commander c = p.getCommander();
+    Unit unit = (Unit) choice.getVal();
+
+    cancelDecision();
+    List<Choice> choices = new ArrayList<>();
+    choices.add(new Choice(true, "Summon", unit));
+    choices.addAll(Modifiers.getModifierDescriptions(unit.getModifiers())
+        .stream()
+        .map(m -> new Choice(true, "Info: " + m.toStringShort(), m))
+        .collect(Collectors.toList()));
+    decision = new Decision(DecisionType.SUMMON_DECISION, false, true, choices);
+    addToggle(Toggle.DECISION);
+    getGamePanel()
+        .fixDecisionPanel(
+            "Action > "
+                + COMMANDER_ACTION
+                + " > "
+                + (summonType == SummonType.UNIT ? "Summon" : "Build")
+                + " > " + unit.name,
+            c.owner,
+            decision,
+            true);
+    getGamePanel().moveDecisionPanel();
+  }
+
+  /**
    * Creates a new summon selector at the current getGamePanel().boardCursor position. Returns true
    * iff a summoning decision was started.
    */
@@ -993,7 +1032,10 @@ public final class GameController {
     if (!t.isOccupied() || !t.getOccupyingUnit().canSummon()) {
       return false;
     }
-    String name = choice.getShortMessage();
+    if (!((choice.getVal()) instanceof Unit)) {
+      return false;
+    }
+    String name = ((Unit) choice.getVal()).name;
     cancelDecision();
     Commander commander = t.getOccupyingUnit().owner.getCommander();
     Unit toSummon = commander.getUnitByName(name);
@@ -1024,6 +1066,7 @@ public final class GameController {
       getGamePanel().boardCursor.setElm(ss.summoner.getLocation());
     }
     summonType = null;
+    summoner = null;
     locationSelector = null;
   }
 
@@ -1040,6 +1083,7 @@ public final class GameController {
           "Can't cancel summon selection, currently toggling " + getToggle());
     summonUnit(summonSelector.summoner, loc, summonSelector.toSummon);
     summonType = null;
+    summoner = null;
     locationSelector = null;
     getGamePanel().boardCursor.setElm(loc); // Cause info update
     repaint();
