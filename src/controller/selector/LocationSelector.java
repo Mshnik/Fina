@@ -2,30 +2,25 @@ package controller.selector;
 
 import controller.game.GameController;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.util.ArrayList;
 import java.util.List;
 
 import model.board.Tile;
 import view.gui.Paintable;
+import view.gui.image.Colors;
+import view.gui.image.ImageIndex;
 
 /**
  * An instance represents a selector for any location with a given criteria
  */
 public abstract class LocationSelector implements Paintable {
-  /**
-   * The default color for shading possible selectable locations in a LocationSelector. A
-   * translucent white.
-   */
-  public static final Color DEFAULT_COLOR = new Color(1, 1, 1, 0.5f);
+  private static final Stroke RADIUS_STROKE = new BasicStroke(3);
 
-  /**
-   * The default color for shading cloud locations in a LocationSelector. A
-   * translucent grey.
-   */
-  public static final Color DEFAULT_EFFECT_COLOR = new Color(0.5f, 0.5f, 0.5f, 0.5f);
 
   /**
    * The controller this is selecting in
@@ -38,12 +33,24 @@ public abstract class LocationSelector implements Paintable {
   protected List<Tile> cloud;
 
   /**
-   * Color for Cloud Drawing - translucent white - can be changed by subclasses
+   * Color for Cloud Fill Drawing - translucent white - can be changed by subclasses
    */
-  Color cloudColor = DEFAULT_COLOR;
+  Color cloudFillColor = Colors.DEFAULT_CLOUD_FILL_COLOR;
 
-  /** Color for CLoud effect drawing - translucent grey - can be changed by subclasses */
-  Color effectColor = DEFAULT_EFFECT_COLOR;
+  /**
+   * Color for Cloud Trace Drawing - translucent white - can be changed by subclasses
+   */
+  Color cloudTraceColor = Colors.DEFAULT_CLOUD_TRACE_COLOR;
+
+  /**
+   * Color for CLoud effect fill - translucent grey - can be changed by subclasses
+   */
+  Color effectFillColor = Colors.DEFAULT_EFFECT_FILL_COLOR;
+
+  /**
+   * Color for Cloud effect trace - translucent grey - can be changed by subclasses
+   */
+  Color effectTraceColor = Colors.DEFAULT_EFFECT_TRACE_COLOR;
 
   /**
    * Constructor for Location Selector. Implementing classes should refresh possibilities cloud at
@@ -59,10 +66,14 @@ public abstract class LocationSelector implements Paintable {
    */
   protected abstract void refreshPossibilitiesCloud();
 
-  /** Return the current effect cloud. */
+  /**
+   * Return the current effect cloud.
+   */
   public abstract List<Tile> getEffectCloud();
 
-  /** Empties and recalculates the effect cloud using the current path as set. */
+  /**
+   * Empties and recalculates the effect cloud using the current path as set.
+   */
   public abstract void refreshEffectCloud();
 
   /**
@@ -80,21 +91,15 @@ public abstract class LocationSelector implements Paintable {
   public void paintComponent(Graphics g) {
     // Draw the possible movement cloud
     Graphics2D g2d = (Graphics2D) g;
-    g2d.setColor(cloudColor);
 
-    for (Tile t : cloud) {
-      int x = controller.getGamePanel().getXPosition(t);
-      int y = controller.getGamePanel().getYPosition(t);
-      g2d.fillRect(
-          x, y, controller.getGamePanel().cellSize(), controller.getGamePanel().cellSize());
-    }
-
-    g2d.setColor(effectColor);
-    for (Tile t : getEffectCloud()) {
-      int x = controller.getGamePanel().getXPosition(t);
-      int y = controller.getGamePanel().getYPosition(t);
-      g2d.fillRect(
-          x, y, controller.getGamePanel().cellSize(), controller.getGamePanel().cellSize());
-    }
+    g2d.setStroke(RADIUS_STROKE);
+    g2d.setColor(cloudFillColor);
+    ImageIndex.fill(cloud, controller.getGamePanel(), g2d);
+    g2d.setColor(cloudTraceColor);
+    ImageIndex.trace(cloud, controller.getGamePanel(), g2d);
+    g2d.setColor(effectFillColor);
+    ImageIndex.fill(getEffectCloud(), controller.getGamePanel(), g2d);
+    g2d.setColor(effectTraceColor);
+    ImageIndex.trace(getEffectCloud(), controller.getGamePanel(), g2d);
   }
 }

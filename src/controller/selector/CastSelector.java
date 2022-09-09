@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import model.board.Tile;
 import model.unit.ability.Ability;
 import model.unit.commander.Commander;
+import view.gui.image.Colors;
 
 public final class CastSelector extends LocationSelector {
   /**
@@ -29,6 +30,8 @@ public final class CastSelector extends LocationSelector {
 
   public CastSelector(GameController gc, Commander caster, Ability toCast) {
     super(gc);
+    effectFillColor = Colors.CAST_FILL_COLOR;
+    effectTraceColor = Colors.CAST_BORDER_COLOR;
     effectCloud = new ArrayList<>();
     this.caster = caster;
     this.toCast = toCast;

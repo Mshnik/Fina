@@ -5,6 +5,7 @@ import model.board.Tile;
 import model.unit.Summoner;
 import model.unit.Unit;
 import model.unit.building.Building;
+import view.gui.image.Colors;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +34,8 @@ public final class SummonSelector<S extends Unit & Summoner> extends LocationSel
 
   public SummonSelector(GameController gc, S summoner, Unit toSummon) {
     super(gc);
+    effectFillColor = Colors.SUMMON_FILL_COLOR;
+    effectTraceColor = Colors.SUMMON_BORDER_COLOR;
     effectCloud = new ArrayList<>();
     this.toSummon = toSummon;
     this.summoner = summoner;

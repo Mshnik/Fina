@@ -3,8 +3,8 @@ package controller.selector;
 import controller.game.GameController;
 import model.board.Tile;
 import model.unit.combatant.Combatant;
+import view.gui.image.Colors;
 
-import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,11 +14,6 @@ import java.util.List;
 public final class AttackSelector extends LocationSelector {
 
   /**
-   * Color to shade area an attack selector is on.
-   */
-  public static final Color SHADE_COLOR = new Color(1.0f, 0f, 0f, 0.5f);
-
-  /**
    * The model.unit that is attacking from this selector
    */
   public final Combatant attacker;
@@ -26,7 +21,8 @@ public final class AttackSelector extends LocationSelector {
   public AttackSelector(GameController gc, Combatant attacker) {
     super(gc);
     this.attacker = attacker;
-    cloudColor = SHADE_COLOR;
+    effectFillColor = Colors.ATTACK_FILL_COLOR;
+    effectTraceColor = Colors.ATTACK_BORDER_COLOR;
     refreshPossibilitiesCloud();
   }
 

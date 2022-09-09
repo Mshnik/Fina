@@ -2,9 +2,6 @@ package view.gui.panel;
 
 import controller.decision.Decision;
 import controller.game.GameController;
-import controller.selector.AttackSelector;
-import controller.selector.CastSelector;
-import controller.selector.LocationSelector;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -45,6 +42,7 @@ import view.gui.animation.CombatAnimation;
 import view.gui.animation.MovementAnimation;
 import view.gui.animation.UnitAnimation;
 import view.gui.decision.DecisionPanel;
+import view.gui.image.Colors;
 import view.gui.image.ImageIndex;
 import view.gui.image.ImageIndex.DrawingBarSegment;
 import view.gui.modifier.ModifierIcon;
@@ -65,34 +63,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
   private static final int BASE_CELL_SIZE = 64;
 
   /**
-   * Shading for fog of war - translucent black
-   */
-  private static final Color FOG_OF_WAR = new Color(0, 0, 0, 0.75f);
-
-  /**
    * Stroke for drawing effect radii
    */
   private static final Stroke RADIUS_STROKE = new BasicStroke(3);
-
-  /**
-   * Color of attack radii
-   */
-  private static final Color ATTACK_COLOR = Color.red;
-
-  /**
-   * Color of summon/build radii
-   */
-  private static final Color SUMMON_COLOR = Color.cyan;
-
-  /**
-   * Color of cast radii
-   */
-  private static final Color CAST_BORDER_COLOR = new Color(244, 231, 35);
-
-  /**
-   * Color of cast radii
-   */
-  private static final Color CAST_FILL_COLOR = new Color(0.96f, 0.89f, 0.11f, 0.5f);
 
   /**
    * The BoardCursor for this GamePanel
@@ -348,9 +321,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
           break;
       }
     } else if (decisionPanel != null
-        && controller.getDecisionType() == Decision.DecisionType.CAST_DECISION
-        || controller.getLocationSelector() != null
-        && controller.getToggle() == GameController.Toggle.CAST_SELECTION) {
+        && controller.getDecisionType() == Decision.DecisionType.CAST_DECISION) {
       drawCastCloud(g2d);
     }
 
@@ -459,7 +430,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
 
     // If the player can't see this tile, shade darkly.
     if (!controller.game.isVisibleToMostRecentHumanPlayer(t)) {
-      g2d.setColor(FOG_OF_WAR);
+      g2d.setColor(Colors.FOG_OF_WAR);
       g2d.fillRect(x, y, cellSize(), cellSize());
     }
   }
@@ -515,7 +486,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     Set<Tile> dangerRadius =
         getFrame().getViewOptionsForPlayer(game.getMostRecentHumanPlayer()).getDangerRadius();
     if (!dangerRadius.isEmpty()) {
-      g2d.setColor(ATTACK_COLOR);
+      g2d.setColor(Colors.ATTACK_BORDER_COLOR);
       g2d.setStroke(new BasicStroke(2));
       ImageIndex.trace(dangerRadius, this, g2d);
     }
@@ -529,7 +500,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     StartOfTurnEffectBuilding building = (StartOfTurnEffectBuilding) getElm().getOccupyingUnit();
     List<Tile> cloud =
         building.getEffect().cloud.translate(getElm().getPoint()).toTileSet(game.board);
-    g2d.setColor(SUMMON_COLOR);
+    g2d.setColor(Colors.SUMMON_BORDER_COLOR);
     g2d.setStroke(new BasicStroke(2));
     ImageIndex.trace(cloud, this, g2d);
   }
@@ -548,9 +519,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
                     boardCursor.getElm().getOccupyingUnit().getMinAttackRange()))
             .translate(boardCursor.getElm().getPoint())
             .toTileSet(controller.game.board);
-    g2d.setColor(AttackSelector.SHADE_COLOR);
+    g2d.setColor(Colors.ATTACK_FILL_COLOR);
     ImageIndex.fill(tiles, this, g2d);
-    g2d.setColor(ATTACK_COLOR);
+    g2d.setColor(Colors.ATTACK_BORDER_COLOR);
     ImageIndex.trace(tiles, this, g2d);
   }
 
@@ -558,7 +529,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
    * Draws the summon/build cloud for the hovered unit.
    */
   private void drawSummonOrBuildCloud(Graphics2D g2d) {
-    g2d.setColor(SUMMON_COLOR);
+    g2d.setColor(Colors.SUMMON_BORDER_COLOR);
     ImageIndex.trace(
         controller.game.board.getRadialCloud(
             boardCursor.getElm(), boardCursor.getElm().getOccupyingUnit().getSummonRange()),
@@ -571,16 +542,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
    */
   private void drawCastCloud(Graphics2D g2d) {
     g2d.setStroke(RADIUS_STROKE);
-    if (decisionPanel == null) {
-      // Draw active casting.
-      LocationSelector selector = controller.getLocationSelector();
-      g2d.setColor(CAST_FILL_COLOR);
-      ImageIndex.fill(selector.getEffectCloud(), this, g2d);
-      g2d.setColor(CAST_BORDER_COLOR);
-      ImageIndex.trace(selector.getEffectCloud(), this, g2d);
-      return;
-    }
-    // Hovering ability in decision panel.
+
     Ability a = (Ability) decisionPanel.getElm().getVal();
     Player caster = boardCursor.getElm().getOccupyingUnit().owner;
 
@@ -590,9 +552,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
               .expand(a.canBeCloudBoosted ? caster.getCastCloudBoost() : 0)
               .translate(boardCursor.getElm().getPoint())
               .toTileSet(controller.game.board);
-      g2d.setColor(CAST_FILL_COLOR);
+      g2d.setColor(Colors.CAST_FILL_COLOR);
       ImageIndex.fill(cloud, this, g2d);
-      g2d.setColor(CAST_BORDER_COLOR);
+      g2d.setColor(Colors.CAST_BORDER_COLOR);
       ImageIndex.trace(cloud, this, g2d);
     } else {
       List<Tile> selectableTiles =
@@ -606,11 +568,11 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
                 (Commander) boardCursor.getElm().getOccupyingUnit(),
                 selectableTiles.get(0),
                 caster.getCastCloudBoost());
-        g2d.setColor(LocationSelector.DEFAULT_COLOR);
+        g2d.setColor(Colors.DEFAULT_CLOUD_FILL_COLOR);
         ImageIndex.fill(selectableTiles, this, g2d);
-        g2d.setColor(CAST_FILL_COLOR);
+        g2d.setColor(Colors.CAST_FILL_COLOR);
         ImageIndex.fill(sampleCloud, this, g2d);
-        g2d.setColor(CAST_BORDER_COLOR);
+        g2d.setColor(Colors.CAST_BORDER_COLOR);
         ImageIndex.trace(sampleCloud, this, g2d);
       }
     }
