@@ -594,6 +594,11 @@ public final class GameController {
     return locationSelector;
   }
 
+  /** Returns true iff there is a currently active decision. */
+  public boolean hasDecision() {
+    return decision != null;
+  }
+
   /**
    * Returns the type of the current decision, if any
    */

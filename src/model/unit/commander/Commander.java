@@ -344,7 +344,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
       getLevelupModifierBundle(level).clone(this, this);
       owner.updateManaPerTurn();
       owner.refreshVisionCloud(this);
-      if (owner.game.getController().getDecisionType() != Decision.DecisionType.NEW_ABILITY_DECISION) {
+      if (owner.game.getController().hasDecision() && owner.game.getController().getDecisionType() != Decision.DecisionType.NEW_ABILITY_DECISION) {
         owner.game.getController().startNewAbilityDecision(owner);
       }
     }

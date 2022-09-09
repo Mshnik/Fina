@@ -619,57 +619,53 @@ public abstract class Player implements Stringable {
    * commander is alive, false otherwise
    */
   final boolean turnStart() {
-    try {
-      // Check for start of game ability decision.
-      game.getController().startNewAbilityDecision(this);
+    // Check for start of game ability decision.
+    game.getController().startNewAbilityDecision(this);
 
-      // Add research per turn
-      updateResearchPerTurn();
-      commander.addResearch(researchPerTurn);
+    // Add research per turn
+    updateResearchPerTurn();
+    commander.addResearch(researchPerTurn);
 
-      // Check for leveling up first and add out of turn research.
-      getCommander().ingestResearchAndCheckLevelUp();
+    // Check for leveling up first and add out of turn research.
+    getCommander().ingestResearchAndCheckLevelUp();
 
-      // Refresh for turn and refresh actionable units
-      actionableUnits.clear();
-      for (Unit u : units) {
-        u.refreshForTurn();
-        if (u.canMove() || u.canFight() || u.canCast() || u.canSummon()) {
-          actionableUnits.add(u);
-        }
+    // Refresh for turn and refresh actionable units
+    actionableUnits.clear();
+    for (Unit u : units) {
+      u.refreshForTurn();
+      if (u.canMove() || u.canFight() || u.canCast() || u.canSummon()) {
+        actionableUnits.add(u);
       }
-      // Add base mana per turn
-      updateManaPerTurn();
-      commander.addMana(manaPerTurn);
-
-      // Process start of turn buildings.
-      for (Unit u : units) {
-        if (u instanceof StartOfTurnEffectBuilding) {
-          StartOfTurnEffectBuilding.StartOfTurnEffect effect =
-              ((StartOfTurnEffectBuilding) u).getEffect();
-
-          switch (effect.type) {
-            case HEAL_COMBATANT:
-              for (Unit u2 : getUnitsInCloud(effect.cloud.translate(u.getLocation().getPoint()))) {
-                if (u2 instanceof Combatant) {
-                  u2.changeHealth(effect.value, u);
-                }
-              }
-              break;
-            default:
-              throw new RuntimeException("Unknown effect type: " + effect);
-          }
-        }
-      }
-
-      // If mana < 0, force player to choose units to sacrifice instead.
-      if (commander.getMana() < 0) {
-        // TODO
-      }
-      return true;
-    } catch (NullPointerException e) {
-      return false;
     }
+    // Add base mana per turn
+    updateManaPerTurn();
+    commander.addMana(manaPerTurn);
+
+    // Process start of turn buildings.
+    for (Unit u : units) {
+      if (u instanceof StartOfTurnEffectBuilding) {
+        StartOfTurnEffectBuilding.StartOfTurnEffect effect =
+            ((StartOfTurnEffectBuilding) u).getEffect();
+
+        switch (effect.type) {
+          case HEAL_COMBATANT:
+            for (Unit u2 : getUnitsInCloud(effect.cloud.translate(u.getLocation().getPoint()))) {
+              if (u2 instanceof Combatant) {
+                u2.changeHealth(effect.value, u);
+              }
+            }
+            break;
+          default:
+            throw new RuntimeException("Unknown effect type: " + effect);
+        }
+      }
+    }
+
+    // If mana < 0, force player to choose units to sacrifice instead.
+    if (commander.getMana() < 0) {
+      // TODO
+    }
+    return true;
   }
 
   /**
