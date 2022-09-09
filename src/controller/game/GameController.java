@@ -1052,6 +1052,7 @@ public final class GameController {
     getGamePanel().boardCursor.setElm(t2);
     getGamePanel().fixScrollToShow(t2.getRow(), t2.getCol());
     addToggle(Toggle.SUMMON_SELECTION);
+    locationSelector.refreshEffectCloud();
     return true;
   }
 
@@ -1179,7 +1180,7 @@ public final class GameController {
       Tile t2 = cloud.get(0);
       getGamePanel().boardCursor.setElm(t2);
       getGamePanel().fixScrollToShow(t2.getRow(), t2.getCol());
-      ((CastSelector) locationSelector).refreshEffectCloud();
+      locationSelector.refreshEffectCloud();
     } else {
       throw new RuntimeException("Expected commander and ability");
     }

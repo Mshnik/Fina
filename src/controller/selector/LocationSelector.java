@@ -22,6 +22,12 @@ public abstract class LocationSelector implements Paintable {
   public static final Color DEFAULT_COLOR = new Color(1, 1, 1, 0.5f);
 
   /**
+   * The default color for shading cloud locations in a LocationSelector. A
+   * translucent grey.
+   */
+  public static final Color DEFAULT_EFFECT_COLOR = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+
+  /**
    * The controller this is selecting in
    */
   public final GameController controller;
@@ -36,6 +42,9 @@ public abstract class LocationSelector implements Paintable {
    */
   Color cloudColor = DEFAULT_COLOR;
 
+  /** Color for CLoud effect drawing - translucent grey - can be changed by subclasses */
+  Color effectColor = DEFAULT_EFFECT_COLOR;
+
   /**
    * Constructor for Location Selector. Implementing classes should refresh possibilities cloud at
    * end of construction
@@ -49,6 +58,12 @@ public abstract class LocationSelector implements Paintable {
    * Empties and recalculated the possibilities cloud using the current path as set
    */
   protected abstract void refreshPossibilitiesCloud();
+
+  /** Return the current effect cloud. */
+  public abstract List<Tile> getEffectCloud();
+
+  /** Empties and recalculates the effect cloud using the current path as set. */
+  public abstract void refreshEffectCloud();
 
   /**
    * Returns the possible cloud. This is pass-by-value, so editing the returned set won't change the
@@ -68,6 +83,14 @@ public abstract class LocationSelector implements Paintable {
     g2d.setColor(cloudColor);
 
     for (Tile t : cloud) {
+      int x = controller.getGamePanel().getXPosition(t);
+      int y = controller.getGamePanel().getYPosition(t);
+      g2d.fillRect(
+          x, y, controller.getGamePanel().cellSize(), controller.getGamePanel().cellSize());
+    }
+
+    g2d.setColor(effectColor);
+    for (Tile t : getEffectCloud()) {
       int x = controller.getGamePanel().getXPosition(t);
       int y = controller.getGamePanel().getYPosition(t);
       g2d.fillRect(

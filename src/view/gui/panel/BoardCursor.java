@@ -134,8 +134,9 @@ public final class BoardCursor extends Cursor<Tile, GamePanel> {
     if (ls != null && ls instanceof PathSelector) {
       PathSelector ps = (PathSelector) ls;
       ps.addToPath(getElm());
-    } else if (ls != null && ls instanceof CastSelector) {
-      ((CastSelector) ls).refreshEffectCloud();
+    }
+    if (ls != null) {
+      ls.refreshEffectCloud();
     }
     updateUnitHover();
   }

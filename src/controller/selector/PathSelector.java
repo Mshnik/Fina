@@ -8,8 +8,10 @@ import view.gui.Paintable;
 import view.gui.panel.GamePanel;
 
 import java.awt.*;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * An instance represents and draws the path on the model.board when the player is moving a
@@ -59,6 +61,15 @@ public final class PathSelector extends LocationSelector implements Paintable, I
     if (path == null) return; // Don't do anything during super class initialziation.
     cloud = controller.game.board.getMovementCloud(this);
     controller.repaint();
+  }
+
+  @Override
+  public List<Tile> getEffectCloud() {
+    return Collections.emptyList();
+  }
+
+  @Override
+  public void refreshEffectCloud() {
   }
 
   /**

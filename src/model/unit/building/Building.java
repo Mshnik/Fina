@@ -61,6 +61,13 @@ public abstract class Building<E> extends Unit {
    * Additional tiles to build copies of this building when building this building. By default, returns empty.
    */
   public Set<Tile> buildFanOut() {
+    return buildFanOut(owner, location);
+  }
+
+  /**
+   * Additional tiles to build copies of this building when building this building at location. By default, returns empty.
+   */
+  public Set<Tile> buildFanOut(Player owner, Tile location) {
     return Collections.emptySet();
   }
 

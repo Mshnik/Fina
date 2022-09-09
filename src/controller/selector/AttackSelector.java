@@ -1,9 +1,12 @@
 package controller.selector;
 
 import controller.game.GameController;
+import model.board.Tile;
 import model.unit.combatant.Combatant;
 
 import java.awt.Color;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A selector for choosing a model.unit to attack
@@ -31,5 +34,14 @@ public final class AttackSelector extends LocationSelector {
   protected void refreshPossibilitiesCloud() {
     cloud = attacker.getAttackableTiles(true);
     controller.repaint();
+  }
+
+  @Override
+  public List<Tile> getEffectCloud() {
+    return Collections.emptyList();
+  }
+
+  @Override
+  public void refreshEffectCloud() {
   }
 }

@@ -3,7 +3,9 @@ package controller.selector;
 import controller.game.GameController;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import model.board.Tile;
 import model.unit.ability.Ability;
@@ -18,7 +20,7 @@ public final class CastSelector extends LocationSelector {
   /**
    * The cloud of effect range based on the current location of the boardCursor
    */
-  public List<Tile> effectCloud;
+  private List<Tile> effectCloud;
 
   /**
    * The ability this selector is trying to summon
@@ -44,9 +46,15 @@ public final class CastSelector extends LocationSelector {
     }
   }
 
+  @Override
+  public List<Tile> getEffectCloud() {
+    return Collections.unmodifiableList(effectCloud);
+  }
+
   /**
    * Refreshes the effectCloud for the current location of the boardCursor
    */
+  @Override
   public void refreshEffectCloud() {
     effectCloud =
         toCast.getTranslatedEffectCloud(

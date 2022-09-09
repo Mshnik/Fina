@@ -573,11 +573,11 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     g2d.setStroke(RADIUS_STROKE);
     if (decisionPanel == null) {
       // Draw active casting.
-      CastSelector selector = (CastSelector) controller.getLocationSelector();
+      LocationSelector selector = controller.getLocationSelector();
       g2d.setColor(CAST_FILL_COLOR);
-      ImageIndex.fill(selector.effectCloud, this, g2d);
+      ImageIndex.fill(selector.getEffectCloud(), this, g2d);
       g2d.setColor(CAST_BORDER_COLOR);
-      ImageIndex.trace(selector.effectCloud, this, g2d);
+      ImageIndex.trace(selector.getEffectCloud(), this, g2d);
       return;
     }
     // Hovering ability in decision panel.

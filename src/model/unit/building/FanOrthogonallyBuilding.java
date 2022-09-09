@@ -107,14 +107,14 @@ public final class FanOrthogonallyBuilding extends Building<Integer> {
   }
 
   @Override
-  public Set<Tile> buildFanOut() {
+  public Set<Tile> buildFanOut(Player owner, Tile location) {
     if (location == null) {
       return Collections.emptySet();
     }
 
     Set<Tile> fanSet = new HashSet<>();
     for (Direction direction : Direction.values()) {
-      maybeFan(fanSet, location.getPoint(), direction);
+      maybeFan(owner, fanSet, location, direction);
     }
     return fanSet;
   }
@@ -123,7 +123,8 @@ public final class FanOrthogonallyBuilding extends Building<Integer> {
    * Maybe fans out along direction from locationPoint. Fans as far as possible to an endpoint of the same building
    * type, so long as there are no invalid, unseen, or blocked tiles in the way.
    */
-  private void maybeFan(Set<Tile> fanSet, MPoint locationPoint, Direction direction) {
+  private void maybeFan(Player owner, Set<Tile> fanSet, Tile location, Direction direction) {
+    MPoint locationPoint = location.getPoint();
     List<Tile> tiles = new ArrayList<>();
     for (int i = 1; i <= getEffect(); i++) {
       MPoint mPoint = locationPoint.add(direction.toPoint().times(i));
