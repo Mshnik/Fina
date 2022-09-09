@@ -1,6 +1,7 @@
 package model.unit.building;
 
 import model.board.Terrain;
+import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
 import model.unit.combatant.Combatant;
@@ -12,6 +13,8 @@ import model.unit.stat.Stats;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents a Building on the model.board, controllable by a player. E is the effect type for this
@@ -52,6 +55,13 @@ public abstract class Building<E> extends Unit {
       throws RuntimeException {
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, stats);
     this.validTerrain = Collections.unmodifiableList(validTerrain);
+  }
+
+  /**
+   * Additional tiles to build copies of this building when building this building. By default, returns empty.
+   */
+  public Set<Tile> buildFanOut() {
+    return Collections.emptySet();
   }
 
   /**

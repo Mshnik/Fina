@@ -22,6 +22,7 @@ import model.unit.ability.Ability;
 import model.unit.building.AllUnitModifierBuilding;
 import model.unit.building.Building;
 import model.unit.building.CommanderModifierBuilding;
+import model.unit.building.FanOrthogonallyBuilding;
 import model.unit.building.PlayerModifierBuilding;
 import model.unit.building.StartOfTurnEffectBuilding;
 import model.unit.building.SummonerBuilding;
@@ -496,7 +497,9 @@ public final class InfoPanel extends JPanel {
     }
 
     int maxDescriptionWidth = 250;
-    if (building instanceof PlayerModifierBuilding
+    if (building instanceof FanOrthogonallyBuilding) {
+      drawStringAsMultilineText(g2d, "Fan to radius " + effect, x, y, maxDescriptionWidth);
+    } else if (building instanceof PlayerModifierBuilding
         || building instanceof StartOfTurnEffectBuilding
         || building instanceof SummonerBuilding) {
       drawStringAsMultilineText(g2d, effect.toString(), x, y, maxDescriptionWidth);

@@ -83,6 +83,12 @@ public final class Buildings {
                   new NoEffectBuilding(
                       null, name, imageFilename, level, baseCost, costScaling, validTerrain, stats);
               break;
+            case "FanOrthogonallyBuilding":
+              building = new FanOrthogonallyBuilding(
+                  null, name, imageFilename, level, baseCost, costScaling, validTerrain, stats,
+                  Integer.parseInt(nonAncientGroundEffectDescription),
+                  Integer.parseInt(ancientGroundEffectDescription));
+              break;
             case "SummonerBuilding":
               EffectPair<SummonerBuilding.SummonerBuildingEffect> summoningRadii =
                   getSummoningEffects(name);

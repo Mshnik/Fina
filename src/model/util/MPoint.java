@@ -92,6 +92,11 @@ public final class MPoint {
     return get(row + p.row, col + p.col);
   }
 
+  /** Creates a new poitn by scaling row and col by scalar. */
+  public MPoint times(int scalar) {
+    return get(row * scalar, col * scalar);
+  }
+
   /**
    * Returns a radial cloud centered at this
    */

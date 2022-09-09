@@ -53,6 +53,8 @@ import model.unit.MovingUnit;
 import model.unit.Summoner;
 import model.unit.Unit;
 import model.unit.ability.Ability;
+import model.unit.building.Building;
+import model.unit.building.FanOrthogonallyBuilding;
 import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
@@ -1095,10 +1097,24 @@ public final class GameController {
    */
   public void summonUnit(Unit summoner, Tile loc, Unit toSummon) {
     summoner.spendAction();
-    Unit summonedUnit = toSummon.clone(summoner.owner, loc);
+    Unit summonedUnit = summonUnit(summoner.owner, loc, toSummon);
+
+    // Check for fan.
+    if (toSummon instanceof Building) {
+      Building<?> building = (Building<?>) summonedUnit;
+      for (Tile t : building.buildFanOut()) {
+        summonUnit(summoner.owner, t, toSummon);
+      }
+    }
+  }
+
+  /** Summons a new {@code toSummon} owned by owner at location. Returns the summoned unit. */
+  private Unit summonUnit(Player owner, Tile location, Unit toSummon) {
+    Unit summonedUnit = toSummon.clone(owner, location);
     summonedUnit.copyPersonalModifiersFrom(toSummon);
     summonedUnit.owner.recalculateState();
     summonedUnit.owner.refreshVisionCloud(summonedUnit);
+    return summonedUnit;
   }
 
   /**
