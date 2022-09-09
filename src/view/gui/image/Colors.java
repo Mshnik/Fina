@@ -13,15 +13,15 @@ public final class Colors {
   /**
    * Color of summon/build radii
    */
-  public static final Color SUMMON_FILL_COLOR = new Color(154, 222, 195);
+  public static final Color SUMMON_FILL_COLOR = new Color(154, 222, 195, 0.5f);
   /**
    * Color of summon/build radii
    */
-  public static final Color SUMMON_BORDER_COLOR = new Color(65, 222, 173);
+  public static final Color SUMMON_BORDER_COLOR = new Color(65, 222, 173, 0.75f);
   /**
    * Color of cast radii
    */
-  public static final Color CAST_BORDER_COLOR = new Color(244, 231, 35);
+  public static final Color CAST_BORDER_COLOR = new Color(244, 231, 35, 0.75f);
   /**
    * Color of cast radii
    */
@@ -54,7 +54,7 @@ public final class Colors {
   /**
    * Color of attack radii
    */
-  public static final Color ATTACK_BORDER_COLOR = Color.red;
+  public static final Color ATTACK_BORDER_COLOR = new Color(1.0f, 0f, 0f, 0.75f);
 
   private Colors() {
   }
