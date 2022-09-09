@@ -114,14 +114,20 @@ public final class DummyCommander extends Commander {
    */
   private static final Ability[][] ABILITIES = new Ability[][]{
       {
+          Abilities.getAbilityForName("Heal"),
+          Abilities.getAbilityForName("Strengthen")
       },
       {
           Abilities.getAbilityForName("Heal"),
           Abilities.getAbilityForName("Strengthen")
       },
       {
+          Abilities.getAbilityForName("Heal"),
+          Abilities.getAbilityForName("Strengthen")
       },
       {
+          Abilities.getAbilityForName("Heal"),
+          Abilities.getAbilityForName("Strengthen")
       }
   };
 

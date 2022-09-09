@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
@@ -35,19 +36,29 @@ import model.unit.stat.Stats;
  */
 public abstract class Commander extends MovingUnit implements Summoner {
 
-  /** Prefix for all levelup buffs. */
+  /**
+   * Prefix for all levelup buffs.
+   */
   static final String LEVEL_UP_MODIFIER_PREFIX = "Level Up";
 
-  /** The highest level commanders can achieve */
+  /**
+   * The highest level commanders can achieve
+   */
   public static final int MAX_LEVEL = 4;
 
-  /** The bonus ratio of damage -> research for damaging a commander. */
+  /**
+   * The bonus ratio of damage -> research for damaging a commander.
+   */
   public static final double BONUS_DAMAGE_TO_RESEARCH_RATIO = 1.25;
 
-  /** The ratio of level -> research for the owner of the killing model.unit */
+  /**
+   * The ratio of level -> research for the owner of the killing model.unit
+   */
   public static final double LEVEL_TO_RESEARCH_RATIO = 50;
 
-  /** The current mana level of this commander. Varies over the course of the model.game. */
+  /**
+   * The current mana level of this commander. Varies over the course of the model.game.
+   */
   private int mana;
 
   /**
@@ -73,18 +84,20 @@ public abstract class Commander extends MovingUnit implements Summoner {
    */
   private final Ability[] abilityChoices;
 
-  /** The abilities the commander has cast this turn */
+  /**
+   * The abilities the commander has cast this turn
+   */
   private final LinkedList<Ability> currentTurnCasts;
 
   /**
    * Constructor for Commander. Also adds this model.unit to the starting tile for the owner, and
    * its owner as a model.unit that player owns, Commanders have a manaCost of 0.
    *
-   * @param owner - the player owner of this model.unit
+   * @param owner         - the player owner of this model.unit
    * @param imageFilename - the image to draw when drawing this unit.
-   * @param stats - the stats of this commander. Notably, because of restrictions on commander, the
-   *     attack, counterattack, and attackType Attributes are unused, because they are either
-   *     unnecessary or calculated elsewhere.
+   * @param stats         - the stats of this commander. Notably, because of restrictions on commander, the
+   *                      attack, counterattack, and attackType Attributes are unused, because they are either
+   *                      unnecessary or calculated elsewhere.
    */
   public Commander(Player owner, Tile location, String name, String imageFilename, Stats stats)
       throws RuntimeException, IllegalArgumentException {
@@ -99,7 +112,9 @@ public abstract class Commander extends MovingUnit implements Summoner {
     abilityChoices = new Ability[MAX_LEVEL];
   }
 
-  /** Forces implementing methods to return a commander. */
+  /**
+   * Forces implementing methods to return a commander.
+   */
   @Override
   protected abstract Commander createClone(Player p, Tile cloneLocation);
 
@@ -138,13 +153,17 @@ public abstract class Commander extends MovingUnit implements Summoner {
     }
   }
 
-  /** Commanders can summon if it has an action remaining. */
+  /**
+   * Commanders can summon if it has an action remaining.
+   */
   @Override
   public boolean canSummon() {
     return getActionsRemaining() > 0;
   }
 
-  /** Commanders can cast if it has an action remaining. */
+  /**
+   * Commanders can cast if it has an action remaining.
+   */
   @Override
   public boolean canCast() {
     return getActionsRemaining() > 0;
@@ -175,7 +194,9 @@ public abstract class Commander extends MovingUnit implements Summoner {
 
   // RESTRICTIONS
 
-  /** Restricted attack - has val 0. */
+  /**
+   * Restricted attack - has val 0.
+   */
   @Override
   public int getMinAttack() {
     return 0;
@@ -196,12 +217,16 @@ public abstract class Commander extends MovingUnit implements Summoner {
     return 0;
   }
 
-  /** Commanders can't fight */
+  /**
+   * Commanders can't fight
+   */
   public boolean canFight() {
     return false;
   }
 
-  /** Returns Commander */
+  /**
+   * Returns Commander
+   */
   @Override
   public String getIdentifierString() {
     return "Commander";
@@ -209,12 +234,16 @@ public abstract class Commander extends MovingUnit implements Summoner {
 
   // HEALTH and MANA
 
-  /** Returns the current mana of this commander */
+  /**
+   * Returns the current mana of this commander
+   */
   public int getMana() {
     return mana;
   }
 
-  /** Sets to the given amount of mana. Input must be non-negative */
+  /**
+   * Sets to the given amount of mana. Input must be non-negative
+   */
   protected void setMana(int newMana) throws IllegalArgumentException {
     if (newMana < 0) throw new IllegalArgumentException("Can't set mana to " + newMana + " - OOB");
     addMana(newMana - mana);
@@ -243,7 +272,9 @@ public abstract class Commander extends MovingUnit implements Summoner {
     return level;
   }
 
-  /** Returns the current amount of research this commander has accrewed */
+  /**
+   * Returns the current amount of research this commander has accrewed
+   */
   public int getResearch() {
     return research;
   }
@@ -255,12 +286,16 @@ public abstract class Commander extends MovingUnit implements Summoner {
    */
   abstract int[] getResearchRequirements();
 
-  /** Returns the amount of research necessary to get to the next level or use an ultimate power, if at max level. */
+  /**
+   * Returns the amount of research necessary to get to the next level or use an ultimate power, if at max level.
+   */
   public int getResearchRequirement() {
     return getResearchRequirements()[level - 1];
   }
 
-  /** Returns the amount of research still necessary to get to the next level */
+  /**
+   * Returns the amount of research still necessary to get to the next level
+   */
   public int getResearchRemaining() {
     return getResearchRequirement() - research;
   }
@@ -284,12 +319,16 @@ public abstract class Commander extends MovingUnit implements Summoner {
     research += deltaResearch;
   }
 
-  /** Adds the amount of out of turn research. Called when it is not this commander's turn */
+  /**
+   * Adds the amount of out of turn research. Called when it is not this commander's turn
+   */
   private void addOutOfTurnResearch(int deltaResearch) {
     outOfTurnResearch += deltaResearch;
   }
 
-  /** Returns the bundle of stat boosts to give the commander when it levels up to level {@code level}. */
+  /**
+   * Returns the bundle of stat boosts to give the commander when it levels up to level {@code level}.
+   */
   abstract ModifierBundle getLevelupModifierBundle(int level);
 
   /**
@@ -308,25 +347,48 @@ public abstract class Commander extends MovingUnit implements Summoner {
     }
   }
 
-  /** Returns all abilites this commander could have. Only some of these will be active, by level and levelup decision. */
+  /**
+   * Returns all abilites this commander could have. Only some of these will be active, by level and levelup decision.
+   */
   public abstract Ability[][] allAbilities();
 
-  /** Returns the abilities this commander currently has. */
+  /**
+   * Returns the abilities this commander currently has.
+   */
   public List<Ability> getAbilities() {
     return Arrays.stream(abilityChoices).filter(Objects::nonNull).collect(Collectors.toList());
   }
 
-  /** Returns the abilities that can be chosen between for the current level. */
-  public Ability[] getAbilityChoices() {
+  /**
+   * Returns the level with an ability choice needed. Returns -1 if no choices are needed.
+   */
+  public int getAbilityChoiceNeededLevel() {
+    for (int i = 1; i <= level; i++) {
+      if (abilityChoices[i - 1] == null) {
+        return i;
+      }
+    }
+
+    return -1;
+  }
+
+  /**
+   * Returns the possible abilities to choose between for {@code level}.
+   */
+  public Ability[] getAbilityChoices(int level) {
     return allAbilities()[level - 1];
   }
 
-  /** Chooses ability index i for this level. Called when the player ends the levelup decision */
-  public void chooseAbility(int i) throws RuntimeException {
-    if (abilityChoices[level - 1] != null) {
+  /**
+   * Chooses ability index i for the given level. Called when the player ends the levelup decision
+   */
+  public void chooseAbility(int level, int i) throws RuntimeException {
+    if (level > this.level) {
+      throw new RuntimeException("Cannot make a choice for level " + level + ", this is only level " + this.level);
+    } else if (abilityChoices[level - 1] != null) {
       throw new RuntimeException("Can't pick ability for level " + level + " already picked " + i);
     }
-    abilityChoices[level - 1] = allAbilities()[level-1][i];
+    abilityChoices[level - 1] = allAbilities()[level - 1][i];
   }
 
   /**
@@ -340,7 +402,9 @@ public abstract class Commander extends MovingUnit implements Summoner {
         .collect(Collectors.toList());
   }
 
-  /** Commanders can't attack, so attack modifications aren't ok. */
+  /**
+   * Commanders can't attack, so attack modifications aren't ok.
+   */
   @Override
   public boolean modifierOk(Modifier m) {
     if (m instanceof StatModifier) {
@@ -355,7 +419,9 @@ public abstract class Commander extends MovingUnit implements Summoner {
 
   // SUMMONING
 
-  /** Returns a dummy model.unit for the given name, if possible (otherwise null ) */
+  /**
+   * Returns a dummy model.unit for the given name, if possible (otherwise null )
+   */
   public Unit getUnitByName(String name) {
     Map<String, Combatant> summonables = getSummonables();
     Unit toSummon = summonables.get(name);
@@ -378,7 +444,9 @@ public abstract class Commander extends MovingUnit implements Summoner {
     return units;
   }
 
-  /** Returns the list of buildings this can build. Can be overriden to add additional buildings */
+  /**
+   * Returns the list of buildings this can build. Can be overriden to add additional buildings
+   */
   @Override
   public Map<String, Building> getBuildables() {
     HashMap<String, Building> units = new HashMap<String, Building>();
@@ -390,7 +458,9 @@ public abstract class Commander extends MovingUnit implements Summoner {
     return units;
   }
 
-  /** Returns a map of actions this can cast. */
+  /**
+   * Returns a map of actions this can cast.
+   */
   public Map<String, Ability> getCastables() {
     HashMap<String, Ability> units = new HashMap<String, Ability>();
     for (int i = 0; i <= getLevel(); i++) {
@@ -407,7 +477,8 @@ public abstract class Commander extends MovingUnit implements Summoner {
   }
 
   @Override
-  public void preMove(List<Tile> path) {}
+  public void preMove(List<Tile> path) {
+  }
 
   @Override
   public void postMove(List<Tile> path) {
@@ -415,10 +486,12 @@ public abstract class Commander extends MovingUnit implements Summoner {
   }
 
   @Override
-  public void preCounterFight(Combatant other) {}
+  public void preCounterFight(Combatant other) {
+  }
 
   @Override
-  public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {}
+  public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {
+  }
 
   @Override
   public String toStringFull() {

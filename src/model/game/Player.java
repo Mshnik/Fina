@@ -620,6 +620,9 @@ public abstract class Player implements Stringable {
    */
   final boolean turnStart() {
     try {
+      // Check for start of game ability decision.
+      game.getController().startNewAbilityDecision(this);
+
       // Add research per turn
       updateResearchPerTurn();
       commander.addResearch(researchPerTurn);

@@ -870,26 +870,34 @@ public final class GameController {
    * ability yet
    */
   private void startNewAbilityDecision(Commander c) throws RuntimeException {
-    Ability[] a = c.getAbilityChoices();
+    int abilityChoiceLevel = c.getAbilityChoiceNeededLevel();
+    if (abilityChoiceLevel < 0) {
+      return;
+    }
+
+    Ability[] a = c.getAbilityChoices(abilityChoiceLevel);
     if (a != null && a.length > 0) {
       decision = new Decision(DecisionType.NEW_ABILITY_DECISION, true, true);
       for (Ability ab : a) {
         decision.add(new Choice(true, ab.name, ab));
       }
       addToggle(Toggle.DECISION);
-      getGamePanel().fixDecisionPanel("Choose a New Ability", c.owner, decision, true);
+      getGamePanel().fixDecisionPanel("Choose a New Ability (Lvl " + abilityChoiceLevel + ")", c.owner, decision, true);
       getGamePanel().centerDecisionPanel();
     }
   }
 
   /**
-   * Processes the levelup new ability decision
+   * Processes the levelup new ability decision. Starts another ability decision, in case multiple level ups happened at once.
    */
   void processNewAbilityDecision(Choice c) {
     Commander com = getGamePanel().getDecisionPanel().player.getCommander();
+    int abilityChoiceLevel = com.getAbilityChoiceNeededLevel();
     int index = c.getIndex();
     cancelDecision();
-    com.chooseAbility(index);
+    com.chooseAbility(abilityChoiceLevel, index);
+    
+    startNewAbilityDecision(com);
   }
 
   /**
