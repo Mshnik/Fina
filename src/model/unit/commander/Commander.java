@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import controller.decision.Decision;
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
@@ -343,7 +344,9 @@ public abstract class Commander extends MovingUnit implements Summoner {
       getLevelupModifierBundle(level).clone(this, this);
       owner.updateManaPerTurn();
       owner.refreshVisionCloud(this);
-      owner.game.getController().startNewAbilityDecision(owner);
+      if (owner.game.getController().getDecisionType() != Decision.DecisionType.NEW_ABILITY_DECISION) {
+        owner.game.getController().startNewAbilityDecision(owner);
+      }
     }
   }
 
