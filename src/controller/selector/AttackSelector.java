@@ -18,6 +18,11 @@ public final class AttackSelector extends LocationSelector {
    */
   public final Combatant attacker;
 
+  /**
+   * The cloud of effect range based on the current location of the boardCursor
+   */
+  private List<Tile> effectCloud;
+
   public AttackSelector(GameController gc, Combatant attacker) {
     super(gc);
     this.attacker = attacker;
@@ -29,15 +34,20 @@ public final class AttackSelector extends LocationSelector {
   @Override
   protected void refreshPossibilitiesCloud() {
     cloud = attacker.getAttackableTiles(true);
-    controller.repaint();
+    if (!cloud.isEmpty()) {
+      controller.frame.getGamePanel().boardCursor.setElm(cloud.get(0));
+      refreshEffectCloud();
+    }
   }
 
   @Override
   public List<Tile> getEffectCloud() {
-    return Collections.emptyList();
+    return Collections.unmodifiableList(effectCloud);
   }
 
   @Override
   public void refreshEffectCloud() {
+    effectCloud = Collections.singletonList(controller.frame.getGamePanel().boardCursor.getElm());
+    controller.repaint();
   }
 }
