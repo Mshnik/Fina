@@ -198,6 +198,8 @@ public final class Abilities {
             AbilityEffect.modifierBundle(
                 new ModifierBundle(
                     Modifiers.flight(), Modifiers.farsight(3), Modifiers.quickness(1))));
+      case "Channel":
+        return Collections.singletonList(AbilityEffect.mana(25));
       default:
         throw new RuntimeException("Unknown ability name " + abilityName);
     }

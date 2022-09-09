@@ -2,6 +2,7 @@ package model.unit.ability;
 
 import java.util.Random;
 import java.util.stream.Collectors;
+
 import model.unit.MovingUnit;
 import model.unit.Unit;
 import model.unit.combatant.Combatant;
@@ -11,37 +12,64 @@ import model.unit.modifier.Modifier;
 import model.unit.modifier.ModifierBundle;
 import model.unit.modifier.Modifiers;
 
-/** An effect applied to a unit as part of an ability. */
+/**
+ * An effect applied to a unit as part of an ability.
+ */
 final class AbilityEffect {
 
-  /** Minimum damage to deal if this is an effect that deals damage, null otherwise. */
+  /**
+   * Minimum damage to deal if this is an effect that deals damage, null otherwise.
+   */
   private final int minDamage;
 
-  /** Minimum damage to deal if this is an effect that deals damage, null otherwise. */
+  /**
+   * Minimum damage to deal if this is an effect that deals damage, null otherwise.
+   */
   private final int maxDamage;
 
-  /** HP to heal if this is an effect that heals constant hp, 0 otherwise. */
+  /**
+   * HP to heal if this is an effect that heals constant hp, 0 otherwise.
+   */
   private final int healConstantHp;
 
-  /** HP to heal if this is an effect that heals a percentage of max HP, 0 otherwise. */
+  /**
+   * HP to heal if this is an effect that heals a percentage of max HP, 0 otherwise.
+   */
   private final double healPercentageOfMaxHp;
 
-  /** True if this effect destroys a unit without dealing damage. */
+  /**
+   * True if this effect destroys a unit without dealing damage.
+   */
   private final boolean destroyUnit;
 
-  /** True if this effect refreshes movement and attack of a unit. */
+  /**
+   * True if this effect refreshes movement and attack of a unit.
+   */
   private final boolean refreshUnit;
 
-  /** True if this effect gains research for the targeted commander. */
+  /**
+   * The amount of mana to give to the targeted commander.
+   */
+  private final int mana;
+
+  /**
+   * The amount of research to give to the targeted commander.
+   */
   private final int research;
 
-  /** Number of turns all modifiers granted through abilities last. */
+  /**
+   * Number of turns all modifiers granted through abilities last.
+   */
   private static final int MODIFIER_TURN_DURATION = 4;
 
-  /** ModifierBundle if this is an effect that gives a modifier, null otherwise. */
+  /**
+   * ModifierBundle if this is an effect that gives a modifier, null otherwise.
+   */
   private final ModifierBundle modifierEffect;
 
-  /** Constructor for AbilityEffect - expects at most one type of effect to be set. */
+  /**
+   * Constructor for AbilityEffect - expects at most one type of effect to be set.
+   */
   private AbilityEffect(
       int minDamage,
       int maxDamage,
@@ -49,7 +77,7 @@ final class AbilityEffect {
       double healPercentageOfMaxHp,
       boolean destroyUnit,
       boolean refreshUnit,
-      int research,
+      int mana, int research,
       ModifierBundle modifierEffect) {
     this.minDamage = minDamage;
     this.maxDamage = maxDamage;
@@ -57,38 +85,58 @@ final class AbilityEffect {
     this.healPercentageOfMaxHp = healPercentageOfMaxHp;
     this.destroyUnit = destroyUnit;
     this.refreshUnit = refreshUnit;
+    this.mana = mana;
     this.research = research;
     this.modifierEffect = modifierEffect;
   }
 
-  /** Creates an ability effect that deals damage. */
+  /**
+   * Creates an ability effect that deals damage.
+   */
   static AbilityEffect damage(int minDamage, int maxDamage) {
-    return new AbilityEffect(minDamage, maxDamage, 0, 0, false, false, 0, null);
+    return new AbilityEffect(minDamage, maxDamage, 0, 0, false, false, 0, 0, null);
   }
 
-  /** Creates an ability effect that heals constant hp. */
+  /**
+   * Creates an ability effect that heals constant hp.
+   */
   static AbilityEffect healConstantHp(int healConstantHp) {
-    return new AbilityEffect(0, 0, healConstantHp, 0, false, false, 0, null);
+    return new AbilityEffect(0, 0, healConstantHp, 0, false, false, 0, 0, null);
   }
 
-  /** Creates an ability effect that heals a percentage of max hp. */
+  /**
+   * Creates an ability effect that heals a percentage of max hp.
+   */
   static AbilityEffect healPercentageOfMaxHp(double percentageOfMaxHp) {
-    return new AbilityEffect(0, 0, 0, percentageOfMaxHp, false, false, 0, null);
+    return new AbilityEffect(0, 0, 0, percentageOfMaxHp, false, false, 0, 0, null);
   }
 
-  /** Creates an ability effect that destroys a unit. */
+  /**
+   * Creates an ability effect that destroys a unit.
+   */
   static AbilityEffect destroyUnit() {
-    return new AbilityEffect(0, 0, 0, 0, true, false, 0, null);
+    return new AbilityEffect(0, 0, 0, 0, true, false, 0, 0, null);
   }
 
-  /** Creates an ability effect that refreshes a unit. */
+  /**
+   * Creates an ability effect that refreshes a unit.
+   */
   static AbilityEffect refreshUnit() {
-    return new AbilityEffect(0, 0, 0, 0, false, true, 0, null);
+    return new AbilityEffect(0, 0, 0, 0, false, true, 0, 0, null);
   }
 
-  /** Creates an ability effect that gains the commander research. */
+  /**
+   * Creates an ability effect that gains the commander mana.
+   */
+  static AbilityEffect mana(int mana) {
+    return new AbilityEffect(0, 0, 0, 0, false, false, mana, 0, null);
+  }
+
+  /**
+   * Creates an ability effect that gains the commander research.
+   */
   static AbilityEffect research(int research) {
-    return new AbilityEffect(0, 0, 0, 0, false, false, research, null);
+    return new AbilityEffect(0, 0, 0, 0, false, false, 0, research, null);
   }
 
   /**
@@ -111,6 +159,7 @@ final class AbilityEffect {
         0,
         false,
         false,
+        0,
         0,
         new ModifierBundle(
             modifiers
@@ -143,13 +192,15 @@ final class AbilityEffect {
       } else {
         throw new RuntimeException("Can't refresh " + u);
       }
+    } else if (mana > 0) {
+      return 1;
     } else if (research > 0) {
       return 1;
     } else if (modifierEffect != null) {
       if (modifierEffect.isAffecting(u)) {
         return 1
             / (modifierEffect.getModifier(0).cloneInCollection(u.getModifiers()).getRemainingTurns()
-                + 1);
+            + 1);
       } else {
         return 1;
       }
@@ -158,7 +209,9 @@ final class AbilityEffect {
     }
   }
 
-  /** Makes this abilityEffect affect the given unit. */
+  /**
+   * Makes this abilityEffect affect the given unit.
+   */
   void affect(Unit u, Commander caster, Random random) {
     if (maxDamage != 0) {
       damageEffect(u, caster, random);
@@ -177,6 +230,8 @@ final class AbilityEffect {
       } else {
         throw new RuntimeException("Can't refresh " + u);
       }
+    } else if (mana > 0) {
+      caster.addMana(mana);
     } else if (research > 0) {
       caster.addResearch(research);
     } else if (modifierEffect != null) {
@@ -195,9 +250,9 @@ final class AbilityEffect {
             0,
             1
                 - u.getModifiersByName(Modifiers.hexproof(0))
-                    .stream()
-                    .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
-                    .sum());
+                .stream()
+                .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
+                .sum());
 
     // Subtract constant from toughness.
     damage -=

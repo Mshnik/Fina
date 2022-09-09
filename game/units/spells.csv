@@ -22,3 +22,5 @@ Spacial Shift,3,50,Utility,Circle-0,No,3,Combatant/Commander/Building,Yes,Yes,Sw
 Cone of Light,4,125,Attack,Cone-1,Yes,1,Combatant/Commander,Yes,Yes,Unit takes 60-90 damage and gains Blinded 2 for 4 turns,
 Mana Shield,4,100,Heal,Circle-2,Yes,0,Combatant/Building,Yes,No,Unit gains Shielded 25 for 4 turns then heal unit 50% max health,
 Levitation,4,75,Buff,Circle-2,Yes,0,Combatant/Commander,Yes,No,Unit gains Flight for 4 turns,
+,,,,,,,,,,,
+Channel,99,0,Utility,Circle-0,No,0,Commander,Yes,No,Gain 25 Mana

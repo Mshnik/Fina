@@ -398,6 +398,11 @@ public abstract class Commander extends MovingUnit implements Summoner {
         units.put(a.name, a);
       }
     }
+
+    for (Ability ability : getAbilities()) {
+      units.put(ability.name, ability);
+    }
+
     return units;
   }
 
