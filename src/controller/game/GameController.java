@@ -28,10 +28,12 @@ import controller.selector.SummonSelector;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -183,9 +185,9 @@ public final class GameController {
   private SummonType summonType;
 
   /**
-   * Current decision that is underway. Null if none
+   * Current decisions that are underway. Empty if none. Decisions must be made in order of the list.
    */
-  private Decision decision;
+  private final Deque<Decision> decisions;
 
   /**
    * A hashmap from each player to the color to tint their units
@@ -409,6 +411,7 @@ public final class GameController {
 
     playerColors = new HashMap<>();
     toggle = new Stack<>();
+    decisions = new ArrayDeque<>();
   }
 
   /**
@@ -575,7 +578,7 @@ public final class GameController {
     if (!t.equals(Toggle.DECISION))
       throw new RuntimeException("Can't cancel decision, currently toggling " + getToggle());
     frame.getAnimator().removeAnimatable(getGamePanel().getDecisionPanel().cursor);
-    decision = null;
+    decisions.pollFirst();
     frame.getGamePanel().setDecisionPanel(null);
     frame.setActiveCursor(getGamePanel().boardCursor);
     frame.getInfoPanel().clearModifierDescription();
@@ -593,14 +596,14 @@ public final class GameController {
    * Returns the type of the current decision, if any
    */
   public DecisionType getDecisionType() {
-    return decision.getType();
+    return decisions.getFirst().getType();
   }
 
   /**
    * Returns iff the current decision is manditory
    */
   public boolean isDecisionManditory() {
-    return decision.isManditory();
+    return decisions.getFirst().isManditory();
   }
 
   /**
@@ -653,9 +656,9 @@ public final class GameController {
     if (choices.isEmpty()) return;
 
     // Otherwise, convert to array, create panel, set correct location on screen.
-    decision = new Decision(DecisionType.ACTION_DECISION, false, true, choices);
+    decisions.add(new Decision(DecisionType.ACTION_DECISION, false, true, choices));
     addToggle(Toggle.DECISION);
-    getGamePanel().fixDecisionPanel("Action", game.getCurrentPlayer(), decision, true);
+    getGamePanel().fixDecisionPanel("Action", game.getCurrentPlayer(), decisions.getFirst(), true);
     getGamePanel().moveDecisionPanel();
   }
 
@@ -711,10 +714,10 @@ public final class GameController {
     if (choices.isEmpty()) return;
 
     // Otherwise, convert to array, create panel, set correct location on screen.
-    decision = new Decision(DecisionType.COMMANDER_ACTION_DECISION, false, true, choices);
+    decisions.add(new Decision(DecisionType.COMMANDER_ACTION_DECISION, false, true, choices));
     addToggle(Toggle.DECISION);
     getGamePanel()
-        .fixDecisionPanel("Action > " + COMMANDER_ACTION, game.getCurrentPlayer(), decision, true);
+        .fixDecisionPanel("Action > " + COMMANDER_ACTION, game.getCurrentPlayer(), decisions.getFirst(), true);
     getGamePanel().moveDecisionPanel();
   }
 
@@ -745,15 +748,15 @@ public final class GameController {
    * Stats a decision panel for player actions, including ending the turn.
    */
   void startPlayerActionDecision() {
-    decision =
+    decisions.add(
         new Decision(
             DecisionType.PLAYER_ACTIONS_DECISION,
             false,
             true,
             new Choice(game.getMostRecentHumanPlayer() != null, GameController.END_TURN),
-            new Choice(game.getMostRecentHumanPlayer() != null, GameController.ALTER_VIEW_OPTIONS));
+            new Choice(game.getMostRecentHumanPlayer() != null, GameController.ALTER_VIEW_OPTIONS)));
     addToggle(Toggle.DECISION);
-    getGamePanel().fixDecisionPanel("Player", game.getCurrentPlayer(), decision, true);
+    getGamePanel().fixDecisionPanel("Player", game.getCurrentPlayer(), decisions.getFirst(), true);
     getGamePanel().moveDecisionPanel();
   }
 
@@ -780,15 +783,15 @@ public final class GameController {
    */
   private void startEndTurnDecision() {
     if (game.isRunning() && game.getCurrentPlayer().isLocalHumanPlayer()) {
-      decision =
+      decisions.add(
           new Decision(
               DecisionType.END_OF_TURN_DECISION,
               false,
               true,
               new Choice(true, GameController.CANCEL),
-              new Choice(true, GameController.CONFIRM));
+              new Choice(true, GameController.CONFIRM)));
       addToggle(Toggle.DECISION);
-      getGamePanel().fixDecisionPanel("Player > End Turn", game.getCurrentPlayer(), decision, true);
+      getGamePanel().fixDecisionPanel("Player > End Turn", game.getCurrentPlayer(), decisions.getFirst(), true);
       getGamePanel().moveDecisionPanel();
     }
   }
@@ -811,7 +814,7 @@ public final class GameController {
    */
   private void startViewOptionsDecision() {
     ViewOptions viewOptions = frame.getViewOptionsForPlayer(game.getMostRecentHumanPlayer());
-    decision =
+    decisions.add(
         new Decision(
             DecisionType.VIEW_OPTIONS_DECISION,
             false,
@@ -829,10 +832,10 @@ public final class GameController {
             new Choice(
                 viewOptions.hasNonEmptyDangerRadius(),
                 GameController.CLEAR_DANGER_RADIUS,
-                viewOptions));
+                viewOptions)));
     addToggle(Toggle.DECISION);
     getGamePanel()
-        .fixDecisionPanel("Player > View Options", game.getCurrentPlayer(), decision, true);
+        .fixDecisionPanel("Player > View Options", game.getCurrentPlayer(), decisions.getFirst(), true);
     getGamePanel().moveDecisionPanel();
   }
 
@@ -872,12 +875,13 @@ public final class GameController {
   private void startNewAbilityDecision(Commander c) throws RuntimeException {
     Ability[] a = c.getAbilityChoices();
     if (a != null && a.length > 0) {
-      decision = new Decision(DecisionType.NEW_ABILITY_DECISION, true, true);
+      Decision decision = new Decision(DecisionType.NEW_ABILITY_DECISION, true, true);
       for (Ability ab : a) {
         decision.add(new Choice(true, ab.name, ab));
       }
+      decisions.add(decision);
       addToggle(Toggle.DECISION);
-      getGamePanel().fixDecisionPanel("Choose a New Ability", c.owner, decision, true);
+      getGamePanel().fixDecisionPanel("Choose a New Ability", c.owner, decisions.getFirst(), true);
       getGamePanel().centerDecisionPanel();
     }
   }
@@ -922,7 +926,7 @@ public final class GameController {
                   + ")",
               u));
     }
-    decision = new Decision(DecisionType.SUMMON_DECISION, false, true, choices);
+    decisions.add(new Decision(DecisionType.SUMMON_DECISION, false, true, choices));
     addToggle(Toggle.DECISION);
     getGamePanel()
         .fixDecisionPanel(
@@ -931,7 +935,7 @@ public final class GameController {
                 + " > "
                 + (summonType == SummonType.UNIT ? "Summon" : "Build"),
             c.owner,
-            decision,
+            decisions.getFirst(),
             true);
     getGamePanel().moveDecisionPanel();
   }
@@ -1071,11 +1075,11 @@ public final class GameController {
               a.name + Choice.SEPERATOR + " (" + a.manaCost + ")",
               a));
     }
-    decision = new Decision(DecisionType.CAST_DECISION, false, true, choices);
+    decisions.add(new Decision(DecisionType.CAST_DECISION, false, true, choices));
     addToggle(Toggle.DECISION);
     getGamePanel()
         .fixDecisionPanel(
-            "Action > " + COMMANDER_ACTION + " > " + CAST, game.getCurrentPlayer(), decision, true);
+            "Action > " + COMMANDER_ACTION + " > " + CAST, game.getCurrentPlayer(), decisions.getFirst(), true);
     getGamePanel().moveDecisionPanel();
   }
 
@@ -1243,15 +1247,15 @@ public final class GameController {
     Unit defender = loc.getOccupyingUnit();
     Combat combat = new Combat(attackSelector.attacker, defender);
 
-    decision =
+    decisions.add(
         new Decision(
             DecisionType.CONFIRM_ATTACK_DECISION,
             false,
             false,
             new Choice(true, GameController.CANCEL, combat),
-            new Choice(true, GameController.CONFIRM, combat));
+            new Choice(true, GameController.CONFIRM, combat)));
     addToggle(Toggle.DECISION);
-    getGamePanel().fixDecisionPanel("Attack?", game.getCurrentPlayer(), decision, false);
+    getGamePanel().fixDecisionPanel("Attack?", game.getCurrentPlayer(), decisions.getFirst(), false);
     getGamePanel().moveDecisionPanel();
   }
 
@@ -1289,7 +1293,7 @@ public final class GameController {
 
     List<ModifierDescription> modifierDescriptions =
         Modifiers.getModifierDescriptions(occupyingUnit.getVisibleModifiers());
-    decision =
+    decisions.add(
         new Decision(
             DecisionType.INFO_HOVER_DECISION,
             false,
@@ -1297,9 +1301,9 @@ public final class GameController {
             modifierDescriptions
                 .stream()
                 .map(m -> new Choice(true, m.toStringShort(), m))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList())));
     addToggle(Toggle.DECISION);
-    getGamePanel().fixDecisionPanel("Info: Modifiers", game.getCurrentPlayer(), decision, true);
+    getGamePanel().fixDecisionPanel("Info: Modifiers", game.getCurrentPlayer(), decisions.getFirst(), true);
     getGamePanel().moveDecisionPanel();
   }
 }
