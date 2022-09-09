@@ -112,7 +112,7 @@ public final class AudioController {
     new JFXPanel();
   }
 
-  private static boolean MUTE;
+  private static boolean MUTE = true;
   private static MediaPlayer mediaPlayer;
 
   /**
@@ -155,6 +155,11 @@ public final class AudioController {
     if (mediaPlayer != null) {
       mediaPlayer.stop();
     }
+  }
+
+  /** Returns whether sound is currently muted. */
+  public static boolean getMute() {
+    return MUTE;
   }
 
   /**

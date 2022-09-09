@@ -210,6 +210,7 @@ public final class Frame extends JFrame {
     JCheckBoxMenuItem muteMenuItem = new JCheckBoxMenuItem("Mute");
     muteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.META_DOWN_MASK));
     muteMenuItem.addActionListener(e -> AudioController.setMute(muteMenuItem.getState()));
+    muteMenuItem.setState(AudioController.getMute());
     soundMenu.add(muteMenuItem);
 
     setJMenuBar(menu);
