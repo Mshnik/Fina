@@ -132,7 +132,7 @@ public final class FanOrthogonallyBuilding extends Building<Integer> {
       }
     }
 
-    int maxIndex = 0;
+    int maxIndex = -1;
     for (int i = 0; i < tiles.size(); i++) {
       Tile t = tiles.get(i);
       if (!canOccupy(t.terrain) || !owner.canSee(t)) {
@@ -152,8 +152,8 @@ public final class FanOrthogonallyBuilding extends Building<Integer> {
       }
     }
 
-    if (maxIndex > 0) {
-      fanSet.addAll(tiles.subList(0, maxIndex));
+    if (maxIndex >= 0) {
+      fanSet.addAll(tiles.subList(0, maxIndex+1));
     }
   }
 }

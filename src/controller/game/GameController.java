@@ -1106,7 +1106,9 @@ public final class GameController {
     if (toSummon instanceof Building) {
       Building<?> building = (Building<?>) summonedUnit;
       for (Tile t : building.buildFanOut()) {
-        summonedUnits.add(summonUnit(summoner.owner, t, toSummon));
+        if (!t.isOccupied()) {
+          summonedUnits.add(summonUnit(summoner.owner, t, toSummon));
+        }
       }
     }
 
