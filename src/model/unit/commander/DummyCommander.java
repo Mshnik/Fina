@@ -117,16 +117,10 @@ public final class DummyCommander extends Commander {
           Abilities.getAbilityForName("Channel"),
       },
       {
-          Abilities.getAbilityForName("Heal"),
-          Abilities.getAbilityForName("Strengthen")
       },
       {
-          Abilities.getAbilityForName("Heal"),
-          Abilities.getAbilityForName("Strengthen")
       },
       {
-          Abilities.getAbilityForName("Heal"),
-          Abilities.getAbilityForName("Strengthen")
       }
   };
 
