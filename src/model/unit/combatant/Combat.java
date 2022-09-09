@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
 import model.unit.Unit;
 import model.unit.building.Building;
 import model.unit.combatant.Combatant.CombatantClass;
@@ -22,7 +23,9 @@ import view.gui.panel.GamePanel;
  */
 public final class Combat {
 
-  /** True iff debug info should be logged to the console. */
+  /**
+   * True iff debug info should be logged to the console.
+   */
   private static final boolean DEBUG = false;
 
   /**
@@ -31,19 +34,29 @@ public final class Combat {
    */
   private static final double COMBAT_CLASS_BONUS = 0.2;
 
-  /** The Combatant that will attack. */
+  /**
+   * The Combatant that will attack.
+   */
   public final Combatant attacker;
 
-  /** The defending unit. If it is a combatant, it may counterattack. */
+  /**
+   * The defending unit. If it is a combatant, it may counterattack.
+   */
   public final Unit defender;
 
-  /** Number of squares between attacker and defender's locations, accounting for melee. */
+  /**
+   * Number of squares between attacker and defender's locations, accounting for melee.
+   */
   private final int dist;
 
-  /** The current {@link Stage} this is on. */
+  /**
+   * The current {@link Stage} this is on.
+   */
   private Stage stage;
 
-  /** The stages a Combat can be on. */
+  /**
+   * The stages a Combat can be on.
+   */
   public enum Stage {
     NOT_YET_STARTED,
     STARTED,
@@ -55,7 +68,9 @@ public final class Combat {
     COMBAT_COMPLETED
   }
 
-  /** A pair of combatant classes. */
+  /**
+   * A pair of combatant classes.
+   */
   public static final class CombatantClassPair {
     public final CombatantClass first;
     public final CombatantClass second;
@@ -65,7 +80,9 @@ public final class Combat {
       this.second = second;
     }
 
-    /** Returns true iff first beats second, false otherwise. */
+    /**
+     * Returns true iff first beats second, false otherwise.
+     */
     public boolean firstBeatsSecond() {
       return first.hasBonusAgainstClass(second);
     }
@@ -84,7 +101,9 @@ public final class Combat {
     stage = Stage.NOT_YET_STARTED;
   }
 
-  /** Returns the current stage this combat is on. */
+  /**
+   * Returns the current stage this combat is on.
+   */
   public Stage getStage() {
     return stage;
   }
@@ -124,7 +143,9 @@ public final class Combat {
     return list;
   }
 
-  /** Returns true if this combat is ranged - if the two combatants are not adjacent. */
+  /**
+   * Returns true if this combat is ranged - if the two combatants are not adjacent.
+   */
   private boolean isRanged() {
     return attacker.getLocation().directionTo(defender.getLocation()) == null;
   }
@@ -144,10 +165,10 @@ public final class Combat {
     }
     return 1
         + source
-            .getModifiersByName(m)
-            .stream()
-            .mapToDouble(mod -> ((CustomModifier) mod).val.doubleValue())
-            .sum();
+        .getModifiersByName(m)
+        .stream()
+        .mapToDouble(mod -> ((CustomModifier) mod).val.doubleValue())
+        .sum();
   }
 
   /**
@@ -212,7 +233,9 @@ public final class Combat {
     return (double) getMaxAttack() / defender.getMaxHealth();
   }
 
-  /** Returns the sum of all percentage damage reduction for the defender, for the given combat. */
+  /**
+   * Returns the sum of all percentage damage reduction for the defender, for the given combat.
+   */
   private double getAttackerPercentageDamageReduction() {
     return attacker
         .getModifiersByName(isRanged() ? Modifiers.elusive(0) : Modifiers.armored(0))
@@ -221,7 +244,9 @@ public final class Combat {
         .sum();
   }
 
-  /** Returns the sum of all damage reduction for the attacker. */
+  /**
+   * Returns the sum of all damage reduction for the attacker.
+   */
   private int getAttackerFlatDamageReduction() {
     return attacker
         .getModifiersByName(Modifiers.toughness(0))
@@ -230,7 +255,9 @@ public final class Combat {
         .sum();
   }
 
-  /** Returns true iff the defender could counterattack if it has health left after the attack. */
+  /**
+   * Returns true iff the defender could counterattack if it has health left after the attack.
+   */
   public boolean defenderCouldCounterAttack() {
     return defender.isAlive()
         && defender.owner.canSee(attacker)
@@ -269,7 +296,9 @@ public final class Combat {
                 * getDefenderCounterAttackBonusRatio()));
   }
 
-  /** Returns the sum of all percentage damage reduction for the defender, for the given combat. */
+  /**
+   * Returns the sum of all percentage damage reduction for the defender, for the given combat.
+   */
   private double getDefenderPercentageDamageReduction() {
     double basePercentDamageReduction =
         defender
@@ -280,16 +309,18 @@ public final class Combat {
     if (isRanged() && !attacker.hasModifierByName(Modifiers.siege(0))) {
       return basePercentDamageReduction
           + defender
-              .getModifiersByName(Modifiers.solid(0))
-              .stream()
-              .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
-              .sum();
+          .getModifiersByName(Modifiers.solid(0))
+          .stream()
+          .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
+          .sum();
     } else {
       return basePercentDamageReduction;
     }
   }
 
-  /** Returns the sum of all damage reduction for the defender. */
+  /**
+   * Returns the sum of all damage reduction for the defender.
+   */
   private int getDefenderFlatDamageReduction() {
     return defender
         .getModifiersByName(Modifiers.toughness(0))
@@ -298,14 +329,16 @@ public final class Combat {
         .sum();
   }
 
-  /** Returns the sum of all counterattack damage boosting modifiers for the defender. */
+  /**
+   * Returns the sum of all counterattack damage boosting modifiers for the defender.
+   */
   private double getDefenderCounterAttackBonusRatio() {
     return 1
         + defender
-            .getModifiersByName(Modifiers.patience(0))
-            .stream()
-            .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
-            .sum();
+        .getModifiersByName(Modifiers.patience(0))
+        .stream()
+        .mapToDouble(m -> ((CustomModifier) m).val.doubleValue())
+        .sum();
   }
 
   /**
@@ -368,11 +401,11 @@ public final class Combat {
    * Causes this unit to fight the given unit. With this as the attacker and defender as the
    * defender. This will cause the health of the defender to change
    *
+   * @return true iff defender is killed because of this action
    * @throws RuntimeException if... - this is dead - this can't attack currently
    * @throws IllegalArgumentException for invalid fight when... - defender is dead - both units
-   *     belong to the same player - defender is out of the range of this - this' owner can't see
-   *     defender
-   * @return true iff defender is killed because of this action
+   * belong to the same player - defender is out of the range of this - this' owner can't see
+   * defender
    */
   public final boolean process(Random random) throws IllegalArgumentException, RuntimeException {
     if (stage != Stage.NOT_YET_STARTED)
@@ -408,7 +441,7 @@ public final class Combat {
     boolean counterAttack = defenderCouldCounterAttack() && finalDamage < defender.getHealth();
 
     attacker.preFight(defender);
-    if (counterAttack){
+    if (counterAttack) {
       defender.preCounterFight(attacker);
     }
     stage = Stage.PRE_FIGHTS_COMPLETED;
@@ -424,7 +457,7 @@ public final class Combat {
       // Get damage in range [min,max]
       counterAttackDamage =
           random.nextInt(getMaxCounterAttack() + 1 - getMinCounterAttack()) + getMinCounterAttack();
-      if (DEBUG){
+      if (DEBUG) {
         System.out.println("Raw Counter damage: " + counterAttackDamage);
       }
 
@@ -435,7 +468,7 @@ public final class Combat {
                   0,
                   counterAttackDamage * Math.max(0, 1 - getAttackerPercentageDamageReduction())
                       - getAttackerFlatDamageReduction());
-      if (DEBUG){
+      if (DEBUG) {
         System.out.println("Final Counter damage: " + finalCounterDamage);
       }
       attacker.changeHealth(Math.min(0, -finalCounterDamage), defender);

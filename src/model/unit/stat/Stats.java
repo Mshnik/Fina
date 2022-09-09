@@ -14,7 +14,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/** Holder for the stats for a model.unit. Unless otherwise noted, all stats are non-negative. */
+/**
+ * Holder for the stats for a model.unit. Unless otherwise noted, all stats are non-negative.
+ */
 public class Stats implements Iterable<Stat> {
 
   /**
@@ -45,7 +47,9 @@ public class Stats implements Iterable<Stat> {
     TEMPLATE.put(StatType.SEA_COST, 0);
   }
 
-  /** Utility class for a pair of stats. */
+  /**
+   * Utility class for a pair of stats.
+   */
   public static final class StatPair {
     public final Stat first;
     public final Stat second;
@@ -56,8 +60,10 @@ public class Stats implements Iterable<Stat> {
     }
   }
 
-  /** The stats maintained by this unitstats */
-  private HashMap<StatType, Object> stats;
+  /**
+   * The stats maintained by this unitstats
+   */
+  private final HashMap<StatType, Object> stats;
 
   /**
    * Constructor for Stats with base zero stats. Input stats must not have no duplicates among type
@@ -82,7 +88,9 @@ public class Stats implements Iterable<Stat> {
     }
   }
 
-  /** Constructor for Stats from a base stats and a collection of modifiers. */
+  /**
+   * Constructor for Stats from a base stats and a collection of modifiers.
+   */
   public Stats(Stats base, Collection<Modifier> modifiers) throws IllegalArgumentException {
     this.stats = new HashMap<>(base.stats);
     stats.put(StatType.BASE, base);
@@ -137,12 +145,16 @@ public class Stats implements Iterable<Stat> {
     }
   }
 
-  /** Returns true if this is a base (has no base stat), false otherwise */
+  /**
+   * Returns true if this is a base (has no base stat), false otherwise
+   */
   private boolean isBase() {
     return !stats.containsKey(StatType.BASE);
   }
 
-  /** Returns the requested stat */
+  /**
+   * Returns the requested stat
+   */
   public Object getStat(StatType type) {
     return stats.get(type);
   }
@@ -172,10 +184,12 @@ public class Stats implements Iterable<Stat> {
     return getStatsList(t, filterOmittableZeroes);
   }
 
-  /** Returns an arrayList of the attack stats: - Attack - Attack Range */
+  /**
+   * Returns an arrayList of the attack stats: - Attack - Attack Range
+   */
   public List<StatPair> getAttackStatsList(boolean filterOmittableZeroes) {
     StatType[] t = {
-      StatType.MIN_ATTACK, StatType.MAX_ATTACK, StatType.MIN_ATTACK_RANGE, StatType.MAX_ATTACK_RANGE
+        StatType.MIN_ATTACK, StatType.MAX_ATTACK, StatType.MIN_ATTACK_RANGE, StatType.MAX_ATTACK_RANGE
     };
     Map<StatType, Stat> statTypeStatMap =
         getStatsList(t, filterOmittableZeroes)
@@ -218,7 +232,9 @@ public class Stats implements Iterable<Stat> {
     else return new Stats((Stats) getStat(StatType.BASE), modifiers);
   }
 
-  /** Basic toString impelementation that shows off the stats this represents */
+  /**
+   * Basic toString impelementation that shows off the stats this represents
+   */
   @Override
   public String toString() {
     String s = "";
@@ -231,7 +247,9 @@ public class Stats implements Iterable<Stat> {
     return s;
   }
 
-  /** Returns an iterator over these stats */
+  /**
+   * Returns an iterator over these stats
+   */
   public Iterator<Stat> iterator() {
     return new StatIterator();
   }
@@ -243,7 +261,7 @@ public class Stats implements Iterable<Stat> {
   private class StatIterator implements Iterator<Stat> {
 
     private int index;
-    private ArrayList<Stat> statArr;
+    private final ArrayList<Stat> statArr;
 
     private StatIterator() {
       index = 0;
@@ -254,13 +272,17 @@ public class Stats implements Iterable<Stat> {
       Collections.sort(statArr);
     }
 
-    /** Returns true if there is another stat to return */
+    /**
+     * Returns true if there is another stat to return
+     */
     @Override
     public boolean hasNext() {
       return index < statArr.size();
     }
 
-    /** Returns the next stat, in ordinal by type order */
+    /**
+     * Returns the next stat, in ordinal by type order
+     */
     @Override
     public Stat next() {
       Stat s = statArr.get(index);
@@ -268,7 +290,9 @@ public class Stats implements Iterable<Stat> {
       return s;
     }
 
-    /** Removal not supported - throws runtime exception */
+    /**
+     * Removal not supported - throws runtime exception
+     */
     @Override
     public void remove() {
       throw new RuntimeException("Not Supported");

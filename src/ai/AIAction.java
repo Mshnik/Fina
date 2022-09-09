@@ -2,6 +2,7 @@ package ai;
 
 import java.util.Collections;
 import java.util.List;
+
 import model.board.Tile;
 import model.game.Player;
 import model.unit.MovingUnit;
@@ -11,10 +12,14 @@ import model.unit.ability.Ability;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 
-/** A data class representing an action to take by the AI. */
+/**
+ * A data class representing an action to take by the AI.
+ */
 public final class AIAction {
 
-  /** Types of actions the AI can take. */
+  /**
+   * Types of actions the AI can take.
+   */
   public enum AIActionType {
     MOVE_UNIT,
     ATTACK,
@@ -22,7 +27,9 @@ public final class AIAction {
     CAST_SPELL
   }
 
-  /** The player performing the action. */
+  /**
+   * The player performing the action.
+   */
   public final Player player;
 
   /**
@@ -31,7 +38,9 @@ public final class AIAction {
    */
   public final AIActionType actionType;
 
-  /** The unit performing the action. */
+  /**
+   * The unit performing the action.
+   */
   public final Unit actingUnit;
 
   /**
@@ -46,16 +55,24 @@ public final class AIAction {
    */
   public final Tile targetedTile;
 
-  /** The path to travel when moving to the targetedTile. Only non-null for moving. */
+  /**
+   * The path to travel when moving to the targetedTile. Only non-null for moving.
+   */
   public final List<Tile> movePath;
 
-  /** Unit to summon - should only be non-null for summoning. */
+  /**
+   * Unit to summon - should only be non-null for summoning.
+   */
   public final Unit unitToSummon;
 
-  /** Ability to cast - should only be non-null for casting. */
+  /**
+   * Ability to cast - should only be non-null for casting.
+   */
   public final Ability spellToCast;
 
-  /** Creates an AIAction that moves the given unit to the given adjacent tile. */
+  /**
+   * Creates an AIAction that moves the given unit to the given adjacent tile.
+   */
   public static AIAction moveUnit(
       Player player, MovingUnit unitToMove, Tile moveToTile, List<Tile> movePath) {
     return new AIAction(
@@ -68,7 +85,9 @@ public final class AIAction {
         null);
   }
 
-  /** Creates an AIAction that has the given unit attack the enemy unit on the given tile. */
+  /**
+   * Creates an AIAction that has the given unit attack the enemy unit on the given tile.
+   */
   public static AIAction attack(Player player, Combatant attackingUnit, Tile tileToAttack) {
     return new AIAction(player, AIActionType.ATTACK, attackingUnit, tileToAttack, null, null, null);
   }
@@ -98,7 +117,9 @@ public final class AIAction {
         player, AIActionType.CAST_SPELL, caster, tileToTarget, null, null, spellToCast);
   }
 
-  /** Constructs an AIAction and asserts that the inputs are valid. */
+  /**
+   * Constructs an AIAction and asserts that the inputs are valid.
+   */
   private AIAction(
       Player player,
       AIActionType actionType,
@@ -119,7 +140,9 @@ public final class AIAction {
     checkPreconditions();
   }
 
-  /** Asserts that all preconditions are valid for this Action, given the type. */
+  /**
+   * Asserts that all preconditions are valid for this Action, given the type.
+   */
   private void checkPreconditions() {
     switch (actionType) {
       case MOVE_UNIT:
@@ -190,7 +213,9 @@ public final class AIAction {
     }
   }
 
-  /** Asserts the given boolean, or throws a runtime exception with the given message. */
+  /**
+   * Asserts the given boolean, or throws a runtime exception with the given message.
+   */
   private static void assertPrecondition(boolean condition, String message) {
     if (!condition) {
       throw new RuntimeException(message);

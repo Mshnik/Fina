@@ -5,18 +5,25 @@ import ai.AIAction.AIActionType;
 import model.board.Tile;
 import model.unit.commander.Commander;
 
-/** A list of delegates for casting spells. */
+/**
+ * A list of delegates for casting spells.
+ */
 public final class CastDelegates {
-  private CastDelegates() {}
+  private CastDelegates() {
+  }
 
-  /** Parent class for CastByNameDelegates. */
+  /**
+   * Parent class for CastByNameDelegates.
+   */
   private abstract static class CastByNameDelegate extends ByNameDelegate {
     private CastByNameDelegate() {
       super(AIActionType.CAST_SPELL);
     }
   }
 
-  /** Cast delegate that wants to cast a certain name of spell. */
+  /**
+   * Cast delegate that wants to cast a certain name of spell.
+   */
   public static final class CastSpellByNameDelegate extends CastByNameDelegate {
     @Override
     double getRawScore(AIAction action) {
@@ -57,7 +64,9 @@ public final class CastDelegates {
     }
   }
 
-  /** Cast delegate that wants to minimize the "wasted" spell effect. */
+  /**
+   * Cast delegate that wants to minimize the "wasted" spell effect.
+   */
   public static final class MinimizeRedundantEffectByNameCastDelegate extends CastByNameDelegate {
     @Override
     double getRawScore(AIAction action) {

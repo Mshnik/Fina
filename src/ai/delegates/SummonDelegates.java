@@ -9,18 +9,25 @@ import model.unit.combatant.Combatant;
 import java.util.Collections;
 import java.util.List;
 
-/** Delegate for summoning a new unit or building. */
+/**
+ * Delegate for summoning a new unit or building.
+ */
 public final class SummonDelegates {
-  private SummonDelegates() {}
+  private SummonDelegates() {
+  }
 
-  /** Parent class for SummonDelegates. */
+  /**
+   * Parent class for SummonDelegates.
+   */
   private abstract static class SummonDelegate extends Delegate {
     private SummonDelegate() {
       super(AIActionType.SUMMON_COMBATANT_OR_BUILD_BUILDING);
     }
   }
 
-  /** Parent class for SummonByNameDelegates. */
+  /**
+   * Parent class for SummonByNameDelegates.
+   */
   private abstract static class SummonByNameDelegate extends ByNameDelegate {
     private SummonByNameDelegate() {
       super(AIActionType.SUMMON_COMBATANT_OR_BUILD_BUILDING);
@@ -65,7 +72,9 @@ public final class SummonDelegates {
     }
   }
 
-  /** Summon delegate that wants to summon buildings on AncientGround. */
+  /**
+   * Summon delegate that wants to summon buildings on AncientGround.
+   */
   public static final class SummonBuildingOnAncientGroundDelegate extends SummonDelegate {
 
     @Override
@@ -89,7 +98,9 @@ public final class SummonDelegates {
     }
   }
 
-  /** Summon delegate that wants to summon a certain name of combatant. */
+  /**
+   * Summon delegate that wants to summon a certain name of combatant.
+   */
   public static final class SummonCombatantByNameDelegate extends SummonByNameDelegate {
     @Override
     double getRawScore(AIAction action) {
@@ -100,7 +111,9 @@ public final class SummonDelegates {
     }
   }
 
-  /** Summon delegate that wants to summon a certain name of building. */
+  /**
+   * Summon delegate that wants to summon a certain name of building.
+   */
   public static final class SummonBuildingByNameDelegate extends SummonByNameDelegate {
     @Override
     double getRawScore(AIAction action) {

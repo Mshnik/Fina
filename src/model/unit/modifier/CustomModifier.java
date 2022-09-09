@@ -10,41 +10,55 @@ import model.unit.Unit;
  */
 public final class CustomModifier extends Modifier {
 
-  /** The token used to replace percentages in descriptions. */
+  /**
+   * The token used to replace percentages in descriptions.
+   */
   private static final String REPLACE_PERCENTAGE_DESCRIPTION = "-x%-";
 
-  /** The token used to replace other values in descriptions. */
+  /**
+   * The token used to replace other values in descriptions.
+   */
   private static final String REPLACE_STANDARD_DESCRIPTION = "-x-";
 
-  /** True if this applies to Buildings */
+  /**
+   * True if this applies to Buildings
+   */
   public final boolean appliesToBuildings;
 
-  /** True iff this applies to Commanders */
+  /**
+   * True iff this applies to Commanders
+   */
   public final boolean appliesToCommanders;
 
-  /** True iff this applies to Combatants */
+  /**
+   * True iff this applies to Combatants
+   */
   public final boolean appliesToCombatants;
 
-  /** A description of this Modifier - what it does, etc */
+  /**
+   * A description of this Modifier - what it does, etc
+   */
   public final String description;
 
-  /** A numeric value for this modifier. If unneded, this will be 0 */
+  /**
+   * A numeric value for this modifier. If unneded, this will be 0
+   */
   public final Number val;
 
   /**
    * Constructor for dummy instance
    *
-   * @param name - the name of this modifier
+   * @param name          - the name of this modifier
    * @param imageFilename - the image to draw for this CustomModifier. Only draws if it's the first
-   *     modifier in the bundle.
-   * @param description - a description of this modifier
-   * @param val - the magnitude of the modifier, as needed
-   * @param turns - the total duration of this modifier (turns after this one). Can be
-   *     Integer.MAX_VAL - interpreted as forever rather than the actual val
-   * @param stackable - stack mode of this modifier.
-   * @param buildings - true iff this modifier can apply to buildings
-   * @param commanders - true iff this modifier can apply to commanders
-   * @param combatants - true iff this modifier can apply to combatants
+   *                      modifier in the bundle.
+   * @param description   - a description of this modifier
+   * @param val           - the magnitude of the modifier, as needed
+   * @param turns         - the total duration of this modifier (turns after this one). Can be
+   *                      Integer.MAX_VAL - interpreted as forever rather than the actual val
+   * @param stackable     - stack mode of this modifier.
+   * @param buildings     - true iff this modifier can apply to buildings
+   * @param commanders    - true iff this modifier can apply to commanders
+   * @param combatants    - true iff this modifier can apply to combatants
    */
   CustomModifier(
       String name,
@@ -64,7 +78,7 @@ public final class CustomModifier extends Modifier {
 
     if (val == null
         && (description.contains(REPLACE_PERCENTAGE_DESCRIPTION)
-            || description.contains(REPLACE_STANDARD_DESCRIPTION))) {
+        || description.contains(REPLACE_STANDARD_DESCRIPTION))) {
       throw new RuntimeException(
           "Description shouldn't contain replace token with null value. Got: " + description);
     }
@@ -94,9 +108,9 @@ public final class CustomModifier extends Modifier {
   /**
    * Constructor for cloning instances
    *
-   * @param unit - The model.unit this is modifying.
+   * @param unit   - The model.unit this is modifying.
    * @param source - the model.unit this modifier is tied to.
-   * @param dummy - the modifier to make a copy of
+   * @param dummy  - the modifier to make a copy of
    */
   private CustomModifier(Unit unit, Unit source, CustomModifier dummy) {
     super(unit, source, dummy);
@@ -108,7 +122,9 @@ public final class CustomModifier extends Modifier {
     attachToUnit();
   }
 
-  /** Returns the value of this custom modifier. May be null. */
+  /**
+   * Returns the value of this custom modifier. May be null.
+   */
   public Number getValue() {
     return val;
   }

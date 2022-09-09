@@ -6,6 +6,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import model.game.Player;
 
 /**
@@ -15,23 +16,35 @@ import model.game.Player;
  */
 public final class ResultsPrinter {
 
-  /** Root for output files. */
+  /**
+   * Root for output files.
+   */
   public static final String ROOT_OUTPUT_FILEPATH = "data/aiLogs/";
 
-  /** Results filepath. */
+  /**
+   * Results filepath.
+   */
   static final String RESULTS_FILEPATH = ROOT_OUTPUT_FILEPATH + "/randomDelegatingAI/results.txt";
 
-  /** Configs filepath. */
+  /**
+   * Configs filepath.
+   */
   static final String CONFIGS_FILEPATH = ROOT_OUTPUT_FILEPATH + "/randomDelegatingAI/configs.txt";
 
-  /** Reduced Configs filepath. */
+  /**
+   * Reduced Configs filepath.
+   */
   static final String REDUCED_FILEPATH =
       ROOT_OUTPUT_FILEPATH + "/randomDelegatingAI/configs_and_results_reduced.csv";
 
-  /** Place to write result output to. Defaults to System.out. */
+  /**
+   * Place to write result output to. Defaults to System.out.
+   */
   private static PrintStream resultsOutputStream;
 
-  /** Place to write config output to. Defaults to System.out. */
+  /**
+   * Place to write config output to. Defaults to System.out.
+   */
   private static PrintStream configOutputStream;
 
   /* Set up output streams. */
@@ -48,7 +61,9 @@ public final class ResultsPrinter {
     }
   }
 
-  /** Sets the output streams to the given streams, overriding the defaults. */
+  /**
+   * Sets the output streams to the given streams, overriding the defaults.
+   */
   public static void setOutputStreams(
       PrintStream resultsOutputStream, PrintStream configOutputStream) {
     ResultsPrinter.resultsOutputStream = resultsOutputStream;
@@ -70,7 +85,9 @@ public final class ResultsPrinter {
             .collect(Collectors.joining(",")));
   }
 
-  /** Prints a config row for the given player. */
+  /**
+   * Prints a config row for the given player.
+   */
   public static void printConfig(Player player) {
     configOutputStream.println(player.getConfigString());
   }

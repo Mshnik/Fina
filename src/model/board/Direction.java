@@ -3,14 +3,18 @@ package model.board;
 import controller.game.KeyboardListener;
 import model.util.MPoint;
 
-/** Cardinal directions */
+/**
+ * Cardinal directions
+ */
 public enum Direction {
   LEFT,
   UP,
   RIGHT,
   DOWN;
 
-  /** The row difference caused by this direction */
+  /**
+   * The row difference caused by this direction
+   */
   public int dRow() {
     switch (this) {
       case DOWN:
@@ -26,7 +30,9 @@ public enum Direction {
     }
   }
 
-  /** The col difference caused by this direction */
+  /**
+   * The col difference caused by this direction
+   */
   public int dCol() {
     switch (this) {
       case DOWN:
@@ -42,7 +48,9 @@ public enum Direction {
     }
   }
 
-  /** Returns a point that corresponds to this direction as a vector. */
+  /**
+   * Returns a point that corresponds to this direction as a vector.
+   */
   public MPoint toPoint() {
     return MPoint.get(dRow(), dCol());
   }

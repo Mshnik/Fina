@@ -3,12 +3,14 @@ package view.gui.decision;
 import controller.decision.Choice;
 import controller.decision.Decision;
 import controller.game.GameController;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+
 import model.game.Player;
 import model.unit.ability.Ability;
 import model.unit.combatant.Combatant;
@@ -25,58 +27,94 @@ import view.gui.image.ImageIndex;
  */
 public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
 
-  /** */
+  /**
+   *
+   */
   private static final long serialVersionUID = 1L;
 
-  /** Background color for DecisionPanel */
+  /**
+   * Background color for DecisionPanel
+   */
   private static final Color BACKGROUND = new Color(117f / 255f, 74f / 255f, 0 / 255f, 0.5f);
 
-  /** Border color for DecisionPanel */
+  /**
+   * Border color for DecisionPanel
+   */
   private static final Color BORDER = new Color(145, 116, 0);
 
-  /** Width of borders for DecisionPanel */
+  /**
+   * Width of borders for DecisionPanel
+   */
   private static final int BORDER_WIDTH = 4;
 
-  /** Text color */
+  /**
+   * Text color
+   */
   private static final Color TEXT_COLOR = Color.white;
 
-  /** Font for DecisionPanel */
+  /**
+   * Font for DecisionPanel
+   */
   private static final Font TEXT_FONT = new Font(Frame.FONTNAME, Font.BOLD, 17);
 
-  /** Text x margin */
+  /**
+   * Text x margin
+   */
   private static final int TEXT_X = 17;
 
-  /** Text y margin */
+  /**
+   * Text y margin
+   */
   private static final int TEXT_Y = 25;
 
-  /** The title of this decisionPanel, to paint at the top */
-  private String title;
+  /**
+   * The title of this decisionPanel, to paint at the top
+   */
+  private final String title;
 
-  /** The decision to display on this DecisionPanel */
-  private Decision decision;
+  /**
+   * The decision to display on this DecisionPanel
+   */
+  private final Decision decision;
 
-  /** The drawing height of a Decision */
+  /**
+   * The drawing height of a Decision
+   */
   public static final int DECISION_HEIGHT = 40;
 
-  /** The size of combatant classes on summoning decisions. */
+  /**
+   * The size of combatant classes on summoning decisions.
+   */
   private static final int ICON_SIZE = 24;
 
-  /** The drawing width of an Decision */
+  /**
+   * The drawing width of an Decision
+   */
   public final int DECISION_WIDTH;
 
-  /** A Cursor for this DecisionPanel */
+  /**
+   * A Cursor for this DecisionPanel
+   */
   public final DecisionCursor cursor;
 
-  /** The x coordinate of the top left corner of this panel */
+  /**
+   * The x coordinate of the top left corner of this panel
+   */
   private int x;
 
-  /** The y coordinate of the top left corner of this panel */
+  /**
+   * The y coordinate of the top left corner of this panel
+   */
   private int y;
 
-  /** The player this decision is for */
+  /**
+   * The player this decision is for
+   */
   public final Player player;
 
-  /** True iff this should layout vertically, false for horizontally. */
+  /**
+   * True iff this should layout vertically, false for horizontally.
+   */
   final boolean verticalLayout;
 
   public DecisionPanel(
@@ -103,12 +141,16 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
     cursor.moved();
   }
 
-  /** Sets the x position of this DecisionPanel */
+  /**
+   * Sets the x position of this DecisionPanel
+   */
   public void setXPosition(int xPos) {
     x = xPos;
   }
 
-  /** Sets the y position of this DecisionPanel */
+  /**
+   * Sets the y position of this DecisionPanel
+   */
   public void setYPosition(int yPos) {
     y = yPos;
   }
@@ -140,7 +182,9 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
     }
   }
 
-  /** Overrides super version by adding the x coordinate of this panel to super's result */
+  /**
+   * Overrides super version by adding the x coordinate of this panel to super's result
+   */
   @Override
   public int getXPosition(Choice elm) {
     return super.getXPosition(elm) + x;
@@ -155,17 +199,23 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
     return super.getYPosition(elm) + y + (title.isEmpty() ? 0 : DECISION_HEIGHT);
   }
 
-  /** Returns the decision the cursor is currently hovering * */
+  /**
+   * Returns the decision the cursor is currently hovering *
+   */
   public Choice getElm() {
     return cursor.getElm();
   }
 
-  /** Returns the decision message of the decision that is currently selected */
+  /**
+   * Returns the decision message of the decision that is currently selected
+   */
   public String getSelectedDecisionMessage() {
     return cursor.getElm().getMessage();
   }
 
-  /** Draws this DecisionPanel */
+  /**
+   * Draws this DecisionPanel
+   */
   @Override
   public void paintComponent(Graphics g) {
     Graphics2D g2d = (Graphics2D) g;
@@ -244,7 +294,9 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
     cursor.paintComponent(g);
   }
 
-  /** Draws a combatant class (or multiple) when hovering a summon decision. */
+  /**
+   * Draws a combatant class (or multiple) when hovering a summon decision.
+   */
   private void paintCombatantClasses(Graphics2D g2d, int x, int y, Combatant combatant) {
     int spacing = (int) (ICON_SIZE * 1.1);
     for (Combatant.CombatantClass combatantClass : combatant.combatantClasses) {
@@ -254,12 +306,16 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
     }
   }
 
-  /** Draws a ability symbol when hovering a cast decision. */
+  /**
+   * Draws a ability symbol when hovering a cast decision.
+   */
   private void paintAbilityType(Graphics2D g2d, int x, int y, Ability ability) {
     g2d.drawImage(ImageIndex.imageForAbility(ability), x, y - 18, ICON_SIZE, ICON_SIZE, null);
   }
 
-  /** Draws the modifier symbol when hovering a modifier. */
+  /**
+   * Draws the modifier symbol when hovering a modifier.
+   */
   private void paintModifier(
       Graphics2D g2d, int x, int y, ModifierDescription modifierDescription) {
     g2d.drawImage(
@@ -271,7 +327,9 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
         null);
   }
 
-  /** If vertical, the width is 1. Otherwise it is the number of decisions. */
+  /**
+   * If vertical, the width is 1. Otherwise it is the number of decisions.
+   */
   @Override
   public int getMatrixWidth() {
     if (verticalLayout) {
@@ -281,7 +339,9 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
     }
   }
 
-  /** If vertical the height is the number of decisions, otheriwse it is 1. */
+  /**
+   * If vertical the height is the number of decisions, otheriwse it is 1.
+   */
   @Override
   public int getMatrixHeight() {
     if (verticalLayout) {
@@ -291,17 +351,23 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
     }
   }
 
-  /** Returns the x component of the top-left of where this DecisionPanel is drawn. */
+  /**
+   * Returns the x component of the top-left of where this DecisionPanel is drawn.
+   */
   public int getDrawingX() {
     return x;
   }
 
-  /** Returns the y component of the top-left of where this DecisionPanel is drawn. */
+  /**
+   * Returns the y component of the top-left of where this DecisionPanel is drawn.
+   */
   public int getDrawingY() {
     return y;
   }
 
-  /** Returns the action at the given index. Col must be 0 */
+  /**
+   * Returns the action at the given index. Col must be 0
+   */
   @Override
   public Choice getElmAt(int row, int col) throws IllegalArgumentException {
     if (verticalLayout) {
@@ -329,13 +395,17 @@ public class DecisionPanel extends MatrixPanel<Choice> implements Paintable {
     return getElmAt(row + scrollY, col + scrollX);
   }
 
-  /** Returns DecisionPanel.DECISION_HEIGHT */
+  /**
+   * Returns DecisionPanel.DECISION_HEIGHT
+   */
   @Override
   public int getElementHeight() {
     return DECISION_HEIGHT;
   }
 
-  /** Returns DecisionPanel.DECISION_WIDTH */
+  /**
+   * Returns DecisionPanel.DECISION_WIDTH
+   */
   @Override
   public int getElementWidth() {
     return DECISION_WIDTH;

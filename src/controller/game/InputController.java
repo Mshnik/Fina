@@ -15,21 +15,32 @@ import view.gui.decision.DecisionCursor;
 import view.gui.decision.DecisionPanel;
 import view.gui.panel.BoardCursor;
 
-/** Manager for user input coming from any source. */
+/**
+ * Manager for user input coming from any source.
+ */
 public final class InputController {
 
-  /** Constructor for InputController */
-  private InputController() {}
+  /**
+   * Constructor for InputController
+   */
+  private InputController() {
+  }
 
-  /** The frame this InputController is listening to */
+  /**
+   * The frame this InputController is listening to
+   */
   private static Frame frame;
 
-  /** Set the Frame the InputController is listening to */
+  /**
+   * Set the Frame the InputController is listening to
+   */
   static void setFrame(Frame f) {
     frame = f;
   }
 
-  /** Handles hovering at the given x,y on the screen. */
+  /**
+   * Handles hovering at the given x,y on the screen.
+   */
   static void handleMouseHover(int x, int y) {
     if (frame.getActiveCursor() instanceof BoardCursor) {
       handleMouseHoverBoardCursorActive(x, y);
@@ -38,7 +49,9 @@ public final class InputController {
     }
   }
 
-  /** Handles the mouse move event when the active cursor is a board cursor. */
+  /**
+   * Handles the mouse move event when the active cursor is a board cursor.
+   */
   private static void handleMouseHoverBoardCursorActive(int cursorX, int cursorY) {
     BoardCursor boardCursor = (BoardCursor) frame.getActiveCursor();
     Tile currentElem = boardCursor.getElm();
@@ -62,7 +75,7 @@ public final class InputController {
       PathSelector pathSelector = (PathSelector) frame.getController().getLocationSelector();
       if (!pathSelector.contains(destTile)
           && (currentElem.directionTo(destTile) == null
-              || !frame.getController().getLocationSelector().getCloud().contains(destTile))) {
+          || !frame.getController().getLocationSelector().getCloud().contains(destTile))) {
         // Force adjacency or move backwards when movement selector is open.
         return;
       }
@@ -75,7 +88,9 @@ public final class InputController {
     boardCursor.moved();
   }
 
-  /** Handles the mouse move event when the active cursor is a decision cursor. */
+  /**
+   * Handles the mouse move event when the active cursor is a decision cursor.
+   */
   private static void handleMouseHoverDecisionCursorActive(int cursorX, int cursorY) {
     DecisionCursor decisionCursor = (DecisionCursor) frame.getActiveCursor();
     Choice currentElem = decisionCursor.getElm();
@@ -101,18 +116,22 @@ public final class InputController {
     decisionCursor.moved();
   }
 
-  /** Handles a directional input. Usually keyboard-only, one of the arrow keys. */
+  /**
+   * Handles a directional input. Usually keyboard-only, one of the arrow keys.
+   */
   static void handleDirection(Direction d) {
     @SuppressWarnings("rawtypes")
     Cursor c = frame.getActiveCursor();
     c.move(d);
   }
 
-  /** Handles a confirm or cancel input. */
+  /**
+   * Handles a confirm or cancel input.
+   */
   static void handleConfirmOrCancel(boolean confirm) {
     GameController gc = frame.getController();
     switch (gc.getToggle()) {
-        // No toggle currently open. Maybe open one.
+      // No toggle currently open. Maybe open one.
       case NONE:
         if (confirm) {
           AudioController.playEffect(AudioController.SoundEffect.CLICK_YES);
@@ -122,7 +141,7 @@ public final class InputController {
           gc.startPlayerActionDecision();
         }
         break;
-        // Process the decision.
+      // Process the decision.
       case DECISION:
         if (confirm) {
           AudioController.playEffect(AudioController.SoundEffect.CLICK_YES);
@@ -236,7 +255,7 @@ public final class InputController {
           gc.startActionDecision();
         }
         break;
-        // Path selection - should only be the case after pathSelection already started
+      // Path selection - should only be the case after pathSelection already started
       case PATH_SELECTION:
         ((BoardCursor) gc.frame.getActiveCursor()).setSelectType(BoardCursor.SelectType.DEFAULT);
         if (confirm) {
@@ -255,7 +274,9 @@ public final class InputController {
     }
   }
 
-  /** Handles a unit cycle input. */
+  /**
+   * Handles a unit cycle input.
+   */
   static void handleUnitCycle() {
     if (frame.getActiveCursor() instanceof BoardCursor) {
       GameController gc = frame.getController();

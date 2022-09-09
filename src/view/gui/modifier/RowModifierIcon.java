@@ -3,6 +3,7 @@ package view.gui.modifier;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.RoundRectangle2D;
+
 import model.board.Tile;
 import model.unit.Unit;
 import model.unit.modifier.Modifiers.ModifierDescription;
@@ -15,7 +16,9 @@ import view.gui.panel.GamePanel;
  */
 public final class RowModifierIcon extends ModifierIcon {
 
-  /** Constructs a new RowModifierIcon. */
+  /**
+   * Constructs a new RowModifierIcon.
+   */
   public RowModifierIcon(GamePanel gamePanel, Unit unit) {
     super(gamePanel, unit);
   }
@@ -31,10 +34,12 @@ public final class RowModifierIcon extends ModifierIcon {
   }
 
   @Override
-  public void advanceState() {}
+  public void advanceState() {
+  }
 
   @Override
-  public void setState(int state) {}
+  public void setState(int state) {
+  }
 
   @Override
   public boolean isActive() {

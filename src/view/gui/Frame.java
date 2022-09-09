@@ -32,10 +32,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/** The visual frame that manages showing the model.game */
+/**
+ * The visual frame that manages showing the model.game
+ */
 public final class Frame extends JFrame {
 
-  /** */
+  /**
+   *
+   */
   private static final long serialVersionUID = 1L;
 
   // Some nice fonts to consider:
@@ -47,47 +51,75 @@ public final class Frame extends JFrame {
   // Libian Sc
   // Monotype corsiva
   // Papyrus
-  /** The font to use for all text */
+  /**
+   * The font to use for all text
+   */
   public static final String FONTNAME = "Damascus";
 
-  /** The JMenu at the top of the frame. */
-  private JMenuBar menu;
+  /**
+   * The JMenu at the top of the frame.
+   */
+  private final JMenuBar menu;
 
-  /** Restart game menu item. */
-  private JMenuItem restartGameMenuItem;
+  /**
+   * Restart game menu item.
+   */
+  private final JMenuItem restartGameMenuItem;
 
-  /** The headerPanel this Frame is drawing, if any */
+  /**
+   * The headerPanel this Frame is drawing, if any
+   */
   private HeaderPanel headerPanel;
 
-  /** The gamePanel this Frame is drawing, if any */
+  /**
+   * The gamePanel this Frame is drawing, if any
+   */
   private GamePanel gamePanel;
 
-  /** The infoPanel this Frame is drawing, if any */
+  /**
+   * The infoPanel this Frame is drawing, if any
+   */
   private InfoPanel infoPanel;
 
-  /** The animator for this Frame */
+  /**
+   * The animator for this Frame
+   */
   private final Animator animator;
 
-  /** The controller for this game */
+  /**
+   * The controller for this game
+   */
   private GameController controller;
 
-  /** Increment of zoom, in multiplication/division. */
+  /**
+   * Increment of zoom, in multiplication/division.
+   */
   private static final double[] ZOOM = {0.25, 0.5, 0.75, 1, 1.5, 2};
 
-  /** The current zoom of this frame. */
+  /**
+   * The current zoom of this frame.
+   */
   private int zoomIndex;
 
-  /** True iff debugging output/painting should be shown */
+  /**
+   * True iff debugging output/painting should be shown
+   */
   public boolean DEBUG = false;
 
-  /** The current active cursor */
+  /**
+   * The current active cursor
+   */
   @SuppressWarnings("rawtypes")
   private Cursor activeCursor;
 
-  /** A map from player index to ViewOptions. */
+  /**
+   * A map from player index to ViewOptions.
+   */
   private final Map<Integer, ViewOptions> viewOptionsMap;
 
-  /** Creates a new frame. */
+  /**
+   * Creates a new frame.
+   */
   public Frame(int zoom) {
     // Set frame defaults.
     setLayout(new BorderLayout());
@@ -245,32 +277,44 @@ public final class Frame extends JFrame {
     restartGameMenuItem.setEnabled(true);
   }
 
-  /** Returns the index of the current zoom. */
+  /**
+   * Returns the index of the current zoom.
+   */
   public int getZoomIndex() {
     return zoomIndex;
   }
 
-  /** Returns the current zoom. */
+  /**
+   * Returns the current zoom.
+   */
   public double getZoom() {
     return ZOOM[zoomIndex];
   }
 
-  /** Creates default view options for the given player. */
+  /**
+   * Creates default view options for the given player.
+   */
   public void createViewOptionsForPlayer(Player p) {
     viewOptionsMap.put(p.index, new ViewOptions(this, p));
   }
 
-  /** Returns the view options for the given player. */
+  /**
+   * Returns the view options for the given player.
+   */
   public ViewOptions getViewOptionsForPlayer(Player p) {
     return viewOptionsMap.get(p.index);
   }
 
-  /** Clears the danger radius view options for the given player. */
+  /**
+   * Clears the danger radius view options for the given player.
+   */
   public void clearDangerRadiusForPlayer(Player p) {
     viewOptionsMap.get(p.index).clearDangerRadiusUnits();
   }
 
-  /** Called when a unit's danger radius changes. Propagates changes to ViewOptions */
+  /**
+   * Called when a unit's danger radius changes. Propagates changes to ViewOptions
+   */
   public void unitDangerRadiusChanged(Unit u) {
     for (ViewOptions viewOptions : viewOptionsMap.values()) {
       viewOptions.unitDangerRadiusChanged(u);
@@ -278,7 +322,9 @@ public final class Frame extends JFrame {
     viewOptionsMap.get(u.owner.index).unitDangerRadiusChanged();
   }
 
-  /** Helper to create the game panel for this. If old game panel existed, dispose first. */
+  /**
+   * Helper to create the game panel for this. If old game panel existed, dispose first.
+   */
   private void createGamePanel(int rows, int cols) {
     if (gamePanel != null) {
       animator.removeAnimatable(gamePanel.boardCursor);
@@ -291,32 +337,44 @@ public final class Frame extends JFrame {
     animator.addAnimatable(gamePanel.boardCursor);
   }
 
-  /** @return the JMenuBar at the top of this Frame. */
+  /**
+   * @return the JMenuBar at the top of this Frame.
+   */
   public JMenuBar getMenu() {
     return menu;
   }
 
-  /** @return the headerPanel */
+  /**
+   * @return the headerPanel
+   */
   public HeaderPanel getHeaderPanel() {
     return headerPanel;
   }
 
-  /** @return the gamePanel */
+  /**
+   * @return the gamePanel
+   */
   public GamePanel getGamePanel() {
     return gamePanel;
   }
 
-  /** @return the infoPanel */
+  /**
+   * @return the infoPanel
+   */
   public InfoPanel getInfoPanel() {
     return infoPanel;
   }
 
-  /** Returns the controller currently controlling this frame */
+  /**
+   * Returns the controller currently controlling this frame
+   */
   public GameController getController() {
     return controller;
   }
 
-  /** Shows an alert saying that the game is over. If winner is null, this game timed out. */
+  /**
+   * Shows an alert saying that the game is over. If winner is null, this game timed out.
+   */
   public void showGameOverAlert(Player winner) {
     if (winner == null) {
       JOptionPane.showMessageDialog(this, "Tie due to timeout");
@@ -334,7 +392,9 @@ public final class Frame extends JFrame {
     JOptionPane.showMessageDialog(this, "Player " + p.index + "'s Turn.");
   }
 
-  /** Starts the turn for player p, making graphic updates as necessary */
+  /**
+   * Starts the turn for player p, making graphic updates as necessary
+   */
   public void startTurnFor(Player p) {
     gamePanel.boardCursor.hide = false;
     if (p.isLocalHumanPlayer()) {
@@ -344,22 +404,30 @@ public final class Frame extends JFrame {
     }
   }
 
-  /** Updates the info panel to show the given model.unit * */
+  /**
+   * Updates the info panel to show the given model.unit *
+   */
   public void showUnitStats(Unit u) {
     infoPanel.setUnit(u, true);
   }
 
-  /** Updates the info panel to show the given ModifierDescription for the given unit. */
+  /**
+   * Updates the info panel to show the given ModifierDescription for the given unit.
+   */
   public void showModifierDescription(ModifierDescription modifierDescription) {
     infoPanel.setModifierDescription(modifierDescription);
   }
 
-  /** Updates the info panel to show the given ability * */
+  /**
+   * Updates the info panel to show the given ability *
+   */
   public void showAbilityStats(Ability a) {
     infoPanel.setAbility(a);
   }
 
-  /** Updates the info panel to show the given Combat. */
+  /**
+   * Updates the info panel to show the given Combat.
+   */
   public void showCombatStats(Combat c) {
     infoPanel.setCombat(c);
   }
@@ -383,12 +451,16 @@ public final class Frame extends JFrame {
     animator.addAnimatable(c);
   }
 
-  /** Returns the object responsible for animating things for this frame */
+  /**
+   * Returns the object responsible for animating things for this frame
+   */
   public Animator getAnimator() {
     return animator;
   }
 
-  /** Returns the width (in pixels) of the given text using the given font */
+  /**
+   * Returns the width (in pixels) of the given text using the given font
+   */
   public int getTextWidth(Font f, String s) {
     FontMetrics m = getGraphics().getFontMetrics(f);
     int i = m.stringWidth(s);

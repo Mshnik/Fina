@@ -54,7 +54,7 @@ public abstract class Player implements Stringable {
     RED,
     YELLOW,
     GREEN,
-    PURPLE;
+    PURPLE
   }
 
   /**
@@ -447,7 +447,7 @@ public abstract class Player implements Stringable {
       temples.remove(u);
     }
     if (u instanceof Combatant) {
-      dangerRadius.remove((Combatant) u);
+      dangerRadius.remove(u);
     }
     recalculateState();
   }

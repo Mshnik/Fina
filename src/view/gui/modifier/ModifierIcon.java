@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import model.unit.Unit;
 import model.unit.modifier.Modifier;
 import model.unit.modifier.Modifiers;
@@ -18,7 +19,9 @@ import view.gui.panel.GamePanel;
  */
 public abstract class ModifierIcon implements Animatable {
 
-  /** Color to draw as a background behind a ModifierIcon. */
+  /**
+   * Color to draw as a background behind a ModifierIcon.
+   */
   static final Color BACKGROUND_COLOR = new Color(246 / 255f, 246 / 255f, 246 / 255f, 0.75f);
 
   /**
@@ -33,23 +36,37 @@ public abstract class ModifierIcon implements Animatable {
    */
   List<ModifierDescription> modifierDescriptions;
 
-  /** Filter types for what subset of modifiers to show for a ModifierIcon. */
+  /**
+   * Filter types for what subset of modifiers to show for a ModifierIcon.
+   */
   public enum FilterType {
-    /** Show no modifiers. */
+    /**
+     * Show no modifiers.
+     */
     NONE,
-    /** Show all visible modifiers. Default */
+    /**
+     * Show all visible modifiers. Default
+     */
     ALL_VISIBLE,
-    /** Show only visible modifiers that have non-infinite duration. */
+    /**
+     * Show only visible modifiers that have non-infinite duration.
+     */
     ONLY_NON_INFINITE_VISIBLE
   }
 
-  /** The current filterType type for this ModifierIcon. */
+  /**
+   * The current filterType type for this ModifierIcon.
+   */
   private FilterType filterType;
 
-  /** The gamePanel this is drawing for. Reference kept so repaint events can occur. */
+  /**
+   * The gamePanel this is drawing for. Reference kept so repaint events can occur.
+   */
   final GamePanel gamePanel;
 
-  /** Constructs a new ModifierIcon. */
+  /**
+   * Constructs a new ModifierIcon.
+   */
   ModifierIcon(GamePanel gamePanel, Unit unit) {
     this.gamePanel = gamePanel;
     this.unit = unit;
@@ -84,7 +101,9 @@ public abstract class ModifierIcon implements Animatable {
     }
   }
 
-  /** Sets the filterType for this ModifierIcon. Also causes a refresh if this was a change. */
+  /**
+   * Sets the filterType for this ModifierIcon. Also causes a refresh if this was a change.
+   */
   public void setFilterType(FilterType filterType) {
     if (this.filterType != filterType) {
       this.filterType = filterType;
@@ -92,7 +111,9 @@ public abstract class ModifierIcon implements Animatable {
     }
   }
 
-  /** Returns true iff this has at least one modifier. */
+  /**
+   * Returns true iff this has at least one modifier.
+   */
   boolean hasModifiers() {
     return !modifierDescriptions.isEmpty();
   }

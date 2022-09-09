@@ -12,7 +12,9 @@ import java.util.Set;
  */
 public final class ExpandableCloud extends Cloud {
 
-  /** Types of expandable clouds. */
+  /**
+   * Types of expandable clouds.
+   */
   public enum ExpandableCloudType {
     PLUS {
       @Override
@@ -92,10 +94,14 @@ public final class ExpandableCloud extends Cloud {
       }
     };
 
-    /** Returns the set of points represented by this cloud type for the given size. */
+    /**
+     * Returns the set of points represented by this cloud type for the given size.
+     */
     abstract Set<MPoint> createCloud(int size);
 
-    /** Helper that creates a mutable set initially containing (0,0). */
+    /**
+     * Helper that creates a mutable set initially containing (0,0).
+     */
     private static Set<MPoint> createInitialSet() {
       Set<MPoint> set = new HashSet<>();
       set.add(MPoint.ORIGIN);
@@ -103,7 +109,9 @@ public final class ExpandableCloud extends Cloud {
     }
   }
 
-  /** Map of clouds created so far. */
+  /**
+   * Map of clouds created so far.
+   */
   private static final Map<ExpandableCloudType, Map<Integer, ExpandableCloud>> CLOUDS =
       Collections.synchronizedMap(new HashMap<>());
 
@@ -116,7 +124,9 @@ public final class ExpandableCloud extends Cloud {
     }
   }
 
-  /** Creates an Expandable cloud of the given size and type. Size >= 0. */
+  /**
+   * Creates an Expandable cloud of the given size and type. Size >= 0.
+   */
   public static ExpandableCloud create(ExpandableCloudType type, int size) {
     if (size < 0) {
       throw new RuntimeException("Expected size >= 0, got " + size);
@@ -131,20 +141,28 @@ public final class ExpandableCloud extends Cloud {
     }
   }
 
-  /** Level of this cloud. Cloud will fit within square of size (level * 2) + 1. */
+  /**
+   * Level of this cloud. Cloud will fit within square of size (level * 2) + 1.
+   */
   private final int size;
 
-  /** The type of this cloud. */
+  /**
+   * The type of this cloud.
+   */
   public final ExpandableCloudType type;
 
-  /** Constructs a new cloud. Up to the constructor to enforce that the points set is correct. */
+  /**
+   * Constructs a new cloud. Up to the constructor to enforce that the points set is correct.
+   */
   private ExpandableCloud(Set<MPoint> points, int size, ExpandableCloudType type) {
     super(points);
     this.size = size;
     this.type = type;
   }
 
-  /** Returns a cloud of the same type by expanding by the given deltaSize. */
+  /**
+   * Returns a cloud of the same type by expanding by the given deltaSize.
+   */
   public ExpandableCloud expand(int deltaSize) {
     return create(type, size + deltaSize);
   }

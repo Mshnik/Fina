@@ -3,18 +3,25 @@ package view.gui.modifier;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.RoundRectangle2D;
+
 import model.board.Tile;
 import model.unit.Unit;
 import view.gui.image.ImageIndex;
 import view.gui.panel.GamePanel;
 
-/** ModifierIcon that cycles through icons with animation. */
+/**
+ * ModifierIcon that cycles through icons with animation.
+ */
 public final class AnimatedModifierIcon extends ModifierIcon {
 
-  /** The state of animation this is currently on. */
+  /**
+   * The state of animation this is currently on.
+   */
   private int animationState;
 
-  /** Constructs a new AnimatedModifierIcon. */
+  /**
+   * Constructs a new AnimatedModifierIcon.
+   */
   public AnimatedModifierIcon(GamePanel gamePanel, Unit unit) {
     super(gamePanel, unit);
   }

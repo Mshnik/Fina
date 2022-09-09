@@ -53,7 +53,7 @@ public final class AudioController {
     /**
      * Constructs a new sound effect from the given filename.
      */
-    private SoundEffect(String filename) {
+    SoundEffect(String filename) {
       clips = new ArrayList<>();
       filePath = "sound/effects/" + filename;
     }
@@ -96,7 +96,7 @@ public final class AudioController {
 
     private final String filepath;
 
-    private Music(String filename) {
+    Music(String filename) {
       filepath = "sound/music/" + filename;
     }
   }
@@ -157,7 +157,9 @@ public final class AudioController {
     }
   }
 
-  /** Returns whether sound is currently muted. */
+  /**
+   * Returns whether sound is currently muted.
+   */
   public static boolean getMute() {
     return MUTE;
   }

@@ -1,10 +1,12 @@
 package model.board;
 
 import controller.game.MatrixElement;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import model.game.Stringable;
 import model.unit.Unit;
 import model.util.MPoint;
@@ -19,28 +21,44 @@ import model.util.MPoint;
  */
 public final class Tile implements Comparable<Tile>, MatrixElement, Stringable {
 
-  /** The model.board this belongs to */
+  /**
+   * The model.board this belongs to
+   */
   public final Board board;
 
-  /** The row of this tile in its model.board */
+  /**
+   * The row of this tile in its model.board
+   */
   public final int row;
 
-  /** The column of this tile in its model.board */
+  /**
+   * The column of this tile in its model.board
+   */
   public final int col;
 
-  /** The terrain type of this tile. */
+  /**
+   * The terrain type of this tile.
+   */
   public final Terrain terrain;
 
-  /** If this is sea, the index of sea terrain to paint. Only used if sea. */
+  /**
+   * If this is sea, the index of sea terrain to paint. Only used if sea.
+   */
   public final int seaTerrainIndex;
 
-  /** The model.unit on this tile, if any */
+  /**
+   * The model.unit on this tile, if any
+   */
   private Unit occupyingUnit;
 
-  /** A convienence field for pathfinding implementations */
+  /**
+   * A convienence field for pathfinding implementations
+   */
   int dist;
 
-  /** A convienence field for pathfinding implementations */
+  /**
+   * A convienence field for pathfinding implementations
+   */
   Tile prev;
 
   /**
@@ -75,7 +93,9 @@ public final class Tile implements Comparable<Tile>, MatrixElement, Stringable {
     else return col - other.col;
   }
 
-  /** Return the Manhattan (only udlr) distance from this to other * */
+  /**
+   * Return the Manhattan (only udlr) distance from this to other *
+   */
   public int manhattanDistance(Tile other) {
     return Math.abs(row - other.row) + Math.abs(col - other.col);
   }
@@ -92,12 +112,16 @@ public final class Tile implements Comparable<Tile>, MatrixElement, Stringable {
     return null;
   }
 
-  /** Returns true iff this is adjacent (according to manhattan distance), false otherwise. */
+  /**
+   * Returns true iff this is adjacent (according to manhattan distance), false otherwise.
+   */
   public boolean isAdjacentTo(Tile other) {
     return directionTo(other) != null;
   }
 
-  /** Returns the occupyingUnit, if there is one */
+  /**
+   * Returns the occupyingUnit, if there is one
+   */
   public Unit getOccupyingUnit() {
     return occupyingUnit;
   }
@@ -121,7 +145,9 @@ public final class Tile implements Comparable<Tile>, MatrixElement, Stringable {
     occupyingUnit = u;
   }
 
-  /** Removes the current model.unit */
+  /**
+   * Removes the current model.unit
+   */
   public void removeOccupyingUnit() throws RuntimeException {
     occupyingUnit = null;
   }
@@ -136,29 +162,39 @@ public final class Tile implements Comparable<Tile>, MatrixElement, Stringable {
     removeOccupyingUnit();
   }
 
-  /** Returns true iff there is an occupyingUnit */
+  /**
+   * Returns true iff there is an occupyingUnit
+   */
   public boolean isOccupied() {
     return occupyingUnit != null;
   }
 
-  /** Returns this.row */
+  /**
+   * Returns this.row
+   */
   @Override
   public int getRow() {
     return row;
   }
 
-  /** Returns this.col */
+  /**
+   * Returns this.col
+   */
   @Override
   public int getCol() {
     return col;
   }
 
-  /** Returns the location of this as a Point in (col, row) form */
+  /**
+   * Returns the location of this as a Point in (col, row) form
+   */
   public MPoint getPoint() {
     return MPoint.get(row, col);
   }
 
-  /** ToString implementation - shows basic info of Tile. Remains brief to be useful in debugging */
+  /**
+   * ToString implementation - shows basic info of Tile. Remains brief to be useful in debugging
+   */
   public String toString() {
     return getPoint().toString() + ":" + terrain;
   }

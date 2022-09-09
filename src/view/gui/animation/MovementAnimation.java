@@ -5,13 +5,16 @@ import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 import model.board.Tile;
 import model.game.Game;
 import model.unit.MovingUnit;
 import model.unit.Unit;
 import view.gui.panel.GamePanel;
 
-/** An animation representing a unit moving along a given path. */
+/**
+ * An animation representing a unit moving along a given path.
+ */
 public final class MovementAnimation extends UnitAnimation {
 
   /**
@@ -20,10 +23,14 @@ public final class MovementAnimation extends UnitAnimation {
    */
   private static final double TILE_MOVEMENT_PER_FRAME_RATIO = 0.5;
 
-  /** The path to animate the unit moving along. */
+  /**
+   * The path to animate the unit moving along.
+   */
   private final List<Tile> movementPath;
 
-  /** Creates a new animation for the given args. */
+  /**
+   * Creates a new animation for the given args.
+   */
   public MovementAnimation(GamePanel gamePanel, MovingUnit movingUnit, List<Tile> movementPath) {
     super(gamePanel, movingUnit);
     this.movementPath = movementPath;
@@ -34,7 +41,9 @@ public final class MovementAnimation extends UnitAnimation {
     return (int) ((movementPath.size() - 1) / TILE_MOVEMENT_PER_FRAME_RATIO) + 1;
   }
 
-  /** Returns the tiles this is currently on, either size 1 or 2. */
+  /**
+   * Returns the tiles this is currently on, either size 1 or 2.
+   */
   private List<Tile> getCurrentTiles() {
     double pathState = getState() * TILE_MOVEMENT_PER_FRAME_RATIO;
     int prevTileState = (int) Math.floor(pathState);

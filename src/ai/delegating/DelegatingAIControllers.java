@@ -23,29 +23,41 @@ import ai.delegates.SummonDelegates.SummonCombatantByNameScalingDelegate;
 import ai.delegates.SummonDelegates.SummonCombatantWithTypeAdvantageDelegate;
 import controller.game.CreatePlayerOptions;
 import controller.game.GameController;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+
 import model.game.Game.FogOfWar;
 import model.unit.ability.Abilities;
 import model.unit.building.Buildings;
 import model.unit.combatant.Combatants;
 
-/** A listing of DelegatingAIControllers. */
+/**
+ * A listing of DelegatingAIControllers.
+ */
 public final class DelegatingAIControllers {
 
-  /** The type to show on the ui for a default delegating AI controller. */
+  /**
+   * The type to show on the ui for a default delegating AI controller.
+   */
   public static final String DELEGATING_DEFAULT_AI_TYPE = "Del AI - Default";
 
-  /** The type to show on the ui for a random delegating AI controller. */
+  /**
+   * The type to show on the ui for a random delegating AI controller.
+   */
   public static final String DELEGATING_RANDOM_AI_TYPE = "Del AI - Random";
 
-  /** The type to show on the ui for a random delegating AI controller. */
+  /**
+   * The type to show on the ui for a random delegating AI controller.
+   */
   public static final String DELEGATING_RANDOM_WITH_EDITS_AI_TYPE = "Del AI - Random w/Edits";
 
-  /** A delegating AIController for testing. */
+  /**
+   * A delegating AIController for testing.
+   */
   public static DelegatingAIController defaultDelegatingAIController() {
     List<String> buildingNames =
         Buildings.getBuildings().stream().map(b -> b.name).collect(Collectors.toList());
@@ -88,11 +100,15 @@ public final class DelegatingAIControllers {
         .build();
   }
 
-  /** A helper for generating random weights and weight arrays. */
+  /**
+   * A helper for generating random weights and weight arrays.
+   */
   private static final class RandomHelper {
     private static final Random random = new Random();
 
-    /** Returns a random double in the given range, (effectively) inclusively. */
+    /**
+     * Returns a random double in the given range, (effectively) inclusively.
+     */
     private static double nextRandom(double min, double max) {
       return random.nextDouble() * (max - min) + min;
     }
@@ -125,7 +141,9 @@ public final class DelegatingAIControllers {
     return byNameDelegate;
   }
 
-  /** A delegating AIController with random weights for testing and generating test data. */
+  /**
+   * A delegating AIController with random weights for testing and generating test data.
+   */
   public static DelegatingAIController randomWeightsDelegatingAIController() {
     double min = 0;
     double max = 6.0;
@@ -249,7 +267,9 @@ public final class DelegatingAIControllers {
     return randomWeightsController;
   }
 
-  /** Runnable method that plays delegating AI controllers against each other. */
+  /**
+   * Runnable method that plays delegating AI controllers against each other.
+   */
   public static void main(String[] args) throws Exception {
     // Force unit, building, spell, audio loading.
     Combatants.getCombatantsForAge(1);
@@ -261,7 +281,9 @@ public final class DelegatingAIControllers {
     genDataLoop(boardFilename);
   }
 
-  /** Runs games repeatedly on the given boardFilename between two Delegating random AIs. */
+  /**
+   * Runs games repeatedly on the given boardFilename between two Delegating random AIs.
+   */
   private static void genDataLoop(String boardFilename) throws Exception {
     List<String> defaultPlayerTypes = new ArrayList<>();
     defaultPlayerTypes.add(DELEGATING_RANDOM_AI_TYPE);

@@ -1,6 +1,7 @@
 package ai.delegates;
 
 import ai.AIAction.AIActionType;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +19,7 @@ public abstract class ByNameDelegate extends Delegate {
    * A map of the names known to this delegate mapped to the index in subweights they correspond to.
    * Default empty.
    */
-  private Map<String, Integer> nameToSubweightIndexMap;
+  private final Map<String, Integer> nameToSubweightIndexMap;
 
   /**
    * Subweight to use if a name isn't in the map. Default 1, so all unknown names will be presumed
@@ -26,14 +27,18 @@ public abstract class ByNameDelegate extends Delegate {
    */
   private double fallbackSubweight;
 
-  /** Constructs a new ByNameDelegate for the given map and action types. */
+  /**
+   * Constructs a new ByNameDelegate for the given map and action types.
+   */
   ByNameDelegate(AIActionType... actionTypes) {
     super(actionTypes);
     fallbackSubweight = 1;
     this.nameToSubweightIndexMap = new HashMap<>();
   }
 
-  /** Overrides {@link Delegate#copy()} to add name to weights map and fallback weight. */
+  /**
+   * Overrides {@link Delegate#copy()} to add name to weights map and fallback weight.
+   */
   @Override
   public Delegate copy() {
     ByNameDelegate delegate = (ByNameDelegate) super.copy();
@@ -42,20 +47,26 @@ public abstract class ByNameDelegate extends Delegate {
     return delegate;
   }
 
-  /** Sets the weight of this Delegate and returns it. Overridden to narrow return type. */
+  /**
+   * Sets the weight of this Delegate and returns it. Overridden to narrow return type.
+   */
   @Override
   public ByNameDelegate withWeight(double weight) {
     super.withWeight(weight);
     return this;
   }
 
-  /** Not used in subclasses of this. */
+  /**
+   * Not used in subclasses of this.
+   */
   @Override
   final int getExpectedSubweightsLength() {
     return 0;
   }
 
-  /** Has headers for names by index. */
+  /**
+   * Has headers for names by index.
+   */
   @Override
   public final List<String> getSubweightsHeaders() {
     return nameToSubweightIndexMap
@@ -66,20 +77,26 @@ public abstract class ByNameDelegate extends Delegate {
         .collect(Collectors.toList());
   }
 
-  /** Don't check for length in ByName, since it isn't known. Use length to always pass check. */
+  /**
+   * Don't check for length in ByName, since it isn't known. Use length to always pass check.
+   */
   @Override
   public ByNameDelegate withSubweights(double... subWeights) {
     super.setSubweightsUnsafe(subWeights);
     return this;
   }
 
-  /** Sets the fallback subweight and returns this. */
+  /**
+   * Sets the fallback subweight and returns this.
+   */
   public ByNameDelegate withFallbackSubweight(double fallbackSubweight) {
     this.fallbackSubweight = fallbackSubweight;
     return this;
   }
 
-  /** Adds the given name to index association to this ByNameDelegate and returns this */
+  /**
+   * Adds the given name to index association to this ByNameDelegate and returns this
+   */
   public ByNameDelegate withNameToSubweightIndex(String name, int index) {
     nameToSubweightIndexMap.put(name, index);
     return this;
@@ -107,14 +124,18 @@ public abstract class ByNameDelegate extends Delegate {
     return this;
   }
 
-  /** Returns the subWeight at the given index. Overridden to narrow return type. */
+  /**
+   * Returns the subWeight at the given index. Overridden to narrow return type.
+   */
   @Override
   public ByNameDelegate changeSubWeight(int index, double deltaWeight) {
     super.changeSubWeight(index, deltaWeight);
     return this;
   }
 
-  /** Returns the subWeight at the given name. */
+  /**
+   * Returns the subWeight at the given name.
+   */
   public ByNameDelegate changeSubWeight(String name, double deltaWeight) {
     return changeSubWeight(nameToSubweightIndexMap.get(name), deltaWeight);
   }

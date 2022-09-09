@@ -16,17 +16,25 @@ import java.util.Objects;
  */
 public final class MPoint {
 
-  /** A map of all points, indexed by row, then column. */
+  /**
+   * A map of all points, indexed by row, then column.
+   */
   private static final Map<Integer, Map<Integer, MPoint>> points =
       Collections.synchronizedMap(new HashMap<>());
 
-  /** A point representing (0,0) */
+  /**
+   * A point representing (0,0)
+   */
   static final MPoint ORIGIN = get(0, 0);
 
-  /** The row represented by this point */
+  /**
+   * The row represented by this point
+   */
   public final int row;
 
-  /** The col represented by this point */
+  /**
+   * The col represented by this point
+   */
   public final int col;
 
   /**
@@ -63,27 +71,37 @@ public final class MPoint {
     }
   }
 
-  /** Returns a point from the given array of directions. */
+  /**
+   * Returns a point from the given array of directions.
+   */
   public static MPoint get(Direction... d) {
     return Arrays.stream(d).map(Direction::toPoint).reduce(MPoint.ORIGIN, MPoint::add);
   }
 
-  /** Creates a new point from adding the row and col to this. */
+  /**
+   * Creates a new point from adding the row and col to this.
+   */
   public MPoint add(int r, int c) {
     return get(row + r, col + c);
   }
 
-  /** Creates a new point from adding the row and col components of p to this */
+  /**
+   * Creates a new point from adding the row and col components of p to this
+   */
   public MPoint add(MPoint p) {
     return get(row + p.row, col + p.col);
   }
 
-  /** Returns a radial cloud centered at this */
+  /**
+   * Returns a radial cloud centered at this
+   */
   public Cloud radialCloud(int radius) {
     return ExpandableCloud.create(ExpandableCloudType.CIRCLE, radius).translate(this);
   }
 
-  /** Returns a line cloud from this to the given MPoint. */
+  /**
+   * Returns a line cloud from this to the given MPoint.
+   */
   public Cloud getLineCloudTo(MPoint other) {
     // Check for single point line
     if (other.equals(this)) {
@@ -94,8 +112,8 @@ public final class MPoint {
     if (col == other.col) {
       HashSet<MPoint> points = new HashSet<>();
       for (int r = row;
-          row < other.row && r <= other.row || row > other.row && r >= other.row;
-          r += (row < other.row ? 1 : -1)) {
+           row < other.row && r <= other.row || row > other.row && r >= other.row;
+           r += (row < other.row ? 1 : -1)) {
         points.add(get(r, col));
       }
 
@@ -144,7 +162,9 @@ public final class MPoint {
     }
   }
 
-  /** Two points are equal if they have the same row and col */
+  /**
+   * Two points are equal if they have the same row and col
+   */
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof MPoint)) return false;
@@ -152,12 +172,16 @@ public final class MPoint {
     return ((MPoint) o).row == row && ((MPoint) o).col == col;
   }
 
-  /** Hashes an MPoint based on its row and col */
+  /**
+   * Hashes an MPoint based on its row and col
+   */
   public int hashCode() {
     return Objects.hash(row, col);
   }
 
-  /** A toString - {@code (row, col)} */
+  /**
+   * A toString - {@code (row, col)}
+   */
   public String toString() {
     return "(" + row + "," + col + ")";
   }

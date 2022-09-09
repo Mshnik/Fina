@@ -5,13 +5,16 @@ import static model.game.HumanPlayer.HUMAN_PLAYER_TYPE;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import model.game.Game.FogOfWar;
 import model.unit.ability.Abilities;
 import model.unit.building.Buildings;
 import model.unit.combatant.Combatants;
 
 public final class Main {
-  /** Runnable method that starts a game between two human players. */
+  /**
+   * Runnable method that starts a game between two human players.
+   */
   public static void main(String[] args) throws Exception {
     // Force unit, building, spell, audio loading.
     Combatants.getCombatantsForAge(1);

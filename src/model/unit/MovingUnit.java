@@ -2,6 +2,7 @@ package model.unit;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
@@ -15,7 +16,9 @@ import model.unit.stat.Stats;
  */
 public abstract class MovingUnit extends Unit {
 
-  /** Units of movement remaining this turn. Can't move if this is 0 */
+  /**
+   * Units of movement remaining this turn. Can't move if this is 0
+   */
   private int movement;
 
   /**
@@ -23,16 +26,16 @@ public abstract class MovingUnit extends Unit {
    * its owner as a model.unit that player owns, Subtracts manaCost from the owner, but throws a
    * runtimeException if the owner doesn't have enough mana.
    *
-   * @param owner - the player owner of this unit
-   * @param name - the name of this unit
+   * @param owner         - the player owner of this unit
+   * @param name          - the name of this unit
    * @param imageFilename - The image to draw when drawing this unit.
-   * @param level - the level of this unit - the age this belongs to
-   * @param manaCost - the cost of summoning this unit. Should be a positive number.
-   * @param stats - the base unmodified stats of this unit.
+   * @param level         - the level of this unit - the age this belongs to
+   * @param manaCost      - the cost of summoning this unit. Should be a positive number.
+   * @param stats         - the base unmodified stats of this unit.
    */
   public MovingUnit(
       Player owner, String name, String imageFilename, int level, int manaCost, Stats stats)
-      throws RuntimeException, IllegalArgumentException {
+      throws RuntimeException {
     super(owner, name, imageFilename, level, manaCost, 0, stats);
   }
 
@@ -47,23 +50,32 @@ public abstract class MovingUnit extends Unit {
     movement = getMovementCap();
   }
 
-  /** Adds the given amount of movement. This is a temporary addition, not a recurring one */
+  /**
+   * Adds the given amount of movement. This is a temporary addition, not a recurring one
+   */
   public void addMovement(int deltaMovement) {
     movement = Math.max(movement + deltaMovement, 0);
   }
 
-  /** Refreshes Just movement. Can be done mid-turn for effect purposes */
+  /**
+   * Refreshes Just movement. Can be done mid-turn for effect purposes
+   */
   public void refreshMovement() {
     movement = getMovementCap();
   }
 
   // MOVEMENT
-  /** Returns iff this can move */
+
+  /**
+   * Returns iff this can move
+   */
   public final boolean canMove() {
     return getMovement() > 0;
   }
 
-  /** Returns the amount of movement this can still make this turn */
+  /**
+   * Returns the amount of movement this can still make this turn
+   */
   public int getMovement() {
     return movement;
   }
@@ -109,7 +121,9 @@ public abstract class MovingUnit extends Unit {
     return c;
   }
 
-  /** Returns true iff movementCost(t) <= getMovementCap() */
+  /**
+   * Returns true iff movementCost(t) <= getMovementCap()
+   */
   @Override
   public boolean canOccupy(Terrain t) {
     return getMovementCost(t) <= getMovementCap();
@@ -131,11 +145,11 @@ public abstract class MovingUnit extends Unit {
    * Attempts to move this model.unit along the given path.
    *
    * @param path - the path to travel, where the first of path is location, last is the desired
-   *     destination, and whole path is manhattan contiguous.
+   *             destination, and whole path is manhattan contiguous.
    * @return The tile the movement ended on
    * @throws RuntimeException if... - this can't move this turn (already moved)
    * @throws IllegalArgumentException if... - the first tile isn't location - The ending tile is
-   *     occupied - the total cost of movement exceeds this' movement total
+   * occupied - the total cost of movement exceeds this' movement total
    */
   public final Tile move(List<Tile> path) throws IllegalArgumentException, RuntimeException {
     if (!canMove()) throw new RuntimeException(this + " can't move this turn");

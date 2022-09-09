@@ -22,10 +22,14 @@ import java.util.stream.Stream;
  */
 public final class FullRandomAIController implements AIController {
 
-  /** The string to show on the UI for selecting a FullRandomAIController as a player. */
+  /**
+   * The string to show on the UI for selecting a FullRandomAIController as a player.
+   */
   public static final String FULL_RANDOM_AI_TYPE = "AI - Full Random";
 
-  /** Chance to end turn even if there are actions available. */
+  /**
+   * Chance to end turn even if there are actions available.
+   */
   private static final double END_TURN_EARLY_CHANCE = 0.2;
 
   /**
@@ -87,7 +91,9 @@ public final class FullRandomAIController implements AIController {
         player.game.board.getMovementPath(pathComputationId, toMoveTo));
   }
 
-  /** Returns an action for a random unit to attack. Returns null if no unit can attack. */
+  /**
+   * Returns an action for a random unit to attack. Returns null if no unit can attack.
+   */
   private AIAction getAttackAction(Player player) {
     List<Combatant> unitsThatCanAttack =
         player
@@ -118,12 +124,12 @@ public final class FullRandomAIController implements AIController {
     Commander commander = player.getCommander();
     Map<String, Unit> summonableUnits =
         Stream.concat(
-                player.getCommander().getSummonables().entrySet().stream(),
-                player.getCommander().getBuildables().entrySet().stream())
+            player.getCommander().getSummonables().entrySet().stream(),
+            player.getCommander().getBuildables().entrySet().stream())
             .filter(
                 e ->
                     e.getValue().getManaCostWithScalingAndDiscountsForPlayer(player)
-                            <= commander.getMana()
+                        <= commander.getMana()
                         && !player.game.board.getSummonCloud(commander, e.getValue()).isEmpty())
             .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()));
 

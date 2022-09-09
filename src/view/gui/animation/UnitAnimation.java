@@ -14,7 +14,9 @@ public abstract class UnitAnimation implements Animatable {
   private final Unit unit;
   private UnitAnimation nextAnimation;
 
-  /** True if this has been started, false before. Will still be true after animation completes. */
+  /**
+   * True if this has been started, false before. Will still be true after animation completes.
+   */
   private boolean started;
 
   /**
@@ -22,7 +24,9 @@ public abstract class UnitAnimation implements Animatable {
    */
   private boolean active;
 
-  /** The current state this is on. */
+  /**
+   * The current state this is on.
+   */
   private int state;
 
   UnitAnimation(GamePanel gamePanel, Unit unit) {
@@ -33,7 +37,9 @@ public abstract class UnitAnimation implements Animatable {
     active = false;
   }
 
-  /** Sets the next animation. Can only be called if active is false and nextAnimation is null. */
+  /**
+   * Sets the next animation. Can only be called if active is false and nextAnimation is null.
+   */
   public synchronized void setNextAnimation(UnitAnimation nextAnimation) {
     if (active || this.nextAnimation != null) {
       throw new RuntimeException("Can't set nextAnimation now");

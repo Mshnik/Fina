@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
 import model.board.Direction;
 import model.board.Tile;
 import model.game.Player;
@@ -18,27 +19,39 @@ import model.util.Cloud;
 import model.util.ExpandableCloud;
 import model.util.ExpandableCloud.ExpandableCloudType;
 
-/** Parent class of abilities useable by Commanders. */
+/**
+ * Parent class of abilities useable by Commanders.
+ */
 public class Ability implements Stringable {
 
-  /** The name of this ability */
+  /**
+   * The name of this ability
+   */
   public final String name;
 
-  /** Types of abilities. */
+  /**
+   * Types of abilities.
+   */
   public enum AbilityType {
     ATTACK,
     HEAL,
     BUFF,
-    UTILITY;
+    UTILITY
   }
 
-  /** The type of this Ability. */
+  /**
+   * The type of this Ability.
+   */
   public final AbilityType abilityType;
 
-  /** The level of the ability */
+  /**
+   * The level of the ability
+   */
   public final int level;
 
-  /** The cost of casting this Ability */
+  /**
+   * The cost of casting this Ability
+   */
   public final int manaCost;
 
   /**
@@ -46,7 +59,9 @@ public class Ability implements Stringable {
    */
   public final ExpandableCloud effectCloud;
 
-  /** True if cloud boosting effects increase the size of this ability's cloud. */
+  /**
+   * True if cloud boosting effects increase the size of this ability's cloud.
+   */
   public final boolean canBeCloudBoosted;
 
   /**
@@ -55,38 +70,48 @@ public class Ability implements Stringable {
    */
   public final int castDist;
 
-  /** Types of units this ability should be applied to. */
+  /**
+   * Types of units this ability should be applied to.
+   */
   public final List<Class<? extends Unit>> affectedUnitTypes;
 
-  /** True iff modifiers should be applied to allied units */
+  /**
+   * True iff modifiers should be applied to allied units
+   */
   public final boolean appliesToAllied;
 
-  /** True iff modifiers should be applied to enemy units */
+  /**
+   * True iff modifiers should be applied to enemy units
+   */
   public final boolean appliesToFoe;
 
-  /** A string description of this ability, used for debugging and UI. */
+  /**
+   * A string description of this ability, used for debugging and UI.
+   */
   public final String description;
 
-  /** A list of AbilityEffects to apply to each affected unit. */
+  /**
+   * A list of AbilityEffects to apply to each affected unit.
+   */
   public final List<AbilityEffect> effects;
 
   /**
    * Ability Constructor
    *
-   * @param name - the Name of this ability
-   * @param abilityType - the Type of this ability.
-   * @param level - the level of the ability.
-   * @param manaCost - the mana cost of using this ability. 0 if passive
-   * @param effectCloud - the cloud of tiles this ability effects.
+   * @param name              - the Name of this ability
+   * @param abilityType       - the Type of this ability.
+   * @param level             - the level of the ability.
+   * @param manaCost          - the mana cost of using this ability. 0 if passive
+   * @param effectCloud       - the cloud of tiles this ability effects.
    * @param canBeCloudBoosted - true if this abilty's cloud can be increased in size by cloud
-   *     boosting effects, false if not.
-   * @param castDist - the distance from the commander this ability can be cast
+   *                          boosting effects, false if not.
+   * @param castDist          - the distance from the commander this ability can be cast
    * @param affectedUnitTypes - types of units this ability effects. Units with other types will not
-   *     be effected by this ability.
-   * @param appliesToAllied - true iff this ability can affect allied units
-   * @param appliesToFoe - true iff this ability can affect non-allied units
-   * @param description - a string description of this ability.
-   * @param effects - the effects of this ability to apply to each unit.
+   *                          be effected by this ability.
+   * @param appliesToAllied   - true iff this ability can affect allied units
+   * @param appliesToFoe      - true iff this ability can affect non-allied units
+   * @param description       - a string description of this ability.
+   * @param effects           - the effects of this ability to apply to each unit.
    */
   Ability(
       String name,
@@ -115,19 +140,21 @@ public class Ability implements Stringable {
     this.effects = effects;
   }
 
-  /** Returns the mana cost of casting this ability minus the discounts for the given player. */
+  /**
+   * Returns the mana cost of casting this ability minus the discounts for the given player.
+   */
   public int getManaCostWithDiscountsForPlayer(Player p) {
     return (int)
         (manaCost
             * (1
-                - p.getUnits()
-                        .stream()
-                        .filter(u -> u instanceof PlayerModifierBuilding)
-                        .flatMap(u -> ((PlayerModifierBuilding) u).getEffect().stream())
-                        .filter(e -> e.effectType == PlayerModifier.PlayerModifierType.CAST_DISCOUNT)
-                        .mapToInt(e -> e.value)
-                        .sum()
-                    / 100.0));
+            - p.getUnits()
+            .stream()
+            .filter(u -> u instanceof PlayerModifierBuilding)
+            .flatMap(u -> ((PlayerModifierBuilding) u).getEffect().stream())
+            .filter(e -> e.effectType == PlayerModifier.PlayerModifierType.CAST_DISCOUNT)
+            .mapToInt(e -> e.value)
+            .sum()
+            / 100.0));
   }
 
   /**
@@ -136,12 +163,14 @@ public class Ability implements Stringable {
    */
   public boolean wouldAffect(Unit u, Commander caster) {
     return (u instanceof Combatant && affectedUnitTypes.contains(Combatant.class)
-            || u instanceof Commander && affectedUnitTypes.contains(Commander.class)
-            || u instanceof Building && affectedUnitTypes.contains(Building.class))
+        || u instanceof Commander && affectedUnitTypes.contains(Commander.class)
+        || u instanceof Building && affectedUnitTypes.contains(Building.class))
         && (u.owner == caster.owner && appliesToAllied || u.owner != caster.owner && appliesToFoe);
   }
 
-  /** Returns the effect cloud translated for the given location and caster location. */
+  /**
+   * Returns the effect cloud translated for the given location and caster location.
+   */
   public List<Tile> getTranslatedEffectCloud(Commander caster, Tile castLocation, int boostLevel) {
     Cloud boostedCloud = effectCloud.expand(canBeCloudBoosted ? boostLevel : 0);
 
@@ -206,7 +235,7 @@ public class Ability implements Stringable {
     }
     if (castDist != 1
         && (effectCloud.type == ExpandableCloudType.CONE
-            || effectCloud.type == ExpandableCloudType.WALL)) {
+        || effectCloud.type == ExpandableCloudType.WALL)) {
       throw new RuntimeException("Cone and Wall types must be cast at distance one");
     }
 

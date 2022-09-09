@@ -3,20 +3,28 @@ package model.unit.modifier;
 import model.unit.Unit;
 import model.unit.stat.StatType;
 
-/** A modifier that alters a unit's stat. */
+/**
+ * A modifier that alters a unit's stat.
+ */
 public final class StatModifier extends Modifier {
 
-  /** The stat this is modifying */
+  /**
+   * The stat this is modifying
+   */
   public final StatType modifiedStat;
 
-  /** Types of modifications a stat modifier can apply. */
+  /**
+   * Types of modifications a stat modifier can apply.
+   */
   public enum ModificationType {
     SET_MIN,
     SET_MAX,
     ADD,
     MULTIPLY;
 
-    /** Returns a symbol string that corresponds to this enum value */
+    /**
+     * Returns a symbol string that corresponds to this enum value
+     */
     public String toSymbolString() {
       switch (this) {
         case ADD:
@@ -32,22 +40,26 @@ public final class StatModifier extends Modifier {
     }
   }
 
-  /** The type of modification - set, add, mult */
+  /**
+   * The type of modification - set, add, mult
+   */
   public final ModificationType modType;
 
-  /** The set/added/multed value of the stat */
-  private Object val;
+  /**
+   * The set/added/multed value of the stat
+   */
+  private final Object val;
 
   /**
    * Constructor for dummy instance
    *
-   * @param name - the name of this statModifier
-   * @param turns - the total duration of this modifier (turns after this one). Can be
-   *     Integer.MAX_VAL - interpreted as forever rather than the actual val
+   * @param name      - the name of this statModifier
+   * @param turns     - the total duration of this modifier (turns after this one). Can be
+   *                  Integer.MAX_VAL - interpreted as forever rather than the actual val
    * @param stackable - stack mode of this StatModifier.
-   * @param stat - the stat to modify
-   * @param modType - the operation on stat to perform
-   * @param modVal - the value to modify by
+   * @param stat      - the stat to modify
+   * @param modType   - the operation on stat to perform
+   * @param modVal    - the value to modify by
    */
   public StatModifier(
       String name,
@@ -96,9 +108,9 @@ public final class StatModifier extends Modifier {
   /**
    * Constructor for cloning instances
    *
-   * @param unit - The model.unit this is modifying.
+   * @param unit   - The model.unit this is modifying.
    * @param source - the model.unit this modifier is tied to.
-   * @param dummy - the StatModifier to make a copy of
+   * @param dummy  - the StatModifier to make a copy of
    */
   private StatModifier(Unit unit, Unit source, StatModifier dummy) {
     super(unit, source, dummy);
@@ -108,17 +120,23 @@ public final class StatModifier extends Modifier {
     attachToUnit();
   }
 
-  /** Returns the mod val - for what to do with it, see modType. Don't modify this, plz */
+  /**
+   * Returns the mod val - for what to do with it, see modType. Don't modify this, plz
+   */
   public Object getModVal() {
     return val;
   }
 
-  /** Returns the value of this custom modifier. */
+  /**
+   * Returns the value of this custom modifier.
+   */
   public Object getValue() {
     return val;
   }
 
-  /** Returns a new dummy copy of this that's unique from a memory standpoint. */
+  /**
+   * Returns a new dummy copy of this that's unique from a memory standpoint.
+   */
   @Override
   public Modifier uniqueCopy() {
     if (!isDummy()) {
@@ -139,7 +157,9 @@ public final class StatModifier extends Modifier {
     return new StatModifier(name, remainingTurns, stackMode, modifiedStat, modType, val);
   }
 
-  /** Returns a StatModifier clone of this with the given model.unit and source */
+  /**
+   * Returns a StatModifier clone of this with the given model.unit and source
+   */
   @Override
   public Modifier clone(Unit unit, Unit source) {
     if (this.getClass() != StatModifier.class) {

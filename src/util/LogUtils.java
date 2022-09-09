@@ -2,6 +2,7 @@ package util;
 
 import ai.delegates.Delegate;
 import ai.delegating.DelegatingAIControllers;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -9,14 +10,18 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** A utility class (outside of the game) for log parsing and rewriting. */
+/**
+ * A utility class (outside of the game) for log parsing and rewriting.
+ */
 public final class LogUtils {
 
   public static void main(String[] args) throws Exception {
     reduceConfigsAndResults();
   }
 
-  /** Copies the contents of configs.txt into configs_reduced.txt with text removed. */
+  /**
+   * Copies the contents of configs.txt into configs_reduced.txt with text removed.
+   */
   private static void reduceConfigsAndResults() throws Exception {
     List<String> configLineList = TextIO.readToArray(new File(ResultsPrinter.CONFIGS_FILEPATH));
     System.out.println("Read config contents to list");

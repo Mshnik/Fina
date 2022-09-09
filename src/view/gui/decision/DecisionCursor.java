@@ -1,7 +1,9 @@
 package view.gui.decision;
 
 import controller.decision.Choice;
+
 import java.awt.Color;
+
 import model.board.Direction;
 import model.unit.Unit;
 import model.unit.ability.Ability;
@@ -9,7 +11,9 @@ import model.unit.combatant.Combat;
 import model.unit.modifier.Modifiers.ModifierDescription;
 import view.gui.Cursor;
 
-/** A default cursor implementation for when no special cursor actions are necessary */
+/**
+ * A default cursor implementation for when no special cursor actions are necessary
+ */
 public final class DecisionCursor extends Cursor<Choice, DecisionPanel> {
 
   /**
@@ -28,12 +32,16 @@ public final class DecisionCursor extends Cursor<Choice, DecisionPanel> {
     setColor(new Color(255, 240, 28));
   }
 
-  /** Can only select if the decision it is on is selectable */
+  /**
+   * Can only select if the decision it is on is selectable
+   */
   public boolean canSelect() {
     return getElm().isSelectable();
   }
 
-  /** Allows the cursor to wrap vertically on vertical decisions. */
+  /**
+   * Allows the cursor to wrap vertically on vertical decisions.
+   */
   @Override
   public boolean move(Direction d) {
     boolean moved = super.move(d);
@@ -59,13 +67,17 @@ public final class DecisionCursor extends Cursor<Choice, DecisionPanel> {
     return false;
   }
 
-  /** Moves are always oked. Returns true, so long as destination isn't null */
+  /**
+   * Moves are always oked. Returns true, so long as destination isn't null
+   */
   @Override
   protected boolean willMoveTo(Direction d, Choice destination) {
     return destination != null;
   }
 
-  /** Needs to have the gamePanel repaint */
+  /**
+   * Needs to have the gamePanel repaint
+   */
   @Override
   public void moved() {
     super.moved();

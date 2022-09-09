@@ -1,17 +1,25 @@
 package model.unit.stat;
 
-/** The different stats that are present in a unitstats */
+/**
+ * The different stats that are present in a unitstats
+ */
 public enum StatType {
-  /** The base (pre-modification) stats this was calculated from, if any */
+  /**
+   * The base (pre-modification) stats this was calculated from, if any
+   */
   BASE,
   /**
    * The health cap for this model.unit. Actual health level is kept track of by model.unit.
    * maxHealth >= 0.
    */
   MAX_HEALTH,
-  /** The mana generation/cost of this model.unit, if any. Positive is generation */
+  /**
+   * The mana generation/cost of this model.unit, if any. Positive is generation
+   */
   MANA_PER_TURN,
-  /** The number of actions per turn this unit can perform, if any. Usually 0. */
+  /**
+   * The number of actions per turn this unit can perform, if any. Usually 0.
+   */
   ACTIONS_PER_TURN,
   /**
    * Min damage dealt when attacking. attack >= 0. If a unit's attack == 0, this unit cannot attack.
@@ -21,7 +29,9 @@ public enum StatType {
    * Max damage dealt when attacking. attack >= 0. If a unit's attack == 0, this unit cannot attack.
    */
   MAX_ATTACK,
-  /** Reduction on damage taken. Damage Reduction >= 0. */
+  /**
+   * Reduction on damage taken. Damage Reduction >= 0.
+   */
   DAMAGE_REDUCTION,
   /**
    * Min distance at which another model.unit can be attacked, inclusive. Distance is measured using
@@ -38,20 +48,34 @@ public enum StatType {
    * distance - 1. range >= 0.
    */
   SUMMON_RANGE,
-  /** Total movement a model.unit can do in a turn */
+  /**
+   * Total movement a model.unit can do in a turn
+   */
   MOVEMENT_TOTAL,
-  /** Vision radius of this model.unit */
+  /**
+   * Vision radius of this model.unit
+   */
   VISION_RANGE,
-  /** Grass movement cost */
+  /**
+   * Grass movement cost
+   */
   GRASS_COST,
-  /** Woods movement cost */
+  /**
+   * Woods movement cost
+   */
   WOODS_COST,
-  /** Mountain movement cost */
+  /**
+   * Mountain movement cost
+   */
   MOUNTAIN_COST,
-  /** Sea movement cost */
+  /**
+   * Sea movement cost
+   */
   SEA_COST;
 
-  /** Overrides traditional enum tostring - returns camel case, no underscores */
+  /**
+   * Overrides traditional enum tostring - returns camel case, no underscores
+   */
   @Override
   public String toString() {
     String s = super.toString();
@@ -72,7 +96,9 @@ public enum StatType {
     return finishedS;
   }
 
-  /** Returns true iff this stat is an attack-related stat. */
+  /**
+   * Returns true iff this stat is an attack-related stat.
+   */
   public boolean isAttackStat() {
     return this == MIN_ATTACK
         || this == MAX_ATTACK
@@ -81,7 +107,9 @@ public enum StatType {
         || this == DAMAGE_REDUCTION;
   }
 
-  /** Returns true iff this stat is a movement-related stat. */
+  /**
+   * Returns true iff this stat is a movement-related stat.
+   */
   public boolean isMovementStat() {
     return this == MOVEMENT_TOTAL
         || this == GRASS_COST
@@ -118,7 +146,9 @@ public enum StatType {
     }
   }
 
-  /** Returns the class of the given type */
+  /**
+   * Returns the class of the given type
+   */
   public static Class<?> getClassOfType(StatType t) {
     switch (t) {
       case MIN_ATTACK:

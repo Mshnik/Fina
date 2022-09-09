@@ -24,7 +24,9 @@ import java.util.stream.Collectors;
  */
 public abstract class Combatant extends MovingUnit {
 
-  /** Possible combatant classes. A combatant may have more than one. */
+  /**
+   * Possible combatant classes. A combatant may have more than one.
+   */
   public enum CombatantClass {
     // Mid health mid-high damage standard melee
     FIGHTER,
@@ -37,7 +39,9 @@ public abstract class Combatant extends MovingUnit {
     // High health mid damage, counter melee
     TANK;
 
-    /** Returns the CombatantClass from the given short string. */
+    /**
+     * Returns the CombatantClass from the given short string.
+     */
     public static CombatantClass valueOfShort(String s) {
       switch (s.toUpperCase()) {
         case "F":
@@ -55,7 +59,9 @@ public abstract class Combatant extends MovingUnit {
       }
     }
 
-    /** Returns a mid-length string representation of this. */
+    /**
+     * Returns a mid-length string representation of this.
+     */
     public String toMidString() {
       switch (this) {
         case FIGHTER:
@@ -73,7 +79,9 @@ public abstract class Combatant extends MovingUnit {
       }
     }
 
-    /** Returns true iff this class has a bonus against the given other class. */
+    /**
+     * Returns true iff this class has a bonus against the given other class.
+     */
     public boolean hasBonusAgainstClass(CombatantClass other) {
       switch (this) {
         case FIGHTER:
@@ -110,10 +118,14 @@ public abstract class Combatant extends MovingUnit {
     }
   }
 
-  /** This combatant's classes. Will have length >= 1. */
+  /**
+   * This combatant's classes. Will have length >= 1.
+   */
   public final List<CombatantClass> combatantClasses;
 
-  /** true iff this can still fight this turn. Has an impact on how to draw this */
+  /**
+   * true iff this can still fight this turn. Has an impact on how to draw this
+   */
   private boolean canFight;
 
   /**
@@ -121,12 +133,12 @@ public abstract class Combatant extends MovingUnit {
    * owner as a unit that player owns, Subtracts manaCost from the owner, but throws a
    * runtimeException if the owner doesn't have enough mana.
    *
-   * @param owner - the player owner of this unit
-   * @param name - the name of this unit
+   * @param owner         - the player owner of this unit
+   * @param name          - the name of this unit
    * @param imageFilename - the image to draw when drawing this unit.
-   * @param level - the level of this unit - the age this belongs to
-   * @param manaCost - the cost of summoning this unit. Should be a positive number.
-   * @param stats - the base unmodified stats of this unit.
+   * @param level         - the level of this unit - the age this belongs to
+   * @param manaCost      - the cost of summoning this unit. Should be a positive number.
+   * @param stats         - the base unmodified stats of this unit.
    */
   public Combatant(
       Player owner,
@@ -136,7 +148,7 @@ public abstract class Combatant extends MovingUnit {
       List<CombatantClass> classes,
       int manaCost,
       Stats stats)
-      throws RuntimeException, IllegalArgumentException {
+      throws RuntimeException {
     super(owner, name, imageFilename, level, manaCost, stats);
 
     combatantClasses = Collections.unmodifiableList(classes);
@@ -160,22 +172,30 @@ public abstract class Combatant extends MovingUnit {
     }
   }
 
-  /** Sets whether this unit can still attack. */
+  /**
+   * Sets whether this unit can still attack.
+   */
   public void setCanFight(boolean canFight) {
     this.canFight = canFight;
   }
 
-  /** Returns whether this unit can still attack. */
+  /**
+   * Returns whether this unit can still attack.
+   */
   public boolean getCanFight() {
     return canFight;
   }
 
-  /** All modifiers are visible. */
+  /**
+   * All modifiers are visible.
+   */
   public List<Modifier> getVisibleModifiers() {
     return getModifiers();
   }
 
-  /** Combatants are ok with any kind of modifier except summon range */
+  /**
+   * Combatants are ok with any kind of modifier except summon range
+   */
   @Override
   public boolean modifierOk(Modifier m) {
     if (m instanceof StatModifier) {
@@ -203,27 +223,36 @@ public abstract class Combatant extends MovingUnit {
   }
 
   // FIGHTING
-  /** Returns iff this can still fight this turn */
+
+  /**
+   * Returns iff this can still fight this turn
+   */
   public boolean canFight() {
     return canFight;
   }
 
-  /** Combatants can't summon. */
+  /**
+   * Combatants can't summon.
+   */
   @Override
   public boolean canSummon() {
     return false;
   }
 
-  /** Combatants can't cast. */
+  /**
+   * Combatants can't cast.
+   */
   @Override
   public boolean canCast() {
     return false;
   }
 
-  /** Returns the list of tiles this can attack from the given tile. */
+  /**
+   * Returns the list of tiles this can attack from the given tile.
+   */
   public List<Tile> getAttackableTilesFrom(Tile tile) {
     return ExpandableCloud.create(
-            ExpandableCloud.ExpandableCloudType.CIRCLE, getMaxAttackRange() + 1)
+        ExpandableCloud.ExpandableCloudType.CIRCLE, getMaxAttackRange() + 1)
         .difference(
             ExpandableCloud.create(ExpandableCloud.ExpandableCloudType.CIRCLE, getMinAttackRange()))
         .translate(tile.getPoint())
@@ -246,7 +275,9 @@ public abstract class Combatant extends MovingUnit {
     }
   }
 
-  /** Returns true iff there is at least one enemy unit within range and sight */
+  /**
+   * Returns true iff there is at least one enemy unit within range and sight
+   */
   public boolean hasFightableTarget() {
     return !getAttackableTiles(true).isEmpty();
   }
@@ -276,7 +307,8 @@ public abstract class Combatant extends MovingUnit {
   }
 
   @Override
-  public void preMove(List<Tile> path) {}
+  public void preMove(List<Tile> path) {
+  }
 
   /**
    * Called after moving - tell the frame that danger clouds including this need to be recomputed.
@@ -290,7 +322,8 @@ public abstract class Combatant extends MovingUnit {
   }
 
   @Override
-  public void preCounterFight(Combatant other) {}
+  public void preCounterFight(Combatant other) {
+  }
 
   @Override
   public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {
@@ -306,7 +339,8 @@ public abstract class Combatant extends MovingUnit {
    * Processes a pre-fight action that may be caused by modifiers. Still only called when the fight
    * is valid.
    */
-  public void preFight(Unit other) {}
+  public void preFight(Unit other) {
+  }
 
   /**
    * Processes a post-fight action that may be caused by modifiers. Only called when the fight is
@@ -325,7 +359,9 @@ public abstract class Combatant extends MovingUnit {
     }
   }
 
-  /** When a non-dummy combatant's stats are changed, refresh the danger cloud if this is in one. */
+  /**
+   * When a non-dummy combatant's stats are changed, refresh the danger cloud if this is in one.
+   */
   @Override
   protected void refreshStats() {
     super.refreshStats();
@@ -334,7 +370,9 @@ public abstract class Combatant extends MovingUnit {
     }
   }
 
-  /** Returns Combatant */
+  /**
+   * Returns Combatant
+   */
   @Override
   public String getIdentifierString() {
     return "Combatant";

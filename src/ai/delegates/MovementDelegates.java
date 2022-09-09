@@ -20,11 +20,16 @@ import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/** A list of delegates for moving units. */
+/**
+ * A list of delegates for moving units.
+ */
 public final class MovementDelegates {
-  private MovementDelegates() {}
+  private MovementDelegates() {
+  }
 
-  /** Parent class for MovementDelegates. */
+  /**
+   * Parent class for MovementDelegates.
+   */
   private abstract static class MovementDelegate extends Delegate {
     private MovementDelegate() {
       super(AIActionType.MOVE_UNIT);
@@ -73,7 +78,7 @@ public final class MovementDelegates {
    *   <li>1 - attack building
    *   <li>2 - attack commander
    * </ol>
-   *
+   * <p>
    * Sums possible attacks from dest location, thus favors locations that allow for multiple
    * attacks.
    */
@@ -219,15 +224,15 @@ public final class MovementDelegates {
     @Override
     double getRawScore(AIAction action) {
       return action
-              .player
-              .game
-              .getDangerRadius(action.player)
-              .entrySet()
-              .stream()
-              .filter(e -> e.getKey().owner != action.player)
-              .filter(e -> action.player.canSee(e.getKey()))
-              .filter(e -> e.getValue().contains(action.targetedTile))
-              .count()
+          .player
+          .game
+          .getDangerRadius(action.player)
+          .entrySet()
+          .stream()
+          .filter(e -> e.getKey().owner != action.player)
+          .filter(e -> action.player.canSee(e.getKey()))
+          .filter(e -> e.getValue().contains(action.targetedTile))
+          .count()
           * -1
           * (action.actingUnit instanceof Commander ? getSubWeight(0) : getSubWeight(1));
     }
@@ -267,7 +272,9 @@ public final class MovementDelegates {
     }
   }
 
-  /** A movement delegate that wants the commander towards the nearest un-built ancient ground. */
+  /**
+   * A movement delegate that wants the commander towards the nearest un-built ancient ground.
+   */
   public static final class MoveToBuildOnAncientGroundDelegate extends MovementDelegate {
 
     @Override

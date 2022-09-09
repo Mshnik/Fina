@@ -28,10 +28,14 @@ import java.util.stream.Collectors;
  */
 public final class Combatants {
 
-  /** The avaliable combatants read into storage during initialization. */
+  /**
+   * The avaliable combatants read into storage during initialization.
+   */
   private static final List<FileCombatant> FILE_COMBATANTS;
 
-  /** File containing the units, in csv format */
+  /**
+   * File containing the units, in csv format
+   */
   private static final File UNITS_FILE = new File("game/units/units.csv");
 
   /* Initializes the combatants available */
@@ -131,7 +135,9 @@ public final class Combatants {
     FILE_COMBATANTS = Collections.unmodifiableList(units);
   }
 
-  /** Returns a list of all units. */
+  /**
+   * Returns a list of all units.
+   */
   public static List<Combatant> getCombatants() {
     return Collections.unmodifiableList(FILE_COMBATANTS);
   }
@@ -146,7 +152,9 @@ public final class Combatants {
     return combatants;
   }
 
-  /** A combatant read from file. */
+  /**
+   * A combatant read from file.
+   */
   private static final class FileCombatant extends Combatant {
 
     /**
@@ -167,7 +175,9 @@ public final class Combatants {
           dummy.getStats());
     }
 
-    /** Clones this model.unit for the given player */
+    /**
+     * Clones this model.unit for the given player
+     */
     @Override
     protected Unit createClone(Player owner, Tile cloneLocation) {
       return new FileCombatant(owner, this);
@@ -177,12 +187,12 @@ public final class Combatants {
      * Constructor used during initialization to create a dummy instance Creates with null owner,
      * tile.
      *
-     * @param name - the name of clones of this
+     * @param name          - the name of clones of this
      * @param imageFilename - the image to draw for clones of this
-     * @param level - the level of clones of this
-     * @param classes - combatant classes of clones of this
-     * @param manaCost - the mana cost for clones of this
-     * @param stats - the stats of clones of this
+     * @param level         - the level of clones of this
+     * @param classes       - combatant classes of clones of this
+     * @param manaCost      - the mana cost for clones of this
+     * @param stats         - the stats of clones of this
      */
     private FileCombatant(
         String name,

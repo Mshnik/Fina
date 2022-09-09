@@ -2,10 +2,12 @@ package view.gui;
 
 import controller.audio.AudioController;
 import controller.game.MatrixElement;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+
 import model.board.Direction;
 import view.gui.animation.Animatable;
 
@@ -17,10 +19,14 @@ import view.gui.animation.Animatable;
 public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>>
     implements Animatable {
 
-  /** Thickness of lines in Cursor Drawing */
+  /**
+   * Thickness of lines in Cursor Drawing
+   */
   protected static final int THICKNESS = 3;
 
-  /** Default color of cursor. */
+  /**
+   * Default color of cursor.
+   */
   public static final Color DEFAULT_COLOR = Color.red;
 
   /**
@@ -29,13 +35,19 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>>
    */
   private int animationState;
 
-  /** The elm the cursor is currently on */
+  /**
+   * The elm the cursor is currently on
+   */
   private T elm;
 
-  /** The Panel this cursor is drawn on. Reference kept to call updates to it */
+  /**
+   * The Panel this cursor is drawn on. Reference kept to call updates to it
+   */
   protected final M panel;
 
-  /** Color for this cursor. Defaults to Default color. */
+  /**
+   * Color for this cursor. Defaults to Default color.
+   */
   private Color color = DEFAULT_COLOR;
 
   public Cursor(M panel, T startingElm) {
@@ -44,12 +56,16 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>>
     animationState = 0;
   }
 
-  /** Returns the element this cursor is currently on */
+  /**
+   * Returns the element this cursor is currently on
+   */
   public T getElm() {
     return elm;
   }
 
-  /** Sets the tile this cursor is on */
+  /**
+   * Sets the tile this cursor is on
+   */
   public void setElm(T t) {
     T oldElm = elm;
     elm = t;
@@ -59,22 +75,30 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>>
     }
   }
 
-  /** Returns the row in the matrix this Cursor is currently on */
+  /**
+   * Returns the row in the matrix this Cursor is currently on
+   */
   public int getRow() {
     return elm.getRow();
   }
 
-  /** Returns the col in the matrix this Cursor is currently on */
+  /**
+   * Returns the col in the matrix this Cursor is currently on
+   */
   public int getCol() {
     return elm.getCol();
   }
 
-  /** Returns the matrix panel this is drawing for */
+  /**
+   * Returns the matrix panel this is drawing for
+   */
   public M getPanel() {
     return panel;
   }
 
-  /** Returns true if the cursor can select the current selected elm, false otehrwise */
+  /**
+   * Returns true if the cursor can select the current selected elm, false otehrwise
+   */
   public abstract boolean canSelect();
 
   /**
@@ -83,7 +107,9 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>>
    */
   protected abstract boolean willMoveTo(Direction d, T destination);
 
-  /** Call to move in the given direction, if possible. Returns true if this moved. */
+  /**
+   * Call to move in the given direction, if possible. Returns true if this moved.
+   */
   public boolean move(Direction d) {
     T dest = getPanel().getElmInDirection(getElm(), d);
 
@@ -104,17 +130,23 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>>
     panel.fixScrollToShow(getRow(), getCol());
   }
 
-  /** Sets the color of this cursor. */
+  /**
+   * Sets the color of this cursor.
+   */
   public void setColor(Color c) {
     color = c;
   }
 
-  /** Returns the color of the cursor. */
+  /**
+   * Returns the color of the cursor.
+   */
   public Color getColor() {
     return color;
   }
 
-  /** Draw this Cursor as a red set of 4 corner lines */
+  /**
+   * Draw this Cursor as a red set of 4 corner lines
+   */
   @Override
   public void paintComponent(Graphics g) {
     Graphics2D g2d = (Graphics2D) g;
@@ -132,26 +164,26 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>>
 
     // (x,y) coordinates for polylines. Each is 3 points, clockwise.
     int[][][] coords = {
-      {
-        // Top left corner
-        {x + d, x + d, x + d + w / 4},
-        {y + d + h / 4, y + d, y + d}
-      },
-      {
-        // Top Right corner
-        {x + 3 * w / 4 - d - THICKNESS, x + w - d - THICKNESS, x + w - d - THICKNESS},
-        {y + d, y + d, y + d + h / 4}
-      },
-      {
-        // Bottom Right corner
-        {x + w - d - THICKNESS, x + w - d - THICKNESS, x + 3 * w / 4 - d - THICKNESS},
-        {y + 3 * h / 4 - d - THICKNESS, y + h - d - THICKNESS, y + h - d - THICKNESS}
-      },
-      {
-        // Bottom left corner
-        {x + w / 4 + d, x + d, x + d},
-        {y + h - d - THICKNESS, y + h - d - THICKNESS, y + 3 * h / 4 - d - THICKNESS}
-      }
+        {
+            // Top left corner
+            {x + d, x + d, x + d + w / 4},
+            {y + d + h / 4, y + d, y + d}
+        },
+        {
+            // Top Right corner
+            {x + 3 * w / 4 - d - THICKNESS, x + w - d - THICKNESS, x + w - d - THICKNESS},
+            {y + d, y + d, y + d + h / 4}
+        },
+        {
+            // Bottom Right corner
+            {x + w - d - THICKNESS, x + w - d - THICKNESS, x + 3 * w / 4 - d - THICKNESS},
+            {y + 3 * h / 4 - d - THICKNESS, y + h - d - THICKNESS, y + h - d - THICKNESS}
+        },
+        {
+            // Bottom left corner
+            {x + w / 4 + d, x + d, x + d},
+            {y + h - d - THICKNESS, y + h - d - THICKNESS, y + 3 * h / 4 - d - THICKNESS}
+        }
     };
 
     for (int i = 0; i < coords.length; i++) {
@@ -159,39 +191,51 @@ public abstract class Cursor<T extends MatrixElement, M extends MatrixPanel<T>>
     }
   }
 
-  /** Cursors have 7 states */
+  /**
+   * Cursors have 7 states
+   */
   @Override
   public int getStateCount() {
     return 7;
   }
 
-  /** Sets the animation state */
+  /**
+   * Sets the animation state
+   */
   @Override
   public void setState(int state) {
     animationState = state % getStateCount();
     panel.getFrame().repaint();
   }
 
-  /** Returns the animation state this cursor is on */
+  /**
+   * Returns the animation state this cursor is on
+   */
   @Override
   public int getState() {
     return animationState;
   }
 
-  /** Increases the animation state by 1, and causes a repaint */
+  /**
+   * Increases the animation state by 1, and causes a repaint
+   */
   @Override
   public void advanceState() {
     animationState = (animationState + 1) % getStateCount();
     panel.getFrame().repaint();
   }
 
-  /** This is active so long as it's the frame's active cursor */
+  /**
+   * This is active so long as it's the frame's active cursor
+   */
   @Override
   public boolean isActive() {
     return this == panel.getFrame().getActiveCursor();
   }
 
-  /** Simple toString that works off of the toString of the selected element */
+  /**
+   * Simple toString that works off of the toString of the selected element
+   */
   @Override
   public String toString() {
     return "Cursor on " + elm.toString();

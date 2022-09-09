@@ -167,7 +167,7 @@ public final class GameController {
   /**
    * The layers of active toggles. Topmost is the current toggle
    */
-  private Stack<Toggle> toggle;
+  private final Stack<Toggle> toggle;
 
   /**
    * Different types of summoning
@@ -896,7 +896,7 @@ public final class GameController {
     int index = c.getIndex();
     cancelDecision();
     com.chooseAbility(abilityChoiceLevel, index);
-    
+
     startNewAbilityDecision(com);
   }
 

@@ -7,7 +7,9 @@ public final class Decision extends ArrayList<Choice> {
 
   private static final long serialVersionUID = 1L;
 
-  /** The types of decisions that can be made */
+  /**
+   * The types of decisions that can be made
+   */
   public enum DecisionType {
     ACTION_DECISION,
     CONFIRM_ATTACK_DECISION,
@@ -21,16 +23,20 @@ public final class Decision extends ArrayList<Choice> {
     VIEW_OPTIONS_DECISION
   }
 
-  /** True iff this choice will be layed out vertically, false otherwise. */
+  /**
+   * True iff this choice will be layed out vertically, false otherwise.
+   */
   final boolean verticalLayout;
 
   /**
    * The type of decision currently in progress - what kind of decision it is making. Null if none
    */
-  private DecisionType type;
+  private final DecisionType type;
 
-  /** True iff the current decision is manditory. false if no decision is underway */
-  private boolean manditory;
+  /**
+   * True iff the current decision is manditory. false if no decision is underway
+   */
+  private final boolean manditory;
 
   public Decision(
       DecisionType type, boolean manditory, boolean verticalLayout, Collection<Choice> choices) {
@@ -46,14 +52,18 @@ public final class Decision extends ArrayList<Choice> {
     this.manditory = manditory;
   }
 
-  /** Sets this decision as the choice's decision in addition to adding it */
+  /**
+   * Sets this decision as the choice's decision in addition to adding it
+   */
   @Override
   public boolean add(Choice c) {
     c.decision = this;
     return super.add(c);
   }
 
-  /** Removes this as the choice's decision in addition to removing it */
+  /**
+   * Removes this as the choice's decision in addition to removing it
+   */
   @Override
   public boolean remove(Object o) {
     boolean ok = super.remove(o);
@@ -61,7 +71,9 @@ public final class Decision extends ArrayList<Choice> {
     return ok;
   }
 
-  /** Removes this as the choice's decision in addition to removing it */
+  /**
+   * Removes this as the choice's decision in addition to removing it
+   */
   @Override
   public Choice remove(int i) {
     Choice removed = super.remove(i);
@@ -69,12 +81,16 @@ public final class Decision extends ArrayList<Choice> {
     return removed;
   }
 
-  /** Returns the type of decision */
+  /**
+   * Returns the type of decision
+   */
   public DecisionType getType() {
     return type;
   }
 
-  /** Returns iff this decision is manditory */
+  /**
+   * Returns iff this decision is manditory
+   */
   public boolean isManditory() {
     return manditory;
   }

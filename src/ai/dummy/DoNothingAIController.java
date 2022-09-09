@@ -4,13 +4,19 @@ import ai.AIAction;
 import ai.AIController;
 import model.game.Player;
 
-/** An AI Controller that takes no action on every turn. */
+/**
+ * An AI Controller that takes no action on every turn.
+ */
 public final class DoNothingAIController implements AIController {
 
-  /** The string to show on the UI for selecting a DoNothingAIController as a player. */
+  /**
+   * The string to show on the UI for selecting a DoNothingAIController as a player.
+   */
   public static final String DO_NOTHING_AI_TYPE = "AI - Do Nothing";
 
-  /** Extra time this AI should sleep on its turn, to simulate doing stuff. */
+  /**
+   * Extra time this AI should sleep on its turn, to simulate doing stuff.
+   */
   private final int extraSleepTime;
 
   public DoNothingAIController(int extraSleepTime) {

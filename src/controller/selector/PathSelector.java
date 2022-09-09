@@ -19,22 +19,30 @@ import java.util.LinkedList;
  */
 public final class PathSelector extends LocationSelector implements Paintable, Iterable<Tile> {
 
-  /** Color for Path Drawing - red */
+  /**
+   * Color for Path Drawing - red
+   */
   private static final Color PATH_COLOR = Color.red;
 
-  /** Thickness of lines in Path Drawing */
+  /**
+   * Thickness of lines in Path Drawing
+   */
   private static final int THICKNESS = 8;
 
-  /** The model.unit this path is moving */
+  /**
+   * The model.unit this path is moving
+   */
   public final MovingUnit unit;
 
   /**
    * The path this pathSelector currently represents and is drawing. First element is always the
    * start tile
    */
-  private LinkedList<Tile> path;
+  private final LinkedList<Tile> path;
 
-  /** Constructor for PathSelector */
+  /**
+   * Constructor for PathSelector
+   */
   public PathSelector(GameController gc, MovingUnit unit) {
     super(gc);
     this.unit = unit;
@@ -43,7 +51,9 @@ public final class PathSelector extends LocationSelector implements Paintable, I
     refreshPossibilitiesCloud();
   }
 
-  /** Empties and recalculated the possibilities cloud using the current path as set */
+  /**
+   * Empties and recalculated the possibilities cloud using the current path as set
+   */
   @Override
   protected void refreshPossibilitiesCloud() {
     if (path == null) return; // Don't do anything during super class initialziation.
@@ -59,18 +69,24 @@ public final class PathSelector extends LocationSelector implements Paintable, I
     return new LinkedList<Tile>(path);
   }
 
-  /** Returns true iff the given tile is an element of this path. */
+  /**
+   * Returns true iff the given tile is an element of this path.
+   */
   public boolean contains(Tile t) {
     return path.contains(t);
   }
 
-  /** Returns a toString for this PathSelector as the toString of its list of tiles */
+  /**
+   * Returns a toString for this PathSelector as the toString of its list of tiles
+   */
   @Override
   public String toString() {
     return path.toString();
   }
 
-  /** Return the length of the path in tiles */
+  /**
+   * Return the length of the path in tiles
+   */
   public int getLength() {
     return path.size();
   }
@@ -93,13 +109,17 @@ public final class PathSelector extends LocationSelector implements Paintable, I
     return diff == 0;
   }
 
-  /** Returns an iterator over the tiles in this path */
+  /**
+   * Returns an iterator over the tiles in this path
+   */
   @Override
   public Iterator<Tile> iterator() {
     return path.iterator();
   }
 
-  /** Draws this path */
+  /**
+   * Draws this path
+   */
   @Override
   public void paintComponent(Graphics g) {
     GamePanel gamePanel = controller.getGamePanel();
@@ -139,8 +159,8 @@ public final class PathSelector extends LocationSelector implements Paintable, I
     final int scaledS = (int) (0.5 * s);
 
     g2d.fillPolygon(
-        new int[] {x + scaledS, x + s, x + 3 * scaledS, x + s},
-        new int[] {y + s, y + scaledS, y + s, y + 3 * scaledS},
+        new int[]{x + scaledS, x + s, x + 3 * scaledS, x + s},
+        new int[]{y + s, y + scaledS, y + s, y + 3 * scaledS},
         4);
   }
 }

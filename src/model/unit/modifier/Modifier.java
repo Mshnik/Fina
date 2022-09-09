@@ -1,10 +1,13 @@
 package model.unit.modifier;
 
 import java.util.Collection;
+
 import model.game.Stringable;
 import model.unit.Unit;
 
-/** A Modifier for a model.unit - a buff or nerf, etc. */
+/**
+ * A Modifier for a model.unit - a buff or nerf, etc.
+ */
 public abstract class Modifier implements Stringable {
 
   /**
@@ -13,51 +16,75 @@ public abstract class Modifier implements Stringable {
    */
   private ModifierBundle bundle;
 
-  /** The name of this modifier */
+  /**
+   * The name of this modifier
+   */
   public final String name;
 
-  /** The image filename to draw for this modifier. Only draws if it's the first in the bundle. */
+  /**
+   * The image filename to draw for this modifier. Only draws if it's the first in the bundle.
+   */
   public final String imageFilename;
 
-  /** The model.unit this is modifying */
+  /**
+   * The model.unit this is modifying
+   */
   public final Unit unit;
 
-  /** The source of this modification */
+  /**
+   * The source of this modification
+   */
   public final Unit source;
 
-  /** The remaining turns for this Modifier. If 0, on its last turn. */
+  /**
+   * The remaining turns for this Modifier. If 0, on its last turn.
+   */
   private int remainingTurns;
 
   public enum StackMode {
-    /** No stacking - do not apply new modifier if unit already has one. */
+    /**
+     * No stacking - do not apply new modifier if unit already has one.
+     */
     NONE_DO_NOT_APPLY,
-    /** No stacking - extend duration to max of old,new durations if unit already has one. */
+    /**
+     * No stacking - extend duration to max of old,new durations if unit already has one.
+     */
     DURATION_MAX,
-    /** No stacking - add durations if unit already has one. */
+    /**
+     * No stacking - add durations if unit already has one.
+     */
     DURATION_ADD,
-    /** Stackable - unit has both modifications concurrently. */
+    /**
+     * Stackable - unit has both modifications concurrently.
+     */
     STACKABLE,
   }
 
-  /** The stacking mode of this modifier. */
+  /**
+   * The stacking mode of this modifier.
+   */
   public final StackMode stacking;
 
-  /** True once this has been attached to a model.unit */
-  private boolean attached;
+  /**
+   * True once this has been attached to a model.unit
+   */
+  private final boolean attached;
 
-  /** The modifier this was cloned from. Null if this is a dummy */
+  /**
+   * The modifier this was cloned from. Null if this is a dummy
+   */
   final Modifier clonedFrom;
 
   /**
    * Constructor for dummy instance
    *
-   * @param name - the name of this modifier
+   * @param name          - the name of this modifier
    * @param imageFilename - the image to draw for this modifier. Only draws if this is the first in
-   *     the bundle.
-   * @param turns - the total duration of this modifier (turns after this one). Can be
-   *     Integer.MAX_VAL - interpreted as forever rather than the actual val
-   * @param stacking - the stack mode of this Modifier that determines how it interacts with
-   *     modifiers of the same name.
+   *                      the bundle.
+   * @param turns         - the total duration of this modifier (turns after this one). Can be
+   *                      Integer.MAX_VAL - interpreted as forever rather than the actual val
+   * @param stacking      - the stack mode of this Modifier that determines how it interacts with
+   *                      modifiers of the same name.
    */
   public Modifier(String name, String imageFilename, int turns, StackMode stacking) {
     this.name = name;
@@ -79,9 +106,9 @@ public abstract class Modifier implements Stringable {
   /**
    * Constructor for cloning instances
    *
-   * @param unit - The model.unit this is modifying.
+   * @param unit   - The model.unit this is modifying.
    * @param source - the model.unit this modifier is tied to.
-   * @param dummy - the unitModifier to make a copy of
+   * @param dummy  - the unitModifier to make a copy of
    */
   public Modifier(Unit unit, Unit source, Modifier dummy) {
     attached = false;
@@ -94,7 +121,9 @@ public abstract class Modifier implements Stringable {
     clonedFrom = dummy;
   }
 
-  /** Returns the value of this modifier. May be null if not used. */
+  /**
+   * Returns the value of this modifier. May be null if not used.
+   */
   public abstract Object getValue();
 
   /**
@@ -115,17 +144,23 @@ public abstract class Modifier implements Stringable {
     }
   }
 
-  /** Checks whether this Modifier has an associated bundle. */
+  /**
+   * Checks whether this Modifier has an associated bundle.
+   */
   synchronized boolean hasBundle() {
     return bundle != null;
   }
 
-  /** Returns the associated bundle, if any. Null otherwise. */
+  /**
+   * Returns the associated bundle, if any. Null otherwise.
+   */
   synchronized ModifierBundle getBundle() {
     return bundle;
   }
 
-  /** Sets the associated bundle. */
+  /**
+   * Sets the associated bundle.
+   */
   synchronized void setBundle(ModifierBundle bundle) {
     this.bundle = bundle;
   }
@@ -142,7 +177,9 @@ public abstract class Modifier implements Stringable {
    */
   public abstract Modifier uniqueCopy(int turns, StackMode stacking);
 
-  /** Calls clone(unit, unit). */
+  /**
+   * Calls clone(unit, unit).
+   */
   public final Modifier clone(Unit unit) {
     return clone(unit, unit);
   }
@@ -153,7 +190,9 @@ public abstract class Modifier implements Stringable {
    */
   public abstract Modifier clone(Unit unit, Unit source);
 
-  /** Call when construction of a non-dummy instance is done - adds to affected model.unit */
+  /**
+   * Call when construction of a non-dummy instance is done - adds to affected model.unit
+   */
   void attachToUnit() {
     if (isDummy() || attached)
       throw new RuntimeException("Can't attach a dummy or already attached modifier");
@@ -180,22 +219,30 @@ public abstract class Modifier implements Stringable {
     return null;
   }
 
-  /** Returns true if this is a dummy (model.unit is null ) */
+  /**
+   * Returns true if this is a dummy (model.unit is null )
+   */
   public boolean isDummy() {
     return unit == null;
   }
 
-  /** Returns true iff this Modifier has infinite duration. */
+  /**
+   * Returns true iff this Modifier has infinite duration.
+   */
   public boolean isInfiniteDuration() {
     return remainingTurns == Integer.MAX_VALUE;
   }
 
-  /** Returns the remaining turns of this modifier */
+  /**
+   * Returns the remaining turns of this modifier
+   */
   public int getRemainingTurns() {
     return remainingTurns;
   }
 
-  /** Alters the remaining turns by the given delta. */
+  /**
+   * Alters the remaining turns by the given delta.
+   */
   public void changeRemainingTurns(int delta) {
     remainingTurns += delta;
   }
@@ -225,7 +272,9 @@ public abstract class Modifier implements Stringable {
     }
   }
 
-  /** Returns a stat string for InfoPanel painting. Subclass should finish implementation */
+  /**
+   * Returns a stat string for InfoPanel painting. Subclass should finish implementation
+   */
   public abstract String toStatString();
 
   @Override
@@ -238,8 +287,8 @@ public abstract class Modifier implements Stringable {
   @Override
   public String toStringShort() {
     return (isDummy()
-            ? "Dummy Modifier"
-            : (attached ? "Unattached Modifier " : "Modifier on" + unit.toString()))
+        ? "Dummy Modifier"
+        : (attached ? "Unattached Modifier " : "Modifier on" + unit.toString()))
         + remainingTurns
         + " turns remaining";
   }

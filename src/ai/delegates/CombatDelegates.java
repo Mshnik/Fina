@@ -2,17 +2,24 @@ package ai.delegates;
 
 import ai.AIAction;
 import ai.AIAction.AIActionType;
+
 import java.util.Arrays;
 import java.util.List;
+
 import model.unit.Unit;
 import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
 
-/** A list of delegates for combat. */
+/**
+ * A list of delegates for combat.
+ */
 public final class CombatDelegates {
-  private CombatDelegates() {}
+  private CombatDelegates() {
+  }
 
-  /** Parent class for CombatDelegates. */
+  /**
+   * Parent class for CombatDelegates.
+   */
   private abstract static class CombatDelegate extends Delegate {
     private CombatDelegate() {
       super(AIActionType.ATTACK);
@@ -123,9 +130,9 @@ public final class CombatDelegates {
                   0,
                   (combat.getProjectedMaxCounterAttack() - action.actingUnit.getHealth())
                       / Math.max(
-                          1,
-                          combat.getProjectedMaxCounterAttack()
-                              - combat.getProjectedMinCounterAttack())));
+                      1,
+                      combat.getProjectedMaxCounterAttack()
+                          - combat.getProjectedMinCounterAttack())));
       return chanceOpponentDies * getSubWeight(0) - chanceAllyDies * getSubWeight(1);
     }
   }

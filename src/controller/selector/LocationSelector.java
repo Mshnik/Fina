@@ -1,15 +1,19 @@
 package controller.selector;
 
 import controller.game.GameController;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
+
 import model.board.Tile;
 import view.gui.Paintable;
 
-/** An instance represents a selector for any location with a given criteria */
+/**
+ * An instance represents a selector for any location with a given criteria
+ */
 public abstract class LocationSelector implements Paintable {
   /**
    * The default color for shading possible selectable locations in a LocationSelector. A
@@ -17,13 +21,19 @@ public abstract class LocationSelector implements Paintable {
    */
   public static final Color DEFAULT_COLOR = new Color(1, 1, 1, 0.5f);
 
-  /** The controller this is selecting in */
+  /**
+   * The controller this is selecting in
+   */
   public final GameController controller;
 
-  /** The possible tiles the path could go to from here - possibilities cloud */
+  /**
+   * The possible tiles the path could go to from here - possibilities cloud
+   */
   protected List<Tile> cloud;
 
-  /** Color for Cloud Drawing - translucent white - can be changed by subclasses */
+  /**
+   * Color for Cloud Drawing - translucent white - can be changed by subclasses
+   */
   Color cloudColor = DEFAULT_COLOR;
 
   /**
@@ -35,7 +45,9 @@ public abstract class LocationSelector implements Paintable {
     cloud = new ArrayList<>();
   }
 
-  /** Empties and recalculated the possibilities cloud using the current path as set */
+  /**
+   * Empties and recalculated the possibilities cloud using the current path as set
+   */
   protected abstract void refreshPossibilitiesCloud();
 
   /**
@@ -46,7 +58,9 @@ public abstract class LocationSelector implements Paintable {
     return new ArrayList<>(cloud);
   }
 
-  /** Draws this cloud */
+  /**
+   * Draws this cloud
+   */
   @Override
   public void paintComponent(Graphics g) {
     // Draw the possible movement cloud

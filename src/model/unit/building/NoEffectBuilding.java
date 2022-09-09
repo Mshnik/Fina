@@ -10,7 +10,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-/** An extension of building with no additional effects. */
+/**
+ * An extension of building with no additional effects.
+ */
 public final class NoEffectBuilding extends Building<Void> {
 
   /**
@@ -19,15 +21,15 @@ public final class NoEffectBuilding extends Building<Void> {
    * runtimeException if the owner doesn't have enough mana. Throws an illegalArgumentException if a
    * building is constructed on land other than AncientGround
    *
-   * @param owner - the player owner of this model.unit
-   * @param name - the name of this model.unit.
-   * @param imageFilename - the image to draw when drawing this unit.
-   * @param level - the level of this model.unit - the age this belongs to
-   * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
+   * @param owner           - the player owner of this model.unit
+   * @param name            - the name of this model.unit.
+   * @param imageFilename   - the image to draw when drawing this unit.
+   * @param level           - the level of this model.unit - the age this belongs to
+   * @param manaCost        - the cost of summoning this model.unit. Should be a positive number.
    * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond
-   *     the first. Should be non-negative.
-   * @param validTerrain - types of terrain this can be built on.
-   * @param stats - the base unmodified stats of this model.unit. stats that remain used are
+   *                        the first. Should be non-negative.
+   * @param validTerrain    - types of terrain this can be built on.
+   * @param stats           - the base unmodified stats of this model.unit. stats that remain used are
    */
   NoEffectBuilding(
       Player owner,
@@ -38,7 +40,7 @@ public final class NoEffectBuilding extends Building<Void> {
       int manaCostScaling,
       List<Terrain> validTerrain,
       Stats stats)
-      throws RuntimeException, IllegalArgumentException {
+      throws RuntimeException {
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, stats);
   }
 
@@ -68,7 +70,9 @@ public final class NoEffectBuilding extends Building<Void> {
         getStats());
   }
 
-  /** NoEffectBuilding can't summon. */
+  /**
+   * NoEffectBuilding can't summon.
+   */
   @Override
   public boolean canSummon() {
     return false;

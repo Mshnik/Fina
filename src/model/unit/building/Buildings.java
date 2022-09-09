@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import model.board.Terrain;
 import model.unit.modifier.PlayerModifier;
 import model.unit.building.StartOfTurnEffectBuilding.StartOfTurnEffect;
@@ -21,13 +22,19 @@ import model.util.ExpandableCloud;
 import model.util.ExpandableCloud.ExpandableCloudType;
 import util.TextIO;
 
-/** Index of buildings read from storage. */
+/**
+ * Index of buildings read from storage.
+ */
 public final class Buildings {
 
-  /** List of all available buildings as read from storage. */
+  /**
+   * List of all available buildings as read from storage.
+   */
   private static final List<Building> BUILDINGS;
 
-  /** File containing the buildings, in csv format */
+  /**
+   * File containing the buildings, in csv format
+   */
   private static final File BUILDINGS_FILE = new File("game/units/buildings.csv");
 
   static {
@@ -177,7 +184,9 @@ public final class Buildings {
     BUILDINGS = Collections.unmodifiableList(buildings);
   }
 
-  /** Utility class representing a pair of effects. */
+  /**
+   * Utility class representing a pair of effects.
+   */
   private static final class EffectPair<E> {
     private final E nonAncientGroundEffect;
     private final E ancientGroundEffect;
@@ -192,7 +201,9 @@ public final class Buildings {
     }
   }
 
-  /** Helper to get summon radii by building name. Throws for unknown name. */
+  /**
+   * Helper to get summon radii by building name. Throws for unknown name.
+   */
   private static EffectPair<SummonerBuildingEffect> getSummoningEffects(String buildingName) {
     switch (buildingName) {
       case "Portal":
@@ -202,7 +213,9 @@ public final class Buildings {
     }
   }
 
-  /** Helper to get StartOfTurnEffects by building name. Throws for unknown name. */
+  /**
+   * Helper to get StartOfTurnEffects by building name. Throws for unknown name.
+   */
   private static EffectPair<StartOfTurnEffect> getStartOfTurnEffects(
       String buildingName, String nonAncientGroundDescription, String ancientGroundDescription) {
     switch (buildingName) {
@@ -223,7 +236,9 @@ public final class Buildings {
     }
   }
 
-  /** Helper to get AllUnitModifierEffects by building name. Throws for unknown name. */
+  /**
+   * Helper to get AllUnitModifierEffects by building name. Throws for unknown name.
+   */
   private static EffectPair<ModifierBundle> getAllUnitModifierEffects(String buildingName) {
     switch (buildingName) {
       case "Armory":
@@ -253,7 +268,9 @@ public final class Buildings {
     }
   }
 
-  /** Helper to get CommanderModifierEffects by building name. Throws for unknown name. */
+  /**
+   * Helper to get CommanderModifierEffects by building name. Throws for unknown name.
+   */
   private static EffectPair<ModifierBundle> getCommanderModifierEffects(String buildingName) {
     switch (buildingName) {
       case "Dojo":
@@ -264,7 +281,9 @@ public final class Buildings {
     }
   }
 
-  /** Helper to get PlayerModifier effects for the given building name. Throws for unknown name. */
+  /**
+   * Helper to get PlayerModifier effects for the given building name. Throws for unknown name.
+   */
   private static EffectPair<List<PlayerModifier>> getPlayerModifierEffects(
       String buildingName, String nonAncientGroundDescription, String ancientGroundDescription) {
     switch (buildingName) {
@@ -326,12 +345,16 @@ public final class Buildings {
   // END CONSTRUCTION METHODS - BELOW HERE IS API.
   ///////////////////
 
-  /** Returns a list of all buildings.. */
+  /**
+   * Returns a list of all buildings..
+   */
   public static List<Building> getBuildings() {
     return Collections.unmodifiableList(BUILDINGS);
   }
 
-  /** Returns a list of all buildings for the given level. */
+  /**
+   * Returns a list of all buildings for the given level.
+   */
   public static List<Building> getBuildingsForLevel(int level) {
     return BUILDINGS.stream().filter(b -> b.level == level).collect(Collectors.toList());
   }

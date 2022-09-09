@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.JPanel;
+
 import model.board.Terrain;
 import model.board.Tile;
 import model.unit.MovingUnit;
@@ -39,52 +40,84 @@ import view.gui.Frame;
 import view.gui.image.ImageIndex;
 
 public final class InfoPanel extends JPanel {
-  /** */
+  /**
+   *
+   */
   private static final long serialVersionUID = 1L;
 
-  /** The Height of the InfoPanel */
+  /**
+   * The Height of the InfoPanel
+   */
   private static final int HEIGHT = 125;
 
-  /** The color of the border surrounding the headerPanel */
+  /**
+   * The color of the border surrounding the headerPanel
+   */
   private static final Color BORDER_COLOR = new Color(96, 66, 5);
 
-  /** Distance (in pixels) between the left of the InfoPanel and the left of the bars */
+  /**
+   * Distance (in pixels) between the left of the InfoPanel and the left of the bars
+   */
   private static final int XMARGIN = 25;
 
-  /** Distance (in pixels) between the top of the InfoPanel and the top of the bars */
+  /**
+   * Distance (in pixels) between the top of the InfoPanel and the top of the bars
+   */
   private static final int YMARGIN = 32;
 
-  /** Font for drawing title text */
+  /**
+   * Font for drawing title text
+   */
   private static final Font BIG_FONT = new Font(Frame.FONTNAME, Font.BOLD, 20);
 
-  /** Font for drawing standard text */
+  /**
+   * Font for drawing standard text
+   */
   private static final Font MEDIUM_FONT = new Font(Frame.FONTNAME, Font.BOLD, 16);
 
-  /** Font for drawing small text */
+  /**
+   * Font for drawing small text
+   */
   private static final Font SMALL_FONT = new Font(Frame.FONTNAME, Font.BOLD, 13);
 
-  /** Character for the infinity character */
+  /**
+   * Character for the infinity character
+   */
   private static final char INF_CHAR = '\u221E';
 
-  /** The frame this belongs to */
+  /**
+   * The frame this belongs to
+   */
   public final Frame frame;
 
-  /** The Unit (if any) this InfoPanel is currently drawing info for */
+  /**
+   * The Unit (if any) this InfoPanel is currently drawing info for
+   */
   private Unit unit;
 
-  /** The modifier info this InfoPanel is currently drawing info for */
+  /**
+   * The modifier info this InfoPanel is currently drawing info for
+   */
   private ModifierDescription modifierDescription;
 
-  /** The Ability (if any) this InfoPanel is currently drawing info for */
+  /**
+   * The Ability (if any) this InfoPanel is currently drawing info for
+   */
   private Ability ability;
 
-  /** The Tile (if any) this InfoPanel is currently drawing info for the terrain */
+  /**
+   * The Tile (if any) this InfoPanel is currently drawing info for the terrain
+   */
   private Tile tile;
 
-  /** The Combat (if any) this InfoPanel is currently drawing info for */
+  /**
+   * The Combat (if any) this InfoPanel is currently drawing info for
+   */
   private Combat combat;
 
-  /** True iff the player is currently looking at a menu, false otherwise (looking at board). */
+  /**
+   * True iff the player is currently looking at a menu, false otherwise (looking at board).
+   */
   private boolean isMenu;
 
   public InfoPanel(Frame f) {
@@ -92,17 +125,23 @@ public final class InfoPanel extends JPanel {
     setPreferredSize(new Dimension(0, HEIGHT));
   }
 
-  /** Returns the tile this InfoPanel is currently drawing info for */
+  /**
+   * Returns the tile this InfoPanel is currently drawing info for
+   */
   public Unit getUnit() {
     return unit;
   }
 
-  /** Returns the Ability this InfoPanel is currently drawing info for */
+  /**
+   * Returns the Ability this InfoPanel is currently drawing info for
+   */
   public Ability getAbility() {
     return ability;
   }
 
-  /** Sets the unit this InfoPanel is to draw info for, and causes a repaint */
+  /**
+   * Sets the unit this InfoPanel is to draw info for, and causes a repaint
+   */
   public void setUnit(Unit u, boolean isMenu) {
     unit = u;
     this.isMenu = isMenu;
@@ -112,13 +151,17 @@ public final class InfoPanel extends JPanel {
     repaint();
   }
 
-  /** Clears the extendedModifiersInfo field. */
+  /**
+   * Clears the extendedModifiersInfo field.
+   */
   public void clearModifierDescription() {
     modifierDescription = null;
     repaint();
   }
 
-  /** Sets the ModifierDescription this InfoPanel is to draw info for, and causes a repaint */
+  /**
+   * Sets the ModifierDescription this InfoPanel is to draw info for, and causes a repaint
+   */
   public void setModifierDescription(ModifierDescription modifierDescription) {
     unit = modifierDescription.unit;
     isMenu = true;
@@ -129,7 +172,9 @@ public final class InfoPanel extends JPanel {
     repaint();
   }
 
-  /** Sets the ability this InfoPanel is to draw info for, and causes a repaint */
+  /**
+   * Sets the ability this InfoPanel is to draw info for, and causes a repaint
+   */
   public void setAbility(Ability a) {
     unit = null;
     ability = a;
@@ -139,7 +184,9 @@ public final class InfoPanel extends JPanel {
     repaint();
   }
 
-  /** Sets the tile this InfoPanel is to draw for and causes a repaint */
+  /**
+   * Sets the tile this InfoPanel is to draw for and causes a repaint
+   */
   public void setTile(Tile t) {
     unit = null;
     ability = null;
@@ -158,7 +205,9 @@ public final class InfoPanel extends JPanel {
     repaint();
   }
 
-  /** Paints this InfoPanel, the info for the currently selected model.unit */
+  /**
+   * Paints this InfoPanel, the info for the currently selected model.unit
+   */
   @Override
   public void paintComponent(Graphics g) {
     Graphics2D g2d = (Graphics2D) g;
@@ -192,7 +241,9 @@ public final class InfoPanel extends JPanel {
     }
   }
 
-  /** Draws the prefix for a unit listing the name, owner, level, and class. */
+  /**
+   * Draws the prefix for a unit listing the name, owner, level, and class.
+   */
   private void drawUnitPrefix(Graphics2D g2d) {
     int x = XMARGIN;
     int y = YMARGIN;
@@ -242,7 +293,9 @@ public final class InfoPanel extends JPanel {
     }
   }
 
-  /** Draws a unit on this InfoPanel. May be in a menu or on the board. */
+  /**
+   * Draws a unit on this InfoPanel. May be in a menu or on the board.
+   */
   private void drawUnit(Graphics2D g2d) {
     final int xInc = 225;
     int x = XMARGIN + xInc;
@@ -306,7 +359,9 @@ public final class InfoPanel extends JPanel {
         null);
   }
 
-  /** Continues drawing a unit for movable units. */
+  /**
+   * Continues drawing a unit for movable units.
+   */
   private void continueDrawingMovingUnit(Graphics2D g2d, int x, int y) {
     final int infoFont = (int) (MEDIUM_FONT.getSize() * 1.2);
     final int xInc = 225;
@@ -377,7 +432,9 @@ public final class InfoPanel extends JPanel {
         y);
   }
 
-  /** Continues drawing a unit for buildings. */
+  /**
+   * Continues drawing a unit for buildings.
+   */
   private void continueDrawingBuilding(Graphics2D g2d, int x, int y) {
     final int infoFont = (int) (MEDIUM_FONT.getSize() * 1.2);
     final int xInc = 225;
@@ -406,7 +463,9 @@ public final class InfoPanel extends JPanel {
     }
   }
 
-  /** Draws extended modifier info for a unit. */
+  /**
+   * Draws extended modifier info for a unit.
+   */
   private void drawExtendedModifierInfo(Graphics2D g2d) {
     g2d.setFont(MEDIUM_FONT);
     final int modifierIconSize = 48;
@@ -423,7 +482,9 @@ public final class InfoPanel extends JPanel {
         g2d, modifierDescription.toString(), x + modifierIconSize + 5, y, 600);
   }
 
-  /** Draws a building's effect at the given x,y. */
+  /**
+   * Draws a building's effect at the given x,y.
+   */
   private void drawBuildingEffect(
       Graphics2D g2d, Building<?> building, Object effect, int x, int y) {
     if (effect == null) {
@@ -447,7 +508,9 @@ public final class InfoPanel extends JPanel {
     }
   }
 
-  /** Draws an ability on this InfoPanel. */
+  /**
+   * Draws an ability on this InfoPanel.
+   */
   private void drawAbility(Graphics2D g2d) {
     int x = XMARGIN;
     int y = YMARGIN;
@@ -472,10 +535,10 @@ public final class InfoPanel extends JPanel {
             + affects
             + " "
             + ability
-                .affectedUnitTypes
-                .stream()
-                .map(Class::getSimpleName)
-                .collect(Collectors.joining(", ")),
+            .affectedUnitTypes
+            .stream()
+            .map(Class::getSimpleName)
+            .collect(Collectors.joining(", ")),
         x,
         y);
 
@@ -484,7 +547,9 @@ public final class InfoPanel extends JPanel {
     g2d.drawString("Effects: " + ability.description, x, y);
   }
 
-  /** Draw the terrain for an empty tile on this info panel. */
+  /**
+   * Draw the terrain for an empty tile on this info panel.
+   */
   private void drawTerrain(Graphics2D g2d) {
     int x = XMARGIN;
     int y = YMARGIN;
@@ -499,7 +564,9 @@ public final class InfoPanel extends JPanel {
     }
   }
 
-  /** Draws combat on this info panel. */
+  /**
+   * Draws combat on this info panel.
+   */
   private void drawCombat(Graphics2D g2d) {
     int x = XMARGIN;
     int y = YMARGIN;

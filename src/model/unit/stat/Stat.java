@@ -7,9 +7,13 @@ import java.util.Objects;
  * their name, ordinally
  */
 public class Stat implements Comparable<Stat> {
-  /** The name of this stat */
+  /**
+   * The name of this stat
+   */
   public final StatType name;
-  /** The value of this stat. May need casting to use. */
+  /**
+   * The value of this stat. May need casting to use.
+   */
   public final Object val;
 
   public Stat(StatType n, Object v) {
@@ -17,24 +21,32 @@ public class Stat implements Comparable<Stat> {
     val = v;
   }
 
-  /** Returns the stat. */
+  /**
+   * Returns the stat.
+   */
   public final StatType getType() {
     return name;
   }
 
-  /** Stats are comparable by their names' ordinal in StatType */
+  /**
+   * Stats are comparable by their names' ordinal in StatType
+   */
   @Override
   public int compareTo(Stat o) {
     return name.ordinal() - o.name.ordinal();
   }
 
-  /** Simple toString implementation of a stat */
+  /**
+   * Simple toString implementation of a stat
+   */
   @Override
   public String toString() {
     return name + ":" + val;
   }
 
-  /** Two stats are equal if they have the same type and same val */
+  /**
+   * Two stats are equal if they have the same type and same val
+   */
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof Stat)) return false;
@@ -42,7 +54,9 @@ public class Stat implements Comparable<Stat> {
     return name.equals(s.name) && val.equals(s.val);
   }
 
-  /** Hashes a stat based on its name and val */
+  /**
+   * Hashes a stat based on its name and val
+   */
   @Override
   public int hashCode() {
     return Objects.hash(name, val);

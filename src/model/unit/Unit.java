@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
@@ -30,10 +31,14 @@ import model.unit.stat.Stats;
  */
 public abstract class Unit implements Stringable {
 
-  /** The name of this model.unit */
+  /**
+   * The name of this model.unit
+   */
   public final String name;
 
-  /** The image to use when drawing this. */
+  /**
+   * The image to use when drawing this.
+   */
   private final String imageFilename;
 
   /**
@@ -42,19 +47,29 @@ public abstract class Unit implements Stringable {
    */
   public final int level;
 
-  /** The mana spent to summon this model.unit */
+  /**
+   * The mana spent to summon this model.unit
+   */
   public final int manaCost;
 
-  /** The additional mana cost to summon each copy of this unit past the first. */
+  /**
+   * The additional mana cost to summon each copy of this unit past the first.
+   */
   protected final int manaCostScaling;
 
-  /** The player that owns this model.unit */
+  /**
+   * The player that owns this model.unit
+   */
   public final Player owner;
 
-  /** The tile this model.unit is on. Should not ever share a tile with another model.unit */
+  /**
+   * The tile this model.unit is on. Should not ever share a tile with another model.unit
+   */
   protected Tile location;
 
-  /** The current health of this Unit. If 0 or negative, this is dead. Can't be above maxHealth */
+  /**
+   * The current health of this Unit. If 0 or negative, this is dead. Can't be above maxHealth
+   */
   private int health;
 
   /**
@@ -63,14 +78,20 @@ public abstract class Unit implements Stringable {
    */
   protected Stats stats;
 
-  /** The number of actions remaining this turn for this unit. Reset at start of turn. */
+  /**
+   * The number of actions remaining this turn for this unit. Reset at start of turn.
+   */
   private int actionsRemaining;
 
-  /** The modifiers this is the source of */
-  private List<Modifier> grantedModifiers;
+  /**
+   * The modifiers this is the source of
+   */
+  private final List<Modifier> grantedModifiers;
 
-  /** A set of modifiers that are currently affecting this model.unit */
-  private List<Modifier> modifiers;
+  /**
+   * A set of modifiers that are currently affecting this model.unit
+   */
+  private final List<Modifier> modifiers;
 
   /**
    * Constructor for Unit. Also adds this model.unit to the tile it is on as an occupant, and its
@@ -78,14 +99,14 @@ public abstract class Unit implements Stringable {
    * runtimeException if the owner doesn't have enough mana. Tile and owner can be null in a dummy
    * (not on model.board) instance
    *
-   * @param owner - the player owner of this model.unit
-   * @param name - the name of this model.unit. Can be generic, multiple units can share a name
-   * @param imageFilename - the image to use to represent this unit.
-   * @param level - the level of this model.unit - the age this belongs to
-   * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
+   * @param owner           - the player owner of this model.unit
+   * @param name            - the name of this model.unit. Can be generic, multiple units can share a name
+   * @param imageFilename   - the image to use to represent this unit.
+   * @param level           - the level of this model.unit - the age this belongs to
+   * @param manaCost        - the cost of summoning this model.unit. Should be a positive number.
    * @param manaCostScaling - the additional cost to pay for each copy of this unit beyond the
-   *     first.
-   * @param stats - the base unmodified stats of this model.unit.
+   *                        first.
+   * @param stats           - the base unmodified stats of this model.unit.
    */
   public Unit(
       Player owner,
@@ -95,7 +116,7 @@ public abstract class Unit implements Stringable {
       int manaCost,
       int manaCostScaling,
       Stats stats)
-      throws IllegalArgumentException, RuntimeException {
+      throws RuntimeException {
     if (manaCost < 0)
       throw new IllegalArgumentException("manaCosts should be provided as positive ints");
     this.owner = owner;
@@ -128,18 +149,20 @@ public abstract class Unit implements Stringable {
     double discountPercentage =
         1.0
             - p.getUnits()
-                    .stream()
-                    .filter(u -> u instanceof PlayerModifierBuilding)
-                    .flatMap(u -> ((PlayerModifierBuilding) u).getEffect().stream())
-                    .filter(e -> e.effectType == discountType)
-                    .mapToInt(e -> e.value)
-                    .sum()
-                / 100.0;
+            .stream()
+            .filter(u -> u instanceof PlayerModifierBuilding)
+            .flatMap(u -> ((PlayerModifierBuilding) u).getEffect().stream())
+            .filter(e -> e.effectType == discountType)
+            .mapToInt(e -> e.value)
+            .sum()
+            / 100.0;
 
     return (int) ((manaCost + scalingCost) * discountPercentage);
   }
 
-  /** Returns a copy of this for the given player, on the given tile */
+  /**
+   * Returns a copy of this for the given player, on the given tile
+   */
   public final Unit clone(Player owner, Tile location) {
     int cost = getManaCostWithScalingAndDiscountsForPlayer(owner);
     if (cost > 0 && owner.getMana() < cost)
@@ -154,25 +177,35 @@ public abstract class Unit implements Stringable {
     return u;
   }
 
-  /** Create a copy of this for the given player. Used internally in clone. */
+  /**
+   * Create a copy of this for the given player. Used internally in clone.
+   */
   protected abstract Unit createClone(Player owner, Tile cloneLocation);
 
-  /** Returns the level of this unit */
+  /**
+   * Returns the level of this unit
+   */
   public int getLevel() {
     return level;
   }
 
-  /** Returns the mana cost of this unit. */
+  /**
+   * Returns the mana cost of this unit.
+   */
   public int getManaCost() {
     return manaCost;
   }
 
-  /** Returns the mana cost scaling of this unit. */
+  /**
+   * Returns the mana cost scaling of this unit.
+   */
   public int getManaCostScaling() {
     return manaCostScaling;
   }
 
-  /** Refreshes this' stats with the locally stored modifiers */
+  /**
+   * Refreshes this' stats with the locally stored modifiers
+   */
   protected void refreshStats() {
     stats = stats.modifiedWith(modifiers);
     if (owner != null) {
@@ -214,25 +247,35 @@ public abstract class Unit implements Stringable {
    */
   public abstract boolean canOccupy(Terrain t);
 
-  /** Sets the tile this Unit is on */
+  /**
+   * Sets the tile this Unit is on
+   */
   public void setLocation(Tile location) {
     this.location = location;
   }
 
-  /** Returns the tile this Unit is on */
+  /**
+   * Returns the tile this Unit is on
+   */
   public Tile getLocation() {
     return location;
   }
 
-  /** Returns true if this unit can take some action this turn, false otherwise. */
+  /**
+   * Returns true if this unit can take some action this turn, false otherwise.
+   */
   public boolean canAct() {
     return canMove() || canFight() || canSummon() || canCast();
   }
 
-  /** Returns whether this can move this turn. Non-movable things should always return false * */
+  /**
+   * Returns whether this can move this turn. Non-movable things should always return false *
+   */
   public abstract boolean canMove();
 
-  /** Returns whether this can fight this turn. Non-fighting things should always return false * */
+  /**
+   * Returns whether this can fight this turn. Non-fighting things should always return false *
+   */
   public abstract boolean canFight();
 
   /**
@@ -248,17 +291,24 @@ public abstract class Unit implements Stringable {
   public abstract boolean canCast();
 
   // STATS
-  /** Returns the max health of this model.unit */
+
+  /**
+   * Returns the max health of this model.unit
+   */
   public int getMaxHealth() {
     return (Integer) stats.getStat(StatType.MAX_HEALTH);
   }
 
-  /** Returns the current health of this Unit */
+  /**
+   * Returns the current health of this Unit
+   */
   public int getHealth() {
     return health;
   }
 
-  /** Returns the percent of health this currently has */
+  /**
+   * Returns the percent of health this currently has
+   */
   public double getHealthPercent() {
     return (double) getHealth() / (double) getMaxHealth();
   }
@@ -279,7 +329,7 @@ public abstract class Unit implements Stringable {
    * Commander.BONUS_DAMAGE_TO_RESEARCH_RATIO if this is a commander.
    *
    * @param deltaHealth - amount to change health by.
-   * @param source - the model.unit causing this change in health
+   * @param source      - the model.unit causing this change in health
    */
   public final void changeHealth(int deltaHealth, Unit source) {
     health += deltaHealth;
@@ -295,7 +345,9 @@ public abstract class Unit implements Stringable {
     if (health <= 0) died(source);
   }
 
-  /** Returns true iff this is alive (health > 0) */
+  /**
+   * Returns true iff this is alive (health > 0)
+   */
   public boolean isAlive() {
     return health > 0;
   }
@@ -323,62 +375,86 @@ public abstract class Unit implements Stringable {
     return new Stats(stats, Collections.emptyList());
   }
 
-  /** Returns the min attack strength of this model.unit. 0 if this is not a combatant. */
+  /**
+   * Returns the min attack strength of this model.unit. 0 if this is not a combatant.
+   */
   public int getMinAttack() {
     return Math.max(0, (Integer) stats.getStat(StatType.MIN_ATTACK));
   }
 
-  /** Returns the min attack of this unit, scaled by its current health percentage. */
+  /**
+   * Returns the min attack of this unit, scaled by its current health percentage.
+   */
   public final int getMinAttackScaled() {
     return (int) (getMinAttack() * getHealthPercent());
   }
 
-  /** Returns the max attack strength of this model.unit. 0 if this is not a combatant. */
+  /**
+   * Returns the max attack strength of this model.unit. 0 if this is not a combatant.
+   */
   public int getMaxAttack() {
     return Math.max(0, (Integer) stats.getStat(StatType.MAX_ATTACK));
   }
 
-  /** Returns the max attack of this unit, scaled by its current health percentage. */
+  /**
+   * Returns the max attack of this unit, scaled by its current health percentage.
+   */
   public final int getMaxAttackScaled() {
     return (int) (getMaxAttack() * getHealthPercent());
   }
 
-  /** Returns the min attack range of this model.unit. */
+  /**
+   * Returns the min attack range of this model.unit.
+   */
   public int getMinAttackRange() {
     return Math.max(0, (Integer) stats.getStat(StatType.MIN_ATTACK_RANGE));
   }
 
-  /** Returns the attack range of this model.unit. */
+  /**
+   * Returns the attack range of this model.unit.
+   */
   public int getMaxAttackRange() {
     return Math.max(0, (Integer) stats.getStat(StatType.MAX_ATTACK_RANGE));
   }
 
-  /** Returns the vision range of this model.unit. */
+  /**
+   * Returns the vision range of this model.unit.
+   */
   public int getVisionRange() {
     return Math.max(0, (Integer) stats.getStat(StatType.VISION_RANGE));
   }
 
-  /** Returns the summon range of this model.unit. */
+  /**
+   * Returns the summon range of this model.unit.
+   */
   public int getSummonRange() {
     return Math.max(0, (Integer) stats.getStat(StatType.SUMMON_RANGE));
   }
 
-  /** Returns the mana per turn this model.unit costs/generates */
+  /**
+   * Returns the mana per turn this model.unit costs/generates
+   */
   public int getManaPerTurn() {
     return (Integer) stats.getStat(StatType.MANA_PER_TURN);
   }
 
-  /** Returns the actions per turn this unit can take */
+  /**
+   * Returns the actions per turn this unit can take
+   */
   public int getActionsPerTurn() {
     return (Integer) stats.getStat(StatType.ACTIONS_PER_TURN);
   }
 
-  /** Returns the number of actions remaining for this unit. */
+  /**
+   * Returns the number of actions remaining for this unit.
+   */
   public int getActionsRemaining() {
     return actionsRemaining;
   }
 
-  /** Spends an action. Throws if actions for this unit is already 0. */
+  /**
+   * Spends an action. Throws if actions for this unit is already 0.
+   */
   public void spendAction() {
     if (actionsRemaining <= 0) {
       throw new RuntimeException("Can't spend action, already none left");
@@ -388,7 +464,10 @@ public abstract class Unit implements Stringable {
   }
 
   // MODIFIERS
-  /** Copies personal modifiers from the given unit - useful for using in newly summoned unit. */
+
+  /**
+   * Copies personal modifiers from the given unit - useful for using in newly summoned unit.
+   */
   public void copyPersonalModifiersFrom(Unit source) {
     source.grantedModifiers.stream().filter(m -> m.unit == source).forEach(m -> m.clone(this));
   }
@@ -418,7 +497,9 @@ public abstract class Unit implements Stringable {
         .collect(Collectors.toList());
   }
 
-  /** Returns true if this unit has a modifier matching the given name, false otherwise. */
+  /**
+   * Returns true if this unit has a modifier matching the given name, false otherwise.
+   */
   public boolean hasModifierByName(Modifier modifier) {
     return getModifierByName(modifier.name) != null;
   }
@@ -444,7 +525,9 @@ public abstract class Unit implements Stringable {
         .collect(Collectors.toList());
   }
 
-  /** Checks modifier m for applying to this model.unit */
+  /**
+   * Checks modifier m for applying to this model.unit
+   */
   public abstract boolean modifierOk(Modifier m);
 
   /**
@@ -530,12 +613,15 @@ public abstract class Unit implements Stringable {
     grantedModifiers.add(m);
   }
 
-  /** Removes the given modifier from its designated model.unit. Called by modifier on death */
+  /**
+   * Removes the given modifier from its designated model.unit. Called by modifier on death
+   */
   public void removeGrantedModifier(Modifier m) {
     grantedModifiers.remove(m);
   }
 
   // FIGHTING
+
   /**
    * Processes a pre-counter-fight action (this was attacked) that may be caused by modifiers. Still
    * only called when the fight is valid, called after other.preFight(). Only called if this will be
@@ -552,7 +638,10 @@ public abstract class Unit implements Stringable {
   public abstract void postCounterFight(int damageDealt, Combatant other, int damageTaken);
 
   // DRAWING
-  /** Returns the name of the file that represents this model.unit as an image */
+
+  /**
+   * Returns the name of the file that represents this model.unit as an image
+   */
   public String getImgFilename() {
     return imageFilename;
   }

@@ -16,21 +16,31 @@ import javax.swing.Timer;
  */
 public final class Animator {
 
-  /** Length of an animation frame in milliseconds. */
+  /**
+   * Length of an animation frame in milliseconds.
+   */
   private static final int FRAME_LENGTH_IN_MILLIS = 50;
 
-  /** True if this animator is paused - stop animating all things while this is true. */
+  /**
+   * True if this animator is paused - stop animating all things while this is true.
+   */
   private boolean paused;
 
-  /** Animatables to that are animated by this */
+  /**
+   * Animatables to that are animated by this
+   */
   private final Map<Animatable, Integer> animates;
 
-  /** Animatables to be removed on the next frame start. */
+  /**
+   * Animatables to be removed on the next frame start.
+   */
   private final Set<Animatable> animatesToRemove;
 
   private final Timer timer;
 
-  /** Constructor for an Animator */
+  /**
+   * Constructor for an Animator
+   */
   public Animator() {
     paused = false;
     animates = Collections.synchronizedMap(new HashMap<>());
@@ -76,7 +86,9 @@ public final class Animator {
     timer.restart();
   }
 
-  /** Sets the paused state. If this causes a change, resumes / stops the timer. */
+  /**
+   * Sets the paused state. If this causes a change, resumes / stops the timer.
+   */
   public void setPaused(boolean pause) {
     if (pause == this.paused) {
       return;
@@ -90,7 +102,9 @@ public final class Animator {
     }
   }
 
-  /** Adds the given Animatable to this Animator, and starts it animating. */
+  /**
+   * Adds the given Animatable to this Animator, and starts it animating.
+   */
   public void addAnimatable(final Animatable a) {
     synchronized (animates) {
       if (!animates.containsKey(a)) {
@@ -109,7 +123,9 @@ public final class Animator {
     }
   }
 
-  /** Clears all animatables. */
+  /**
+   * Clears all animatables.
+   */
   public void clearAnimatables() {
     synchronized (animates) {
       animates.clear();

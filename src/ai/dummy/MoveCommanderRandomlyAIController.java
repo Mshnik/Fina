@@ -15,10 +15,14 @@ import java.util.stream.Collectors;
  */
 public final class MoveCommanderRandomlyAIController implements AIController {
 
-  /** The string to show on the UI for selecting a MoveCommanderRandomlyAIController as a player. */
+  /**
+   * The string to show on the UI for selecting a MoveCommanderRandomlyAIController as a player.
+   */
   public static final String MOVE_COMMANDER_RANDOMLY_AI_TYPE = "AI - Move Commander Randomly";
 
-  /** Random used to pick tiles for commander. */
+  /**
+   * Random used to pick tiles for commander.
+   */
   private final Random random = new Random();
 
   @Override

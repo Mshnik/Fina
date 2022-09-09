@@ -20,28 +20,44 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/** A population of {@link EvoPlayer}s that will play against themselves, split, and knockout. */
+/**
+ * A population of {@link EvoPlayer}s that will play against themselves, split, and knockout.
+ */
 final class EvoPopulation {
 
-  /** The max number of games to run at a time. */
+  /**
+   * The max number of games to run at a time.
+   */
   private static final int MAX_CONCURRENT_GAMES = 2;
 
-  /** Valid boards to test on. A random one will be picked for every game. */
+  /**
+   * Valid boards to test on. A random one will be picked for every game.
+   */
   private final List<String> boardFilenames;
 
-  /** Random instance to use to get a board for each game. */
+  /**
+   * Random instance to use to get a board for each game.
+   */
   private final Random boardChooserRandom;
 
-  /** The set of players in this population. */
+  /**
+   * The set of players in this population.
+   */
   private final Set<EvoPlayer> playerSet;
 
-  /** Random instance to use to get a player to randomly duplicate as necessary. */
+  /**
+   * Random instance to use to get a player to randomly duplicate as necessary.
+   */
   private final Random extraPlayerMutationRandom;
 
-  /** The extra points stored up to cause a spontaneous mutation on a remaining player. */
+  /**
+   * The extra points stored up to cause a spontaneous mutation on a remaining player.
+   */
   private int extraMutationPoints;
 
-  /** The writer to use for writing simulation results. */
+  /**
+   * The writer to use for writing simulation results.
+   */
   private final EvoResultsPrinter printer;
 
   /**
@@ -72,7 +88,9 @@ final class EvoPopulation {
     return this;
   }
 
-  /** Has the given two players play each other and returns a result. */
+  /**
+   * Has the given two players play each other and returns a result.
+   */
   private GameController startGameAndReturnController(EvoPlayer player1, EvoPlayer player2) {
     String boardFilename = boardFilenames.get(boardChooserRandom.nextInt(boardFilenames.size()));
     System.out.println(
@@ -90,7 +108,9 @@ final class EvoPopulation {
         1);
   }
 
-  /** Checks if there is a game that hasn't reached game over yet in the given list. */
+  /**
+   * Checks if there is a game that hasn't reached game over yet in the given list.
+   */
   private boolean hasRunningGame(Collection<GameController> gameControllers) {
     return gameControllers.stream().map(g -> g.game).anyMatch(g -> !g.isGameOver());
   }
@@ -139,11 +159,13 @@ final class EvoPopulation {
       }
     }
     System.out.println("\\> Batch completed");
-    System.out.println("");
+    System.out.println();
     return results;
   }
 
-  /** Handles the given result, making changes to the player set as necessary. */
+  /**
+   * Handles the given result, making changes to the player set as necessary.
+   */
   private void changePointsAndHandleResult(EvoPlayer player, boolean won) {
     PointChangeResult pointChangeResult = player.changePoints(won);
     switch (pointChangeResult) {
@@ -160,14 +182,18 @@ final class EvoPopulation {
     }
   }
 
-  /** Helper function that sums two lists of doubles. Expects the lists to be of the same length. */
+  /**
+   * Helper function that sums two lists of doubles. Expects the lists to be of the same length.
+   */
   private static List<Double> sumLists(List<Double> list1, List<Double> list2) {
     return IntStream.range(0, list1.size())
         .mapToObj(i -> list1.get(i) + list2.get(i))
         .collect(Collectors.toList());
   }
 
-  /** Calculates the average weights of each delegate (including subweights). */
+  /**
+   * Calculates the average weights of each delegate (including subweights).
+   */
   private List<Double> calculateAverageWeights() {
     return playerSet
         .stream()
@@ -177,7 +203,9 @@ final class EvoPopulation {
         .orElseThrow(() -> new RuntimeException("Expected at least one player"));
   }
 
-  /** Calculates the standard deviation of each weight (including subweights). */
+  /**
+   * Calculates the standard deviation of each weight (including subweights).
+   */
   private List<Double> calculateWeightStandardDeviation(List<Double> averageWeights) {
     return playerSet
         .stream()
@@ -201,7 +229,9 @@ final class EvoPopulation {
         .orElseThrow(() -> new RuntimeException("Expected at least one player"));
   }
 
-  /** Starts the simulation, running for the given number of iterations. */
+  /**
+   * Starts the simulation, running for the given number of iterations.
+   */
   void runSimulation(int iterations) throws FileNotFoundException {
     // Start simulation.
     simulationStarted = true;

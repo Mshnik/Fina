@@ -19,68 +19,80 @@ import java.util.List;
 
 public final class Temple extends Building<Void> {
 
-  /** Buffs, by number of temples other than this (0 indexed) */
+  /**
+   * Buffs, by number of temples other than this (0 indexed)
+   */
   private static final ModifierBundle[] BUFFS = {
-    // 1 temple
-    new ModifierBundle(
-        new StatModifier(
-            "Temple Attack",
-            Integer.MAX_VALUE,
-            StackMode.NONE_DO_NOT_APPLY,
-            StatType.MIN_ATTACK,
-            ModificationType.ADD,
-            50)),
+      // 1 temple
+      new ModifierBundle(
+          new StatModifier(
+              "Temple Attack",
+              Integer.MAX_VALUE,
+              StackMode.NONE_DO_NOT_APPLY,
+              StatType.MIN_ATTACK,
+              ModificationType.ADD,
+              50)),
 
-    // 2 temples
-    new ModifierBundle(),
+      // 2 temples
+      new ModifierBundle(),
 
-    // 3 temples
-    new ModifierBundle(
-        new StatModifier(
-            "Temple Vision",
-            Integer.MAX_VALUE,
-            StackMode.NONE_DO_NOT_APPLY,
-            StatType.VISION_RANGE,
-            ModificationType.ADD,
-            2),
-        new StatModifier(
-            "Temple Movement",
-            Integer.MAX_VALUE,
-            StackMode.NONE_DO_NOT_APPLY,
-            StatType.MOVEMENT_TOTAL,
-            ModificationType.ADD,
-            2)),
+      // 3 temples
+      new ModifierBundle(
+          new StatModifier(
+              "Temple Vision",
+              Integer.MAX_VALUE,
+              StackMode.NONE_DO_NOT_APPLY,
+              StatType.VISION_RANGE,
+              ModificationType.ADD,
+              2),
+          new StatModifier(
+              "Temple Movement",
+              Integer.MAX_VALUE,
+              StackMode.NONE_DO_NOT_APPLY,
+              StatType.MOVEMENT_TOTAL,
+              ModificationType.ADD,
+              2)),
 
-    // 4 temples
-    new ModifierBundle(),
+      // 4 temples
+      new ModifierBundle(),
 
-    // 5 temples
-    new ModifierBundle(
-        new StatModifier(
-            "Temple Ult1",
-            Integer.MAX_VALUE,
-            StackMode.NONE_DO_NOT_APPLY,
-            StatType.MIN_ATTACK,
-            ModificationType.MULTIPLY,
-            1.5))
+      // 5 temples
+      new ModifierBundle(
+          new StatModifier(
+              "Temple Ult1",
+              Integer.MAX_VALUE,
+              StackMode.NONE_DO_NOT_APPLY,
+              StatType.MIN_ATTACK,
+              ModificationType.MULTIPLY,
+              1.5))
   };
 
-  /** Maximum number of temples a player can own */
+  /**
+   * Maximum number of temples a player can own
+   */
   public static final int MAX_TEMPLES = BUFFS.length;
 
-  /** The in model.game name of a Temple */
+  /**
+   * The in model.game name of a Temple
+   */
   public static final String NAME = "Temple";
 
-  /** Minimum level for building a Temple */
+  /**
+   * Minimum level for building a Temple
+   */
   public static final int LEVEL = 2;
 
-  /** Mana cost of constructing a Temple */
+  /**
+   * Mana cost of constructing a Temple
+   */
   public static final int COST = 1500;
 
-  /** Stats for maxHealth, defenses, range and visionRange of baracks */
+  /**
+   * Stats for maxHealth, defenses, range and visionRange of baracks
+   */
   private static final Stats STATS = new Stats(new Stat(StatType.MAX_HEALTH, 1200));
 
-  public Temple(Player owner) throws RuntimeException, IllegalArgumentException {
+  public Temple(Player owner) throws RuntimeException {
     super(
         owner,
         NAME,
@@ -92,7 +104,9 @@ public final class Temple extends Building<Void> {
         STATS);
   }
 
-  /** Creates a new Temple for the given owner, on the given location */
+  /**
+   * Creates a new Temple for the given owner, on the given location
+   */
   @Override
   protected Unit createClone(Player owner, Tile cloneLocation) {
     return new Temple(owner);
@@ -103,12 +117,16 @@ public final class Temple extends Building<Void> {
     return false;
   }
 
-  /** Returns the index of this in its owners' temples */
+  /**
+   * Returns the index of this in its owners' temples
+   */
   public int getIndex() {
     return owner.getTempleIndex(this);
   }
 
-  /** Refreshes this on index i of its owner's temples */
+  /**
+   * Refreshes this on index i of its owner's temples
+   */
   public void refreshForIndex() {
     int index = getIndex();
     // Remove old modifiers

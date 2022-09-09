@@ -19,7 +19,9 @@ import java.util.List;
  */
 public abstract class Building<E> extends Unit {
 
-  /** Types of terrain this building can be built on. */
+  /**
+   * Types of terrain this building can be built on.
+   */
   private final List<Terrain> validTerrain;
 
   /**
@@ -28,15 +30,15 @@ public abstract class Building<E> extends Unit {
    * runtimeException if the owner doesn't have enough mana. Throws an illegalArgumentException if a
    * building is constructed on land other than AncientGround
    *
-   * @param owner - the player owner of this model.unit
-   * @param name - the name of this model.unit.
-   * @param imageFilename - the image to draw when drawing this unit.
-   * @param level - the level of this model.unit - the age this belongs to
-   * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
+   * @param owner           - the player owner of this model.unit
+   * @param name            - the name of this model.unit.
+   * @param imageFilename   - the image to draw when drawing this unit.
+   * @param level           - the level of this model.unit - the age this belongs to
+   * @param manaCost        - the cost of summoning this model.unit. Should be a positive number.
    * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond
-   *     the first. Should be non-negative.
-   * @param validTerrain - types of terrain this building can be built on.
-   * @param stats - the base unmodified stats of this model.unit. stats that remain used are
+   *                        the first. Should be non-negative.
+   * @param validTerrain    - types of terrain this building can be built on.
+   * @param stats           - the base unmodified stats of this model.unit. stats that remain used are
    */
   public Building(
       Player owner,
@@ -47,7 +49,7 @@ public abstract class Building<E> extends Unit {
       int manaCostScaling,
       List<Terrain> validTerrain,
       Stats stats)
-      throws RuntimeException, IllegalArgumentException {
+      throws RuntimeException {
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, stats);
     this.validTerrain = Collections.unmodifiableList(validTerrain);
   }
@@ -64,13 +66,18 @@ public abstract class Building<E> extends Unit {
    */
   public abstract E getEffect();
 
-  /** Returns the types of terrain this can be built on. */
+  /**
+   * Returns the types of terrain this can be built on.
+   */
   public List<Terrain> getValidTerrain() {
     return validTerrain;
   }
 
   // RESTRICTIONS
-  /** Restricted attack - has val 0. */
+
+  /**
+   * Restricted attack - has val 0.
+   */
   @Override
   public int getMinAttack() {
     return 0;
@@ -91,34 +98,46 @@ public abstract class Building<E> extends Unit {
     return 0;
   }
 
-  /** Restricted movement - buildings can't move */
+  /**
+   * Restricted movement - buildings can't move
+   */
   @Override
   public boolean canMove() {
     return false;
   }
 
-  /** Buildings can't fight */
+  /**
+   * Buildings can't fight
+   */
   public boolean canFight() {
     return false;
   }
 
-  /** Buildings can't cast. */
+  /**
+   * Buildings can't cast.
+   */
   @Override
   public boolean canCast() {
     return false;
   }
 
-  /** Buildings can occupy any terrain in their valid terrain. */
+  /**
+   * Buildings can occupy any terrain in their valid terrain.
+   */
   public boolean canOccupy(Terrain t) {
     return validTerrain.contains(t);
   }
 
-  /** All modifiers are visible. */
+  /**
+   * All modifiers are visible.
+   */
   public List<Modifier> getVisibleModifiers() {
     return getModifiers();
   }
 
-  /** Modifiers can't add movement or attack */
+  /**
+   * Modifiers can't add movement or attack
+   */
   @Override
   public boolean modifierOk(Modifier m) {
     if (m instanceof StatModifier) {
@@ -131,17 +150,25 @@ public abstract class Building<E> extends Unit {
     return false;
   }
 
-  /** Returns Building */
+  /**
+   * Returns Building
+   */
   @Override
   public String getIdentifierString() {
     return "Building";
   }
 
-  /** Buildings don't do anything before a fight */
+  /**
+   * Buildings don't do anything before a fight
+   */
   @Override
-  public void preCounterFight(Combatant other) {}
+  public void preCounterFight(Combatant other) {
+  }
 
-  /** Buildings don't do anything after a fight */
+  /**
+   * Buildings don't do anything after a fight
+   */
   @Override
-  public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {}
+  public void postCounterFight(int damageDealt, Combatant other, int damageTaken) {
+  }
 }

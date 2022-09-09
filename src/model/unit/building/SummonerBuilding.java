@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Player;
@@ -23,13 +24,19 @@ import model.unit.stat.Stats;
 public final class SummonerBuilding extends Building<SummonerBuilding.SummonerBuildingEffect>
     implements Summoner {
 
-  /** An effect for a summoner building. */
+  /**
+   * An effect for a summoner building.
+   */
   static final class SummonerBuildingEffect {
 
-    /** How far away this building will be able to summon units. */
+    /**
+     * How far away this building will be able to summon units.
+     */
     private final int summonRadius;
 
-    /** How many actions per turn this unit will have. */
+    /**
+     * How many actions per turn this unit will have.
+     */
     private final int actionsPerTurn;
 
     SummonerBuildingEffect(int summonRadius, int actionsPerTurn) {
@@ -47,10 +54,14 @@ public final class SummonerBuilding extends Building<SummonerBuilding.SummonerBu
     }
   }
 
-  /** Effect this building grants if this isn't on ancient ground. */
+  /**
+   * Effect this building grants if this isn't on ancient ground.
+   */
   private final SummonerBuildingEffect nonAncientGroundEffect;
 
-  /** Effect this building grants if this is on ancient ground. */
+  /**
+   * Effect this building grants if this is on ancient ground.
+   */
   private final SummonerBuildingEffect ancientGroundEffect;
 
   /**
@@ -58,17 +69,17 @@ public final class SummonerBuilding extends Building<SummonerBuilding.SummonerBu
    * its owner as a model.unit that player owns, Subtracts manaCost from the owner, but throws a
    * runtimeException if the owner doesn't have enough mana.
    *
-   * @param owner - the player owner of this model.unit
-   * @param name - the name of this model.unit.
-   * @param imageFilename - the image to draw when drawing this unit.
-   * @param level - the level of this model.unit - the age this belongs to
-   * @param manaCost - the cost of summoning this model.unit. Should be a positive number. * @param
-   * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond
-   *     the first. Should be a non-negative number.
-   * @param validTerrain - types of terrain this can be built on.
-   * @param stats - the base unmodified stats of this model.unit. stats that remain used are
+   * @param owner                          - the player owner of this model.unit
+   * @param name                           - the name of this model.unit.
+   * @param imageFilename                  - the image to draw when drawing this unit.
+   * @param level                          - the level of this model.unit - the age this belongs to
+   * @param manaCost                       - the cost of summoning this model.unit. Should be a positive number. * @param
+   * @param manaCostScaling                - the additional cost of summoning this model.unit for each copy beyond
+   *                                       the first. Should be a non-negative number.
+   * @param validTerrain                   - types of terrain this can be built on.
+   * @param stats                          - the base unmodified stats of this model.unit. stats that remain used are
    * @param nonAncientGroundSummonerEffect - summon effect for this if this is on ancient ground.
-   * @param ancientGroundSummonerEffect - summon effect for this if this is on ancient ground.
+   * @param ancientGroundSummonerEffect    - summon effect for this if this is on ancient ground.
    */
   SummonerBuilding(
       Player owner,
@@ -81,7 +92,7 @@ public final class SummonerBuilding extends Building<SummonerBuilding.SummonerBu
       Stats stats,
       SummonerBuildingEffect nonAncientGroundSummonerEffect,
       SummonerBuildingEffect ancientGroundSummonerEffect)
-      throws RuntimeException, IllegalArgumentException {
+      throws RuntimeException {
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, stats);
     this.nonAncientGroundEffect = nonAncientGroundSummonerEffect;
     this.ancientGroundEffect = ancientGroundSummonerEffect;
@@ -102,7 +113,9 @@ public final class SummonerBuilding extends Building<SummonerBuilding.SummonerBu
         : nonAncientGroundEffect;
   }
 
-  /** Override summon range to be determined by effect instead of stat. */
+  /**
+   * Override summon range to be determined by effect instead of stat.
+   */
   @Override
   public int getSummonRange() {
     return getEffect().summonRadius;
@@ -119,25 +132,33 @@ public final class SummonerBuilding extends Building<SummonerBuilding.SummonerBu
     return false;
   }
 
-  /** Can't build. */
+  /**
+   * Can't build.
+   */
   @Override
   public boolean hasBuildSpace() {
     return false;
   }
 
-  /** Can summon if it has actions remaining. */
+  /**
+   * Can summon if it has actions remaining.
+   */
   @Override
   public boolean canSummon() {
     return getActionsRemaining() > 0;
   }
 
-  /** Can summon the same things the commander can summon. */
+  /**
+   * Can summon the same things the commander can summon.
+   */
   @Override
   public Map<String, Combatant> getSummonables() {
     return owner.getCommander().getSummonables();
   }
 
-  /** Can't build anything. */
+  /**
+   * Can't build anything.
+   */
   @Override
   public Map<String, Building> getBuildables() {
     return Collections.emptyMap();

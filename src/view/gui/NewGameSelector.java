@@ -48,10 +48,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/** Blocking top-level selector that allows the user to create a new game. */
+/**
+ * Blocking top-level selector that allows the user to create a new game.
+ */
 final class NewGameSelector {
 
-  /** NewGameOptions returned by a NewGameSelector. */
+  /**
+   * NewGameOptions returned by a NewGameSelector.
+   */
   static final class NewGameOptions {
     final boolean cancelled;
     final String boardFilepath;
@@ -84,7 +88,9 @@ final class NewGameSelector {
     }
   }
 
-  /** Options for loading an AI with predefined weights. */
+  /**
+   * Options for loading an AI with predefined weights.
+   */
   static final class LoadAIOptions {
     final String filename;
     final int row;
@@ -99,7 +105,9 @@ final class NewGameSelector {
     }
   }
 
-  /** Visual panel that displays the options for creating a new game. */
+  /**
+   * Visual panel that displays the options for creating a new game.
+   */
   private static final class NewGamePanel extends JPanel {
     private final JButton okButton;
     private final JComboBox<String> boardSelector;
@@ -112,14 +120,14 @@ final class NewGameSelector {
     private final JPanel playerPanel;
 
     private static final String[] PLAYER_TYPE_OPTIONS = {
-      HumanPlayer.HUMAN_PLAYER_TYPE,
-      // Uncomment if these are needed for testing.
-      // DoNothingAIController.DO_NOTHING_AI_TYPE,
-      // MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE,
-      FullRandomAIController.FULL_RANDOM_AI_TYPE,
-      // DelegatingAIControllers.DELEGATING_DEFAULT_AI_TYPE,
-      DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE,
-      AIController.PROVIDED_AI_TYPE
+        HumanPlayer.HUMAN_PLAYER_TYPE,
+        // Uncomment if these are needed for testing.
+        // DoNothingAIController.DO_NOTHING_AI_TYPE,
+        // MoveCommanderRandomlyAIController.MOVE_COMMANDER_RANDOMLY_AI_TYPE,
+        FullRandomAIController.FULL_RANDOM_AI_TYPE,
+        // DelegatingAIControllers.DELEGATING_DEFAULT_AI_TYPE,
+        DelegatingAIControllers.DELEGATING_RANDOM_AI_TYPE,
+        AIController.PROVIDED_AI_TYPE
     };
     private final List<JComboBox<String>> playerTypeSelectorsList;
     private final Map<Integer, JTextField> loadAiTextFields;
@@ -137,7 +145,7 @@ final class NewGameSelector {
       }
       boardPreviewPanel = new BoardPreviewPanel();
 
-      numPlayersSelector = new JComboBox<>(new Integer[] {2});
+      numPlayersSelector = new JComboBox<>(new Integer[]{2});
       numPlayersSelector.addActionListener(
           e -> {
             if (numPlayersSelector.getSelectedItem() != null) {
@@ -205,7 +213,9 @@ final class NewGameSelector {
       repaint();
     }
 
-    /** Forces the window containing this to pack, for resizing. */
+    /**
+     * Forces the window containing this to pack, for resizing.
+     */
     private void pack() {
       Window window = SwingUtilities.getWindowAncestor(this);
       if (window != null) {
@@ -214,12 +224,16 @@ final class NewGameSelector {
       }
     }
 
-    /** Returns the board object that corresponds to the currently selected board filename. */
+    /**
+     * Returns the board object that corresponds to the currently selected board filename.
+     */
     private Board getSelectedBoard() {
-      return boardsMap.get((String) boardSelector.getSelectedItem());
+      return boardsMap.get(boardSelector.getSelectedItem());
     }
 
-    /** Updates the valid number of players for the newly selected board. */
+    /**
+     * Updates the valid number of players for the newly selected board.
+     */
     private void updateNumPlayersValues() {
       // Update selector.
       int playersSelectedIndex = numPlayersSelector.getSelectedIndex();
@@ -246,7 +260,7 @@ final class NewGameSelector {
         JPanel panelToRemove =
             (JPanel) playerPanel.getComponent(playerPanel.getComponents().length - 1);
         playerTypeSelectorsList.remove(
-            (JComboBox) ((Container) panelToRemove.getComponent(0)).getComponent(1));
+            ((Container) panelToRemove.getComponent(0)).getComponent(1));
         playerPanel.remove(panelToRemove);
       }
       for (int i = playerPanel.getComponentCount() + 1; i <= numPlayers; i++) {
@@ -266,7 +280,9 @@ final class NewGameSelector {
       }
     }
 
-    /** Updates the player selected by the given type selector. */
+    /**
+     * Updates the player selected by the given type selector.
+     */
     private void updatePlayerType(JComboBox<String> playerTypeSelector) {
       JPanel containingPanel = (JPanel) playerTypeSelector.getParent().getParent();
       String selectedType = (String) playerTypeSelector.getSelectedItem();
@@ -294,7 +310,9 @@ final class NewGameSelector {
       }
     }
 
-    /** Creates and populates a panel for loading AI options. */
+    /**
+     * Creates and populates a panel for loading AI options.
+     */
     private void createAndAddLoadAIConfigPanel(JPanel containingPanel, int index) {
       JPanel loadAiConfigPanel = new JPanel();
       loadAiConfigPanel.setOpaque(false);
@@ -312,13 +330,17 @@ final class NewGameSelector {
               chooseAiFile(loadedFileField, rowSelector);
             }
 
-            public void mousePressed(MouseEvent e) {}
+            public void mousePressed(MouseEvent e) {
+            }
 
-            public void mouseReleased(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {
+            }
 
-            public void mouseEntered(MouseEvent e) {}
+            public void mouseEntered(MouseEvent e) {
+            }
 
-            public void mouseExited(MouseEvent e) {}
+            public void mouseExited(MouseEvent e) {
+            }
           });
       loadAiConfigPanel.add(loadedFileField);
       loadAiConfigPanel.add(rowSelector);
@@ -380,7 +402,9 @@ final class NewGameSelector {
       }
     }
 
-    /** Refreshes the enabled state of the ok button. */
+    /**
+     * Refreshes the enabled state of the ok button.
+     */
     private void refreshOkButtonEnabledState() {
       okButton.setEnabled(
           loadAiTextFields
@@ -390,12 +414,14 @@ final class NewGameSelector {
                   e ->
                       e.getKey() <= playerTypeSelectorsList.size()
                           && AIController.PROVIDED_AI_TYPE.equals(
-                              playerTypeSelectorsList.get(e.getKey()).getSelectedItem()))
+                          playerTypeSelectorsList.get(e.getKey()).getSelectedItem()))
               .map(e -> e.getValue().getText())
               .noneMatch(s -> s.equals("Click to Load")));
     }
 
-    /** Returns a list of player types of the current selections of the player type selectors. */
+    /**
+     * Returns a list of player types of the current selections of the player type selectors.
+     */
     private List<String> getPlayerTypes() {
       return playerTypeSelectorsList
           .stream()
@@ -403,21 +429,25 @@ final class NewGameSelector {
           .collect(Collectors.toList());
     }
 
-    /** Returns a list of load AI options. Will be none() for any non loaded AI player. */
+    /**
+     * Returns a list of load AI options. Will be none() for any non loaded AI player.
+     */
     private List<LoadAIOptions> getLoadAIOptions() {
       return IntStream.range(0, playerTypeSelectorsList.size())
           .mapToObj(
               i ->
                   loadAiTextFields.containsKey(i)
                       ? new LoadAIOptions(
-                          loadAiTextFields.get(i).getText(),
-                          (int) loadAiRowSelectors.get(i).getSelectedItem())
+                      loadAiTextFields.get(i).getText(),
+                      (int) loadAiRowSelectors.get(i).getSelectedItem())
                       : LoadAIOptions.none())
           .collect(Collectors.toList());
     }
   }
 
-  /** A jpanel that holds options for configuring a player. */
+  /**
+   * A jpanel that holds options for configuring a player.
+   */
   private static final class PlayerConfigurationPanel extends JPanel {
     private final int index;
 
@@ -461,7 +491,9 @@ final class NewGameSelector {
     }
   }
 
-  /** A jpanel that pains a preview of a board. */
+  /**
+   * A jpanel that pains a preview of a board.
+   */
   private static final class BoardPreviewPanel extends JPanel {
     private static final int CELl_SIZE = 12;
 
@@ -507,7 +539,9 @@ final class NewGameSelector {
     }
   }
 
-  /** Finds the optionPane parent of the given arg by recursing upwards. */
+  /**
+   * Finds the optionPane parent of the given arg by recursing upwards.
+   */
   private static JOptionPane getOptionPane(JComponent parent) {
     JOptionPane pane = null;
     if (!(parent instanceof JOptionPane)) {
@@ -518,13 +552,17 @@ final class NewGameSelector {
     return pane;
   }
 
-  /** Closes the OptionPane with the given option. */
+  /**
+   * Closes the OptionPane with the given option.
+   */
   private static void closeActionPaneWithResponse(ActionEvent e) {
     JOptionPane source = getOptionPane((JComponent) e.getSource());
     source.setValue(e.getSource());
   }
 
-  /** Allows the user to create a new game - returns the options required to show a new game. */
+  /**
+   * Allows the user to create a new game - returns the options required to show a new game.
+   */
   static NewGameOptions getNewGame(Frame frame) {
     JButton okButton = new JButton("Ok");
     okButton.addActionListener(NewGameSelector::closeActionPaneWithResponse);
@@ -542,7 +580,7 @@ final class NewGameSelector {
             JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.PLAIN_MESSAGE,
             null,
-            new Object[] {okButton, cancelButton},
+            new Object[]{okButton, cancelButton},
             okButton);
     if (returnOption == JOptionPane.OK_OPTION) {
       return new NewGameOptions(

@@ -4,6 +4,7 @@ import ai.AIAction;
 import ai.AIController;
 import ai.delegates.ByNameDelegate;
 import ai.delegates.Delegate;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +17,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import model.board.Board;
 import model.board.Tile;
 import model.game.Player;
@@ -26,13 +28,19 @@ import model.unit.ability.Ability;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 
-/** An AI controller that maintains a set of delegates to determine its behavior. */
+/**
+ * An AI controller that maintains a set of delegates to determine its behavior.
+ */
 public final class DelegatingAIController implements AIController {
 
-  /** The id of this AIController. May be empty to delegate setting to player. */
+  /**
+   * The id of this AIController. May be empty to delegate setting to player.
+   */
   private final String id;
 
-  /** The delegates this is delegating to. */
+  /**
+   * The delegates this is delegating to.
+   */
   private final List<Delegate> delegates;
 
   /**
@@ -45,18 +53,24 @@ public final class DelegatingAIController implements AIController {
     private final AIAction action;
     private Double value;
 
-    /** Constructs an AIActionWithValue for the given action, and computes its initial value. */
+    /**
+     * Constructs an AIActionWithValue for the given action, and computes its initial value.
+     */
     private AIActionWithValue(AIAction action) {
       this.action = action;
       value = null;
     }
 
-    /** Returns the AIAction in this. */
+    /**
+     * Returns the AIAction in this.
+     */
     private AIAction getAction() {
       return action;
     }
 
-    /** Returns the value of this AIAction. */
+    /**
+     * Returns the value of this AIAction.
+     */
     private double getValue() {
       if (value == null) {
         recomputeValue();
@@ -64,7 +78,9 @@ public final class DelegatingAIController implements AIController {
       return value;
     }
 
-    /** Recomputes the value of this Action. */
+    /**
+     * Recomputes the value of this Action.
+     */
     private void recomputeValue() {
       value = delegates.stream().mapToDouble(d -> d.getScore(action)).sum();
     }
@@ -74,7 +90,9 @@ public final class DelegatingAIController implements AIController {
       return Double.compare(getValue(), o.getValue());
     }
 
-    /** Determines equality by action alone. */
+    /**
+     * Determines equality by action alone.
+     */
     @Override
     public boolean equals(Object o) {
       if (this == o) {
@@ -86,20 +104,28 @@ public final class DelegatingAIController implements AIController {
       }
     }
 
-    /** Hashes by action alone. */
+    /**
+     * Hashes by action alone.
+     */
     @Override
     public int hashCode() {
       return action.hashCode();
     }
   }
 
-  /** The current computed set of possible move actions, by moving unit. Recomputed as needed. */
+  /**
+   * The current computed set of possible move actions, by moving unit. Recomputed as needed.
+   */
   private final Map<MovingUnit, Set<AIActionWithValue>> possibleMoveActionsByUnit;
 
-  /** The current computed set of possible attack actions, by combatant. Recomputed as needed. */
+  /**
+   * The current computed set of possible attack actions, by combatant. Recomputed as needed.
+   */
   private final Map<Combatant, Set<AIActionWithValue>> possibleAttackActionsByUnit;
 
-  /** The current computed set of possible summon actions, by summoner. Recomputed as needed. */
+  /**
+   * The current computed set of possible summon actions, by summoner. Recomputed as needed.
+   */
   private final Map<Summoner, Set<AIActionWithValue>> possibleSummonActionsByUnit;
 
   /**
@@ -133,7 +159,9 @@ public final class DelegatingAIController implements AIController {
     return id;
   }
 
-  /** Adds the given delegate and returns this. */
+  /**
+   * Adds the given delegate and returns this.
+   */
   void addDelegate(Delegate delegate) {
     for (Delegate d : delegates) {
       if (d.getClass().equals(delegate.getClass())) {
@@ -144,7 +172,9 @@ public final class DelegatingAIController implements AIController {
     delegates.add(delegate);
   }
 
-  /** Returns the delegates in this controller. */
+  /**
+   * Returns the delegates in this controller.
+   */
   public List<Delegate> getDelegates() {
     return Collections.unmodifiableList(delegates);
   }
@@ -183,7 +213,9 @@ public final class DelegatingAIController implements AIController {
     recomputeAllActions(player);
   }
 
-  /** Recomputes all possible actions the player can take. */
+  /**
+   * Recomputes all possible actions the player can take.
+   */
   private void recomputeAllActions(Player player) {
     possibleAttackActionsByUnit.clear();
     possibleMoveActionsByUnit.clear();
@@ -200,7 +232,9 @@ public final class DelegatingAIController implements AIController {
     recomputeSpellsForCommander(player, player.getCommander());
   }
 
-  /** Recomputes the moving actions for the given unit. */
+  /**
+   * Recomputes the moving actions for the given unit.
+   */
   private void recomputeMoveActionsForUnit(Player p, MovingUnit movingUnit) {
     HashSet<AIActionWithValue> actionWithValues = new HashSet<>();
     if (movingUnit.canMove()) {
@@ -215,8 +249,8 @@ public final class DelegatingAIController implements AIController {
             // even if it can't see it. Needs to be fixed up.
             || t.isOccupied()
             || movementPath
-                .stream()
-                .anyMatch(tile -> tile.isOccupied() && tile.getOccupyingUnit().owner != p)) {
+            .stream()
+            .anyMatch(tile -> tile.isOccupied() && tile.getOccupyingUnit().owner != p)) {
           continue;
         }
         actionWithValues.add(
@@ -226,7 +260,9 @@ public final class DelegatingAIController implements AIController {
     possibleMoveActionsByUnit.put(movingUnit, actionWithValues);
   }
 
-  /** Recomputes the attacking actions for the given unit. */
+  /**
+   * Recomputes the attacking actions for the given unit.
+   */
   private void recomputeAttackActionsForUnit(Player p, Combatant combatant) {
     HashSet<AIActionWithValue> actionWithValues = new HashSet<>();
     if (combatant.canFight()) {
@@ -237,7 +273,9 @@ public final class DelegatingAIController implements AIController {
     possibleAttackActionsByUnit.put(combatant, actionWithValues);
   }
 
-  /** Recomputes the summoning actions for the given unit. */
+  /**
+   * Recomputes the summoning actions for the given unit.
+   */
   private <U extends Unit & Summoner> void recomputeSummonActionsForUnit(Player p, U summonerUnit) {
     HashSet<AIActionWithValue> actionWithValues = new HashSet<>();
     if (summonerUnit.canSummon()) {
@@ -269,7 +307,9 @@ public final class DelegatingAIController implements AIController {
     possibleSummonActionsByUnit.put(summonerUnit, actionWithValues);
   }
 
-  /** Recomputes the casting actions for the given commander. */
+  /**
+   * Recomputes the casting actions for the given commander.
+   */
   private void recomputeSpellsForCommander(Player p, Commander commander) {
     possibleSpellsToCast.clear();
     if (commander.canCast()) {
@@ -309,7 +349,9 @@ public final class DelegatingAIController implements AIController {
     return action != null && action.getValue() > 0 ? action.getAction() : null;
   }
 
-  /** Remove the action from the possible set and try again. */
+  /**
+   * Remove the action from the possible set and try again.
+   */
   @Override
   public void actionFailed(Exception e, AIAction action) {
     e.printStackTrace();
@@ -325,7 +367,9 @@ public final class DelegatingAIController implements AIController {
     recomputeAllActions(action.player);
   }
 
-  /** Creates a config string from the delegates used and their weights. */
+  /**
+   * Creates a config string from the delegates used and their weights.
+   */
   @Override
   public String getConfigString() {
     int weightSigFigs = 4;

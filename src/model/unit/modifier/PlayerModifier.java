@@ -35,7 +35,7 @@ public final class PlayerModifier {
     /**
      * Increased cloud level for cloud-casting.
      */
-    CAST_CLOUD_BOOST;
+    CAST_CLOUD_BOOST
   }
 
   /**

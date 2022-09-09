@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+
 import model.unit.Unit;
 import model.unit.modifier.Modifier.StackMode;
 import model.unit.stat.StatType;
@@ -15,9 +16,12 @@ import model.unit.stat.StatType;
  * @author Mshnik
  */
 public final class Modifiers {
-  private Modifiers() {}
+  private Modifiers() {
+  }
 
-  /** A description of a modifier or bundle, for showing in UI. */
+  /**
+   * A description of a modifier or bundle, for showing in UI.
+   */
   public static final class ModifierDescription {
     private final String name;
     public final String imageFilename;
@@ -56,12 +60,16 @@ public final class Modifiers {
       return formattedVal.isEmpty() ? formattedVal : " " + formattedVal + " ";
     }
 
-    /** Returns a short string for displaying on the info panel. */
+    /**
+     * Returns a short string for displaying on the info panel.
+     */
     public String toStringShort() {
       return name + getFormattedValStringWithSpace() + getTurnsRemainingString();
     }
 
-    /** Returns a longer string for displaying on the info panel. */
+    /**
+     * Returns a longer string for displaying on the info panel.
+     */
     @Override
     public String toString() {
       return name
@@ -72,7 +80,9 @@ public final class Modifiers {
     }
   }
 
-  /** Returns a list of all modifier descriptions for the given list of modifiers */
+  /**
+   * Returns a list of all modifier descriptions for the given list of modifiers
+   */
   public static List<ModifierDescription> getModifierDescriptions(List<Modifier> modifiers) {
     HashSet<Modifier> addedModifiers = new HashSet<>();
     ArrayList<ModifierDescription> descriptions = new ArrayList<>();
@@ -150,64 +160,74 @@ public final class Modifiers {
     }
   }
 
-  /** Modifier that reduces incoming melee damage */
+  /**
+   * Modifier that reduces incoming melee damage
+   */
   public static Modifier armored(double damageReduction) {
     return new CustomModifier(
-            "Armored",
-            "spell_10_10.png",
-            "This unit takes -x%- less damage from melee attacks",
-            damageReduction,
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            true,
-            true,
-            true)
+        "Armored",
+        "spell_10_10.png",
+        "This unit takes -x%- less damage from melee attacks",
+        damageReduction,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        true,
+        true,
+        true)
         .uniqueCopy();
   }
 
-  /** Modifier that decreases vision range */
+  /**
+   * Modifier that decreases vision range
+   */
   public static Modifier blinded(int visionRangeDecreases) {
     return new StatModifier(
-            "Blinded",
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            StatType.VISION_RANGE,
-            StatModifier.ModificationType.ADD,
-            -visionRangeDecreases)
+        "Blinded",
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        StatType.VISION_RANGE,
+        StatModifier.ModificationType.ADD,
+        -visionRangeDecreases)
         .uniqueCopy();
   }
 
-  /** Modifier that deals more damage to commanders. */
+  /**
+   * Modifier that deals more damage to commanders.
+   */
   public static Modifier bloodlust(double bonusDamageToCommanderPercent) {
     return new CustomModifier(
-            "Bloodlust",
-            "spell_32_5.png",
-            "This unit deals -x%- more damage to commanders",
-            bonusDamageToCommanderPercent,
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            false,
-            false,
-            true)
+        "Bloodlust",
+        "spell_32_5.png",
+        "This unit deals -x%- more damage to commanders",
+        bonusDamageToCommanderPercent,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        false,
+        false,
+        true)
         .uniqueCopy();
   }
 
-  /** Modifier that gives life gain after dealing damage. */
+  /**
+   * Modifier that gives life gain after dealing damage.
+   */
   public static Modifier bornToFight(int healthGainedPerAttack) {
     return new CustomModifier(
-            "Born to Fight",
-            "spell_30_11.png",
-            "After dealing damage, this unit gains -x- health",
-            healthGainedPerAttack,
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            false,
-            false,
-            true)
+        "Born to Fight",
+        "spell_30_11.png",
+        "After dealing damage, this unit gains -x- health",
+        healthGainedPerAttack,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        false,
+        false,
+        true)
         .uniqueCopy();
   }
 
-  /** ModifierBundle that increases both vision and movement under the name "Communications" */
+  /**
+   * ModifierBundle that increases both vision and movement under the name "Communications"
+   */
   public static ModifierBundle communications(int visionIncrease, int movementIncrease) {
     return new ModifierBundle(
         new CustomModifier(
@@ -224,60 +244,68 @@ public final class Modifiers {
         quickness(movementIncrease));
   }
 
-  /** Modifier that slowly regenerates health. */
+  /**
+   * Modifier that slowly regenerates health.
+   */
   public static Modifier disappearance() {
     return new CustomModifier(
-            "Disappearance",
-            "spell_29_2.png",
-            "This unit can move after attacking",
-            null,
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            false,
-            false,
-            true)
+        "Disappearance",
+        "spell_29_2.png",
+        "This unit can move after attacking",
+        null,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        false,
+        false,
+        true)
         .uniqueCopy();
   }
 
-  /** Modifier that allows a unit to see into woods and past mountains. */
+  /**
+   * Modifier that allows a unit to see into woods and past mountains.
+   */
   public static Modifier eagleEye() {
     return new CustomModifier(
-            "Eagle Eye",
-            "spell_17_14.png",
-            "This unit can see into woods and past mountains.",
-            null,
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            true,
-            true,
-            true)
+        "Eagle Eye",
+        "spell_17_14.png",
+        "This unit can see into woods and past mountains.",
+        null,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        true,
+        true,
+        true)
         .uniqueCopy();
   }
 
-  /** Modifier that reduces incoming ranged damage */
+  /**
+   * Modifier that reduces incoming ranged damage
+   */
   public static Modifier elusive(double damageReductionPercent) {
     return new CustomModifier(
-            "Elusive",
-            "spell_11_7.png",
-            "This unit takes -x%- less damage from ranged attacks",
-            damageReductionPercent,
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            true,
-            true,
-            true)
+        "Elusive",
+        "spell_11_7.png",
+        "This unit takes -x%- less damage from ranged attacks",
+        damageReductionPercent,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        true,
+        true,
+        true)
         .uniqueCopy();
   }
 
-  /** Modifier that increases total movement */
+  /**
+   * Modifier that increases total movement
+   */
   public static Modifier farsight(int visionRangeIncrease) {
     return new StatModifier(
-            "Farsight",
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            StatType.VISION_RANGE,
-            StatModifier.ModificationType.ADD,
-            visionRangeIncrease)
+        "Farsight",
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        StatType.VISION_RANGE,
+        StatModifier.ModificationType.ADD,
+        visionRangeIncrease)
         .uniqueCopy();
   }
 
@@ -301,209 +329,237 @@ public final class Modifiers {
         pathfinder(1));
   }
 
-  /** Modifier that makes a unit takes less damage from spells. */
+  /**
+   * Modifier that makes a unit takes less damage from spells.
+   */
   public static Modifier hexproof(double spellDamageReductionPercent) {
     return new CustomModifier(
-            "Hexproof",
-            "spell_28_3.png",
-            "This unit takes -x%- less damage from commander spells",
-            spellDamageReductionPercent,
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            true,
-            true,
-            true)
+        "Hexproof",
+        "spell_28_3.png",
+        "This unit takes -x%- less damage from commander spells",
+        spellDamageReductionPercent,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        true,
+        true,
+        true)
         .uniqueCopy();
   }
 
-  /** Modifier that reduces movement cost in woods. */
+  /**
+   * Modifier that reduces movement cost in woods.
+   */
   public static Modifier pathfinder(int woodsMoveCost) {
     return new StatModifier(
-            "Pathfinder",
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            StatType.WOODS_COST,
-            StatModifier.ModificationType.SET_MIN,
-            woodsMoveCost)
+        "Pathfinder",
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        StatType.WOODS_COST,
+        StatModifier.ModificationType.SET_MIN,
+        woodsMoveCost)
         .uniqueCopy();
   }
 
-  /** Modifier that deals more damage on counterattack */
+  /**
+   * Modifier that deals more damage on counterattack
+   */
   public static Modifier patience(double bonusCounterAttackDamagePercent) {
     return new CustomModifier(
-            "Patience",
-            "spell_30_14.png",
-            "This unit deals -x%- more damage when counter attacking",
-            bonusCounterAttackDamagePercent,
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            false,
-            false,
-            true)
+        "Patience",
+        "spell_30_14.png",
+        "This unit deals -x%- more damage when counter attacking",
+        bonusCounterAttackDamagePercent,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        false,
+        false,
+        true)
         .uniqueCopy();
   }
 
-  /** Modifier that increases max health. */
+  /**
+   * Modifier that increases max health.
+   */
   public static Modifier shielded(double maxHealthIncreasePercent) {
     return new StatModifier(
-            "Shielded",
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            StatType.MAX_HEALTH,
-            StatModifier.ModificationType.MULTIPLY,
-            1 + maxHealthIncreasePercent)
+        "Shielded",
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        StatType.MAX_HEALTH,
+        StatModifier.ModificationType.MULTIPLY,
+        1 + maxHealthIncreasePercent)
         .uniqueCopy();
   }
 
-  /** Modifier that deals more damage to buildings. */
+  /**
+   * Modifier that deals more damage to buildings.
+   */
   public static Modifier siege(double bonusDamageToBuildingPercent) {
     return new CustomModifier(
-            "Siege",
-            "spell_28_11.png",
-            "This unit deals -x%- more damage to buildings",
-            bonusDamageToBuildingPercent,
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            false,
-            false,
-            true)
+        "Siege",
+        "spell_28_11.png",
+        "This unit deals -x%- more damage to buildings",
+        bonusDamageToBuildingPercent,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        false,
+        false,
+        true)
         .uniqueCopy();
   }
 
-  /** Modifier that decreases total movement */
+  /**
+   * Modifier that decreases total movement
+   */
   public static Modifier sluggish(int totalMovementDecrease) {
     return new StatModifier(
-            "Sluggish",
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            StatType.MOVEMENT_TOTAL,
-            StatModifier.ModificationType.ADD,
-            -totalMovementDecrease)
+        "Sluggish",
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        StatType.MOVEMENT_TOTAL,
+        StatModifier.ModificationType.ADD,
+        -totalMovementDecrease)
         .uniqueCopy();
   }
 
-  /** Modifier that reduces incoming ranged damage from units that don't have siege */
+  /**
+   * Modifier that reduces incoming ranged damage from units that don't have siege
+   */
   public static Modifier solid(double damageReductionPercent) {
     return new CustomModifier(
-            "Solid",
-            "spell_6_4.png",
-            "This unit takes -x%- less damage from ranged attacks from units without Siege",
-            damageReductionPercent,
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            true,
-            true,
-            true)
+        "Solid",
+        "spell_6_4.png",
+        "This unit takes -x%- less damage from ranged attacks from units without Siege",
+        damageReductionPercent,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        true,
+        true,
+        true)
         .uniqueCopy();
   }
 
-  /** Modifier Bundle that grants bonus min and max attack. */
+  /**
+   * Modifier Bundle that grants bonus min and max attack.
+   */
   public static ModifierBundle strengthened(int attackBonus) {
     return new ModifierBundle(
         new StatModifier(
-                "Strengthened",
-                Integer.MAX_VALUE,
-                StackMode.STACKABLE,
-                StatType.MIN_ATTACK,
-                StatModifier.ModificationType.ADD,
-                attackBonus)
+            "Strengthened",
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            StatType.MIN_ATTACK,
+            StatModifier.ModificationType.ADD,
+            attackBonus)
             .uniqueCopy(),
         new StatModifier(
-                // Empty so name doesn't occur twice.
-                "",
-                Integer.MAX_VALUE,
-                StackMode.STACKABLE,
-                StatType.MAX_ATTACK,
-                StatModifier.ModificationType.ADD,
-                attackBonus)
+            // Empty so name doesn't occur twice.
+            "",
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            StatType.MAX_ATTACK,
+            StatModifier.ModificationType.ADD,
+            attackBonus)
             .uniqueCopy());
   }
 
-  /** Modifier that slowly regenerates health. */
+  /**
+   * Modifier that slowly regenerates health.
+   */
   public static Modifier tenacity(int healthGainedPerTurn) {
     return new CustomModifier(
-            "Tenacity",
-            "spell_32_3.png",
-            "This unit gains -x- health each turn",
-            healthGainedPerTurn,
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            true,
-            true,
-            true)
+        "Tenacity",
+        "spell_32_3.png",
+        "This unit gains -x- health each turn",
+        healthGainedPerTurn,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        true,
+        true,
+        true)
         .uniqueCopy();
   }
 
-  /** Modifier that reduces incoming damage */
+  /**
+   * Modifier that reduces incoming damage
+   */
   public static Modifier toughness(int damageReduction) {
     return new CustomModifier(
-            "Toughness",
-            "spell_0_13.png",
-            "This unit takes -x- less damage from all sources",
-            damageReduction,
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            true,
-            true,
-            true)
+        "Toughness",
+        "spell_0_13.png",
+        "This unit takes -x- less damage from all sources",
+        damageReduction,
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        true,
+        true,
+        true)
         .uniqueCopy();
   }
 
-  /** Modifier that reduces movement cost in mountains. */
+  /**
+   * Modifier that reduces movement cost in mountains.
+   */
   public static Modifier trailblazer(int mountainMoveCost) {
     return new StatModifier(
-            "Trailblazer",
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            StatType.MOUNTAIN_COST,
-            StatModifier.ModificationType.SET_MIN,
-            mountainMoveCost)
+        "Trailblazer",
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        StatType.MOUNTAIN_COST,
+        StatModifier.ModificationType.SET_MIN,
+        mountainMoveCost)
         .uniqueCopy();
   }
 
-  /** Modifier that gives a unit bonus actions per turn. */
+  /**
+   * Modifier that gives a unit bonus actions per turn.
+   */
   public static Modifier training(int bonusActions) {
     return new StatModifier(
-            "Training",
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            StatType.ACTIONS_PER_TURN,
-            StatModifier.ModificationType.ADD,
-            bonusActions)
+        "Training",
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        StatType.ACTIONS_PER_TURN,
+        StatModifier.ModificationType.ADD,
+        bonusActions)
         .uniqueCopy();
   }
 
-  /** Modifier that increases total movement */
+  /**
+   * Modifier that increases total movement
+   */
   public static Modifier quickness(int totalMovementIncrease) {
     return new StatModifier(
-            "Quickness",
-            Integer.MAX_VALUE,
-            StackMode.STACKABLE,
-            StatType.MOVEMENT_TOTAL,
-            StatModifier.ModificationType.ADD,
-            totalMovementIncrease)
+        "Quickness",
+        Integer.MAX_VALUE,
+        StackMode.STACKABLE,
+        StatType.MOVEMENT_TOTAL,
+        StatModifier.ModificationType.ADD,
+        totalMovementIncrease)
         .uniqueCopy();
   }
 
-  /** Modifier that decreases attack strength */
+  /**
+   * Modifier that decreases attack strength
+   */
   public static ModifierBundle weakened(int attackDecrease) {
     return new ModifierBundle(
         new StatModifier(
-                "Weakened",
-                Integer.MAX_VALUE,
-                StackMode.STACKABLE,
-                StatType.MIN_ATTACK,
-                StatModifier.ModificationType.ADD,
-                -attackDecrease)
+            "Weakened",
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            StatType.MIN_ATTACK,
+            StatModifier.ModificationType.ADD,
+            -attackDecrease)
             .uniqueCopy(),
         new StatModifier(
-                // Empty so name doesn't occur twice.
-                "",
-                Integer.MAX_VALUE,
-                StackMode.STACKABLE,
-                StatType.MAX_ATTACK,
-                StatModifier.ModificationType.ADD,
-                -attackDecrease)
+            // Empty so name doesn't occur twice.
+            "",
+            Integer.MAX_VALUE,
+            StackMode.STACKABLE,
+            StatType.MAX_ATTACK,
+            StatModifier.ModificationType.ADD,
+            -attackDecrease)
             .uniqueCopy());
   }
 }

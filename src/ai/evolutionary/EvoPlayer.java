@@ -16,22 +16,34 @@ import java.util.stream.Collectors;
  */
 final class EvoPlayer {
 
-  /** The amount of points to be knocked out. */
+  /**
+   * The amount of points to be knocked out.
+   */
   private static final int KNOCKOUT_POINTS = 0;
 
-  /** The amount of points an EvoPlayer starts with. */
+  /**
+   * The amount of points an EvoPlayer starts with.
+   */
   static final int STARTING_POINTS = 3;
 
-  /** The amount of points needed to split. */
+  /**
+   * The amount of points needed to split.
+   */
   private static final int SPLIT_POINTS = STARTING_POINTS * 2;
 
-  /** The amount of points a player gains when winning and loses when losing. */
+  /**
+   * The amount of points a player gains when winning and loses when losing.
+   */
   static final int DELTA_POINTS = 1;
 
-  /** The chance of a mutation on weight of a delegate. */
+  /**
+   * The chance of a mutation on weight of a delegate.
+   */
   private static final double WEIGHT_MUTATION_CHANCE_ON_SPLIT = 0.3;
 
-  /** The chance of a mutation on a subweight of a delegate. */
+  /**
+   * The chance of a mutation on a subweight of a delegate.
+   */
   private static final double SUBWEIGHT_MUTATION_CHANCE_ON_SPLIT = 0.2;
 
   /**
@@ -40,26 +52,42 @@ final class EvoPlayer {
    */
   private static final double MUTATION_MAX_VALUE_ON_SPLIT = 0.2;
 
-  /** Possible changes based on a point change. */
+  /**
+   * Possible changes based on a point change.
+   */
   enum PointChangeResult {
-    /** No change necessary. */
+    /**
+     * No change necessary.
+     */
     NO_CHANGE,
-    /** Should split. */
+    /**
+     * Should split.
+     */
     SPLIT,
-    /** Is knocked out. */
+    /**
+     * Is knocked out.
+     */
     KNOCKOUT
   }
 
-  /** The current points this has. */
+  /**
+   * The current points this has.
+   */
   private int points;
 
-  /** The list of delegates to use for this player. */
+  /**
+   * The list of delegates to use for this player.
+   */
   private final List<Delegate> delegateList;
 
-  /** The controller to use for this EvoPlayer. */
+  /**
+   * The controller to use for this EvoPlayer.
+   */
   private final DelegatingAIController aiController;
 
-  /** Creates a new EvoPlayer with the given delegates list. */
+  /**
+   * Creates a new EvoPlayer with the given delegates list.
+   */
   EvoPlayer(Iterable<Delegate> delegates) {
     points = STARTING_POINTS;
     delegateList = new ArrayList<>();
@@ -71,7 +99,9 @@ final class EvoPlayer {
             .build();
   }
 
-  /** Reset's this' points after splitting. */
+  /**
+   * Reset's this' points after splitting.
+   */
   void resetPoints() {
     points = STARTING_POINTS;
   }
@@ -92,7 +122,9 @@ final class EvoPlayer {
     }
   }
 
-  /** Returns a list of headers for the weights used in this, in the order of delegates. */
+  /**
+   * Returns a list of headers for the weights used in this, in the order of delegates.
+   */
   List<String> getWeightsHeader() {
     List<String> headers = new ArrayList<>();
     for (Delegate delegate : delegateList) {
@@ -111,7 +143,9 @@ final class EvoPlayer {
     return headers;
   }
 
-  /** Returns a list of all weights used in this, in the order of delegates. */
+  /**
+   * Returns a list of all weights used in this, in the order of delegates.
+   */
   List<Double> getWeightsList() {
     List<Double> weights = new ArrayList<>();
     for (Delegate delegate : delegateList) {
@@ -127,7 +161,9 @@ final class EvoPlayer {
     return weights;
   }
 
-  /** Returns a controller to use for this player, when it plays a game. */
+  /**
+   * Returns a controller to use for this player, when it plays a game.
+   */
   DelegatingAIController getController() {
     return aiController;
   }

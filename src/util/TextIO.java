@@ -17,8 +17,11 @@ import java.util.List;
  */
 public final class TextIO {
 
-  /** Constructor: It prevents instantiation of TextIO */
-  private TextIO() {}
+  /**
+   * Constructor: It prevents instantiation of TextIO
+   */
+  private TextIO() {
+  }
 
   /**
    * Write s to text file f.
@@ -76,7 +79,7 @@ public final class TextIO {
     } while (line != null);
 
     br.close();
-    return stringBuilder.toString().substring(1); // Cut off preceding newline character
+    return stringBuilder.substring(1); // Cut off preceding newline character
   }
 
   /**

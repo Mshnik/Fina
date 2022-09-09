@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
+
 import model.board.Direction;
 import model.board.Terrain;
 import model.board.Tile;
@@ -28,92 +29,155 @@ import model.unit.commander.Commander;
 import model.unit.modifier.Modifiers.ModifierDescription;
 import view.gui.panel.GamePanel;
 
-/** Library for lookup of different image resources. Also some drawing functionality */
+/**
+ * Library for lookup of different image resources. Also some drawing functionality
+ */
 public final class ImageIndex {
 
-  /** Prevent instantiation of ImageIndex */
-  private ImageIndex() {}
+  /**
+   * Prevent instantiation of ImageIndex
+   */
+  private ImageIndex() {
+  }
 
-  /** Root Location of image files */
+  /**
+   * Root Location of image files
+   */
   private static final String IMAGE_ROOT = "img/";
 
-  /** Location of terrain files within image root */
+  /**
+   * Location of terrain files within image root
+   */
   private static final String TERRAIN_IMAGE_ROOT = "terrain/";
 
-  /** Location of class icons within image root */
+  /**
+   * Location of class icons within image root
+   */
   private static final String CLASS_ICONS_ROOT = "icons/weapons/";
 
-  /** Location of ability icons within image root */
+  /**
+   * Location of ability icons within image root
+   */
   private static final String ABILITY_ICONS_ROOT = "icons/spell/";
 
-  /** Location of modifier icons within image root */
+  /**
+   * Location of modifier icons within image root
+   */
   private static final String MODIFIER_ICONS_ROOT = "icons/spell/";
 
-  /** Image root for commanders within image root */
+  /**
+   * Image root for commanders within image root
+   */
   private static final String COMMANDER_IMAGE_ROOT = "unit/";
 
-  /** Image root for combatants within image root */
+  /**
+   * Image root for combatants within image root
+   */
   private static final String COMBATANT_IMAGE_ROOT = "unit/fireemblem/";
 
-  /** Image root for Building images within image root */
+  /**
+   * Image root for Building images within image root
+   */
   private static final String BUILDING_IMAGE_ROOT = "building/";
 
   // TERRAIN
 
-  /** The image for margin outside of the board */
+  /**
+   * The image for margin outside of the board
+   */
   private static BufferedImage MARGIN;
 
-  /** The image for grassy terrain */
+  /**
+   * The image for grassy terrain
+   */
   private static BufferedImage GRASS;
-  /** The image for mountain terrain */
+  /**
+   * The image for mountain terrain
+   */
   private static BufferedImage MOUNTAINS;
-  /** The images for sea terrain */
+  /**
+   * The images for sea terrain
+   */
   private static ArrayList<BufferedImage> SEA;
-  /** The image for woods terrain */
+  /**
+   * The image for woods terrain
+   */
   private static BufferedImage WOODS;
-  /** The image for ancient ground terrain */
+  /**
+   * The image for ancient ground terrain
+   */
   private static BufferedImage ANCIENT_GROUND;
-  /** The image for sandstone texture */
+  /**
+   * The image for sandstone texture
+   */
   public static BufferedImage SANDSTONE;
-  /** The image for mosaic texture */
+  /**
+   * The image for mosaic texture
+   */
   public static BufferedImage MOSAIC;
-  /** The image for parchment texture */
+  /**
+   * The image for parchment texture
+   */
   public static BufferedImage PARCHMENT;
 
   // UNIT ICONS
 
-  /** The image for the Fighter icon. */
+  /**
+   * The image for the Fighter icon.
+   */
   private static BufferedImage FIGHTER_ICON;
-  /** The image for the Assassin icon. */
+  /**
+   * The image for the Assassin icon.
+   */
   private static BufferedImage ASSASSIN_ICON;
-  /** The image for the Mage icon. */
+  /**
+   * The image for the Mage icon.
+   */
   private static BufferedImage MAGE_ICON;
-  /** The image for the Ranger icon. */
+  /**
+   * The image for the Ranger icon.
+   */
   private static BufferedImage RANGER_ICON;
-  /** The image for the Tank icon. */
+  /**
+   * The image for the Tank icon.
+   */
   private static BufferedImage TANK_ICON;
 
   // ABILITY ICONS
 
-  /** The image for an attack ability. */
+  /**
+   * The image for an attack ability.
+   */
   private static BufferedImage ATTACK_ABILITY_ICON;
-  /** The image for a heal ability. */
+  /**
+   * The image for a heal ability.
+   */
   private static BufferedImage HEAL_ABILITY_ICON;
-  /** The image for a buff ability. */
+  /**
+   * The image for a buff ability.
+   */
   private static BufferedImage BUFF_ABILITY_ICON;
-  /** The image for a utility ability. */
+  /**
+   * The image for a utility ability.
+   */
   private static BufferedImage UTILITY_ABILITY_ICON;
 
   // MODIFIERS
 
-  /** Read in modifiers thus far. */
+  /**
+   * Read in modifiers thus far.
+   */
   private static HashMap<String, BufferedImage> readModifiers;
 
   // UNITS
 
-  /** Read in units thus far */
+  /**
+   * Read in units thus far
+   */
   private static HashMap<String, BufferedImage> readUnits;
-  /** Tinted units thus far */
+  /**
+   * Tinted units thus far
+   */
   private static HashMap<String, HashMap<String, BufferedImage>> tintedUnits;
 
   /* Static initializer for the Image Class - do all image reading here */
@@ -168,7 +232,9 @@ public final class ImageIndex {
     }
   }
 
-  /** Helper to compute locations given start x,y and increment. */
+  /**
+   * Helper to compute locations given start x,y and increment.
+   */
   private static List<BufferedImage> createTileSheetPoints(
       BufferedImage sheet,
       int xStart,
@@ -190,12 +256,16 @@ public final class ImageIndex {
         .collect(Collectors.toList());
   }
 
-  /** Returns the margin image file for painting outside of the board. */
+  /**
+   * Returns the margin image file for painting outside of the board.
+   */
   public static BufferedImage margin() {
     return MARGIN;
   }
 
-  /** Returns the image file corresponding to the given terrain. */
+  /**
+   * Returns the image file corresponding to the given terrain.
+   */
   public static BufferedImage imageForTerrain(Terrain t) {
     switch (t) {
       case GRASS:
@@ -233,7 +303,9 @@ public final class ImageIndex {
     }
   }
 
-  /** Returns the image file for the corresponding combatant class. */
+  /**
+   * Returns the image file for the corresponding combatant class.
+   */
   public static BufferedImage imageForCombatantClass(CombatantClass combatantClass) {
     switch (combatantClass) {
       case FIGHTER:
@@ -251,7 +323,9 @@ public final class ImageIndex {
     }
   }
 
-  /** Returns the image file for the given ability. */
+  /**
+   * Returns the image file for the given ability.
+   */
   public static BufferedImage imageForAbility(Ability ability) {
     switch (ability.abilityType) {
       case ATTACK:
@@ -267,7 +341,9 @@ public final class ImageIndex {
     }
   }
 
-  /** Returns the image file for the given Modifier filename. */
+  /**
+   * Returns the image file for the given Modifier filename.
+   */
   private static BufferedImage imageForModifier(String modifierFilename) {
     String filename = IMAGE_ROOT + MODIFIER_ICONS_ROOT + modifierFilename;
     if (readModifiers.containsKey(filename)) {
@@ -283,19 +359,25 @@ public final class ImageIndex {
     }
   }
 
-  /** Returns the image file for the given ModifierBundle. */
+  /**
+   * Returns the image file for the given ModifierBundle.
+   */
   public static BufferedImage imageForModifierDescription(ModifierDescription modifierDescription) {
     return imageForModifier(modifierDescription.imageFilename);
   }
 
-  /** Returns the key for the given unit in the readUnits map. */
+  /**
+   * Returns the key for the given unit in the readUnits map.
+   */
   private static String getImageKey(Unit unit, Player activePlayer) {
     return unit.getImgFilename()
         + "-"
         + (unit.owner == null ? activePlayer.index : unit.owner.index);
   }
 
-  /** Returns the image file corresponding to the given model.unit */
+  /**
+   * Returns the image file corresponding to the given model.unit
+   */
   public static BufferedImage imageForUnit(Unit unit, Player activePlayer) {
     String imageKey = getImageKey(unit, activePlayer);
     if (readUnits.containsKey(imageKey)) {
@@ -332,9 +414,9 @@ public final class ImageIndex {
   /**
    * Tints the given image with the given color.
    *
-   * @param unit - the image to paint and tint
+   * @param unit         - the image to paint and tint
    * @param activePlayer - the active player to draw the unit for.
-   * @param color - the color to tint. Alpha value of input color isn't used.
+   * @param color        - the color to tint. Alpha value of input color isn't used.
    * @return A tinted version of loadImg
    */
   public static BufferedImage tint(Unit unit, Player activePlayer, Color color) {
@@ -376,7 +458,9 @@ public final class ImageIndex {
     return img;
   }
 
-  /** Draws a border around the set of tiles. */
+  /**
+   * Draws a border around the set of tiles.
+   */
   public static void trace(Collection<Tile> tiles, GamePanel gp, Graphics2D g2d) {
     for (Tile t : tiles) {
       for (Direction d : Direction.values()) {
@@ -390,7 +474,9 @@ public final class ImageIndex {
     }
   }
 
-  /** Fills the given tiles. */
+  /**
+   * Fills the given tiles.
+   */
   public static void fill(Collection<Tile> tiles, GamePanel gp, Graphics2D g2d) {
     for (Tile t : tiles) {
       g2d.fillRect(gp.getXPosition(t), gp.getYPosition(t), gp.cellSize(), gp.cellSize());
@@ -447,14 +533,18 @@ public final class ImageIndex {
       return percentFull;
     }
 
-    /** Returns a list of one drawing bar segment. */
+    /**
+     * Returns a list of one drawing bar segment.
+     */
     public static List<DrawingBarSegment> listOf(Color color1, double percentFull1) {
       ArrayList<DrawingBarSegment> list = new ArrayList<>();
       list.add(new DrawingBarSegment(color1, percentFull1));
       return list;
     }
 
-    /** Returns a list of two drawing bar segments. */
+    /**
+     * Returns a list of two drawing bar segments.
+     */
     public static List<DrawingBarSegment> listOf(
         Color color1, double percentFull1, Color color2, double percentFull2) {
       ArrayList<DrawingBarSegment> list = new ArrayList<>();
@@ -467,25 +557,25 @@ public final class ImageIndex {
   /**
    * Draws a bar with the border and fill colors, full the given amount, etc etc etc.
    *
-   * @param g2d - the graphics object to use for drawing. Can't be null
-   * @param X - the x coordinate of the top left corner of the bar
-   * @param Y - the y coordinate of the top left corner of the bar
-   * @param BAR_WIDTH - the width of the bar
-   * @param BAR_HEIGHT - the height of the bar
-   * @param backColor - the color to draw behind the bar for any unfilled portion. can be null
-   * @param borderColor - the color to draw the border of the bar. If strokeWidth is 0, this is
-   *     unused
-   * @param strokeWidth - the width of the border portion of the bar. Can't be negative.
-   * @param segments - the color and percentages of the fill portion of the bar. Total percent
-   *     should be in [0,1].
-   * @param maxVal - the value corresponding the the max fullness of this bar
-   * @param text - text to draw. Set to empty to draw nothing.
-   * @param textColor - color to draw the text. If text is null or empty, unused.
-   * @param textFont - the font to use for text drawing. If text is null or empty, unused
+   * @param g2d            - the graphics object to use for drawing. Can't be null
+   * @param X              - the x coordinate of the top left corner of the bar
+   * @param Y              - the y coordinate of the top left corner of the bar
+   * @param BAR_WIDTH      - the width of the bar
+   * @param BAR_HEIGHT     - the height of the bar
+   * @param backColor      - the color to draw behind the bar for any unfilled portion. can be null
+   * @param borderColor    - the color to draw the border of the bar. If strokeWidth is 0, this is
+   *                       unused
+   * @param strokeWidth    - the width of the border portion of the bar. Can't be negative.
+   * @param segments       - the color and percentages of the fill portion of the bar. Total percent
+   *                       should be in [0,1].
+   * @param maxVal         - the value corresponding the the max fullness of this bar
+   * @param text           - text to draw. Set to empty to draw nothing.
+   * @param textColor      - color to draw the text. If text is null or empty, unused.
+   * @param textFont       - the font to use for text drawing. If text is null or empty, unused
    * @param incrementColor - the color to draw the increment lines in. set to null or transparent to
-   *     not use
-   * @param incrementVal - the numeric value corresponding to one increment value. If incrementColor
-   *     is null, not used.
+   *                       not use
+   * @param incrementVal   - the numeric value corresponding to one increment value. If incrementColor
+   *                       is null, not used.
    */
   public static void drawBar(
       Graphics2D g2d,

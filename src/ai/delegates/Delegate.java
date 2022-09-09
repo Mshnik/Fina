@@ -2,6 +2,7 @@ package ai.delegates;
 
 import ai.AIAction;
 import ai.AIAction.AIActionType;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,10 +10,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/** An abstract class for a piece of an AI that functions as an adviser to the AI. */
+/**
+ * An abstract class for a piece of an AI that functions as an adviser to the AI.
+ */
 public abstract class Delegate {
 
-  /** The actionTypes this Delegate cares about. Other ActionTypes will always get a score of 0. */
+  /**
+   * The actionTypes this Delegate cares about. Other ActionTypes will always get a score of 0.
+   */
   private final Set<AIActionType> validActionTypes;
 
   /**
@@ -51,38 +56,52 @@ public abstract class Delegate {
     }
   }
 
-  /** Returns the current weight of this delegate. */
+  /**
+   * Returns the current weight of this delegate.
+   */
   public double getWeight() {
     return weight;
   }
 
-  /** Sets the weight of this Delegate and returns it. */
+  /**
+   * Sets the weight of this Delegate and returns it.
+   */
   public Delegate withWeight(double weight) {
     this.weight = weight;
     return this;
   }
 
-  /** Alters the current weight of this delegate by the given delta. */
+  /**
+   * Alters the current weight of this delegate by the given delta.
+   */
   public Delegate changeWeight(double deltaWeight) {
     weight += deltaWeight;
     return this;
   }
 
-  /** Returns the subWeight at the given index. */
+  /**
+   * Returns the subWeight at the given index.
+   */
   double getSubWeight(int index) {
     return subWeights[index];
   }
 
-  /** Returns the subWeight at the given index. */
+  /**
+   * Returns the subWeight at the given index.
+   */
   public Delegate changeSubWeight(int index, double deltaWeight) {
     subWeights[index] += deltaWeight;
     return this;
   }
 
-  /** Returns the expected length of the subweights array. If unused, should be 0. */
+  /**
+   * Returns the expected length of the subweights array. If unused, should be 0.
+   */
   abstract int getExpectedSubweightsLength();
 
-  /** Returns the length of the subweights array. */
+  /**
+   * Returns the length of the subweights array.
+   */
   public int getSubweightsLength() {
     return subWeights.length;
   }
@@ -93,17 +112,23 @@ public abstract class Delegate {
    */
   public abstract List<String> getSubweightsHeaders();
 
-  /** Returns the current subweights. */
+  /**
+   * Returns the current subweights.
+   */
   public double[] getSubWeights() {
     return Arrays.copyOf(subWeights, subWeights.length);
   }
 
-  /** Sets the subweights of this Delegate and returns it. */
+  /**
+   * Sets the subweights of this Delegate and returns it.
+   */
   public Delegate withSubweights(List<Double> subWeights) {
     return withSubweights(subWeights.stream().mapToDouble(d -> d).toArray());
   }
 
-  /** Sets the subweights of this Delegate and returns it. */
+  /**
+   * Sets the subweights of this Delegate and returns it.
+   */
   public Delegate withSubweights(double... subWeights) {
     if (getExpectedSubweightsLength() != subWeights.length) {
       throw new RuntimeException(
@@ -116,7 +141,9 @@ public abstract class Delegate {
     return this;
   }
 
-  /** Sets the subweights without checking length. Only use this if we're really sure it's ok. */
+  /**
+   * Sets the subweights without checking length. Only use this if we're really sure it's ok.
+   */
   Delegate setSubweightsUnsafe(double... subWeights) {
     this.subWeights = subWeights;
     return this;
@@ -130,7 +157,9 @@ public abstract class Delegate {
    */
   abstract double getRawScore(AIAction action);
 
-  /** Returns the processed score of how much this Delegate likes the given action. */
+  /**
+   * Returns the processed score of how much this Delegate likes the given action.
+   */
   public double getScore(AIAction action) {
     if (!validActionTypes.contains(action.actionType)) {
       return 0;
@@ -138,7 +167,9 @@ public abstract class Delegate {
     return weight * getRawScore(action);
   }
 
-  /** Returns the most preferred action of the given actions. */
+  /**
+   * Returns the most preferred action of the given actions.
+   */
   public AIAction getPreferredAction(AIAction... actions) {
     return Arrays.stream(actions).max(Comparator.comparingDouble(this::getScore)).orElse(null);
   }

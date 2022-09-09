@@ -3,6 +3,7 @@ package model.board;
 import controller.selector.CastSelector;
 import controller.selector.PathSelector;
 import controller.selector.SummonSelector;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +16,7 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import model.game.Player;
 import model.game.Stringable;
 import model.unit.MovingUnit;
@@ -40,10 +42,14 @@ public final class Board implements Iterable<Tile>, Stringable {
    */
   private static final int WHOLE_BOARD_CLOUD_STARTING_DISTANCE = 1000;
 
-  /** The csv file this board was read from. */
+  /**
+   * The csv file this board was read from.
+   */
   public final String filepath;
 
-  /** The tiles that make up this model.board. Must be rectangular (non-jagged) */
+  /**
+   * The tiles that make up this model.board. Must be rectangular (non-jagged)
+   */
   private final Tile[][] tiles;
 
   /**
@@ -90,27 +96,37 @@ public final class Board implements Iterable<Tile>, Stringable {
     this.commanderStartLocations = Collections.unmodifiableList(commanderStartLocations);
   }
 
-  /** Returns the height (# rows) of this Board */
+  /**
+   * Returns the height (# rows) of this Board
+   */
   public int getHeight() {
     return tiles.length;
   }
 
-  /** Returns the width (# columns) of this Board */
+  /**
+   * Returns the width (# columns) of this Board
+   */
   public int getWidth() {
     return tiles[0].length;
   }
 
-  /** Returns true iff the given r,c is on the board. */
+  /**
+   * Returns true iff the given r,c is on the board.
+   */
   public boolean isOnBoard(int r, int c) {
     return r >= 0 && r < tiles.length && c >= 0 && c < tiles[r].length;
   }
 
-  /** Returns true iff the given point is on the board. */
+  /**
+   * Returns true iff the given point is on the board.
+   */
   public boolean isOnBoard(MPoint p) {
     return p.row >= 0 && p.row < tiles.length && p.col >= 0 && p.col < tiles[p.row].length;
   }
 
-  /** Returns the tile at the given index, throws IllegalArgumentException */
+  /**
+   * Returns the tile at the given index, throws IllegalArgumentException
+   */
   public Tile getTileAt(int r, int c) throws IllegalArgumentException {
     if (r < 0 || r >= tiles.length || c < 0 || c >= tiles[r].length)
       throw new IllegalArgumentException(
@@ -119,7 +135,9 @@ public final class Board implements Iterable<Tile>, Stringable {
     return tiles[r][c];
   }
 
-  /** Returns the tile at the given location. Loc expected in (col, row). */
+  /**
+   * Returns the tile at the given location. Loc expected in (col, row).
+   */
   public Tile getTileAt(MPoint loc) {
     return getTileAt(loc.row, loc.col);
   }
@@ -149,37 +167,43 @@ public final class Board implements Iterable<Tile>, Stringable {
    */
   private Tile[] getTileNeighbors(Tile t, boolean includeDiagonal) {
     if (includeDiagonal) {
-      return new Tile[] {
-        getTileInDirection(t, Direction.LEFT),
-        getTileInDirection(t, Direction.UP, Direction.LEFT),
-        getTileInDirection(t, Direction.UP),
-        getTileInDirection(t, Direction.UP, Direction.RIGHT),
-        getTileInDirection(t, Direction.RIGHT),
-        getTileInDirection(t, Direction.DOWN, Direction.RIGHT),
-        getTileInDirection(t, Direction.DOWN),
-        getTileInDirection(t, Direction.LEFT, Direction.DOWN),
+      return new Tile[]{
+          getTileInDirection(t, Direction.LEFT),
+          getTileInDirection(t, Direction.UP, Direction.LEFT),
+          getTileInDirection(t, Direction.UP),
+          getTileInDirection(t, Direction.UP, Direction.RIGHT),
+          getTileInDirection(t, Direction.RIGHT),
+          getTileInDirection(t, Direction.DOWN, Direction.RIGHT),
+          getTileInDirection(t, Direction.DOWN),
+          getTileInDirection(t, Direction.LEFT, Direction.DOWN),
       };
     } else {
-      return new Tile[] {
-        getTileInDirection(t, Direction.LEFT),
-        getTileInDirection(t, Direction.UP),
-        getTileInDirection(t, Direction.RIGHT),
-        getTileInDirection(t, Direction.DOWN)
+      return new Tile[]{
+          getTileInDirection(t, Direction.LEFT),
+          getTileInDirection(t, Direction.UP),
+          getTileInDirection(t, Direction.RIGHT),
+          getTileInDirection(t, Direction.DOWN)
       };
     }
   }
 
-  /** Returns a set of tiles that have the given terrain type. */
+  /**
+   * Returns a set of tiles that have the given terrain type.
+   */
   public Set<Tile> getTilesWithTerrainType(Terrain terrain) {
     return stream().filter(t -> t.terrain == terrain).collect(Collectors.toSet());
   }
 
-  /** Returns the maximum number of players this board can support. */
+  /**
+   * Returns the maximum number of players this board can support.
+   */
   public int getMaxPlayers() {
     return commanderStartLocations.size();
   }
 
-  /** Returns true if the given location is a commander starting location. */
+  /**
+   * Returns true if the given location is a commander starting location.
+   */
   public boolean isCommanderStartLocation(int row, int col) {
     return commanderStartLocations.contains(MPoint.get(row, col));
   }
@@ -192,7 +216,9 @@ public final class Board implements Iterable<Tile>, Stringable {
     return getTileAt(commanderStartLocations.get(player.index - 1));
   }
 
-  /** Returns a set of tiles that are a contiguous mountain range. Diagonals do not count. */
+  /**
+   * Returns a set of tiles that are a contiguous mountain range. Diagonals do not count.
+   */
   public Set<Tile> getContiguousMountainRange(Tile center) {
     if (center.terrain != Terrain.MOUNTAIN) {
       throw new RuntimeException("Must start on mountain to get range");
@@ -239,7 +265,9 @@ public final class Board implements Iterable<Tile>, Stringable {
     return tiles;
   }
 
-  /** Returns the set of tiles the given summoner unit could choose to summon a new unit. */
+  /**
+   * Returns the set of tiles the given summoner unit could choose to summon a new unit.
+   */
   public <U extends Unit & Summoner> List<Tile> getSummonCloud(U summoner, Unit toSummon) {
     ArrayList<Tile> radialTiles = getRadialCloud(summoner.getLocation(), summoner.getSummonRange());
     HashSet<Tile> toRemove = new HashSet<Tile>();
@@ -251,12 +279,16 @@ public final class Board implements Iterable<Tile>, Stringable {
     return radialTiles;
   }
 
-  /** Returns the set of tiles the given summon selector could choose to summon a new model.unit */
+  /**
+   * Returns the set of tiles the given summon selector could choose to summon a new model.unit
+   */
   public List<Tile> getSummonCloud(SummonSelector<?> ss) {
     return getSummonCloud(ss.summoner, ss.toSummon);
   }
 
-  /** Returns the set of tiles the given casting unit could choose to cast the given spell. */
+  /**
+   * Returns the set of tiles the given casting unit could choose to cast the given spell.
+   */
   public List<Tile> getCastCloud(Commander caster, Ability toCast) {
     int castDist =
         toCast.castDist + (toCast.canBeCloudBoosted ? 0 : caster.owner.getCastSelectBoost());
@@ -294,12 +326,16 @@ public final class Board implements Iterable<Tile>, Stringable {
     return cloud;
   }
 
-  /** Returns the set of tiles the given cast selector could choose to cast a spell. */
+  /**
+   * Returns the set of tiles the given cast selector could choose to cast a spell.
+   */
   public List<Tile> getCastCloud(CastSelector cs) {
     return getCastCloud(cs.caster, cs.toCast);
   }
 
-  /** Returns the most recent pathComputationId, from a call to getMovementCloud(..) */
+  /**
+   * Returns the most recent pathComputationId, from a call to getMovementCloud(..)
+   */
   public int getPathComputationId() {
     return pathComputationId;
   }
@@ -460,31 +496,41 @@ public final class Board implements Iterable<Tile>, Stringable {
     return t.dist;
   }
 
-  /** Returns a stream over the tiles in this Board. */
+  /**
+   * Returns a stream over the tiles in this Board.
+   */
   public Stream<Tile> stream() {
     Iterator<Tile> iterator = iterator();
     return Stream.generate(iterator::next).limit(getWidth() * getHeight());
   }
 
-  /** Returns an iterator over the tiles in this Board */
+  /**
+   * Returns an iterator over the tiles in this Board
+   */
   @Override
   public Iterator<Tile> iterator() {
     return new BoardIterator();
   }
 
-  /** An iterator over boards - goes along rows for its iteration */
+  /**
+   * An iterator over boards - goes along rows for its iteration
+   */
   private class BoardIterator implements Iterator<Tile> {
 
     private int r;
     private int c;
 
-    /** Constructs a new model.board iterator, with row and column set to 0 */
+    /**
+     * Constructs a new model.board iterator, with row and column set to 0
+     */
     private BoardIterator() {
       r = 0;
       c = 0;
     }
 
-    /** Return true iff r < tiles.length && c < tiles[r].length */
+    /**
+     * Return true iff r < tiles.length && c < tiles[r].length
+     */
     @Override
     public boolean hasNext() {
       return r < tiles.length && c < tiles[r].length;
@@ -505,7 +551,9 @@ public final class Board implements Iterable<Tile>, Stringable {
       return t;
     }
 
-    /** Not supported - do not call */
+    /**
+     * Not supported - do not call
+     */
     @Override
     public void remove() {
       throw new RuntimeException("Remove Operation Not Supported in Board Iterators");

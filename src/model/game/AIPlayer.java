@@ -2,14 +2,18 @@ package model.game;
 
 import ai.AIAction;
 import ai.AIController;
+
 import java.awt.Color;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import model.unit.MovingUnit;
 import model.unit.combatant.Combat;
 import model.unit.combatant.Combatant;
 import model.unit.commander.Commander;
 
-/** A player controlled by an AI. */
+/**
+ * A player controlled by an AI.
+ */
 public final class AIPlayer extends Player {
 
   /**
@@ -24,23 +28,31 @@ public final class AIPlayer extends Player {
    */
   private static final int SLEEP_TIME_BETWEEN_ACTIONS_AGAINST_HUMAN = 0;
 
-  /** A unique id assigned at construction time. Useful for ML logs. */
+  /**
+   * A unique id assigned at construction time. Useful for ML logs.
+   */
   private final String id;
 
-  /** The controller handling behavior specification for this AIPlayer. */
+  /**
+   * The controller handling behavior specification for this AIPlayer.
+   */
   private final AIController aiController;
 
-  /** Constructor for Player class with just model.game. */
+  /**
+   * Constructor for Player class with just model.game.
+   */
   public AIPlayer(Game g, Color c, AIController aiController) {
     super(g, c);
     id =
         aiController.id().isEmpty()
-            ? Long.toString(System.currentTimeMillis()) + "-" + idCounter.getAndIncrement()
+            ? System.currentTimeMillis() + "-" + idCounter.getAndIncrement()
             : aiController.id();
     this.aiController = aiController;
   }
 
-  /** Handles the given action. */
+  /**
+   * Handles the given action.
+   */
   private void handleAction(AIAction action) {
     switch (action.actionType) {
       case MOVE_UNIT:
@@ -64,7 +76,9 @@ public final class AIPlayer extends Player {
     }
   }
 
-  /** Sleeps for a short period of time, for realism against human. */
+  /**
+   * Sleeps for a short period of time, for realism against human.
+   */
   private void sleepIfHumanOpponent() {
     if (SLEEP_TIME_BETWEEN_ACTIONS_AGAINST_HUMAN > 0) {
       try {
@@ -104,7 +118,8 @@ public final class AIPlayer extends Player {
    * terminate when it runs out of actions to do. Can be overridden if necessary.
    */
   @Override
-  public void endTurn() {}
+  public void endTurn() {
+  }
 
   @Override
   public String getIdString() {

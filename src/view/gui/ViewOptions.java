@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+
 import model.board.Tile;
 import model.game.Player;
 import model.unit.Unit;
@@ -19,13 +20,19 @@ import view.gui.panel.GamePanel;
  * player can only alter / see their own options.
  */
 public final class ViewOptions {
-  /** The Frame this is drawing view options for. * */
+  /**
+   * The Frame this is drawing view options for. *
+   */
   private final Frame frame;
 
-  /** The index of the player these ViewOptions correspond to. */
+  /**
+   * The index of the player these ViewOptions correspond to.
+   */
   private final Player player;
 
-  /** ModifierIcon types for modifier icons on units. */
+  /**
+   * ModifierIcon types for modifier icons on units.
+   */
   public enum ModifierIconType {
     ANIMATED(AnimatedModifierIcon::new),
     ROW(RowModifierIcon::new);
@@ -37,21 +44,33 @@ public final class ViewOptions {
     }
   }
 
-  /** The modifierIcon type for this player. */
+  /**
+   * The modifierIcon type for this player.
+   */
   private ModifierIconType modifierIconType;
 
-  /** The FilterType on ModifierIcons to paint for this player. */
+  /**
+   * The FilterType on ModifierIcons to paint for this player.
+   */
   private FilterType modifierIconsFilterType;
 
-  /** View types for modifiers icons on units. */
+  /**
+   * View types for modifiers icons on units.
+   */
   public enum ModifierViewType {
-    /** Show modifiers only on the unit the cursor is on. */
+    /**
+     * Show modifiers only on the unit the cursor is on.
+     */
     CURSOR_ONLY,
-    /** Show modifiers on all units. */
-    VIEW_ALL;
+    /**
+     * Show modifiers on all units.
+     */
+    VIEW_ALL
   }
 
-  /** The ModifierViewType to paint for this player. */
+  /**
+   * The ModifierViewType to paint for this player.
+   */
   private ModifierViewType modifierIconViewType;
 
   /**
@@ -60,10 +79,14 @@ public final class ViewOptions {
    */
   private final Set<Combatant> paintDangerRadiusUnits;
 
-  /** The most recent computed danger radius. Set to null when this needs a recompute. */
+  /**
+   * The most recent computed danger radius. Set to null when this needs a recompute.
+   */
   private Set<Tile> dangerRadius;
 
-  /** Constructs a new ViewOptions for the given player. */
+  /**
+   * Constructs a new ViewOptions for the given player.
+   */
   ViewOptions(Frame frame, Player player) {
     this.frame = frame;
     this.player = player;
@@ -74,55 +97,73 @@ public final class ViewOptions {
     dangerRadius = null;
   }
 
-  /** Creates a ModifierIcon for the given unit and returns it. */
+  /**
+   * Creates a ModifierIcon for the given unit and returns it.
+   */
   public ModifierIcon createModifierIconFor(GamePanel gamePanel, Unit u) {
     ModifierIcon modifierIcon = modifierIconType.constructor.apply(gamePanel, u);
     modifierIcon.setFilterType(modifierIconsFilterType);
     return modifierIcon;
   }
 
-  /** Returns the current ModifierIcon ViewType. */
+  /**
+   * Returns the current ModifierIcon ViewType.
+   */
   public ModifierIconType getModifierIconType() {
     return modifierIconType;
   }
 
-  /** Cycles to the next type. */
+  /**
+   * Cycles to the next type.
+   */
   public void cycleModifierIconType() {
     modifierIconType =
         ModifierIconType.values()[
             (modifierIconType.ordinal() + 1) % ModifierIconType.values().length];
   }
 
-  /** Returns the current ModifierIcon FilterType. */
+  /**
+   * Returns the current ModifierIcon FilterType.
+   */
   public FilterType getModifierIconsFilterType() {
     return modifierIconsFilterType;
   }
 
-  /** Cycles to the next display type. */
+  /**
+   * Cycles to the next display type.
+   */
   public void cycleModifierIconsDisplayType() {
     modifierIconsFilterType =
         FilterType.values()[(modifierIconsFilterType.ordinal() + 1) % FilterType.values().length];
   }
 
-  /** Returns the current ModifierIcon ViewType. */
+  /**
+   * Returns the current ModifierIcon ViewType.
+   */
   public ModifierViewType getModifierIconsViewType() {
     return modifierIconViewType;
   }
 
-  /** Cycles to the next view type. */
+  /**
+   * Cycles to the next view type.
+   */
   public void cycleModifierIconsViewType() {
     modifierIconViewType =
         ModifierViewType.values()[
             (modifierIconViewType.ordinal() + 1) % ModifierViewType.values().length];
   }
 
-  /** Clears all units from the paintDangerRadiusUnits. */
+  /**
+   * Clears all units from the paintDangerRadiusUnits.
+   */
   public void clearDangerRadiusUnits() {
     paintDangerRadiusUnits.clear();
     dangerRadius = null;
   }
 
-  /** Adds the given unit to the dangerRadius if it isn't present, removes it if it is present. */
+  /**
+   * Adds the given unit to the dangerRadius if it isn't present, removes it if it is present.
+   */
   public void toggleDangerRadiusUnit(Combatant c) {
     if (!paintDangerRadiusUnits.contains(c)) {
       paintDangerRadiusUnits.add(c);
@@ -132,7 +173,9 @@ public final class ViewOptions {
     dangerRadius = null;
   }
 
-  /** Called when a player's danger radius changes. Always recompute danger Radius here. */
+  /**
+   * Called when a player's danger radius changes. Always recompute danger Radius here.
+   */
   public void unitDangerRadiusChanged() {
     dangerRadius = null;
   }
@@ -147,7 +190,9 @@ public final class ViewOptions {
     }
   }
 
-  /** Returns true if the danger radius has at least one tile in it. */
+  /**
+   * Returns true if the danger radius has at least one tile in it.
+   */
   public boolean hasNonEmptyDangerRadius() {
     return !getDangerRadius().isEmpty();
   }

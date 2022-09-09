@@ -1,39 +1,57 @@
 package ai.evolutionary;
 
-/** Wrapper for a result of a game. */
+/**
+ * Wrapper for a result of a game.
+ */
 final class EvoGameResult {
-  /** True if the first player won, false if this was a tie. */
+  /**
+   * True if the first player won, false if this was a tie.
+   */
   private final boolean player1Won;
 
-  /** The winner if a player won, otherwise one of the two players. */
+  /**
+   * The winner if a player won, otherwise one of the two players.
+   */
   private final EvoPlayer player1;
 
-  /** The loser if a player lost, otherwise one of the two players. */
+  /**
+   * The loser if a player lost, otherwise one of the two players.
+   */
   private final EvoPlayer player2;
 
-  /** Constructs a EvoGameResult. */
+  /**
+   * Constructs a EvoGameResult.
+   */
   private EvoGameResult(boolean player1Won, EvoPlayer player1, EvoPlayer player2) {
     this.player1Won = player1Won;
     this.player1 = player1;
     this.player2 = player2;
   }
 
-  /** Creates a EvoGameResult for a winner and loser. */
+  /**
+   * Creates a EvoGameResult for a winner and loser.
+   */
   static EvoGameResult forWinnerAndLoser(EvoPlayer winner, EvoPlayer loser) {
     return new EvoGameResult(true, winner, loser);
   }
 
-  /** Creates a EvoGameResult for a tie. */
+  /**
+   * Creates a EvoGameResult for a tie.
+   */
   static EvoGameResult forTie(EvoPlayer player1, EvoPlayer player2) {
     return new EvoGameResult(false, player1, player2);
   }
 
-  /** True if this has a winner and loser, false for a tie. */
+  /**
+   * True if this has a winner and loser, false for a tie.
+   */
   boolean hasWinner() {
     return player1Won;
   }
 
-  /** Returns the winner if there is one, throws if this was a tie. */
+  /**
+   * Returns the winner if there is one, throws if this was a tie.
+   */
   EvoPlayer getWinner() {
     if (player1Won) {
       return player1;
@@ -42,7 +60,9 @@ final class EvoGameResult {
     }
   }
 
-  /** Returns the loser if there is one, throws if this was a tie. */
+  /**
+   * Returns the loser if there is one, throws if this was a tie.
+   */
   EvoPlayer getLoser() {
     if (player1Won) {
       return player2;
@@ -51,12 +71,16 @@ final class EvoGameResult {
     }
   }
 
-  /** Returns the first player. May be winner / loser / tie. */
+  /**
+   * Returns the first player. May be winner / loser / tie.
+   */
   EvoPlayer getPlayer1() {
     return player1;
   }
 
-  /** Returns the second player. May be winner / loser / tie. */
+  /**
+   * Returns the second player. May be winner / loser / tie.
+   */
   EvoPlayer getPlayer2() {
     return player2;
   }

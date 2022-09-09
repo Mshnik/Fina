@@ -5,6 +5,7 @@ import controller.game.GameController;
 import controller.selector.AttackSelector;
 import controller.selector.CastSelector;
 import controller.selector.LocationSelector;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.swing.Timer;
+
 import model.board.Terrain;
 import model.board.Tile;
 import model.game.Game;
@@ -47,46 +49,74 @@ import view.gui.image.ImageIndex;
 import view.gui.image.ImageIndex.DrawingBarSegment;
 import view.gui.modifier.ModifierIcon;
 
-/** Drawable wrapper for a model.board object */
+/**
+ * Drawable wrapper for a model.board object
+ */
 public final class GamePanel extends MatrixPanel<Tile> implements Paintable, ComponentListener {
 
-  /** */
+  /**
+   *
+   */
   private static final long serialVersionUID = 1L;
 
-  /** Pixels (size) for each square tile. */
+  /**
+   * Pixels (size) for each square tile.
+   */
   private static final int BASE_CELL_SIZE = 64;
 
-  /** Shading for fog of war - translucent black */
+  /**
+   * Shading for fog of war - translucent black
+   */
   private static final Color FOG_OF_WAR = new Color(0, 0, 0, 0.75f);
 
-  /** Stroke for drawing effect radii */
+  /**
+   * Stroke for drawing effect radii
+   */
   private static final Stroke RADIUS_STROKE = new BasicStroke(3);
 
-  /** Color of attack radii */
+  /**
+   * Color of attack radii
+   */
   private static final Color ATTACK_COLOR = Color.red;
 
-  /** Color of summon/build radii */
+  /**
+   * Color of summon/build radii
+   */
   private static final Color SUMMON_COLOR = Color.cyan;
 
-  /** Color of cast radii */
+  /**
+   * Color of cast radii
+   */
   private static final Color CAST_BORDER_COLOR = new Color(244, 231, 35);
 
-  /** Color of cast radii */
+  /**
+   * Color of cast radii
+   */
   private static final Color CAST_FILL_COLOR = new Color(0.96f, 0.89f, 0.11f, 0.5f);
 
-  /** The BoardCursor for this GamePanel */
+  /**
+   * The BoardCursor for this GamePanel
+   */
   public final BoardCursor boardCursor;
 
-  /** Map of Unit -> ModifierIcon drawing for that unit. */
+  /**
+   * Map of Unit -> ModifierIcon drawing for that unit.
+   */
   private final Map<Unit, ModifierIcon> unitToModifierIconMap;
 
-  /** The currently animated units, if any. Empty if none. */
+  /**
+   * The currently animated units, if any. Empty if none.
+   */
   private final Map<Unit, UnitAnimation> unitAnimationMap;
 
-  /** The DecisionPanel that is currently active. Null if none */
+  /**
+   * The DecisionPanel that is currently active. Null if none
+   */
   private DecisionPanel decisionPanel;
 
-  /** Timer to trigger a resize to nearest square event, if one is running. */
+  /**
+   * Timer to trigger a resize to nearest square event, if one is running.
+   */
   private Timer resizeTimer;
 
   /**
@@ -113,17 +143,23 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     addComponentListener(this);
   }
 
-  /** Sets the decisionPanel */
+  /**
+   * Sets the decisionPanel
+   */
   public void setDecisionPanel(DecisionPanel d) {
     decisionPanel = d;
   }
 
-  /** Returns the current active decision panel, if any */
+  /**
+   * Returns the current active decision panel, if any
+   */
   public DecisionPanel getDecisionPanel() {
     return decisionPanel;
   }
 
-  /** Adds a new MovementAnimation for the given movingUnit along the given path. */
+  /**
+   * Adds a new MovementAnimation for the given movingUnit along the given path.
+   */
   public void addUnitMovementAnimation(MovingUnit movingUnit, List<Tile> movementPath) {
     synchronized (unitAnimationMap) {
       MovementAnimation animation = new MovementAnimation(this, movingUnit, movementPath);
@@ -136,7 +172,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     }
   }
 
-  /** Adds a new MovementAnimation for the given combatant targeting the given target. */
+  /**
+   * Adds a new MovementAnimation for the given combatant targeting the given target.
+   */
   public void addCombatAnimation(
       Combatant combatant, Tile target, boolean addCounterAttackAnimation) {
     synchronized (unitAnimationMap) {
@@ -165,7 +203,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     return animation;
   }
 
-  /** Cleans up unit animations, removing each that is no longer active. */
+  /**
+   * Cleans up unit animations, removing each that is no longer active.
+   */
   private void cleanupUnitAnimations() {
     synchronized (unitAnimationMap) {
       unitAnimationMap
@@ -189,7 +229,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     getFrame().setActiveCursor(decisionPanel.cursor);
   }
 
-  /** Moves the decision panel to accomidate the current location of the boardCursor */
+  /**
+   * Moves the decision panel to accomidate the current location of the boardCursor
+   */
   public void moveDecisionPanel() {
     Tile t = boardCursor.getElm();
     int x = getXPosition(t);
@@ -207,7 +249,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     repaint();
   }
 
-  /** Moves the decision panel to the center of the screen */
+  /**
+   * Moves the decision panel to the center of the screen
+   */
   public void centerDecisionPanel() {
     int w = decisionPanel.getWidth();
     int h = decisionPanel.getHeight();
@@ -263,7 +307,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     }
   }
 
-  /** Paints this GamePanel, for use in the frame it is in. */
+  /**
+   * Paints this GamePanel, for use in the frame it is in.
+   */
   @Override
   public void paintComponent(Graphics g) {
     Game game = controller.game;
@@ -302,9 +348,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
           break;
       }
     } else if (decisionPanel != null
-            && controller.getDecisionType() == Decision.DecisionType.CAST_DECISION
+        && controller.getDecisionType() == Decision.DecisionType.CAST_DECISION
         || controller.getLocationSelector() != null
-            && controller.getToggle() == GameController.Toggle.CAST_SELECTION) {
+        && controller.getToggle() == GameController.Toggle.CAST_SELECTION) {
       drawCastCloud(g2d);
     }
 
@@ -319,7 +365,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     }
   }
 
-  /** Draws the board of tiles and units. Also creates / tears down ModifierIcons as needed. */
+  /**
+   * Draws the board of tiles and units. Also creates / tears down ModifierIcons as needed.
+   */
   private void drawTilesAndUnits(Graphics2D g2d, Game game) {
     // Paint the model.board itself, painting the portion within
     // [scrollY ... scrollY + maxY - 1],
@@ -369,7 +417,7 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
                     g2d, unit, getXPosition(unit.getLocation()), getYPosition(unit.getLocation()));
                 if (viewOptions.getModifierIconsViewType() == ModifierViewType.VIEW_ALL
                     || viewOptions.getModifierIconsViewType() == ModifierViewType.CURSOR_ONLY
-                        && boardCursor.getElm() == unit.getLocation()) {
+                    && boardCursor.getElm() == unit.getLocation()) {
                   modifierIcon.paintComponent(g2d);
                 }
               }
@@ -394,7 +442,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     cleanupUnitAnimations();
   }
 
-  /** Draws the given tile. Doesn't do any model.unit drawing. */
+  /**
+   * Draws the given tile. Doesn't do any model.unit drawing.
+   */
   private void drawTile(Graphics2D g2d, Tile t) {
     int x = getXPosition(t);
     int y = getYPosition(t);
@@ -414,7 +464,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     }
   }
 
-  /** Draws the given model.unit. Doesn't do any tile drawing. */
+  /**
+   * Draws the given model.unit. Doesn't do any tile drawing.
+   */
   public void drawUnit(Graphics2D g2d, Unit u, int x, int y) {
     // Draw model.unit if it's alive.
     if (u.isAlive()) {
@@ -482,12 +534,14 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     ImageIndex.trace(cloud, this, g2d);
   }
 
-  /** Draws the attack cloud for the hovered unit. */
+  /**
+   * Draws the attack cloud for the hovered unit.
+   */
   private void drawAttackCloud(Graphics2D g2d) {
     List<Tile> tiles =
         ExpandableCloud.create(
-                ExpandableCloud.ExpandableCloudType.CIRCLE,
-                boardCursor.getElm().getOccupyingUnit().getMaxAttackRange() + 1)
+            ExpandableCloud.ExpandableCloudType.CIRCLE,
+            boardCursor.getElm().getOccupyingUnit().getMaxAttackRange() + 1)
             .difference(
                 ExpandableCloud.create(
                     ExpandableCloud.ExpandableCloudType.CIRCLE,
@@ -500,7 +554,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     ImageIndex.trace(tiles, this, g2d);
   }
 
-  /** Draws the summon/build cloud for the hovered unit. */
+  /**
+   * Draws the summon/build cloud for the hovered unit.
+   */
   private void drawSummonOrBuildCloud(Graphics2D g2d) {
     g2d.setColor(SUMMON_COLOR);
     ImageIndex.trace(
@@ -510,7 +566,9 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
         g2d);
   }
 
-  /** Draws the cast cloud for the hovered ability. */
+  /**
+   * Draws the cast cloud for the hovered ability.
+   */
   private void drawCastCloud(Graphics2D g2d) {
     g2d.setStroke(RADIUS_STROKE);
     if (decisionPanel == null) {
@@ -558,47 +616,63 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
     }
   }
 
-  /** Returns the currently selected element */
+  /**
+   * Returns the currently selected element
+   */
   public Tile getElm() {
     return boardCursor.getElm();
   }
 
-  /** Returns the tile at the given row and col. Ignores scrolling and margins for this. */
+  /**
+   * Returns the tile at the given row and col. Ignores scrolling and margins for this.
+   */
   @Override
   public Tile getElmAt(int row, int col) throws IllegalArgumentException {
     return controller.game.board.getTileAt(row, col);
   }
 
-  /** Returns the tile at the given row and col, including scrolling and margins. */
+  /**
+   * Returns the tile at the given row and col, including scrolling and margins.
+   */
   public Tile getElmAtWithScrollingAndMargins(int row, int col) throws IllegalArgumentException {
     return controller.game.board.getTileAt(
         row - marginY / 2 + scrollY, col - marginX / 2 + scrollX);
   }
 
-  /** Returns the width of the model.board's matrix */
+  /**
+   * Returns the width of the model.board's matrix
+   */
   @Override
   public int getMatrixWidth() {
     return controller.game.board.getWidth();
   }
 
-  /** Returns the height of the model.board's matrix */
+  /**
+   * Returns the height of the model.board's matrix
+   */
   @Override
   public int getMatrixHeight() {
     return controller.game.board.getHeight();
   }
 
-  /** Returns the size of cells, based on the current zoom. */
+  /**
+   * Returns the size of cells, based on the current zoom.
+   */
   public int cellSize() {
     return (int) (BASE_CELL_SIZE * controller.frame.getZoom());
   }
 
-  /** Returns GamePanel.cellSize() */
+  /**
+   * Returns GamePanel.cellSize()
+   */
   @Override
   public int getElementHeight() {
     return cellSize();
   }
 
-  /** Returns GamePanel.cellSize() */
+  /**
+   * Returns GamePanel.cellSize()
+   */
   @Override
   public int getElementWidth() {
     return cellSize();
@@ -641,11 +715,14 @@ public final class GamePanel extends MatrixPanel<Tile> implements Paintable, Com
   }
 
   @Override
-  public void componentMoved(ComponentEvent e) {}
+  public void componentMoved(ComponentEvent e) {
+  }
 
   @Override
-  public void componentShown(ComponentEvent e) {}
+  public void componentShown(ComponentEvent e) {
+  }
 
   @Override
-  public void componentHidden(ComponentEvent e) {}
+  public void componentHidden(ComponentEvent e) {
+  }
 }

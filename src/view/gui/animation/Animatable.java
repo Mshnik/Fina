@@ -17,24 +17,35 @@ public interface Animatable extends Paintable {
     return 1;
   }
 
-  /** Return the total number of states of this Animatable (at least 2) */
+  /**
+   * Return the total number of states of this Animatable (at least 2)
+   */
   int getStateCount();
 
-  /** Return the current state this Animatable is on (0 ... getStateCount() - 1) */
+  /**
+   * Return the current state this Animatable is on (0 ... getStateCount() - 1)
+   */
   int getState();
 
-  /** Advance the state of this animatable by 1, rolling over to 0 if necessary */
+  /**
+   * Advance the state of this animatable by 1, rolling over to 0 if necessary
+   */
   void advanceState();
 
-  /** Sets the animation state. Will mod by the number of possible states */
+  /**
+   * Sets the animation state. Will mod by the number of possible states
+   */
   void setState(int state);
 
-  /** True if this is currently active (do animation), false otherwise */
+  /**
+   * True if this is currently active (do animation), false otherwise
+   */
   boolean isActive();
 
   /**
    * Method called when the state would equal the state count and be set back to 0. By default does
    * nothing.
    */
-  default void animationCompleted() {}
+  default void animationCompleted() {
+  }
 }

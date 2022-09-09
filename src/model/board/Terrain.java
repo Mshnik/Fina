@@ -1,6 +1,8 @@
 package model.board;
 
-/** The types of terrain that can be represented by tiles. */
+/**
+ * The types of terrain that can be represented by tiles.
+ */
 public enum Terrain {
   GRASS,
   WOODS,
@@ -8,7 +10,9 @@ public enum Terrain {
   SEA,
   ANCIENT_GROUND;
 
-  /** Parses the given short string to a Terrain. */
+  /**
+   * Parses the given short string to a Terrain.
+   */
   public static Terrain valueOfShort(String string) {
     switch (string.toUpperCase()) {
       case "G":

@@ -122,7 +122,7 @@ public final class HeaderPanel extends JPanel {
   /**
    * The "max" mana (highest mana value seen thus far for the given players)
    */
-  private HashMap<Player, Integer> maxMana;
+  private final HashMap<Player, Integer> maxMana;
 
   /**
    * The frame this belongs to

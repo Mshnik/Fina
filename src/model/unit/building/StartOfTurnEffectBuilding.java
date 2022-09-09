@@ -19,24 +19,38 @@ import java.util.List;
  */
 public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect> {
 
-  /** Types of effects that can occur at start of each turn. */
+  /**
+   * Types of effects that can occur at start of each turn.
+   */
   public enum StartOfTurnEffectType {
-    /** Heal all combatants in range by value health per turn */
+    /**
+     * Heal all combatants in range by value health per turn
+     */
     HEAL_COMBATANT
   }
 
-  /** An effect that occurs at the start of each turn. */
+  /**
+   * An effect that occurs at the start of each turn.
+   */
   public static final class StartOfTurnEffect {
-    /** The StartOfTurnEffect for this building. */
+    /**
+     * The StartOfTurnEffect for this building.
+     */
     public final StartOfTurnEffectType type;
 
-    /** The value of the StartOfTurnEffect for this building. */
+    /**
+     * The value of the StartOfTurnEffect for this building.
+     */
     public final int value;
 
-    /** The cloud the effect is applied to, if any. */
+    /**
+     * The cloud the effect is applied to, if any.
+     */
     public final Cloud cloud;
 
-    /** A string description of this effect. */
+    /**
+     * A string description of this effect.
+     */
     public final String description;
 
     StartOfTurnEffect(StartOfTurnEffectType type, int value, Cloud cloud, String description) {
@@ -52,10 +66,14 @@ public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect>
     }
   }
 
-  /** The effect this grants if not built on ancient ground. */
+  /**
+   * The effect this grants if not built on ancient ground.
+   */
   public final StartOfTurnEffect nonAncientGroundEffect;
 
-  /** The effect this grants if built on ancient ground. */
+  /**
+   * The effect this grants if built on ancient ground.
+   */
   public final StartOfTurnEffect ancientGroundEffect;
 
   /**
@@ -64,17 +82,17 @@ public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect>
    * runtimeException if the owner doesn't have enough mana. Throws an illegalArgumentException if a
    * building is constructed on land other than AncientGround
    *
-   * @param owner - the player owner of this model.unit
-   * @param name - the name of this model.unit.
-   * @param imageFilename - the image to draw when drawing this unit.
-   * @param level - the level of this model.unit - the age this belongs to
-   * @param manaCost - the cost of summoning this model.unit. Should be a positive number.
-   * @param manaCostScaling - the additional cost of summoning this model.unit for each copy beyond
-   *     the first. Should be a non-negative number.
-   * @param validTerrain - types of terrain this can be built on.
-   * @param stats - the base unmodified stats of this model.unit. stats that remain used are
+   * @param owner                  - the player owner of this model.unit
+   * @param name                   - the name of this model.unit.
+   * @param imageFilename          - the image to draw when drawing this unit.
+   * @param level                  - the level of this model.unit - the age this belongs to
+   * @param manaCost               - the cost of summoning this model.unit. Should be a positive number.
+   * @param manaCostScaling        - the additional cost of summoning this model.unit for each copy beyond
+   *                               the first. Should be a non-negative number.
+   * @param validTerrain           - types of terrain this can be built on.
+   * @param stats                  - the base unmodified stats of this model.unit. stats that remain used are
    * @param nonAncientGroundEffect - the effect this building grants if not built on ancient ground
-   * @param ancientGroundEffect - the effect this building grants if built on ancient ground
+   * @param ancientGroundEffect    - the effect this building grants if built on ancient ground
    */
   StartOfTurnEffectBuilding(
       Player owner,
@@ -87,7 +105,7 @@ public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect>
       Stats stats,
       StartOfTurnEffect nonAncientGroundEffect,
       StartOfTurnEffect ancientGroundEffect)
-      throws RuntimeException, IllegalArgumentException {
+      throws RuntimeException {
     super(owner, name, imageFilename, level, manaCost, manaCostScaling, validTerrain, stats);
     this.nonAncientGroundEffect = nonAncientGroundEffect;
     this.ancientGroundEffect = ancientGroundEffect;
@@ -123,7 +141,9 @@ public final class StartOfTurnEffectBuilding extends Building<StartOfTurnEffect>
         ancientGroundEffect);
   }
 
-  /** StartOfTurnEffectBuilding can't summon. */
+  /**
+   * StartOfTurnEffectBuilding can't summon.
+   */
   @Override
   public boolean canSummon() {
     return false;

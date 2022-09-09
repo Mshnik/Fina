@@ -8,22 +8,34 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/** Printer for specifically printing results from evolution simulation rounds. */
+/**
+ * Printer for specifically printing results from evolution simulation rounds.
+ */
 final class EvoResultsPrinter {
 
-  /** Root for output files. */
+  /**
+   * Root for output files.
+   */
   private static final String ROOT_OUTPUT_FILEPATH = "data/aiLogs/evo/";
 
-  /** Simulation results mainPrintStream, where averaging results are written out to. */
+  /**
+   * Simulation results mainPrintStream, where averaging results are written out to.
+   */
   private final PrintStream mainPrintStream;
 
-  /** Individual game results printStream. */
+  /**
+   * Individual game results printStream.
+   */
   private final PrintStream gameResultsStream;
 
-  /** Individual AI config printStream. */
+  /**
+   * Individual AI config printStream.
+   */
   private final PrintStream aiConfigStream;
 
-  /** Constructs a new EvoResultsPrinter pointing at a unique (time at start) file. */
+  /**
+   * Constructs a new EvoResultsPrinter pointing at a unique (time at start) file.
+   */
   EvoResultsPrinter(String id) {
     try {
       mainPrintStream =
@@ -42,13 +54,17 @@ final class EvoResultsPrinter {
     }
   }
 
-  /** Write a divider row in results and config between rounds. */
+  /**
+   * Write a divider row in results and config between rounds.
+   */
   void writeRoundDividerRowToResultsAndConfig(int round) {
     gameResultsStream.println("--- ROUND " + round + " ---");
     aiConfigStream.println("--- ROUND " + round + " ---");
   }
 
-  /** Writes a header row to the simulation file. */
+  /**
+   * Writes a header row to the simulation file.
+   */
   void writeSimulationHeaderRow(EvoPlayer player) {
     mainPrintStream.println(
         String.format(

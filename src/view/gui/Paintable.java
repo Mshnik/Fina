@@ -10,6 +10,8 @@ import java.awt.*;
  */
 public interface Paintable {
 
-  /** Paint this Paintable using g */
-  public void paintComponent(Graphics g);
+  /**
+   * Paint this Paintable using g
+   */
+  void paintComponent(Graphics g);
 }

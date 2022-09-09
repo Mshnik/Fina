@@ -100,7 +100,7 @@ public abstract class Commander extends MovingUnit implements Summoner {
    *                      unnecessary or calculated elsewhere.
    */
   public Commander(Player owner, Tile location, String name, String imageFilename, Stats stats)
-      throws RuntimeException, IllegalArgumentException {
+      throws RuntimeException {
     super(owner, name, imageFilename, 0, 0, stats);
     research = 0;
     level = 1;

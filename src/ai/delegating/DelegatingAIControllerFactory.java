@@ -1,6 +1,7 @@
 package ai.delegating;
 
 import ai.delegates.Delegate;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,11 +10,16 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-/** A factory for DelegatingAIControllers that handles setting delegate weights. */
+/**
+ * A factory for DelegatingAIControllers that handles setting delegate weights.
+ */
 public final class DelegatingAIControllerFactory {
-  private DelegatingAIControllerFactory() {}
+  private DelegatingAIControllerFactory() {
+  }
 
-  /** Prints a DelegatingAIController with weights, for data interpretation. */
+  /**
+   * Prints a DelegatingAIController with weights, for data interpretation.
+   */
   public static void main(String[] args) {
     String weights =
         "2.100,0.798,3.609,3.301,0.643,1.108,3.905,2.682,3.281,2.168,2.107,3.098,"
@@ -26,7 +32,7 @@ public final class DelegatingAIControllerFactory {
 
     DelegatingAIController controller =
         DelegatingAIControllerFactory.copyOf(
-                DelegatingAIControllers.randomWeightsDelegatingAIController())
+            DelegatingAIControllers.randomWeightsDelegatingAIController())
             .setWeights(
                 Arrays.stream(weights.split(","))
                     .map(Double::parseDouble)
@@ -41,18 +47,26 @@ public final class DelegatingAIControllerFactory {
    */
   private static final AtomicInteger idCounter = new AtomicInteger();
 
-  /** The id to set for the next call to build(). */
+  /**
+   * The id to set for the next call to build().
+   */
   private String id = "";
 
-  /** The current set of delegates to add to the next call of build(). */
-  private List<Delegate> delegates = new ArrayList<>();
+  /**
+   * The current set of delegates to add to the next call of build().
+   */
+  private final List<Delegate> delegates = new ArrayList<>();
 
-  /** Returns a new builder. */
+  /**
+   * Returns a new builder.
+   */
   public static DelegatingAIControllerFactory newBuilder() {
     return new DelegatingAIControllerFactory();
   }
 
-  /** Returns a new builder that copies the given DelegatingAIController. */
+  /**
+   * Returns a new builder that copies the given DelegatingAIController.
+   */
   public static DelegatingAIControllerFactory copyOf(
       DelegatingAIController delegatingAIController) {
     DelegatingAIControllerFactory factory = new DelegatingAIControllerFactory();
@@ -61,25 +75,33 @@ public final class DelegatingAIControllerFactory {
     return factory;
   }
 
-  /** Sets the id and returns this. */
+  /**
+   * Sets the id and returns this.
+   */
   public DelegatingAIControllerFactory setId(String id) {
     this.id = id;
     return this;
   }
 
-  /** Sets the id to the timestamp plus the nextId returns this. */
+  /**
+   * Sets the id to the timestamp plus the nextId returns this.
+   */
   public DelegatingAIControllerFactory setIdToTimestampPlusNextId() {
-    this.id = Long.toString(System.currentTimeMillis()) + "-" + idCounter.getAndIncrement();
+    this.id = System.currentTimeMillis() + "-" + idCounter.getAndIncrement();
     return this;
   }
 
-  /** Adds the given delegate and returns this. */
+  /**
+   * Adds the given delegate and returns this.
+   */
   public DelegatingAIControllerFactory addDelegate(Delegate delegate) {
     delegates.add(delegate);
     return this;
   }
 
-  /** Adds all of the given delegate and returns this. */
+  /**
+   * Adds all of the given delegate and returns this.
+   */
   public DelegatingAIControllerFactory addDelegates(Collection<Delegate> delegateCollection) {
     delegates.addAll(delegateCollection);
     return this;
@@ -107,7 +129,9 @@ public final class DelegatingAIControllerFactory {
     return this;
   }
 
-  /** Returns a new DelegatingAIController with the configured delegates. */
+  /**
+   * Returns a new DelegatingAIController with the configured delegates.
+   */
   public DelegatingAIController build() {
     DelegatingAIController delegatingAIController = new DelegatingAIController(id);
     for (Delegate d : delegates) {

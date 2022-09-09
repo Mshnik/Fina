@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import model.board.Board;
 import model.board.Terrain;
 import model.util.MPoint;
@@ -16,18 +17,27 @@ import model.util.MPoint;
  * @author Mshnik
  */
 public final class BoardReader {
-  private BoardReader() {}
+  private BoardReader() {
+  }
 
-  /** Root filepath for board files. */
+  /**
+   * Root filepath for board files.
+   */
   public static final String BOARDS_ROOT_FILEPATH = "game/boards/";
 
-  /** Special character for where a player starts. */
+  /**
+   * Special character for where a player starts.
+   */
   private static final String PLAYER_START_STRING = "C";
 
-  /** Terrain to use for player start spaces. */
+  /**
+   * Terrain to use for player start spaces.
+   */
   private static final Terrain PLAYER_START_TERRAIN = Terrain.GRASS;
 
-  /** Reads a board from memory at the given csvFilepath. */
+  /**
+   * Reads a board from memory at the given csvFilepath.
+   */
   public static Board readBoard(String boardFilepath) {
     List<String> fileLines;
     try {

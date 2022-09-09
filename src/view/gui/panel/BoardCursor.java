@@ -10,10 +10,14 @@ import view.gui.Cursor;
 import java.awt.Color;
 import java.util.ArrayList;
 
-/** An instance represents the cursor on the GUI */
+/**
+ * An instance represents the cursor on the GUI
+ */
 public final class BoardCursor extends Cursor<Tile, GamePanel> {
 
-  /** Possible types of selection a BoardCursor can be doing. */
+  /**
+   * Possible types of selection a BoardCursor can be doing.
+   */
   public enum SelectType {
     DEFAULT(Color.red),
     SUMMON(new Color(25, 203, 208)),
@@ -26,7 +30,9 @@ public final class BoardCursor extends Cursor<Tile, GamePanel> {
     }
   }
 
-  /** True if this should be hidden. Default false. Used during turn transitions. */
+  /**
+   * True if this should be hidden. Default false. Used during turn transitions.
+   */
   public boolean hide;
 
   /**
@@ -39,12 +45,16 @@ public final class BoardCursor extends Cursor<Tile, GamePanel> {
     hide = false;
   }
 
-  /** Returns true - selection criteria depends on the application */
+  /**
+   * Returns true - selection criteria depends on the application
+   */
   public boolean canSelect() {
     return true;
   }
 
-  /** Sets the current type of selection this BoardCursor is doing. */
+  /**
+   * Sets the current type of selection this BoardCursor is doing.
+   */
   public void setSelectType(SelectType selectType) {
     setColor(selectType.color);
   }
@@ -105,14 +115,18 @@ public final class BoardCursor extends Cursor<Tile, GamePanel> {
     }
   }
 
-  /** Called whenever the cursor is forcably moved */
+  /**
+   * Called whenever the cursor is forcably moved
+   */
   @Override
   public void setElm(Tile t) {
     super.setElm(t);
     updateUnitHover();
   }
 
-  /** Called internally whenever the cursor is moved works with pathSelector */
+  /**
+   * Called internally whenever the cursor is moved works with pathSelector
+   */
   @Override
   public void moved() {
     super.moved();
