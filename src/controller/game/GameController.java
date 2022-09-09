@@ -938,6 +938,7 @@ public final class GameController {
                   + Choice.SEPERATOR
                   + " ("
                   + u.getManaCostWithScalingAndDiscountsForPlayer(c.owner)
+                  + (u instanceof FanOrthogonallyBuilding ? " per tile"  : "")
                   + ")",
               u));
     }
@@ -1097,23 +1098,27 @@ public final class GameController {
    */
   public void summonUnit(Unit summoner, Tile loc, Unit toSummon) {
     summoner.spendAction();
+    List<Unit> summonedUnits = new ArrayList<>();
     Unit summonedUnit = summonUnit(summoner.owner, loc, toSummon);
+    summonedUnits.add(summonedUnit);
 
     // Check for fan.
     if (toSummon instanceof Building) {
       Building<?> building = (Building<?>) summonedUnit;
       for (Tile t : building.buildFanOut()) {
-        summonUnit(summoner.owner, t, toSummon);
+        summonedUnits.add(summonUnit(summoner.owner, t, toSummon));
       }
     }
+
+    // Only refresh state after all copies summoned.
+    summoner.owner.recalculateState();
+    summonedUnits.forEach(summoner.owner::refreshVisionCloud);
   }
 
   /** Summons a new {@code toSummon} owned by owner at location. Returns the summoned unit. */
   private Unit summonUnit(Player owner, Tile location, Unit toSummon) {
     Unit summonedUnit = toSummon.clone(owner, location);
     summonedUnit.copyPersonalModifiersFrom(toSummon);
-    summonedUnit.owner.recalculateState();
-    summonedUnit.owner.refreshVisionCloud(summonedUnit);
     return summonedUnit;
   }
 

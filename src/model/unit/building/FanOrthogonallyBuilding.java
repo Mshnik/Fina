@@ -133,7 +133,7 @@ public final class FanOrthogonallyBuilding extends Building<Integer> {
     }
 
     int maxIndex = 0;
-    for (int i = 1; i < tiles.size(); i++) {
+    for (int i = 0; i < tiles.size(); i++) {
       Tile t = tiles.get(i);
       if (!canOccupy(t.terrain) || !owner.canSee(t)) {
         break;
