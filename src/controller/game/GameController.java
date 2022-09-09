@@ -1255,7 +1255,7 @@ public final class GameController {
       throw new RuntimeException("Can't cancel path selection, currently toggling " + getToggle());
     if (locationSelector != null) {
       PathSelector ps = (PathSelector) locationSelector;
-      getGamePanel().boardCursor.setElm(ps.getPath().getFirst());
+      getGamePanel().boardCursor.setElm(ps.getPath().get(0));
     }
     locationSelector = null;
   }
@@ -1269,7 +1269,7 @@ public final class GameController {
     PathSelector pathSelector = (PathSelector) locationSelector;
     if (loc.isOccupied()) return;
     if (pathSelector.getPath().size() < 2) return;
-    if (!pathSelector.getPath().getLast().equals(loc))
+    if (!pathSelector.getPath().get(pathSelector.getPath().size()-1).equals(loc))
       throw new RuntimeException("Can't do path to loc, incongruency");
     Toggle t = removeTopToggle();
     if (!t.equals(Toggle.PATH_SELECTION))

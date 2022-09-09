@@ -443,10 +443,10 @@ public final class Board implements Iterable<Tile>, Stringable {
    */
   public ArrayList<Tile> getMovementCloud(PathSelector ps) {
     MovingUnit unit = ps.unit;
-    Tile start = ps.getPath().getLast();
+    Tile start = ps.getPath().get(ps.getPath().size() - 1);
 
     // Uses dist to hold remainingDistance as possible.
-    if (ps.getPath().getLast() != ps.unit.getLocation())
+    if (start != ps.unit.getLocation())
       start.dist = unit.getMovement() - unit.getTotalMovementCost(ps.getPath());
     else start.dist = unit.getMovement();
     return getMovementCloud(start, unit);

@@ -76,8 +76,8 @@ public final class PathSelector extends LocationSelector implements Paintable, I
    * Return the path this PathSelector currently represents and is drawing. This is pass-by-value,
    * so editing the returned list won't change the PathSelector.
    */
-  public LinkedList<Tile> getPath() {
-    return new LinkedList<Tile>(path);
+  public List<Tile> getPath() {
+    return Collections.unmodifiableList(path);
   }
 
   /**
