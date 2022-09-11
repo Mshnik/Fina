@@ -143,7 +143,7 @@ public final class InfoPanel extends JPanel {
   /**
    * Sets the unit this InfoPanel is to draw info for, and causes a repaint
    */
-  public void setUnit(Unit u, boolean isMenu) {
+  public synchronized void setUnit(Unit u, boolean isMenu) {
     unit = u;
     this.isMenu = isMenu;
     ability = null;
@@ -158,7 +158,7 @@ public final class InfoPanel extends JPanel {
   /**
    * Clears the extendedModifiersInfo field.
    */
-  public void clearModifierDescription() {
+  public synchronized void clearModifierDescription() {
     modifierDescription = null;
     repaint();
   }
@@ -166,7 +166,7 @@ public final class InfoPanel extends JPanel {
   /**
    * Sets the ModifierDescription this InfoPanel is to draw info for, and causes a repaint
    */
-  public void setModifierDescription(ModifierDescription modifierDescription) {
+  public synchronized void setModifierDescription(ModifierDescription modifierDescription) {
     unit = modifierDescription.unit;
     isMenu = true;
     this.modifierDescription = modifierDescription;
@@ -179,7 +179,7 @@ public final class InfoPanel extends JPanel {
   /**
    * Sets the ability this InfoPanel is to draw info for, and causes a repaint
    */
-  public void setAbility(Ability a) {
+  public synchronized void setAbility(Ability a) {
     unit = null;
     ability = a;
     isMenu = true;
@@ -191,7 +191,7 @@ public final class InfoPanel extends JPanel {
   /**
    * Sets the tile this InfoPanel is to draw for and causes a repaint
    */
-  public void setTile(Tile t) {
+  public synchronized void setTile(Tile t) {
     unit = null;
     ability = null;
     tile = t;
@@ -200,7 +200,10 @@ public final class InfoPanel extends JPanel {
     repaint();
   }
 
-  public void setCombat(Combat c) {
+  /**
+   * Sets the Combat this InfoPanel is to draw for and causes a repaint.
+   */
+  public synchronized void setCombat(Combat c) {
     unit = null;
     ability = null;
     tile = null;
@@ -230,25 +233,42 @@ public final class InfoPanel extends JPanel {
         RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
     g2d.setFont(BIG_FONT);
 
+    Unit unit;
+    boolean isMenu;
+    ModifierDescription modifierDescription;
+    Ability ability;
+    Tile tile;
+    Combat combat;
+
+    // Assign local copies to avoid resetting to null during painting.
+    synchronized (this) {
+      unit = this.unit;
+      isMenu = this.isMenu;
+      modifierDescription = this.modifierDescription;
+      ability = this.ability;
+      tile = this.tile;
+      combat = this.combat;
+    }
+
     if (unit != null && modifierDescription != null) {
-      drawUnitPrefix(g2d);
-      drawExtendedModifierInfo(g2d);
+      drawUnitPrefix(g2d, unit, modifierDescription, isMenu);
+      drawExtendedModifierInfo(g2d, modifierDescription);
     } else if (unit != null) {
-      drawUnitPrefix(g2d);
-      drawUnit(g2d);
+      drawUnitPrefix(g2d, unit, modifierDescription, isMenu);
+      drawUnit(g2d, frame, this, unit, isMenu);
     } else if (ability != null) {
-      drawAbility(g2d);
+      drawAbility(g2d, ability);
     } else if (tile != null) {
-      drawTerrain(g2d);
+      drawTerrain(g2d, frame, tile);
     } else if (combat != null) {
-      drawCombat(g2d);
+      drawCombat(g2d, combat);
     }
   }
 
   /**
    * Draws the prefix for a unit listing the name, owner, level, and class.
    */
-  private void drawUnitPrefix(Graphics2D g2d) {
+  private static void drawUnitPrefix(Graphics2D g2d, Unit unit, ModifierDescription modifierDescription, boolean isMenu) {
     int x = XMARGIN;
     int y = YMARGIN;
     String mainLine = unit.name;
@@ -300,7 +320,7 @@ public final class InfoPanel extends JPanel {
   /**
    * Draws a unit on this InfoPanel. May be in a menu or on the board.
    */
-  private void drawUnit(Graphics2D g2d) {
+  private static void drawUnit(Graphics2D g2d, Frame frame, JPanel infoPanel, Unit unit, boolean isMenu) {
     final int xInc = 225;
     int x = XMARGIN + xInc;
     int y = YMARGIN;
@@ -348,9 +368,9 @@ public final class InfoPanel extends JPanel {
     x = XMARGIN + 2 * xInc;
 
     if (unit instanceof MovingUnit) {
-      continueDrawingMovingUnit(g2d, x, YMARGIN);
+      continueDrawingMovingUnit(g2d, x, YMARGIN, unit, isMenu);
     } else if (unit instanceof Building) {
-      continueDrawingBuilding(g2d, x, YMARGIN);
+      continueDrawingBuilding(g2d, x, YMARGIN, unit, isMenu);
     }
 
     x += xInc + 100;
@@ -358,15 +378,15 @@ public final class InfoPanel extends JPanel {
         ImageIndex.imageForUnit(unit, frame.getController().game.getCurrentPlayer()),
         x + 200,
         10,
-        getHeight() - 30,
-        getHeight() - 30,
+        infoPanel.getHeight() - 30,
+        infoPanel.getHeight() - 30,
         null);
   }
 
   /**
    * Continues drawing a unit for movable units.
    */
-  private void continueDrawingMovingUnit(Graphics2D g2d, int x, int y) {
+  private static void continueDrawingMovingUnit(Graphics2D g2d, int x, int y, Unit unit, boolean isMenu) {
     final int infoFont = (int) (MEDIUM_FONT.getSize() * 1.2);
     final int xInc = 225;
 
@@ -439,7 +459,7 @@ public final class InfoPanel extends JPanel {
   /**
    * Continues drawing a unit for buildings.
    */
-  private void continueDrawingBuilding(Graphics2D g2d, int x, int y) {
+  private static void continueDrawingBuilding(Graphics2D g2d, int x, int y, Unit unit, boolean isMenu) {
     final int infoFont = (int) (MEDIUM_FONT.getSize() * 1.2);
     final int xInc = 225;
 
@@ -470,7 +490,7 @@ public final class InfoPanel extends JPanel {
   /**
    * Draws extended modifier info for a unit.
    */
-  private void drawExtendedModifierInfo(Graphics2D g2d) {
+  private static void drawExtendedModifierInfo(Graphics2D g2d, ModifierDescription modifierDescription) {
     g2d.setFont(MEDIUM_FONT);
     final int modifierIconSize = 48;
     int x = XMARGIN + 200;
@@ -489,7 +509,7 @@ public final class InfoPanel extends JPanel {
   /**
    * Draws a building's effect at the given x,y.
    */
-  private void drawBuildingEffect(
+  private static void drawBuildingEffect(
       Graphics2D g2d, Building<?> building, Object effect, int x, int y) {
     if (effect == null) {
       g2d.drawString("None", x, y);
@@ -517,7 +537,7 @@ public final class InfoPanel extends JPanel {
   /**
    * Draws an ability on this InfoPanel.
    */
-  private void drawAbility(Graphics2D g2d) {
+  private static void drawAbility(Graphics2D g2d, Ability ability) {
     int x = XMARGIN;
     int y = YMARGIN;
     final int xInc = 225;
@@ -556,7 +576,7 @@ public final class InfoPanel extends JPanel {
   /**
    * Draw the terrain for an empty tile on this info panel.
    */
-  private void drawTerrain(Graphics2D g2d) {
+  private static void drawTerrain(Graphics2D g2d, Frame frame, Tile tile) {
     int x = XMARGIN;
     int y = YMARGIN;
 
@@ -573,7 +593,7 @@ public final class InfoPanel extends JPanel {
   /**
    * Draws combat on this info panel.
    */
-  private void drawCombat(Graphics2D g2d) {
+  private static void drawCombat(Graphics2D g2d, Combat combat) {
     int x = XMARGIN;
     int y = YMARGIN;
     final int xInc = 225;
@@ -681,7 +701,7 @@ public final class InfoPanel extends JPanel {
         y);
   }
 
-  private void drawStat(Graphics2D g2d, Stat s, int x, int y) {
+  private static void drawStat(Graphics2D g2d, Stat s, int x, int y) {
     if (s.name == StatType.ACTIONS_PER_TURN) {
       g2d.drawString("Actions per Turn", x, y);
     } else {
@@ -690,7 +710,7 @@ public final class InfoPanel extends JPanel {
     g2d.drawString(s.val.toString(), x + 145, y);
   }
 
-  private void drawCombatColumn(Graphics2D g2d, Unit unit, int x) {
+  private static void drawCombatColumn(Graphics2D g2d, Unit unit, int x) {
     int y = YMARGIN;
     g2d.setFont(MEDIUM_FONT);
     g2d.drawString(unit.name + " (" + unit.owner + ")", x, y);
@@ -713,7 +733,7 @@ public final class InfoPanel extends JPanel {
    * Draws the given text on multiple lines, splitting by word and fitting within the given
    * maxWidth.
    */
-  private void drawStringAsMultilineText(Graphics2D g2d, String text, int x, int y, int maxWidth) {
+  private static void drawStringAsMultilineText(Graphics2D g2d, String text, int x, int y, int maxWidth) {
     FontMetrics fontMetrics = g2d.getFontMetrics();
     String[] words = text.split(" ");
 
